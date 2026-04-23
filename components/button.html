@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CUE Canvas — Button</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../tokens.css" />
+  <link rel="stylesheet" href="../base.css" />
+  <style>
+
+    /* ============================================================
+       BUTTON COMPONENT
+
+       Anatomy:
+         .cue-btn                    — button element (base)
+           .cue-btn__icon-leading    — optional leading icon (Material Icon)
+           .cue-btn__label           — button text label
+           .cue-btn__icon-trailing   — optional trailing icon (Material Icon)
+
+       Type modifiers (add to .cue-btn):
+         .cue-btn--primary           — filled primary brand color
+         .cue-btn--secondary         — outlined primary brand color
+         .cue-btn--tertiary          — ghost, brand color text
+         .cue-btn--neutral           — filled neutral (light gray)
+         .cue-btn--neutral-stroke    — outlined neutral
+         .cue-btn--link              — no padding, link style (inline use)
+         .cue-btn--neutral-link      — no padding, neutral text (inline use)
+         .cue-btn--brand-accent      — filled accent/highlight brand color
+         .cue-btn--custom            — custom color via CSS variable override
+
+       Size modifiers (add to .cue-btn):
+         .cue-btn--xsmall
+         .cue-btn--small
+         .cue-btn--large
+         .cue-btn--xlarge
+
+       State:
+         :hover / :focus-visible handled in CSS
+         [disabled] / .cue-btn--disabled
+    ============================================================ */
+
+    /* --- Base --- */
+
+    .cue-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      padding: var(--button-padding-default);
+      border-radius: var(--corner-button);
+      border: 1px solid transparent;
+      font-family: var(--font-family-body);
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1;
+      white-space: nowrap;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+    }
+
+    .cue-btn:focus-visible {
+      outline: 2px solid var(--border-interactive);
+      outline-offset: 2px;
+    }
+
+    .cue-btn[disabled],
+    .cue-btn--disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    /* --- Label inner padding --- */
+
+    .cue-btn__label {
+      padding: 4px;
+    }
+
+    /* --- Icons --- */
+
+    .cue-btn__icon-leading,
+    .cue-btn__icon-trailing {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    /* ============================================================
+       BUTTON TYPES
+    ============================================================ */
+
+    /* Primary */
+    .cue-btn--primary {
+      background-color: var(--bg-button-primary);
+      color: var(--content-button-primary);
+      border-color: transparent;
+    }
+    .cue-btn--primary:hover {
+      background-color: var(--bg-button-primary-hover);
+      color: var(--content-button-primary-hover);
+    }
+
+    /* Secondary */
+    .cue-btn--secondary {
+      background-color: var(--bg-button-secondary);
+      color: var(--content-button-secondary);
+      border-color: var(--border-button-secondary);
+    }
+    .cue-btn--secondary:hover {
+      background-color: var(--bg-button-secondary-hover);
+      color: var(--content-button-secondary-hover);
+      border-color: var(--border-button-secondary-hover);
+    }
+
+    /* Tertiary */
+    .cue-btn--tertiary {
+      background-color: var(--bg-button-tertiary-link);
+      color: var(--content-button-tertiary-link);
+      border-color: transparent;
+    }
+    .cue-btn--tertiary:hover {
+      background-color: var(--bg-button-tertiary-link-hover);
+      color: var(--content-button-tertiary-link-hover);
+    }
+
+    /* Neutral */
+    .cue-btn--neutral {
+      background-color: var(--bg-button-neutral);
+      color: var(--content-button-neutral);
+      border-color: transparent;
+    }
+    .cue-btn--neutral:hover {
+      background-color: var(--bg-button-neutral-hover);
+      color: var(--content-button-neutral-hover);
+    }
+
+    /* Neutral - Stroke */
+    .cue-btn--neutral-stroke {
+      background-color: var(--bg-button-neutral-stroke);
+      color: var(--content-button-neutral-stroke);
+      border-color: var(--border-button-neutral-stroke);
+    }
+    .cue-btn--neutral-stroke:hover {
+      background-color: var(--bg-button-neutral-stroke-hover);
+      color: var(--content-button-neutral-stroke-hover);
+      border-color: var(--border-button-neutral-stroke-hover);
+    }
+
+    /* Link (No Padding) */
+    .cue-btn--link {
+      background-color: transparent;
+      color: var(--content-button-tertiary-link);
+      border-color: transparent;
+      padding: 0;
+      border-radius: 0;
+    }
+    .cue-btn--link:hover {
+      color: var(--content-button-tertiary-link-hover);
+    }
+    .cue-btn--link .cue-btn__label {
+      padding: 0;
+    }
+
+    /* Neutral (No Padding) */
+    .cue-btn--neutral-link {
+      background-color: transparent;
+      color: var(--content-button-neutral);
+      border-color: transparent;
+      padding: 0;
+      border-radius: 0;
+      font-weight: 400;
+    }
+    .cue-btn--neutral-link:hover {
+      color: var(--content-button-neutral-hover);
+    }
+    .cue-btn--neutral-link .cue-btn__label {
+      padding: 0;
+    }
+
+    /* Brand Accent */
+    .cue-btn--brand-accent {
+      background-color: var(--bg-accent-brand);
+      color: var(--content-body-default);
+      border-color: transparent;
+    }
+    .cue-btn--brand-accent:hover {
+      background-color: var(--bg-accent-brand);
+      color: var(--content-body-default);
+      filter: brightness(1.1);
+    }
+
+    /* Custom Color — override --btn-custom-bg and --btn-custom-content */
+    .cue-btn--custom {
+      background-color: var(--btn-custom-bg, var(--danger-default));
+      color: var(--btn-custom-content, #ffffff);
+      border-color: transparent;
+    }
+    .cue-btn--custom:hover {
+      background-color: var(--btn-custom-bg, var(--danger-default));
+      color: var(--btn-custom-content, #ffffff);
+      filter: brightness(0.85);
+    }
+
+    /* ============================================================
+       SIZE MODIFIERS
+    ============================================================ */
+
+    .cue-btn--xsmall {
+      padding: var(--button-padding-xsmall);
+      font-size: 12px;
+    }
+    .cue-btn--xsmall .cue-btn__icon-leading,
+    .cue-btn--xsmall .cue-btn__icon-trailing {
+      font-size: 16px;
+    }
+
+    .cue-btn--small {
+      padding: var(--button-padding-small);
+      font-size: 13px;
+    }
+    .cue-btn--small .cue-btn__icon-leading,
+    .cue-btn--small .cue-btn__icon-trailing {
+      font-size: 18px;
+    }
+
+    .cue-btn--large {
+      padding: var(--button-padding-large);
+      font-size: 15px;
+    }
+    .cue-btn--large .cue-btn__icon-leading,
+    .cue-btn--large .cue-btn__icon-trailing {
+      font-size: 24px;
+    }
+
+    .cue-btn--xlarge {
+      padding: var(--button-padding-xlarge);
+      font-size: 16px;
+    }
+    .cue-btn--xlarge .cue-btn__icon-leading,
+    .cue-btn--xlarge .cue-btn__icon-trailing {
+      font-size: 26px;
+    }
+
+    /* ============================================================
+       DOCS PAGE LAYOUT — button examples
+    ============================================================ */
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-m);
+    }
+
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-s);
+    }
+
+    .btn-group-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--content-body-moderate);
+      margin-bottom: 2px;
+    }
+
+    .btn-variant-grid {
+      display: grid;
+      grid-template-columns: 120px 1fr 1fr;
+      gap: var(--space-s) var(--space-l);
+      align-items: center;
+      font-size: 13px;
+    }
+
+    .btn-variant-grid__label {
+      font-size: 12px;
+      color: var(--content-body-moderate);
+      font-weight: 600;
+    }
+
+    .btn-variant-grid__head {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--content-body-subtle);
+      padding-bottom: var(--space-xs);
+      border-bottom: 1px solid var(--border-level-1);
+    }
+
+    .docs-example--dark {
+      background-color: var(--bg-inverse);
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="docs-layout">
+
+  <!-- Sidebar -->
+  <nav class="docs-sidebar" aria-label="Documentation navigation">
+    <div class="docs-sidebar__logo">CUE Canvas</div>
+    <p class="docs-sidebar__section-label">Getting Started</p>
+    <div class="docs-sidebar__nav">
+      <a href="../index.html" class="docs-sidebar__nav-link">Overview</a>
+    </div>
+    <p class="docs-sidebar__section-label">Components</p>
+    <div class="docs-sidebar__nav">
+      <a href="accordion.html" class="docs-sidebar__nav-link">Accordion</a>
+      <a href="button.html" class="docs-sidebar__nav-link active">Button</a>
+      <a href="card.html" class="docs-sidebar__nav-link">Card / Module</a>
+      <a href="form-field.html" class="docs-sidebar__nav-link">Form Field</a>
+      <a href="status-badge.html" class="docs-sidebar__nav-link">Status Badge</a>
+      <a href="table.html" class="docs-sidebar__nav-link">Table</a>
+      <a href="tabs.html" class="docs-sidebar__nav-link">Tab Navigation</a>
+      <a href="side-nav.html" class="docs-sidebar__nav-link">Side Navigation</a>
+      <a href="dropdown.html" class="docs-sidebar__nav-link">Dropdown</a>
+      <a href="date-picker.html" class="docs-sidebar__nav-link">Date Picker</a>
+      <a href="calendar.html" class="docs-sidebar__nav-link">Calendar</a>
+      <a href="step-process.html" class="docs-sidebar__nav-link">Step Process</a>
+      <a href="skeleton.html" class="docs-sidebar__nav-link">Skeleton Loader</a>
+      <a href="chat.html" class="docs-sidebar__nav-link">Chat</a>
+    </div>
+    <p class="docs-sidebar__section-label">Icons</p>
+    <div class="docs-sidebar__nav">
+      <a href="../icons/icons.html" class="docs-sidebar__nav-link">Icon Reference</a>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <main class="docs-main">
+
+    <div class="docs-page-header">
+      <h1 class="docs-page-title">Button</h1>
+      <p class="docs-page-description">
+        Buttons communicate actions users can take. They are typically placed throughout the UI in forms, dialogs, panels, and as standalone calls to action. Buttons are composed of three optional elements: a leading icon, a text label, and a trailing icon.
+      </p>
+    </div>
+
+    <!-- ============================================================
+         ALL VARIANTS
+    ============================================================ -->
+
+    <div class="docs-section">
+      <p class="docs-section-label">Variants</p>
+      <div class="docs-example">
+        <div class="btn-variant-grid">
+
+          <!-- Header row -->
+          <div class="btn-variant-grid__head">Type</div>
+          <div class="btn-variant-grid__head">Default</div>
+          <div class="btn-variant-grid__head">Hover</div>
+
+          <!-- Primary -->
+          <div class="btn-variant-grid__label">Primary</div>
+          <div>
+            <button class="cue-btn cue-btn--primary" type="button">
+              <span class="cue-btn__icon-leading material-icons" aria-hidden="true">star</span>
+              <span class="cue-btn__label">Label</span>
+              <span class="cue-btn__icon-trailing material-icons" aria-hidden="true">star</span>
+            </button>
+          </div>
+          <div>
+            <button class="cue-btn cue-btn--primary" type="button" style="background-color: var(--bg-button-primary-hover);">
+              <span class="cue-btn__icon-leading material-icons" aria-hidden="true">star</span>
+              <span class="cue-btn__label">Label</span>
+              <span class="cue-btn__icon-trailing material-icons" aria-hidden="true">star</span>
+            </button>
+          </div>
+
+          <!-- Secondary -->
+          <div class="btn-variant-grid__label">Secondary</div>
+          <div>
+            <button class="cue-btn cue-btn--secondary" type="button">
+              <span class="cue-btn__icon-leading material-icons" aria-hidden="true">star</span>
+              <span class="cue-btn__label">Label</span>
+              <span class="cue-btn__icon-trailing material-icons" aria-hidden="true">star</span>
+            </button>
+          </div>
+          <div>
+            <button class="cue-btn cue-btn--secondary" type="button" style="background-color: var(--bg-button-secondary-hover); color: var(--content-button-secondary-hover); border-color: var(--border-button-secondary-hover);">
+              <span class="cue-btn__icon-leading material-icons" aria-hidden="true">star</span>
+              <span class="cue-btn__label">Label</span>
+              <span class="cue-btn__icon-trailing material-icons" aria-hidden="true">star</span>
+            </button>
+          </div>
+
+          <!-- Tertiary -->
+          <div class="btn-variant-grid__label">Tertiary</div>
+          <div>
+            <button class="cue-btn cue-btn--tertiary" type="button">
+              <span class="cue-btn__icon-leading material-icons" aria-hidden="true">star</span>
+              <span class="cue-btn__label">Label</span>
+              <span class="cue-btn__icon-trailing material-icons" aria-hidden="true">star</span>
+            </button>
+          </div>
+          <div>
+            <button class="cue-btn cue-btn--tertiary" type="button" style="color: var(--content-button-tertiary-link-hover);">
+              <span class="cue-btn__icon-leading material-icons" aria-hidden="true">star</span>
+              <span class="cue-btn__label">Label</span>
+              <span class="cue-btn__icon-trailing material-icons" aria-hidden="true">star</span>
+            </button>
+          </div>
+
+          <!-- Neutral -->
+          <div class="btn-variant-grid__label">Neutral</div>
+          <div>
+            <button class="cue-btn cue-btn--neutral" type="button">
+              <span class="cue-btn__icon-leading material-icons" aria-hidden="true">star</span>
+              <span class="cue-btn__label">Label</span>
+              <span class="cue-btn__icon-trailing material-icons" aria-hidden="true">star</span>
+            </button>
+          </div>
+          <div>
+            <button class="cue-btn cue-btn--neutral" type="button" style="background-color: var(--bg-button-neutral-hover); color: var(--content-button-neutral-hover);">
+              <span class="cue-btn__icon-leading material-icons" aria-hidden="true">star</span>
+              <span class="cue-btn__label">Label</span>
+              <span class="cue-btn__icon-trailing material-icons" aria-hidden="true">star</span>
+            </button>
+          </div>
+
+          <!-- Neutral - Stroke -->
+          <div class="btn-variant-grid__label">Neutral - Stroke</div>
+          <div>
+            <button class="cue-btn cue-btn--neutral-stroke" type="button">
+              <span class="cue-btn__icon-leading material-icons" aria-hidden="true">star</span>
+              <span class="cue-btn__label">Label</span>
+              <span class="cue-btn__icon-trailing material-icons" aria-hidden="true">star</span>
+            </button>
+          </div>
+          <div>
+            <button class="cue-btn cue-btn--neutral-stroke" type="button" style="background-color: var(--bg-button-neutral-stroke-hover); color: var(--content-button-neutral-stroke-hover); border-color: var(--border-button-neutral-stroke-hover);">
+              <span class="cue-btn__icon-leading material-icons" aria-hidden="true">star</span>
+              <span class="cue-btn__label">Label</span>
+              <span class="cue-btn__icon-trailing material-icons" aria-hidden="true">star</span>
+            </button>
+          </div>
+
+          <!-- Link (No Padding) -->
+          <div class="btn-variant-grid__label">Link (No Padding)</div>
+          <div>
+            <button class="cue-btn cue-btn--link" type="button">
+              <span class="cue-btn__icon-leading material-icons" aria-hidden="true">star</span>
+              <span class="cue-btn__label">Label</span>
+              <span class="cue-btn__icon-trailing material-icons" aria-hidden="true">star</span>
+            </button>
+          </div>
+          <div>
+            <button class="cue-btn cue-btn--link" type="button" style="color: var(--content-button-tertiary-link-hover);">
+              <span class="cue-btn__icon-leading material-icons" aria-hidden="true">star</span>
+              <span class="cue-btn__label">Label</span>
+              <span class="cue-btn__icon-trailing material-icons" aria-hidden="true">star</span>
+            </button>
+          </div>
+
+          <!-- Neutral (No Padding) -->
+          <div class="btn-variant-grid__label">Neutral (No Padding)</div>
+          <div>
+            <button class="cue-btn cue-btn--neutral-link" type="button">
+              <span class="cue-btn__icon-leading material-icons" aria-hidden="true">star</span>
+              <span class="cue-btn__label">Label</span>
+              <span class="cue-btn__icon-trailing material-icons" aria-hidden="true">star</span>
+            </button>
+          </div>
+          <div>
+            <button class="cue-btn cue-btn--neutral-link" type="button" style="color: var(--content-button-neutral-hover);">
+              <span class="cue-btn__icon-leading material-icons" aria-hidden="true">star</span>
+              <span class="cue-btn__label">Label</span>
+              <span class="cue-btn__icon-trailing material-icons" aria-hidden="true">star</span>
+            </button>
+          </div>
+
+          <!-- Brand Accent -->
+          <div class="btn-variant-grid__label">Brand Accent</div>
+          <div>
+            <button class="cue-btn cue-btn--brand-accent" type="button">
+              <span class="cue-btn__icon-leading material-icons" aria-hidden="true">star</span>
+              <span class="cue-btn__label">Label</span>
+              <span class="cue-btn__icon-trailing material-icons" aria-hidden="true">star</span>
+            </button>
+          </div>
+          <div>
+            <button class="cue-btn cue-btn--brand-accent" type="button" style="filter: brightness(1.1);">
+              <span class="cue-btn__icon-leading material-icons" aria-hidden="true">star</span>
+              <span class="cue-btn__label">Label</span>
+              <span class="cue-btn__icon-trailing material-icons" aria-hidden="true">star</span>
+            </button>
+          </div>
+
+          <!-- Custom Color -->
+          <div class="btn-variant-grid__label">Custom Color</div>
+          <div>
+            <button class="cue-btn cue-btn--custom" type="button">
+              <span class="cue-btn__icon-leading material-icons" aria-hidden="true">star</span>
+              <span class="cue-btn__label">Label</span>
+              <span class="cue-btn__icon-trailing material-icons" aria-hidden="true">star</span>
+            </button>
+          </div>
+          <div>
+            <button class="cue-btn cue-btn--custom" type="button" style="filter: brightness(0.85);">
+              <span class="cue-btn__icon-leading material-icons" aria-hidden="true">star</span>
+              <span class="cue-btn__label">Label</span>
+              <span class="cue-btn__icon-trailing material-icons" aria-hidden="true">star</span>
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <hr class="docs-divider" />
+
+    <!-- ============================================================
+         ANATOMY
+    ============================================================ -->
+
+    <div class="docs-section">
+      <p class="docs-section-label">Anatomy</p>
+      <div class="docs-example">
+        <div class="btn-group">
+          <p class="btn-group-label">Icon leading + Label + Icon trailing</p>
+          <button class="cue-btn cue-btn--primary" type="button">
+            <span class="cue-btn__icon-leading material-icons" aria-hidden="true">download</span>
+            <span class="cue-btn__label">Download Report</span>
+            <span class="cue-btn__icon-trailing material-icons" aria-hidden="true">expand_more</span>
+          </button>
+
+          <p class="btn-group-label" style="margin-top: var(--space-m);">Label only</p>
+          <button class="cue-btn cue-btn--primary" type="button">
+            <span class="cue-btn__label">Save Changes</span>
+          </button>
+
+          <p class="btn-group-label" style="margin-top: var(--space-m);">Icon leading + Label</p>
+          <button class="cue-btn cue-btn--secondary" type="button">
+            <span class="cue-btn__icon-leading material-icons" aria-hidden="true">add</span>
+            <span class="cue-btn__label">Add Item</span>
+          </button>
+
+          <p class="btn-group-label" style="margin-top: var(--space-m);">Label + Icon trailing (dropdown)</p>
+          <button class="cue-btn cue-btn--neutral-stroke" type="button">
+            <span class="cue-btn__label">Filter</span>
+            <span class="cue-btn__icon-trailing material-icons" aria-hidden="true">expand_more</span>
+          </button>
+
+          <p class="btn-group-label" style="margin-top: var(--space-m);">Icon only (use aria-label on button)</p>
+          <button class="cue-btn cue-btn--neutral-stroke" type="button" aria-label="Delete item">
+            <span class="cue-btn__icon-leading material-icons" aria-hidden="true">delete</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <hr class="docs-divider" />
+
+    <!-- ============================================================
+         SIZES
+    ============================================================ -->
+
+    <div class="docs-section">
+      <p class="docs-section-label">Sizes</p>
+      <div class="docs-example">
+        <div class="btn-row" style="align-items: center;">
+          <div class="btn-group">
+            <p class="btn-group-label">X-Small</p>
+            <button class="cue-btn cue-btn--primary cue-btn--xsmall" type="button">
+              <span class="cue-btn__icon-leading material-icons" aria-hidden="true">star</span>
+              <span class="cue-btn__label">Label</span>
+            </button>
+          </div>
+          <div class="btn-group">
+            <p class="btn-group-label">Small</p>
+            <button class="cue-btn cue-btn--primary cue-btn--small" type="button">
+              <span class="cue-btn__icon-leading material-icons" aria-hidden="true">star</span>
+              <span class="cue-btn__label">Label</span>
+            </button>
+          </div>
+          <div class="btn-group">
+            <p class="btn-group-label">Default</p>
+            <button class="cue-btn cue-btn--primary" type="button">
+              <span class="cue-btn__icon-leading material-icons" aria-hidden="true">star</span>
+              <span class="cue-btn__label">Label</span>
+            </button>
+          </div>
+          <div class="btn-group">
+            <p class="btn-group-label">Large</p>
+            <button class="cue-btn cue-btn--primary cue-btn--large" type="button">
+              <span class="cue-btn__icon-leading material-icons" aria-hidden="true">star</span>
+              <span class="cue-btn__label">Label</span>
+            </button>
+          </div>
+          <div class="btn-group">
+            <p class="btn-group-label">X-Large</p>
+            <button class="cue-btn cue-btn--primary cue-btn--xlarge" type="button">
+              <span class="cue-btn__icon-leading material-icons" aria-hidden="true">star</span>
+              <span class="cue-btn__label">Label</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="docs-divider" />
+
+    <!-- ============================================================
+         STATES
+    ============================================================ -->
+
+    <div class="docs-section">
+      <p class="docs-section-label">States</p>
+      <div class="docs-example">
+        <div class="btn-row">
+          <div class="btn-group">
+            <p class="btn-group-label">Default</p>
+            <button class="cue-btn cue-btn--primary" type="button">
+              <span class="cue-btn__label">Label</span>
+            </button>
+          </div>
+          <div class="btn-group">
+            <p class="btn-group-label">Hover (simulate)</p>
+            <button class="cue-btn cue-btn--primary" type="button" style="background-color: var(--bg-button-primary-hover);">
+              <span class="cue-btn__label">Label</span>
+            </button>
+          </div>
+          <div class="btn-group">
+            <p class="btn-group-label">Focus</p>
+            <button class="cue-btn cue-btn--primary" type="button" style="outline: 2px solid var(--border-interactive); outline-offset: 2px;">
+              <span class="cue-btn__label">Label</span>
+            </button>
+          </div>
+          <div class="btn-group">
+            <p class="btn-group-label">Disabled</p>
+            <button class="cue-btn cue-btn--primary" type="button" disabled>
+              <span class="cue-btn__label">Label</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="docs-divider" />
+
+    <!-- ============================================================
+         CUSTOM COLOR USAGE
+    ============================================================ -->
+
+    <div class="docs-section">
+      <p class="docs-section-label">Custom Color</p>
+      <p style="font-size: 14px; color: var(--content-body-moderate); margin-bottom: var(--space-l); line-height: 1.6;">
+        The Custom Color button type is flexible — use it when a semantic color (success, error, warning) needs to be expressed as a button. Override <code style="font-family: monospace; background: var(--bg-level-0); padding: 2px 6px; border-radius: 3px;">--btn-custom-bg</code> and <code style="font-family: monospace; background: var(--bg-level-0); padding: 2px 6px; border-radius: 3px;">--btn-custom-content</code> on the element.
+      </p>
+      <div class="docs-example">
+        <div class="btn-row">
+          <div class="btn-group">
+            <p class="btn-group-label">Error / Danger</p>
+            <button class="cue-btn cue-btn--custom" type="button" style="--btn-custom-bg: var(--danger-default); --btn-custom-content: #ffffff;">
+              <span class="cue-btn__icon-leading material-icons" aria-hidden="true">delete</span>
+              <span class="cue-btn__label">Delete</span>
+            </button>
+          </div>
+          <div class="btn-group">
+            <p class="btn-group-label">Success</p>
+            <button class="cue-btn cue-btn--custom" type="button" style="--btn-custom-bg: var(--success-default); --btn-custom-content: #ffffff;">
+              <span class="cue-btn__icon-leading material-icons" aria-hidden="true">check_circle</span>
+              <span class="cue-btn__label">Approve</span>
+            </button>
+          </div>
+          <div class="btn-group">
+            <p class="btn-group-label">Warning</p>
+            <button class="cue-btn cue-btn--custom" type="button" style="--btn-custom-bg: var(--warning-default); --btn-custom-content: var(--warning-strong);">
+              <span class="cue-btn__icon-leading material-icons" aria-hidden="true">warning</span>
+              <span class="cue-btn__label">Caution</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="docs-divider" />
+
+    <!-- ============================================================
+         CODE
+    ============================================================ -->
+
+    <div class="docs-section">
+      <p class="docs-section-label">Code</p>
+
+      <div class="docs-code-tabs">
+        <button class="docs-code-tab active" onclick="switchTab(event, 'tab-html')">HTML</button>
+        <button class="docs-code-tab" onclick="switchTab(event, 'tab-css')">CSS</button>
+      </div>
+
+      <div class="docs-code-panel active" id="tab-html">
+        <div class="docs-code-block"><pre><code>&lt;!-- Primary --&gt;
+&lt;button class="cue-btn cue-btn--primary" type="button"&gt;
+  &lt;span class="cue-btn__icon-leading material-icons" aria-hidden="true"&gt;download&lt;/span&gt;
+  &lt;span class="cue-btn__label"&gt;Download&lt;/span&gt;
+  &lt;span class="cue-btn__icon-trailing material-icons" aria-hidden="true"&gt;expand_more&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;!-- Secondary --&gt;
+&lt;button class="cue-btn cue-btn--secondary" type="button"&gt;
+  &lt;span class="cue-btn__label"&gt;Cancel&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;!-- Tertiary --&gt;
+&lt;button class="cue-btn cue-btn--tertiary" type="button"&gt;
+  &lt;span class="cue-btn__label"&gt;Learn More&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;!-- Neutral --&gt;
+&lt;button class="cue-btn cue-btn--neutral" type="button"&gt;
+  &lt;span class="cue-btn__label"&gt;Export&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;!-- Neutral - Stroke --&gt;
+&lt;button class="cue-btn cue-btn--neutral-stroke" type="button"&gt;
+  &lt;span class="cue-btn__label"&gt;Filter&lt;/span&gt;
+  &lt;span class="cue-btn__icon-trailing material-icons" aria-hidden="true"&gt;expand_more&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;!-- Link (No Padding) --&gt;
+&lt;button class="cue-btn cue-btn--link" type="button"&gt;
+  &lt;span class="cue-btn__label"&gt;View all&lt;/span&gt;
+  &lt;span class="cue-btn__icon-trailing material-icons" aria-hidden="true"&gt;arrow_forward&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;!-- Neutral (No Padding) --&gt;
+&lt;button class="cue-btn cue-btn--neutral-link" type="button"&gt;
+  &lt;span class="cue-btn__label"&gt;Dismiss&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;!-- Brand Accent --&gt;
+&lt;button class="cue-btn cue-btn--brand-accent" type="button"&gt;
+  &lt;span class="cue-btn__label"&gt;Upgrade&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;!-- Custom Color (Danger example) --&gt;
+&lt;button class="cue-btn cue-btn--custom" type="button"
+  style="--btn-custom-bg: var(--danger-default); --btn-custom-content: #ffffff;"&gt;
+  &lt;span class="cue-btn__icon-leading material-icons" aria-hidden="true"&gt;delete&lt;/span&gt;
+  &lt;span class="cue-btn__label"&gt;Delete&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;!-- Size modifier example --&gt;
+&lt;button class="cue-btn cue-btn--primary cue-btn--small" type="button"&gt;
+  &lt;span class="cue-btn__label"&gt;Small Button&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;!-- Disabled --&gt;
+&lt;button class="cue-btn cue-btn--primary" type="button" disabled&gt;
+  &lt;span class="cue-btn__label"&gt;Unavailable&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;!-- Icon only — always include aria-label on the button --&gt;
+&lt;button class="cue-btn cue-btn--neutral-stroke" type="button" aria-label="Delete item"&gt;
+  &lt;span class="cue-btn__icon-leading material-icons" aria-hidden="true"&gt;delete&lt;/span&gt;
+&lt;/button&gt;</code></pre></div>
+      </div>
+
+      <div class="docs-code-panel" id="tab-css">
+        <div class="docs-code-block"><pre><code>/* Tokens defined in tokens.css */
+
+.cue-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: var(--button-padding-default);  /* 8px */
+  border-radius: var(--corner-button);     /* 6px */
+  border: 1px solid transparent;
+  font-family: var(--font-family-body);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.15s ease, border-color 0.15s ease,
+              color 0.15s ease, opacity 0.15s ease;
+}
+
+.cue-btn:focus-visible {
+  outline: 2px solid var(--border-interactive);
+  outline-offset: 2px;
+}
+
+.cue-btn[disabled], .cue-btn--disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.cue-btn__label { padding: 4px; }
+
+.cue-btn__icon-leading,
+.cue-btn__icon-trailing {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+/* Types */
+.cue-btn--primary {
+  background-color: var(--bg-button-primary);
+  color: var(--content-button-primary);
+}
+.cue-btn--primary:hover {
+  background-color: var(--bg-button-primary-hover);
+}
+
+.cue-btn--secondary {
+  background-color: var(--bg-button-secondary);
+  color: var(--content-button-secondary);
+  border-color: var(--border-button-secondary);
+}
+.cue-btn--secondary:hover {
+  background-color: var(--bg-button-secondary-hover);
+  color: var(--content-button-secondary-hover);
+  border-color: var(--border-button-secondary-hover);
+}
+
+.cue-btn--tertiary {
+  background-color: transparent;
+  color: var(--content-button-tertiary-link);
+}
+.cue-btn--tertiary:hover {
+  color: var(--content-button-tertiary-link-hover);
+}
+
+.cue-btn--neutral {
+  background-color: var(--bg-button-neutral);
+  color: var(--content-button-neutral);
+}
+.cue-btn--neutral:hover {
+  background-color: var(--bg-button-neutral-hover);
+  color: var(--content-button-neutral-hover);
+}
+
+.cue-btn--neutral-stroke {
+  background-color: var(--bg-button-neutral-stroke);
+  color: var(--content-button-neutral-stroke);
+  border-color: var(--border-button-neutral-stroke);
+}
+.cue-btn--neutral-stroke:hover {
+  background-color: var(--bg-button-neutral-stroke-hover);
+  color: var(--content-button-neutral-stroke-hover);
+  border-color: var(--border-button-neutral-stroke-hover);
+}
+
+.cue-btn--link {
+  background-color: transparent;
+  color: var(--content-button-tertiary-link);
+  padding: 0;
+  border-radius: 0;
+}
+.cue-btn--link:hover { color: var(--content-button-tertiary-link-hover); }
+.cue-btn--link .cue-btn__label { padding: 0; }
+
+.cue-btn--neutral-link {
+  background-color: transparent;
+  color: var(--content-button-neutral);
+  padding: 0;
+  font-weight: 400;
+}
+.cue-btn--neutral-link:hover { color: var(--content-button-neutral-hover); }
+.cue-btn--neutral-link .cue-btn__label { padding: 0; }
+
+.cue-btn--brand-accent {
+  background-color: var(--bg-accent-brand);
+  color: var(--content-body-default);
+}
+.cue-btn--brand-accent:hover { filter: brightness(1.1); }
+
+/* Custom Color — override --btn-custom-bg and --btn-custom-content */
+.cue-btn--custom {
+  background-color: var(--btn-custom-bg, var(--danger-default));
+  color: var(--btn-custom-content, #ffffff);
+}
+.cue-btn--custom:hover { filter: brightness(0.85); }
+
+/* Sizes */
+.cue-btn--xsmall { padding: var(--button-padding-xsmall); font-size: 12px; }
+.cue-btn--small  { padding: var(--button-padding-small);  font-size: 13px; }
+.cue-btn--large  { padding: var(--button-padding-large);  font-size: 15px; }
+.cue-btn--xlarge { padding: var(--button-padding-xlarge); font-size: 16px; }</code></pre></div>
+      </div>
+
+    </div>
+
+    <hr class="docs-divider" />
+
+    <!-- ============================================================
+         DESIGN TOKENS
+    ============================================================ -->
+
+    <div class="docs-section">
+      <p class="docs-section-label">Design Tokens</p>
+      <table class="docs-token-table">
+        <thead>
+          <tr><th>CSS Variable</th><th>Figma Token</th><th>Value</th><th>Usage</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>--corner-button</td><td>Buttons/Button Sizing/Corner Radius</td><td>6px</td><td>Border radius on all button types</td></tr>
+          <tr><td>--button-padding-default</td><td>Buttons/Button Sizing/padding-default</td><td>8px</td><td>Default interior padding</td></tr>
+          <tr><td>--button-padding-xsmall</td><td>Buttons/Button Sizing/padding-xsmall</td><td>4px</td><td>X-Small size padding</td></tr>
+          <tr><td>--button-padding-small</td><td>Buttons/Button Sizing/padding-small</td><td>8px</td><td>Small size padding</td></tr>
+          <tr><td>--button-padding-large</td><td>Buttons/Button Sizing/padding-large</td><td>12px</td><td>Large size padding</td></tr>
+          <tr><td>--button-padding-xlarge</td><td>Buttons/Button Sizing/padding-xlarge</td><td>16px</td><td>X-Large size padding</td></tr>
+          <tr><td>--bg-button-primary</td><td>Buttons/Primary Button/bg-button-primary</td><td><span class="docs-token-swatch" style="background:#03618d;"></span>#03618d</td><td>Primary button background</td></tr>
+          <tr><td>--bg-button-primary-hover</td><td>Buttons/Primary Button/bg-button-primary_hover</td><td><span class="docs-token-swatch" style="background:#012637;"></span>#012637</td><td>Primary button hover background</td></tr>
+          <tr><td>--content-button-primary</td><td>Buttons/Primary Button/content-button-primary</td><td><span class="docs-token-swatch" style="background:#ffffff; border-color:#ededed;"></span>#ffffff</td><td>Primary button text and icon color</td></tr>
+          <tr><td>--content-button-secondary</td><td>Buttons/Secondary Button/content-button-secondary</td><td><span class="docs-token-swatch" style="background:#03618d;"></span>#03618d</td><td>Secondary button text and icon color</td></tr>
+          <tr><td>--border-button-secondary</td><td>Buttons/Secondary Button/border-button-secondary</td><td><span class="docs-token-swatch" style="background:#03618d;"></span>#03618d</td><td>Secondary button border</td></tr>
+          <tr><td>--content-button-tertiary-link</td><td>Buttons/Tertiary - Link Button/content-button-tertiary-link</td><td><span class="docs-token-swatch" style="background:#03618d;"></span>#03618d</td><td>Tertiary and link button text color</td></tr>
+          <tr><td>--content-button-neutral</td><td>Buttons/Neutral Button/content-button-neutral</td><td><span class="docs-token-swatch" style="background:#262626;"></span>#262626</td><td>Neutral button text color</td></tr>
+          <tr><td>--bg-button-neutral</td><td>Buttons/Neutral Button/bg-button-neutral</td><td><span class="docs-token-swatch" style="background:#ededed;"></span>#ededed</td><td>Neutral button background</td></tr>
+          <tr><td>--border-button-neutral-stroke</td><td>Buttons/Neutral - Stroke Button/border-button-neutral-stroke</td><td><span class="docs-token-swatch" style="background:#bdbdbd;"></span>#bdbdbd</td><td>Neutral stroke button border</td></tr>
+          <tr><td>--bg-accent-brand</td><td>System/Background/bg-accent-brand</td><td><span class="docs-token-swatch" style="background:#03618d;"></span>#03618d</td><td>Brand accent button background</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <hr class="docs-divider" />
+
+    <!-- ============================================================
+         ACCESSIBILITY
+    ============================================================ -->
+
+    <div class="docs-section">
+      <p class="docs-section-label">Accessibility</p>
+      <table class="docs-token-table">
+        <thead>
+          <tr><th>Attribute / Pattern</th><th>Element</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>type="button"</td>
+            <td>.cue-btn</td>
+            <td>Always set explicitly to prevent accidental form submission.</td>
+          </tr>
+          <tr>
+            <td>aria-label</td>
+            <td>.cue-btn (icon-only)</td>
+            <td>Required when the button has no visible text label. Describes the action.</td>
+          </tr>
+          <tr>
+            <td>aria-hidden="true"</td>
+            <td>.cue-btn__icon-*</td>
+            <td>Icons are decorative. The button label or aria-label communicates the action.</td>
+          </tr>
+          <tr>
+            <td>disabled</td>
+            <td>.cue-btn</td>
+            <td>Native disabled attribute removes the button from tab order and announces state to screen readers.</td>
+          </tr>
+          <tr>
+            <td>:focus-visible</td>
+            <td>.cue-btn</td>
+            <td>Focus ring shown on keyboard navigation only. Uses --border-interactive (blue).</td>
+          </tr>
+          <tr>
+            <td>Contrast</td>
+            <td>All types</td>
+            <td>All button types meet WCAG AA 4.5:1 contrast ratio for text. Verify custom color overrides independently.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  function switchTab(event, tabId) {
+    const section = event.target.closest('.docs-section');
+    section.querySelectorAll('.docs-code-tab').forEach(t => t.classList.remove('active'));
+    section.querySelectorAll('.docs-code-panel').forEach(p => p.classList.remove('active'));
+    event.target.classList.add('active');
+    document.getElementById(tabId).classList.add('active');
+  }
+</script>
+
+</body>
+</html>
