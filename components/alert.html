@@ -7,6 +7,7 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../tokens.css" />
+  <link rel="icon" type="image/svg+xml" href="https://raw.githubusercontent.com/toddcoleman-excellis/cue-canvas-docs/main/assets/logo_CUE_glyph.svg" />
   <link rel="stylesheet" href="../base.css" />
   <style>
 
@@ -146,11 +147,29 @@
 </head>
 <body>
 
+<div class="docs-topbar" role="banner">
+  <a href="../index.html" class="docs-topbar__logo" aria-label="CUE Canvas home">
+    <img src="https://raw.githubusercontent.com/toddcoleman-excellis/cue-canvas-docs/main/assets/logo_CUE_glyph.svg" alt="CUE glyph" />
+    <span class="docs-topbar__logo-label">Canvas</span>
+  </a>
+  <button class="docs-topbar__hamburger" aria-label="Open navigation" aria-expanded="false" aria-controls="docs-sidebar">
+    <span class="material-icons" aria-hidden="true">menu</span>
+  </button>
+</div>
+
+<div class="docs-nav-overlay" aria-hidden="true"></div>
+
 <div class="docs-layout">
 
   <!-- Sidebar -->
-  <nav class="docs-sidebar" aria-label="Documentation navigation">
-    <div class="docs-sidebar__logo">CUE Canvas</div>
+  <nav class="docs-sidebar" id="docs-sidebar" aria-label="Documentation navigation">
+    <button class="docs-sidebar__close" aria-label="Close navigation">
+      <span class="material-icons" aria-hidden="true">close</span>
+    </button>
+    <a href="../index.html" class="docs-sidebar__logo" aria-label="CUE Canvas home">
+      <img src="https://raw.githubusercontent.com/toddcoleman-excellis/cue-canvas-docs/main/assets/logo_CUE_glyph.svg" alt="CUE glyph" />
+      <span class="docs-sidebar__logo-label">Canvas</span>
+    </a>
     <p class="docs-sidebar__section-label">Getting Started</p>
     <div class="docs-sidebar__nav">
       <a href="../index.html" class="docs-sidebar__nav-link">Overview</a>
@@ -576,5 +595,36 @@
   }
 </script>
 
+
+<script>
+  (function() {
+    var sidebar  = document.querySelector('.docs-sidebar');
+    var overlay  = document.querySelector('.docs-nav-overlay');
+    var hamburger = document.querySelector('.docs-topbar__hamburger');
+    var closeBtn  = document.querySelector('.docs-sidebar__close');
+
+    function openNav() {
+      sidebar.classList.add('is-open');
+      overlay.classList.add('is-visible');
+      document.body.style.overflow = 'hidden';
+      closeBtn.focus();
+    }
+
+    function closeNav() {
+      sidebar.classList.remove('is-open');
+      overlay.classList.remove('is-visible');
+      document.body.style.overflow = '';
+      if (hamburger) hamburger.focus();
+    }
+
+    if (hamburger) hamburger.addEventListener('click', openNav);
+    if (closeBtn)  closeBtn.addEventListener('click', closeNav);
+    if (overlay)   overlay.addEventListener('click', closeNav);
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && sidebar.classList.contains('is-open')) closeNav();
+    });
+  })();
+</script>
 </body>
 </html>

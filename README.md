@@ -1,3 +1,5 @@
+<img src="https://raw.githubusercontent.com/toddcoleman-excellis/cue-canvas-docs/main/assets/logo_CUE.svg" alt="CUE" height="40" />
+
 # CUE Canvas — Design System Documentation
 
 Component library and design token reference for **CUE Back Office**, the enterprise B2B SaaS platform built by [Excellis Interactive](https://excellisinteractive.com).

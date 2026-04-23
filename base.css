@@ -4,7 +4,7 @@
 
    Global reset, typography defaults, and shared utility classes.
    Link this after tokens.css on every page.
-   
+
    <link rel="stylesheet" href="../tokens.css" />
    <link rel="stylesheet" href="../base.css" />
 ================================================================ */
@@ -93,10 +93,6 @@ code, pre {
    MATERIAL ICONS
    Standard filled style used across all CUE Canvas components.
    Always pair with aria-hidden="true" when decorative.
-   Place accessible label on the parent interactive element.
-
-   Usage:
-   <span class="material-icons" aria-hidden="true">add</span>
 ============================================================ */
 
 .material-icons {
@@ -106,7 +102,6 @@ code, pre {
   user-select: none;
 }
 
-/* Size variants */
 .material-icons--sm  { font-size: 1rem; }
 .material-icons--md  { font-size: 1.25rem; }
 .material-icons--lg  { font-size: 1.75rem; }
@@ -115,14 +110,107 @@ code, pre {
 
 /* ============================================================
    DOCUMENTATION LAYOUT
-   Shared styles for the docs site pages.
-   Not part of the CUE Canvas component system.
+   Responsive sidebar navigation:
+   - Desktop (≥ 768px): persistent left sidebar
+   - Mobile (< 768px):  off-canvas drawer with hamburger toggle
 ============================================================ */
+
+/* --- Overall layout wrapper --- */
 
 .docs-layout {
   display: flex;
   min-height: 100vh;
 }
+
+
+/* ============================================================
+   MOBILE TOP BAR
+   Visible only on small screens. Contains hamburger + logo.
+============================================================ */
+
+.docs-topbar {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3.5rem;
+  background-color: var(--bg-level-1);
+  border-bottom: 1px solid var(--border-level-1);
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-l);
+  z-index: 200;
+}
+
+.docs-topbar__logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+}
+
+.docs-topbar__logo img {
+  height: 1.5rem;
+  width: auto;
+}
+
+.docs-topbar__logo-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--content-body-moderate);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.docs-topbar__hamburger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  background: none;
+  border: none;
+  border-radius: var(--corner-card-module);
+  color: var(--content-body-default);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.docs-topbar__hamburger:hover {
+  background-color: var(--bg-level-0);
+}
+
+.docs-topbar__hamburger .material-icons {
+  font-size: 1.5rem;
+}
+
+
+/* ============================================================
+   OVERLAY
+   Dims the page when off-canvas nav is open on mobile.
+============================================================ */
+
+.docs-nav-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 300;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.docs-nav-overlay.is-visible {
+  opacity: 1;
+}
+
+
+/* ============================================================
+   SIDEBAR
+   Desktop: sticky left column.
+   Mobile: fixed off-canvas drawer that slides in from left.
+============================================================ */
 
 .docs-sidebar {
   width: 15rem;
@@ -134,24 +222,60 @@ code, pre {
   top: 0;
   height: 100vh;
   overflow-y: auto;
+  z-index: 400;
 }
 
-.docs-main {
-  flex: 1;
-  padding: 3rem;
-  max-width: 900px;
+/* Close button inside sidebar — hidden on desktop */
+.docs-sidebar__close {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  background: none;
+  border: none;
+  border-radius: var(--corner-card-module);
+  color: var(--content-body-moderate);
+  cursor: pointer;
+  margin-left: auto;
+  margin-bottom: var(--space-s);
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
+.docs-sidebar__close:hover {
+  background-color: var(--bg-level-0);
+  color: var(--content-body-default);
+}
+
+.docs-sidebar__close .material-icons {
+  font-size: 1.25rem;
+}
+
+/* Logo */
 .docs-sidebar__logo {
-  font-family: var(--font-family-heading);
-  font-size: 0.875rem;
-  font-weight: 700;
-  color: var(--content-body-primary-brand);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   margin-bottom: var(--space-xl);
+  text-decoration: none;
 }
 
+.docs-sidebar__logo img {
+  height: 1.5rem;
+  width: auto;
+  display: block;
+}
+
+.docs-sidebar__logo-label {
+  font-family: var(--font-family-heading);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--content-body-moderate);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* Section labels */
 .docs-sidebar__section-label {
   font-size: 0.625rem;
   font-weight: 700;
@@ -162,6 +286,7 @@ code, pre {
   margin-top: var(--space-l);
 }
 
+/* Nav links */
 .docs-sidebar__nav {
   display: flex;
   flex-direction: column;
@@ -189,11 +314,26 @@ code, pre {
   font-weight: 600;
 }
 
-/* --- Page header --- */
+
+/* ============================================================
+   MAIN CONTENT
+============================================================ */
+
+.docs-main {
+  flex: 1;
+  padding: 3rem;
+  max-width: 56.25rem;
+  min-width: 0;
+}
+
+
+/* ============================================================
+   PAGE HEADER
+============================================================ */
 
 .docs-page-header {
-  margin-bottom: 40px;
-  padding-bottom: 32px;
+  margin-bottom: 2.5rem;
+  padding-bottom: 2rem;
   border-bottom: 1px solid var(--border-level-1);
 }
 
@@ -207,11 +347,14 @@ code, pre {
 .docs-page-description {
   font-size: 1rem;
   color: var(--content-body-moderate);
-  max-width: 600px;
+  max-width: 37.5rem;
   line-height: 1.6;
 }
 
-/* --- Section --- */
+
+/* ============================================================
+   SECTION
+============================================================ */
 
 .docs-section {
   margin-bottom: 3rem;
@@ -226,7 +369,10 @@ code, pre {
   margin-bottom: var(--space-m);
 }
 
-/* --- Example canvas --- */
+
+/* ============================================================
+   EXAMPLE CANVAS
+============================================================ */
 
 .docs-example {
   padding: 2.5rem;
@@ -245,7 +391,10 @@ code, pre {
   align-items: center;
 }
 
-/* --- Code block --- */
+
+/* ============================================================
+   CODE BLOCK
+============================================================ */
 
 .docs-code-tabs {
   display: flex;
@@ -295,7 +444,10 @@ code, pre {
   display: block;
 }
 
-/* --- Token table --- */
+
+/* ============================================================
+   TOKEN TABLE
+============================================================ */
 
 .docs-token-table {
   width: 100%;
@@ -316,7 +468,7 @@ code, pre {
 }
 
 .docs-token-table td {
-  padding: 10px var(--space-m);
+  padding: 0.625rem var(--space-m);
   border-bottom: 1px solid var(--border-level-1);
   color: var(--content-body-default);
   vertical-align: middle;
@@ -345,15 +497,21 @@ code, pre {
   flex-shrink: 0;
 }
 
-/* --- Divider --- */
+
+/* ============================================================
+   DIVIDER
+============================================================ */
 
 .docs-divider {
   border: none;
   border-top: 1px solid var(--border-level-1);
-  margin: 40px 0;
+  margin: 2.5rem 0;
 }
 
-/* --- Utility --- */
+
+/* ============================================================
+   UTILITY
+============================================================ */
 
 .docs-badge {
   display: inline-block;
@@ -365,4 +523,91 @@ code, pre {
   letter-spacing: 0.06em;
   background-color: var(--primary-brand-extra-subtle);
   color: var(--content-body-link);
+}
+
+
+/* ============================================================
+   RESPONSIVE — MOBILE (< 768px)
+============================================================ */
+
+@media (max-width: 767px) {
+
+  /* Show the top bar */
+  .docs-topbar {
+    display: flex;
+  }
+
+  /* Push main content down below fixed topbar */
+  .docs-main {
+    padding: 5rem var(--space-l) var(--space-xl);
+    max-width: 100%;
+  }
+
+  /* Sidebar becomes off-canvas drawer */
+  .docs-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 16rem;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.12);
+  }
+
+  /* Open state — toggled by JS adding .is-open */
+  .docs-sidebar.is-open {
+    transform: translateX(0);
+  }
+
+  /* Show overlay when nav is open */
+  .docs-nav-overlay {
+    display: block;
+  }
+
+  /* Show close button inside sidebar */
+  .docs-sidebar__close {
+    display: flex;
+  }
+
+  /* Hide sidebar logo on mobile — topbar has its own */
+  .docs-sidebar__logo {
+    display: none;
+  }
+
+  /* Token tables — allow horizontal scroll on small screens */
+  .docs-token-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  /* Example canvas — tighter padding on mobile */
+  .docs-example {
+    padding: var(--space-l);
+  }
+
+  /* Page header */
+  .docs-page-title {
+    font-size: 1.5rem;
+  }
+
+}
+
+
+/* ============================================================
+   RESPONSIVE — TABLET (768px – 1023px)
+============================================================ */
+
+@media (min-width: 768px) and (max-width: 1023px) {
+
+  .docs-sidebar {
+    width: 13rem;
+    padding: var(--space-l);
+  }
+
+  .docs-main {
+    padding: 2rem;
+  }
+
 }

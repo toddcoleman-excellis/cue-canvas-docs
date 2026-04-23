@@ -7,6 +7,7 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="tokens.css" />
+  <link rel="icon" type="image/svg+xml" href="https://raw.githubusercontent.com/toddcoleman-excellis/cue-canvas-docs/main/assets/logo_CUE_glyph.svg" />
   <link rel="stylesheet" href="base.css" />
   <style>
 
@@ -16,25 +17,28 @@
       margin-bottom: 3rem;
     }
 
-    .home-hero__eyebrow {
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--content-body-link);
-      margin-bottom: var(--space-m);
+    .home-hero__logos {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: var(--space-xl);
     }
 
-    .home-hero__title {
-      font-size: 2.5rem;
-      font-weight: 700;
-      color: var(--content-body-default);
-      margin-bottom: var(--space-l);
-      line-height: 1.15;
+    .home-hero__cue-logo {
+      height: 2.5rem;
+      width: auto;
     }
 
-    .home-hero__title span {
-      color: var(--content-body-link);
+    .home-hero__logos-divider {
+      display: block;
+      width: 1px;
+      height: 2rem;
+      background-color: var(--border-subdued);
+    }
+
+    .home-hero__canvas-logo {
+      height: 1.75rem;
+      width: auto;
     }
 
     .home-hero__description {
@@ -134,14 +138,32 @@
 </head>
 <body>
 
+<div class="docs-topbar" role="banner">
+  <a href="index.html" class="docs-topbar__logo" aria-label="CUE Canvas home">
+    <img src="https://raw.githubusercontent.com/toddcoleman-excellis/cue-canvas-docs/main/assets/logo_CUE_glyph.svg" alt="CUE glyph" />
+    <span class="docs-topbar__logo-label">Canvas</span>
+  </a>
+  <button class="docs-topbar__hamburger" aria-label="Open navigation" aria-expanded="false" aria-controls="docs-sidebar">
+    <span class="material-icons" aria-hidden="true">menu</span>
+  </button>
+</div>
+
+<div class="docs-nav-overlay" aria-hidden="true"></div>
+
 <div class="docs-layout">
 
   <!-- ============================================================
        SIDEBAR
   ============================================================ -->
 
-  <nav class="docs-sidebar" aria-label="Documentation navigation">
-    <div class="docs-sidebar__logo">CUE Canvas</div>
+  <nav class="docs-sidebar" id="docs-sidebar" aria-label="Documentation navigation">
+    <button class="docs-sidebar__close" aria-label="Close navigation">
+      <span class="material-icons" aria-hidden="true">close</span>
+    </button>
+    <a href="index.html" class="docs-sidebar__logo" aria-label="CUE Canvas home">
+      <img src="https://raw.githubusercontent.com/toddcoleman-excellis/cue-canvas-docs/main/assets/logo_CUE_glyph.svg" alt="CUE glyph" />
+      <span class="docs-sidebar__logo-label">Canvas</span>
+    </a>
 
     <p class="docs-sidebar__section-label">Getting Started</p>
     <div class="docs-sidebar__nav">
@@ -183,8 +205,11 @@
   <main class="docs-main">
 
     <div class="home-hero">
-      <p class="home-hero__eyebrow">Excellis Interactive</p>
-      <h1 class="home-hero__title">CUE Canvas<br /><span>Design System</span></h1>
+      <div class="home-hero__logos">
+        <img src="https://raw.githubusercontent.com/toddcoleman-excellis/cue-canvas-docs/main/assets/logo_CUE.svg" alt="CUE" class="home-hero__cue-logo" />
+        <span class="home-hero__logos-divider" aria-hidden="true"></span>
+        <img src="https://raw.githubusercontent.com/toddcoleman-excellis/cue-canvas-docs/main/assets/logo_CUE_Canvas.svg" alt="Canvas" class="home-hero__canvas-logo" />
+      </div>
       <p class="home-hero__description">
         The component library and design token system for CUE Back Office — a flexible B2B enterprise SaaS platform for CRM, catalog management, order management, and logistics.
       </p>
@@ -373,5 +398,36 @@
   }
 </script>
 
+
+<script>
+  (function() {
+    var sidebar  = document.querySelector('.docs-sidebar');
+    var overlay  = document.querySelector('.docs-nav-overlay');
+    var hamburger = document.querySelector('.docs-topbar__hamburger');
+    var closeBtn  = document.querySelector('.docs-sidebar__close');
+
+    function openNav() {
+      sidebar.classList.add('is-open');
+      overlay.classList.add('is-visible');
+      document.body.style.overflow = 'hidden';
+      closeBtn.focus();
+    }
+
+    function closeNav() {
+      sidebar.classList.remove('is-open');
+      overlay.classList.remove('is-visible');
+      document.body.style.overflow = '';
+      if (hamburger) hamburger.focus();
+    }
+
+    if (hamburger) hamburger.addEventListener('click', openNav);
+    if (closeBtn)  closeBtn.addEventListener('click', closeNav);
+    if (overlay)   overlay.addEventListener('click', closeNav);
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && sidebar.classList.contains('is-open')) closeNav();
+    });
+  })();
+</script>
 </body>
 </html>
