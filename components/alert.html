@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CUE Canvas — Alert</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../tokens.css" />
+  <link rel="stylesheet" href="../base.css" />
+  <style>
+
+    /* ============================================================
+       ALERT COMPONENT
+
+       Anatomy:
+         .cue-alert                  — alert container
+           .cue-alert__icon-wrapper  — icon container (self-stretches vertically)
+             .cue-alert__icon        — Material Icon (24px)
+           .cue-alert__content       — text content container
+             .cue-alert__title       — alert title (bold, 16px)
+             .cue-alert__body        — alert body text (regular, 15px)
+
+       Type modifiers (add to .cue-alert):
+         .cue-alert--success
+         .cue-alert--info
+         .cue-alert--warning
+         .cue-alert--error
+
+       Orientation modifiers (add to .cue-alert):
+         (default / no modifier)     — Stack: title above body
+         .cue-alert--inline          — Inline: title and body side by side
+
+       Note: Alert colors are drawn from the Color Primitives scale,
+       not the Global semantic tokens. Each type uses the 50 tint for
+       background, 300 stop for border, and 800 stop for text.
+    ============================================================ */
+
+    /* --- Base --- */
+
+    .cue-alert {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 12px;
+      border: 1px solid;
+      border-radius: 6px;
+      width: 100%;
+    }
+
+    /* --- Icon wrapper --- */
+
+    .cue-alert__icon-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      align-self: stretch;
+      padding: 4px;
+      flex-shrink: 0;
+    }
+
+    .cue-alert__icon {
+      font-size: 26px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    /* --- Content --- */
+
+    .cue-alert__content {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0;
+    }
+
+    /* Inline orientation — title and body side by side */
+    .cue-alert--inline .cue-alert__content {
+      flex-direction: row;
+      align-items: baseline;
+      gap: 0.5rem;
+    }
+
+    .cue-alert__title {
+      font-family: var(--font-family-body);
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 1.3;
+      white-space: nowrap;
+    }
+
+    .cue-alert__body {
+      font-family: var(--font-family-body);
+      font-size: 0.9375rem;
+      font-weight: 400;
+      line-height: 1.4;
+    }
+
+    /* ============================================================
+       ALERT TYPES
+       Colors pulled from Color Primitives scale, not Global tokens.
+       Background: 50 tint | Border: 300 stop | Text: 800 stop
+    ============================================================ */
+
+    /* Success — Green primitive scale */
+    .cue-alert--success {
+      background-color: #ebfaef; /* green-50 */
+      border-color: #86df9c;     /* green-300 */
+      color: #155124;            /* green-800 */
+    }
+    .cue-alert--success .cue-alert__icon {
+      color: #155124;            /* green-800 */
+    }
+
+    /* Info — Blue primitive scale */
+    .cue-alert--info {
+      background-color: #ecf2fe; /* blue-50 */
+      border-color: #81a9f8;     /* blue-300 */
+      color: #06296f;            /* blue-800 */
+    }
+    .cue-alert--info .cue-alert__icon {
+      color: #06296f;            /* blue-800 */
+    }
+
+    /* Warning — Orange primitive scale */
+    .cue-alert--warning {
+      background-color: #fff6e5; /* orange-50 */
+      border-color: #ffc561;     /* orange-300 */
+      color: #613d00;            /* orange-800 */
+    }
+    .cue-alert--warning .cue-alert__icon {
+      color: #613d00;            /* orange-800 */
+    }
+
+    /* Error — Red primitive scale */
+    .cue-alert--error {
+      background-color: #ffe0e0; /* red-50 */
+      border-color: #ff4d4d;     /* red-300 */
+      color: #570000;            /* red-800 */
+    }
+    .cue-alert--error .cue-alert__icon {
+      color: #570000;            /* red-800 */
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="docs-layout">
+
+  <!-- Sidebar -->
+  <nav class="docs-sidebar" aria-label="Documentation navigation">
+    <div class="docs-sidebar__logo">CUE Canvas</div>
+    <p class="docs-sidebar__section-label">Getting Started</p>
+    <div class="docs-sidebar__nav">
+      <a href="../index.html" class="docs-sidebar__nav-link">Overview</a>
+    </div>
+    <p class="docs-sidebar__section-label">Components</p>
+    <div class="docs-sidebar__nav">
+      <a href="accordion.html" class="docs-sidebar__nav-link">Accordion</a>
+      <a href="alert.html" class="docs-sidebar__nav-link active">Alert</a>
+      <a href="button.html" class="docs-sidebar__nav-link">Button</a>
+      <a href="card.html" class="docs-sidebar__nav-link">Card / Module</a>
+      <a href="form-field.html" class="docs-sidebar__nav-link">Form Field</a>
+      <a href="status-badge.html" class="docs-sidebar__nav-link">Status Badge</a>
+      <a href="table.html" class="docs-sidebar__nav-link">Table</a>
+      <a href="tabs.html" class="docs-sidebar__nav-link">Tab Navigation</a>
+      <a href="side-nav.html" class="docs-sidebar__nav-link">Side Navigation</a>
+      <a href="dropdown.html" class="docs-sidebar__nav-link">Dropdown</a>
+      <a href="date-picker.html" class="docs-sidebar__nav-link">Date Picker</a>
+      <a href="calendar.html" class="docs-sidebar__nav-link">Calendar</a>
+      <a href="step-process.html" class="docs-sidebar__nav-link">Step Process</a>
+      <a href="skeleton.html" class="docs-sidebar__nav-link">Skeleton Loader</a>
+      <a href="chat.html" class="docs-sidebar__nav-link">Chat</a>
+    </div>
+    <p class="docs-sidebar__section-label">Icons</p>
+    <div class="docs-sidebar__nav">
+      <a href="../icons/icons.html" class="docs-sidebar__nav-link">Icon Reference</a>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <main class="docs-main">
+
+    <div class="docs-page-header">
+      <h1 class="docs-page-title">Alert</h1>
+      <p class="docs-page-description">
+        Alerts communicate important contextual information to the user — confirmations, notices, warnings, and errors. They are non-interactive by default and appear inline within page content. Each type uses a distinct color drawn from the primitive color scale to ensure immediate visual recognition.
+      </p>
+    </div>
+
+    <!-- ============================================================
+         TYPES
+    ============================================================ -->
+
+    <div class="docs-section">
+      <p class="docs-section-label">Types</p>
+      <div class="docs-example" style="flex-direction: column; gap: var(--space-m);">
+
+        <div class="cue-alert cue-alert--success" role="alert">
+          <div class="cue-alert__icon-wrapper">
+            <span class="cue-alert__icon material-icons" aria-hidden="true">check_circle</span>
+          </div>
+          <div class="cue-alert__content">
+            <p class="cue-alert__title">Success</p>
+            <p class="cue-alert__body">Your changes have been saved successfully.</p>
+          </div>
+        </div>
+
+        <div class="cue-alert cue-alert--info" role="status">
+          <div class="cue-alert__icon-wrapper">
+            <span class="cue-alert__icon material-icons" aria-hidden="true">info</span>
+          </div>
+          <div class="cue-alert__content">
+            <p class="cue-alert__title">Information</p>
+            <p class="cue-alert__body">This is where the main content of the alert will go.</p>
+          </div>
+        </div>
+
+        <div class="cue-alert cue-alert--warning" role="alert">
+          <div class="cue-alert__icon-wrapper">
+            <span class="cue-alert__icon material-icons" aria-hidden="true">warning</span>
+          </div>
+          <div class="cue-alert__content">
+            <p class="cue-alert__title">Warning</p>
+            <p class="cue-alert__body">This action may have unintended consequences. Please review before continuing.</p>
+          </div>
+        </div>
+
+        <div class="cue-alert cue-alert--error" role="alert">
+          <div class="cue-alert__icon-wrapper">
+            <span class="cue-alert__icon material-icons" aria-hidden="true">error</span>
+          </div>
+          <div class="cue-alert__content">
+            <p class="cue-alert__title">Error</p>
+            <p class="cue-alert__body">Something went wrong. Please try again or contact support.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <hr class="docs-divider" />
+
+    <!-- ============================================================
+         ORIENTATIONS
+    ============================================================ -->
+
+    <div class="docs-section">
+      <p class="docs-section-label">Orientations</p>
+      <div class="docs-example" style="flex-direction: column; gap: var(--space-m);">
+
+        <div>
+          <p class="docs-section-label" style="margin-bottom: var(--space-s);">Stack (default) — title above body</p>
+          <div class="cue-alert cue-alert--info" role="status">
+            <div class="cue-alert__icon-wrapper">
+              <span class="cue-alert__icon material-icons" aria-hidden="true">info</span>
+            </div>
+            <div class="cue-alert__content">
+              <p class="cue-alert__title">Alert Title</p>
+              <p class="cue-alert__body">This is where the main content of the alert will go.</p>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <p class="docs-section-label" style="margin-bottom: var(--space-s);">Inline — title and body on one line</p>
+          <div class="cue-alert cue-alert--info cue-alert--inline" role="status">
+            <div class="cue-alert__icon-wrapper">
+              <span class="cue-alert__icon material-icons" aria-hidden="true">info</span>
+            </div>
+            <div class="cue-alert__content">
+              <p class="cue-alert__title">Alert Title</p>
+              <p class="cue-alert__body">This is where the main content of the alert will go.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <hr class="docs-divider" />
+
+    <!-- ============================================================
+         CODE
+    ============================================================ -->
+
+    <div class="docs-section">
+      <p class="docs-section-label">Code</p>
+
+      <div class="docs-code-tabs">
+        <button class="docs-code-tab active" onclick="switchTab(event, 'tab-html')">HTML</button>
+        <button class="docs-code-tab" onclick="switchTab(event, 'tab-css')">CSS</button>
+      </div>
+
+      <div class="docs-code-panel active" id="tab-html">
+        <div class="docs-code-block"><pre><code>&lt;!-- Success --&gt;
+&lt;div class="cue-alert cue-alert--success" role="alert"&gt;
+  &lt;div class="cue-alert__icon-wrapper"&gt;
+    &lt;span class="cue-alert__icon material-icons" aria-hidden="true"&gt;check_circle&lt;/span&gt;
+  &lt;/div&gt;
+  &lt;div class="cue-alert__content"&gt;
+    &lt;p class="cue-alert__title"&gt;Success&lt;/p&gt;
+    &lt;p class="cue-alert__body"&gt;Your changes have been saved successfully.&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Info --&gt;
+&lt;div class="cue-alert cue-alert--info" role="status"&gt;
+  &lt;div class="cue-alert__icon-wrapper"&gt;
+    &lt;span class="cue-alert__icon material-icons" aria-hidden="true"&gt;info&lt;/span&gt;
+  &lt;/div&gt;
+  &lt;div class="cue-alert__content"&gt;
+    &lt;p class="cue-alert__title"&gt;Information&lt;/p&gt;
+    &lt;p class="cue-alert__body"&gt;This is where the main content of the alert will go.&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Warning --&gt;
+&lt;div class="cue-alert cue-alert--warning" role="alert"&gt;
+  &lt;div class="cue-alert__icon-wrapper"&gt;
+    &lt;span class="cue-alert__icon material-icons" aria-hidden="true"&gt;warning&lt;/span&gt;
+  &lt;/div&gt;
+  &lt;div class="cue-alert__content"&gt;
+    &lt;p class="cue-alert__title"&gt;Warning&lt;/p&gt;
+    &lt;p class="cue-alert__body"&gt;This action may have unintended consequences.&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Error --&gt;
+&lt;div class="cue-alert cue-alert--error" role="alert"&gt;
+  &lt;div class="cue-alert__icon-wrapper"&gt;
+    &lt;span class="cue-alert__icon material-icons" aria-hidden="true"&gt;error&lt;/span&gt;
+  &lt;/div&gt;
+  &lt;div class="cue-alert__content"&gt;
+    &lt;p class="cue-alert__title"&gt;Error&lt;/p&gt;
+    &lt;p class="cue-alert__body"&gt;Something went wrong. Please try again.&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Inline orientation — add .cue-alert--inline --&gt;
+&lt;div class="cue-alert cue-alert--info cue-alert--inline" role="status"&gt;
+  &lt;div class="cue-alert__icon-wrapper"&gt;
+    &lt;span class="cue-alert__icon material-icons" aria-hidden="true"&gt;info&lt;/span&gt;
+  &lt;/div&gt;
+  &lt;div class="cue-alert__content"&gt;
+    &lt;p class="cue-alert__title"&gt;Alert Title&lt;/p&gt;
+    &lt;p class="cue-alert__body"&gt;This is where the main content of the alert will go.&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre></div>
+      </div>
+
+      <div class="docs-code-panel" id="tab-css">
+        <div class="docs-code-block"><pre><code>/* --- Base --- */
+.cue-alert {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 12px;
+  border: 1px solid;
+  border-radius: 6px;
+  width: 100%;
+}
+
+.cue-alert__icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  padding: 4px;
+  flex-shrink: 0;
+}
+
+.cue-alert__icon {
+  font-size: 26px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.cue-alert__content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.cue-alert--inline .cue-alert__content {
+  flex-direction: row;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.cue-alert__title {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.cue-alert__body {
+  font-size: 0.9375rem;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+/* --- Types ---
+   Colors from Color Primitives scale.
+   Background: 50 tint | Border: 300 stop | Text: 800 stop
+*/
+
+.cue-alert--success {
+  background-color: #ebfaef; /* green-50  */
+  border-color:     #86df9c; /* green-300 */
+  color:            #155124; /* green-800 */
+}
+.cue-alert--success .cue-alert__icon { color: #155124; }
+
+.cue-alert--info {
+  background-color: #ecf2fe; /* blue-50  */
+  border-color:     #81a9f8; /* blue-300 */
+  color:            #06296f; /* blue-800 */
+}
+.cue-alert--info .cue-alert__icon { color: #06296f; }
+
+.cue-alert--warning {
+  background-color: #fff6e5; /* orange-50  */
+  border-color:     #ffc561; /* orange-300 */
+  color:            #613d00; /* orange-800 */
+}
+.cue-alert--warning .cue-alert__icon { color: #613d00; }
+
+.cue-alert--error {
+  background-color: #ffe0e0; /* red-50  */
+  border-color:     #ff4d4d; /* red-300 */
+  color:            #570000; /* red-800 */
+}
+.cue-alert--error .cue-alert__icon { color: #570000; }</code></pre></div>
+      </div>
+
+    </div>
+
+    <hr class="docs-divider" />
+
+    <!-- ============================================================
+         DESIGN TOKENS
+    ============================================================ -->
+
+    <div class="docs-section">
+      <p class="docs-section-label">Design Tokens</p>
+      <p style="font-size: 0.8125rem; color: var(--content-body-moderate); margin-bottom: var(--space-l); line-height: 1.6;">
+        Alert colors are drawn directly from the <strong>Color Primitives</strong> scale rather than the Global semantic tokens. This gives each alert type a lighter, tinted appearance suitable for inline content contexts.
+      </p>
+      <table class="docs-token-table">
+        <thead>
+          <tr><th>Type</th><th>Role</th><th>Primitive</th><th>Value</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td rowspan="3" style="vertical-align:top; padding-top: 14px;">Success</td>
+            <td>Background</td>
+            <td>green-50</td>
+            <td><span class="docs-token-swatch" style="background:#ebfaef;"></span>#ebfaef</td>
+          </tr>
+          <tr>
+            <td>Border</td>
+            <td>green-300</td>
+            <td><span class="docs-token-swatch" style="background:#86df9c;"></span>#86df9c</td>
+          </tr>
+          <tr>
+            <td>Text &amp; Icon</td>
+            <td>green-800</td>
+            <td><span class="docs-token-swatch" style="background:#155124;"></span>#155124</td>
+          </tr>
+          <tr style="border-top: 2px solid var(--border-level-1);">
+            <td rowspan="3" style="vertical-align:top; padding-top: 14px;">Info</td>
+            <td>Background</td>
+            <td>blue-50</td>
+            <td><span class="docs-token-swatch" style="background:#ecf2fe;"></span>#ecf2fe</td>
+          </tr>
+          <tr>
+            <td>Border</td>
+            <td>blue-300</td>
+            <td><span class="docs-token-swatch" style="background:#81a9f8;"></span>#81a9f8</td>
+          </tr>
+          <tr>
+            <td>Text &amp; Icon</td>
+            <td>blue-800</td>
+            <td><span class="docs-token-swatch" style="background:#06296f;"></span>#06296f</td>
+          </tr>
+          <tr style="border-top: 2px solid var(--border-level-1);">
+            <td rowspan="3" style="vertical-align:top; padding-top: 14px;">Warning</td>
+            <td>Background</td>
+            <td>orange-50</td>
+            <td><span class="docs-token-swatch" style="background:#fff6e5;"></span>#fff6e5</td>
+          </tr>
+          <tr>
+            <td>Border</td>
+            <td>orange-300</td>
+            <td><span class="docs-token-swatch" style="background:#ffc561;"></span>#ffc561</td>
+          </tr>
+          <tr>
+            <td>Text &amp; Icon</td>
+            <td>orange-800</td>
+            <td><span class="docs-token-swatch" style="background:#613d00;"></span>#613d00</td>
+          </tr>
+          <tr style="border-top: 2px solid var(--border-level-1);">
+            <td rowspan="3" style="vertical-align:top; padding-top: 14px;">Error</td>
+            <td>Background</td>
+            <td>red-50</td>
+            <td><span class="docs-token-swatch" style="background:#ffe0e0;"></span>#ffe0e0</td>
+          </tr>
+          <tr>
+            <td>Border</td>
+            <td>red-300</td>
+            <td><span class="docs-token-swatch" style="background:#ff4d4d;"></span>#ff4d4d</td>
+          </tr>
+          <tr>
+            <td>Text &amp; Icon</td>
+            <td>red-800</td>
+            <td><span class="docs-token-swatch" style="background:#570000;"></span>#570000</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <hr class="docs-divider" />
+
+    <!-- ============================================================
+         ACCESSIBILITY
+    ============================================================ -->
+
+    <div class="docs-section">
+      <p class="docs-section-label">Accessibility</p>
+      <table class="docs-token-table">
+        <thead>
+          <tr><th>Attribute / Pattern</th><th>Element</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>role="alert"</td>
+            <td>.cue-alert--error, --warning, --success</td>
+            <td>Announces the alert to screen readers immediately when it appears in the DOM. Use for time-sensitive or important messages.</td>
+          </tr>
+          <tr>
+            <td>role="status"</td>
+            <td>.cue-alert--info</td>
+            <td>Politely announces the message without interrupting. Use for informational notices that are not urgent.</td>
+          </tr>
+          <tr>
+            <td>aria-hidden="true"</td>
+            <td>.cue-alert__icon</td>
+            <td>Icon is decorative — the alert type is communicated by the title text and role, not the icon alone.</td>
+          </tr>
+          <tr>
+            <td>Color contrast</td>
+            <td>All types</td>
+            <td>All text (800 stop) on background (50 tint) meets WCAG AA 4.5:1 contrast ratio.</td>
+          </tr>
+          <tr>
+            <td>Don't rely on color alone</td>
+            <td>All types</td>
+            <td>Each type uses a distinct icon and title text in addition to color to communicate meaning.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  function switchTab(event, tabId) {
+    const section = event.target.closest('.docs-section');
+    section.querySelectorAll('.docs-code-tab').forEach(t => t.classList.remove('active'));
+    section.querySelectorAll('.docs-code-panel').forEach(p => p.classList.remove('active'));
+    event.target.classList.add('active');
+    document.getElementById(tabId).classList.add('active');
+  }
+</script>
+
+</body>
+</html>
