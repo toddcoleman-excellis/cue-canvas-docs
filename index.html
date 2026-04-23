@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CUE Canvas — Design System</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="base.css" />
+  <style>
+
+    .home-hero {
+      padding: 64px 0 48px;
+      border-bottom: 1px solid var(--border-level-1);
+      margin-bottom: 48px;
+    }
+
+    .home-hero__eyebrow {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--content-body-link);
+      margin-bottom: var(--space-m);
+    }
+
+    .home-hero__title {
+      font-size: 40px;
+      font-weight: 700;
+      color: var(--content-body-default);
+      margin-bottom: var(--space-l);
+      line-height: 1.15;
+    }
+
+    .home-hero__title span {
+      color: var(--content-body-link);
+    }
+
+    .home-hero__description {
+      font-size: 17px;
+      color: var(--content-body-moderate);
+      max-width: 520px;
+      line-height: 1.65;
+    }
+
+    .home-meta {
+      display: flex;
+      gap: var(--space-xl);
+      margin-top: var(--space-xl);
+      font-size: 13px;
+      color: var(--content-body-moderate);
+    }
+
+    .home-meta strong {
+      color: var(--content-body-default);
+      font-weight: 600;
+    }
+
+    .component-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: var(--space-l);
+      margin-bottom: 48px;
+    }
+
+    .component-card {
+      display: block;
+      padding: var(--space-xl);
+      background-color: var(--bg-level-1);
+      border: 1px solid var(--border-level-1);
+      border-radius: var(--corner-card-module);
+      text-decoration: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .component-card:hover {
+      border-color: var(--border-primary-brand);
+      box-shadow: 0 2px 8px rgba(3, 97, 141, 0.08);
+      color: inherit;
+    }
+
+    .component-card__icon {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--primary-brand-extra-subtle);
+      border-radius: var(--corner-card-module);
+      color: var(--content-body-link);
+      margin-bottom: var(--space-m);
+      font-size: 20px;
+    }
+
+    .component-card__name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--content-body-default);
+      margin-bottom: var(--space-xs);
+    }
+
+    .component-card__description {
+      font-size: 13px;
+      color: var(--content-body-moderate);
+      line-height: 1.5;
+    }
+
+    .component-card__status {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: var(--space-m);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--success-strong);
+    }
+
+    .component-card__status--wip {
+      color: var(--warning-strong);
+    }
+
+    .component-card__status--planned {
+      color: var(--content-body-moderate);
+    }
+
+    .component-card__status .material-icons {
+      font-size: 14px;
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="docs-layout">
+
+  <!-- ============================================================
+       SIDEBAR
+  ============================================================ -->
+
+  <nav class="docs-sidebar" aria-label="Documentation navigation">
+    <div class="docs-sidebar__logo">CUE Canvas</div>
+
+    <p class="docs-sidebar__section-label">Getting Started</p>
+    <div class="docs-sidebar__nav">
+      <a href="index.html" class="docs-sidebar__nav-link active">Overview</a>
+      <a href="tokens.css" class="docs-sidebar__nav-link">Design Tokens</a>
+    </div>
+
+    <p class="docs-sidebar__section-label">Components</p>
+    <div class="docs-sidebar__nav">
+      <a href="components/accordion.html" class="docs-sidebar__nav-link">Accordion</a>
+      <a href="components/button.html" class="docs-sidebar__nav-link">Button</a>
+      <a href="components/card.html" class="docs-sidebar__nav-link">Card / Module</a>
+      <a href="components/form-field.html" class="docs-sidebar__nav-link">Form Field</a>
+      <a href="components/status-badge.html" class="docs-sidebar__nav-link">Status Badge</a>
+      <a href="components/table.html" class="docs-sidebar__nav-link">Table</a>
+      <a href="components/tabs.html" class="docs-sidebar__nav-link">Tab Navigation</a>
+      <a href="components/side-nav.html" class="docs-sidebar__nav-link">Side Navigation</a>
+      <a href="components/dropdown.html" class="docs-sidebar__nav-link">Dropdown</a>
+      <a href="components/date-picker.html" class="docs-sidebar__nav-link">Date Picker</a>
+      <a href="components/accordion.html" class="docs-sidebar__nav-link">Accordion</a>
+      <a href="components/calendar.html" class="docs-sidebar__nav-link">Calendar</a>
+      <a href="components/step-process.html" class="docs-sidebar__nav-link">Step Process</a>
+      <a href="components/skeleton.html" class="docs-sidebar__nav-link">Skeleton Loader</a>
+      <a href="components/chat.html" class="docs-sidebar__nav-link">Chat</a>
+    </div>
+
+    <p class="docs-sidebar__section-label">Icons</p>
+    <div class="docs-sidebar__nav">
+      <a href="icons/icons.html" class="docs-sidebar__nav-link">Icon Reference</a>
+    </div>
+  </nav>
+
+  <!-- ============================================================
+       MAIN CONTENT
+  ============================================================ -->
+
+  <main class="docs-main">
+
+    <div class="home-hero">
+      <p class="home-hero__eyebrow">Excellis Interactive</p>
+      <h1 class="home-hero__title">CUE Canvas<br /><span>Design System</span></h1>
+      <p class="home-hero__description">
+        The component library and design token system for CUE Back Office — a flexible B2B enterprise SaaS platform for CRM, catalog management, order management, and logistics.
+      </p>
+      <div class="home-meta">
+        <div><strong>Figma Library</strong><br />CUE Back Office Source Library 2026</div>
+        <div><strong>Icons</strong><br />Material Icons (filled)</div>
+        <div><strong>Spacing</strong><br />4px base grid</div>
+      </div>
+    </div>
+
+    <!-- Components -->
+    <div class="docs-section">
+      <p class="docs-section-label">Components</p>
+      <div class="component-grid">
+
+        <a href="components/accordion.html" class="component-card">
+          <div class="component-card__icon">
+            <span class="material-icons" aria-hidden="true">expand_more</span>
+          </div>
+          <p class="component-card__name">Accordion</p>
+          <p class="component-card__description">Expandable and collapsible content sections for progressive disclosure.</p>
+          <p class="component-card__status">
+            <span class="material-icons" aria-hidden="true">check_circle</span>
+            Ready
+          </p>
+        </a>
+
+        <a href="components/button.html" class="component-card">
+          <div class="component-card__icon">
+            <span class="material-icons" aria-hidden="true">smart_button</span>
+          </div>
+          <p class="component-card__name">Button</p>
+          <p class="component-card__description">Primary, secondary, tertiary, and neutral button variants with sizing options.</p>
+          <p class="component-card__status component-card__status--planned">
+            <span class="material-icons" aria-hidden="true">schedule</span>
+            Coming soon
+          </p>
+        </a>
+
+        <a href="components/card.html" class="component-card">
+          <div class="component-card__icon">
+            <span class="material-icons" aria-hidden="true">web_asset</span>
+          </div>
+          <p class="component-card__name">Card / Module</p>
+          <p class="component-card__description">Surface container for grouping related content and UI elements.</p>
+          <p class="component-card__status component-card__status--planned">
+            <span class="material-icons" aria-hidden="true">schedule</span>
+            Coming soon
+          </p>
+        </a>
+
+        <a href="components/form-field.html" class="component-card">
+          <div class="component-card__icon">
+            <span class="material-icons" aria-hidden="true">input</span>
+          </div>
+          <p class="component-card__name">Form Field</p>
+          <p class="component-card__description">Text inputs in default, solid, and interactive styles with states.</p>
+          <p class="component-card__status component-card__status--planned">
+            <span class="material-icons" aria-hidden="true">schedule</span>
+            Coming soon
+          </p>
+        </a>
+
+        <a href="components/status-badge.html" class="component-card">
+          <div class="component-card__icon">
+            <span class="material-icons" aria-hidden="true">label</span>
+          </div>
+          <p class="component-card__name">Status Badge</p>
+          <p class="component-card__description">Neutral, info, success, warning, and error status indicators.</p>
+          <p class="component-card__status component-card__status--planned">
+            <span class="material-icons" aria-hidden="true">schedule</span>
+            Coming soon
+          </p>
+        </a>
+
+        <a href="components/table.html" class="component-card">
+          <div class="component-card__icon">
+            <span class="material-icons" aria-hidden="true">table_chart</span>
+          </div>
+          <p class="component-card__name">Table</p>
+          <p class="component-card__description">Data table with header, alternating rows, and selected states.</p>
+          <p class="component-card__status component-card__status--planned">
+            <span class="material-icons" aria-hidden="true">schedule</span>
+            Coming soon
+          </p>
+        </a>
+
+        <a href="components/tabs.html" class="component-card">
+          <div class="component-card__icon">
+            <span class="material-icons" aria-hidden="true">tab</span>
+          </div>
+          <p class="component-card__name">Tab Navigation</p>
+          <p class="component-card__description">Standard and pill-style tab navigation for secondary content switching.</p>
+          <p class="component-card__status component-card__status--planned">
+            <span class="material-icons" aria-hidden="true">schedule</span>
+            Coming soon
+          </p>
+        </a>
+
+        <a href="components/side-nav.html" class="component-card">
+          <div class="component-card__icon">
+            <span class="material-icons" aria-hidden="true">menu</span>
+          </div>
+          <p class="component-card__name">Side Navigation</p>
+          <p class="component-card__description">Two-level vertical navigation with default, hover, open, and current states.</p>
+          <p class="component-card__status component-card__status--planned">
+            <span class="material-icons" aria-hidden="true">schedule</span>
+            Coming soon
+          </p>
+        </a>
+
+        <a href="components/dropdown.html" class="component-card">
+          <div class="component-card__icon">
+            <span class="material-icons" aria-hidden="true">arrow_drop_down_circle</span>
+          </div>
+          <p class="component-card__name">Dropdown</p>
+          <p class="component-card__description">Select and option list component for filtered choices.</p>
+          <p class="component-card__status component-card__status--planned">
+            <span class="material-icons" aria-hidden="true">schedule</span>
+            Coming soon
+          </p>
+        </a>
+
+        <a href="components/date-picker.html" class="component-card">
+          <div class="component-card__icon">
+            <span class="material-icons" aria-hidden="true">calendar_today</span>
+          </div>
+          <p class="component-card__name">Date Picker</p>
+          <p class="component-card__description">Calendar date selection with range support and current date highlighting.</p>
+          <p class="component-card__status component-card__status--planned">
+            <span class="material-icons" aria-hidden="true">schedule</span>
+            Coming soon
+          </p>
+        </a>
+
+        <a href="components/skeleton.html" class="component-card">
+          <div class="component-card__icon">
+            <span class="material-icons" aria-hidden="true">gradient</span>
+          </div>
+          <p class="component-card__name">Skeleton Loader</p>
+          <p class="component-card__description">Loading placeholder with animated gradient shimmer effect.</p>
+          <p class="component-card__status component-card__status--planned">
+            <span class="material-icons" aria-hidden="true">schedule</span>
+            Coming soon
+          </p>
+        </a>
+
+        <a href="components/step-process.html" class="component-card">
+          <div class="component-card__icon">
+            <span class="material-icons" aria-hidden="true">linear_scale</span>
+          </div>
+          <p class="component-card__name">Step Process</p>
+          <p class="component-card__description">Multi-step progress indicator with inactive, current, and complete states.</p>
+          <p class="component-card__status component-card__status--planned">
+            <span class="material-icons" aria-hidden="true">schedule</span>
+            Coming soon
+          </p>
+        </a>
+
+      </div>
+    </div>
+
+  </main>
+
+</div>
+
+<script>
+  function switchTab(event, tabId) {
+    const section = event.target.closest('.docs-section');
+    section.querySelectorAll('.docs-code-tab').forEach(t => t.classList.remove('active'));
+    section.querySelectorAll('.docs-code-panel').forEach(p => p.classList.remove('active'));
+    event.target.classList.add('active');
+    document.getElementById(tabId).classList.add('active');
+  }
+</script>
+
+</body>
+</html>

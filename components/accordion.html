@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CUE Canvas — Accordion</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../tokens.css" />
+  <link rel="stylesheet" href="../base.css" />
+  <style>
+
+    /* ============================================================
+       ACCORDION COMPONENT
+       
+       Anatomy:
+         .cue-accordion               — wrapper container
+           .cue-accordion__item       — individual item
+             .cue-accordion__trigger  — clickable header row (button)
+               .cue-accordion__label  — item label text
+               .cue-accordion__icon   — Material Icon toggle (add/remove)
+             .cue-accordion__panel    — collapsible content region
+               .cue-accordion__body   — content inside panel
+
+       States:
+         .cue-accordion__item--expanded  — toggles expanded visual state
+    ============================================================ */
+
+    .cue-accordion {
+      background-color: var(--bg-accordion);
+      border: 1px solid var(--border-level-1);
+      border-radius: var(--corner-card-module);
+      overflow: hidden;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .cue-accordion__item {
+      border-bottom: 1px solid var(--border-accordion);
+    }
+
+    .cue-accordion__item:last-child {
+      border-bottom: none;
+    }
+
+    .cue-accordion__trigger {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: var(--space-m);
+      background-color: var(--bg-accordion);
+      border: none;
+      cursor: pointer;
+      text-align: left;
+      transition: background-color 0.15s ease;
+    }
+
+    .cue-accordion__trigger:hover {
+      background-color: var(--bg-level-0);
+    }
+
+    .cue-accordion__trigger:focus-visible {
+      outline: 2px solid var(--border-interactive);
+      outline-offset: -2px;
+    }
+
+    .cue-accordion__label {
+      font-family: var(--font-family-body);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 1;
+      color: var(--content-body-link);
+      transition: color 0.15s ease;
+    }
+
+    .cue-accordion__item--expanded .cue-accordion__label {
+      color: var(--content-body-default);
+      font-weight: 700;
+    }
+
+    .cue-accordion__icon {
+      flex-shrink: 0;
+      color: var(--content-body-link);
+      font-size: 24px;
+      transition: color 0.15s ease;
+    }
+
+    .cue-accordion__item--expanded .cue-accordion__icon {
+      color: var(--content-body-default);
+    }
+
+    .cue-accordion__panel {
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      transition: max-height 0.25s ease, opacity 0.2s ease;
+    }
+
+    .cue-accordion__item--expanded .cue-accordion__panel {
+      max-height: 800px;
+      opacity: 1;
+    }
+
+    .cue-accordion__body {
+      padding: var(--space-m) var(--space-m) var(--space-xl) var(--space-m);
+      font-family: var(--font-family-body);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 1.6;
+      color: var(--content-body-default);
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="docs-layout">
+
+  <nav class="docs-sidebar" aria-label="Documentation navigation">
+    <div class="docs-sidebar__logo">CUE Canvas</div>
+    <p class="docs-sidebar__section-label">Getting Started</p>
+    <div class="docs-sidebar__nav">
+      <a href="../index.html" class="docs-sidebar__nav-link">Overview</a>
+    </div>
+    <p class="docs-sidebar__section-label">Components</p>
+    <div class="docs-sidebar__nav">
+      <a href="accordion.html" class="docs-sidebar__nav-link active">Accordion</a>
+      <a href="button.html" class="docs-sidebar__nav-link">Button</a>
+      <a href="card.html" class="docs-sidebar__nav-link">Card / Module</a>
+      <a href="form-field.html" class="docs-sidebar__nav-link">Form Field</a>
+      <a href="status-badge.html" class="docs-sidebar__nav-link">Status Badge</a>
+      <a href="table.html" class="docs-sidebar__nav-link">Table</a>
+      <a href="tabs.html" class="docs-sidebar__nav-link">Tab Navigation</a>
+      <a href="side-nav.html" class="docs-sidebar__nav-link">Side Navigation</a>
+      <a href="dropdown.html" class="docs-sidebar__nav-link">Dropdown</a>
+      <a href="date-picker.html" class="docs-sidebar__nav-link">Date Picker</a>
+      <a href="calendar.html" class="docs-sidebar__nav-link">Calendar</a>
+      <a href="step-process.html" class="docs-sidebar__nav-link">Step Process</a>
+      <a href="skeleton.html" class="docs-sidebar__nav-link">Skeleton Loader</a>
+      <a href="chat.html" class="docs-sidebar__nav-link">Chat</a>
+    </div>
+    <p class="docs-sidebar__section-label">Icons</p>
+    <div class="docs-sidebar__nav">
+      <a href="../icons/icons.html" class="docs-sidebar__nav-link">Icon Reference</a>
+    </div>
+  </nav>
+
+  <main class="docs-main">
+
+    <div class="docs-page-header">
+      <h1 class="docs-page-title">Accordion</h1>
+      <p class="docs-page-description">
+        Accordions display a list of items that can be individually expanded or collapsed to reveal associated content. Use them to progressively disclose information and reduce cognitive load on complex pages.
+      </p>
+    </div>
+
+    <!-- Example -->
+    <div class="docs-section">
+      <p class="docs-section-label">Example</p>
+      <div class="docs-example">
+        <div class="cue-accordion" role="list">
+
+          <div class="cue-accordion__item" role="listitem">
+            <button class="cue-accordion__trigger" aria-expanded="false" aria-controls="panel-1" id="trigger-1">
+              <span class="cue-accordion__label">Getting started with CUE</span>
+              <span class="cue-accordion__icon material-icons" aria-hidden="true">add</span>
+            </button>
+            <div class="cue-accordion__panel" id="panel-1" role="region" aria-labelledby="trigger-1">
+              <div class="cue-accordion__body">This is where the content of the expanded accordion item will go. It can be short information or a longer description.</div>
+            </div>
+          </div>
+
+          <div class="cue-accordion__item cue-accordion__item--expanded" role="listitem">
+            <button class="cue-accordion__trigger" aria-expanded="true" aria-controls="panel-2" id="trigger-2">
+              <span class="cue-accordion__label">Managing your account</span>
+              <span class="cue-accordion__icon material-icons" aria-hidden="true">remove</span>
+            </button>
+            <div class="cue-accordion__panel" id="panel-2" role="region" aria-labelledby="trigger-2">
+              <div class="cue-accordion__body">This is where the content of the expanded accordion item will go. It can be short information or a longer description.</div>
+            </div>
+          </div>
+
+          <div class="cue-accordion__item" role="listitem">
+            <button class="cue-accordion__trigger" aria-expanded="false" aria-controls="panel-3" id="trigger-3">
+              <span class="cue-accordion__label">Orders and fulfillment</span>
+              <span class="cue-accordion__icon material-icons" aria-hidden="true">add</span>
+            </button>
+            <div class="cue-accordion__panel" id="panel-3" role="region" aria-labelledby="trigger-3">
+              <div class="cue-accordion__body">This is where the content of the expanded accordion item will go. It can be short information or a longer description.</div>
+            </div>
+          </div>
+
+          <div class="cue-accordion__item" role="listitem">
+            <button class="cue-accordion__trigger" aria-expanded="false" aria-controls="panel-4" id="trigger-4">
+              <span class="cue-accordion__label">Reporting and analytics</span>
+              <span class="cue-accordion__icon material-icons" aria-hidden="true">add</span>
+            </button>
+            <div class="cue-accordion__panel" id="panel-4" role="region" aria-labelledby="trigger-4">
+              <div class="cue-accordion__body">This is where the content of the expanded accordion item will go. It can be short information or a longer description.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <hr class="docs-divider" />
+
+    <!-- Code -->
+    <div class="docs-section">
+      <p class="docs-section-label">Code</p>
+      <div class="docs-code-tabs">
+        <button class="docs-code-tab active" onclick="switchTab(event, 'tab-html')">HTML</button>
+        <button class="docs-code-tab" onclick="switchTab(event, 'tab-css')">CSS</button>
+        <button class="docs-code-tab" onclick="switchTab(event, 'tab-js')">JS</button>
+      </div>
+
+      <div class="docs-code-panel active" id="tab-html">
+        <div class="docs-code-block"><pre><code>&lt;div class="cue-accordion" role="list"&gt;
+
+  &lt;!-- Collapsed item --&gt;
+  &lt;div class="cue-accordion__item" role="listitem"&gt;
+    &lt;button
+      class="cue-accordion__trigger"
+      aria-expanded="false"
+      aria-controls="panel-1"
+      id="trigger-1"
+    &gt;
+      &lt;span class="cue-accordion__label"&gt;Accordion Item&lt;/span&gt;
+      &lt;span class="cue-accordion__icon material-icons" aria-hidden="true"&gt;add&lt;/span&gt;
+    &lt;/button&gt;
+    &lt;div class="cue-accordion__panel" id="panel-1" role="region" aria-labelledby="trigger-1"&gt;
+      &lt;div class="cue-accordion__body"&gt;
+        Content goes here.
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;!-- Expanded item — add .cue-accordion__item--expanded --&gt;
+  &lt;div class="cue-accordion__item cue-accordion__item--expanded" role="listitem"&gt;
+    &lt;button
+      class="cue-accordion__trigger"
+      aria-expanded="true"
+      aria-controls="panel-2"
+      id="trigger-2"
+    &gt;
+      &lt;span class="cue-accordion__label"&gt;Accordion Item&lt;/span&gt;
+      &lt;span class="cue-accordion__icon material-icons" aria-hidden="true"&gt;remove&lt;/span&gt;
+    &lt;/button&gt;
+    &lt;div class="cue-accordion__panel" id="panel-2" role="region" aria-labelledby="trigger-2"&gt;
+      &lt;div class="cue-accordion__body"&gt;
+        Content goes here.
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+&lt;/div&gt;</code></pre></div>
+      </div>
+
+      <div class="docs-code-panel" id="tab-css">
+        <div class="docs-code-block"><pre><code>/* Tokens are defined in tokens.css */
+
+.cue-accordion {
+  background-color: var(--bg-accordion);
+  border: 1px solid var(--border-level-1);
+  border-radius: var(--corner-card-module);
+  overflow: hidden;
+  width: 100%;
+  max-width: 600px;
+}
+
+.cue-accordion__item {
+  border-bottom: 1px solid var(--border-accordion);
+}
+.cue-accordion__item:last-child { border-bottom: none; }
+
+.cue-accordion__trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--space-m);
+  background-color: var(--bg-accordion);
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.15s ease;
+}
+.cue-accordion__trigger:hover { background-color: var(--bg-level-0); }
+.cue-accordion__trigger:focus-visible {
+  outline: 2px solid var(--border-interactive);
+  outline-offset: -2px;
+}
+
+.cue-accordion__label {
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--content-body-link);
+  transition: color 0.15s ease;
+}
+.cue-accordion__item--expanded .cue-accordion__label {
+  color: var(--content-body-default);
+  font-weight: 700;
+}
+
+.cue-accordion__icon {
+  flex-shrink: 0;
+  color: var(--content-body-link);
+  font-size: 24px;
+  transition: color 0.15s ease;
+}
+.cue-accordion__item--expanded .cue-accordion__icon {
+  color: var(--content-body-default);
+}
+
+.cue-accordion__panel {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.25s ease, opacity 0.2s ease;
+}
+.cue-accordion__item--expanded .cue-accordion__panel {
+  max-height: 800px;
+  opacity: 1;
+}
+
+.cue-accordion__body {
+  padding: var(--space-m) var(--space-m) var(--space-xl) var(--space-m);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--content-body-default);
+}</code></pre></div>
+      </div>
+
+      <div class="docs-code-panel" id="tab-js">
+        <div class="docs-code-block"><pre><code>/**
+ * CUE Canvas — Accordion
+ * Supports multiple items open simultaneously.
+ */
+function initAccordions() {
+  const triggers = document.querySelectorAll('.cue-accordion__trigger');
+
+  triggers.forEach(trigger => {
+
+    trigger.addEventListener('click', () => {
+      const item = trigger.closest('.cue-accordion__item');
+      const isExpanded = item.classList.contains('cue-accordion__item--expanded');
+      const icon = trigger.querySelector('.cue-accordion__icon');
+
+      if (isExpanded) {
+        item.classList.remove('cue-accordion__item--expanded');
+        trigger.setAttribute('aria-expanded', 'false');
+        icon.textContent = 'add';
+      } else {
+        item.classList.add('cue-accordion__item--expanded');
+        trigger.setAttribute('aria-expanded', 'true');
+        icon.textContent = 'remove';
+      }
+    });
+
+    trigger.addEventListener('keydown', (e) => {
+      const accordion = trigger.closest('.cue-accordion');
+      const all = [...accordion.querySelectorAll('.cue-accordion__trigger')];
+      const i = all.indexOf(trigger);
+
+      if (e.key === 'ArrowDown') { e.preventDefault(); all[(i + 1) % all.length].focus(); }
+      if (e.key === 'ArrowUp')   { e.preventDefault(); all[(i - 1 + all.length) % all.length].focus(); }
+      if (e.key === 'Home')      { e.preventDefault(); all[0].focus(); }
+      if (e.key === 'End')       { e.preventDefault(); all[all.length - 1].focus(); }
+    });
+
+  });
+}
+
+document.addEventListener('DOMContentLoaded', initAccordions);</code></pre></div>
+      </div>
+    </div>
+
+    <hr class="docs-divider" />
+
+    <!-- Tokens -->
+    <div class="docs-section">
+      <p class="docs-section-label">Design Tokens</p>
+      <table class="docs-token-table">
+        <thead>
+          <tr><th>CSS Variable</th><th>Figma Token</th><th>Value</th><th>Usage</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>--bg-accordion</td>
+            <td>Components/Accordion/bg-accordion</td>
+            <td><span class="docs-token-swatch" style="background:#ffffff;"></span>#ffffff</td>
+            <td>Background fill of each accordion item</td>
+          </tr>
+          <tr>
+            <td>--border-accordion</td>
+            <td>Components/Accordion/border-accordion</td>
+            <td><span class="docs-token-swatch" style="background:#ededed;"></span>#ededed</td>
+            <td>Divider border between accordion items</td>
+          </tr>
+          <tr>
+            <td>--corner-card-module</td>
+            <td>Components/Card or Module/corner-card-module</td>
+            <td>4px</td>
+            <td>Corner radius of the accordion wrapper</td>
+          </tr>
+          <tr>
+            <td>--content-body-link</td>
+            <td>System/Content/content-body-link</td>
+            <td><span class="docs-token-swatch" style="background:#03618d;"></span>#03618d</td>
+            <td>Collapsed item label and icon color</td>
+          </tr>
+          <tr>
+            <td>--content-body-default</td>
+            <td>System/Content/content-body-default</td>
+            <td><span class="docs-token-swatch" style="background:#262626;"></span>#262626</td>
+            <td>Expanded label, icon, and body text</td>
+          </tr>
+          <tr>
+            <td>--border-level-1</td>
+            <td>System/Surface/Level 1/border-level-1</td>
+            <td><span class="docs-token-swatch" style="background:#ededed;"></span>#ededed</td>
+            <td>Outer border of the accordion wrapper</td>
+          </tr>
+          <tr>
+            <td>--bg-level-0</td>
+            <td>System/Surface/Level 0/bg-level-0</td>
+            <td><span class="docs-token-swatch" style="background:#fafafa;"></span>#fafafa</td>
+            <td>Trigger hover background</td>
+          </tr>
+          <tr>
+            <td>--border-interactive</td>
+            <td>System/Border/border-interactive</td>
+            <td><span class="docs-token-swatch" style="background:#2c70f4;"></span>#2c70f4</td>
+            <td>Focus ring on keyboard navigation</td>
+          </tr>
+          <tr>
+            <td>--space-m</td>
+            <td>System/Layout/Padding-M</td>
+            <td>12px</td>
+            <td>Trigger and body padding</td>
+          </tr>
+          <tr>
+            <td>--space-xl</td>
+            <td>System/Layout/Padding-XL</td>
+            <td>24px</td>
+            <td>Bottom padding of expanded body</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <hr class="docs-divider" />
+
+    <!-- Accessibility -->
+    <div class="docs-section">
+      <p class="docs-section-label">Accessibility</p>
+      <table class="docs-token-table">
+        <thead>
+          <tr><th>Attribute / Pattern</th><th>Element</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>aria-expanded</td>
+            <td>.cue-accordion__trigger</td>
+            <td>"true" when expanded, "false" when collapsed. Updated by JS on toggle.</td>
+          </tr>
+          <tr>
+            <td>aria-controls</td>
+            <td>.cue-accordion__trigger</td>
+            <td>References the ID of the associated panel element.</td>
+          </tr>
+          <tr>
+            <td>role="region"</td>
+            <td>.cue-accordion__panel</td>
+            <td>Identifies the panel as a landmark region for screen readers.</td>
+          </tr>
+          <tr>
+            <td>aria-labelledby</td>
+            <td>.cue-accordion__panel</td>
+            <td>References the trigger button ID so the panel is named by its trigger.</td>
+          </tr>
+          <tr>
+            <td>aria-hidden="true"</td>
+            <td>.cue-accordion__icon</td>
+            <td>Icon is decorative — state is communicated via aria-expanded.</td>
+          </tr>
+          <tr>
+            <td>:focus-visible</td>
+            <td>.cue-accordion__trigger</td>
+            <td>Focus ring shown on keyboard nav only, not on mouse click.</td>
+          </tr>
+          <tr>
+            <td>Arrow Up / Down</td>
+            <td>.cue-accordion__trigger</td>
+            <td>Moves focus between triggers within the accordion.</td>
+          </tr>
+          <tr>
+            <td>Home / End</td>
+            <td>.cue-accordion__trigger</td>
+            <td>Jumps focus to first or last trigger.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  function switchTab(event, tabId) {
+    const section = event.target.closest('.docs-section');
+    section.querySelectorAll('.docs-code-tab').forEach(t => t.classList.remove('active'));
+    section.querySelectorAll('.docs-code-panel').forEach(p => p.classList.remove('active'));
+    event.target.classList.add('active');
+    document.getElementById(tabId).classList.add('active');
+  }
+
+  function initAccordions() {
+    const triggers = document.querySelectorAll('.cue-accordion__trigger');
+    triggers.forEach(trigger => {
+      trigger.addEventListener('click', () => {
+        const item = trigger.closest('.cue-accordion__item');
+        const isExpanded = item.classList.contains('cue-accordion__item--expanded');
+        const icon = trigger.querySelector('.cue-accordion__icon');
+        if (isExpanded) {
+          item.classList.remove('cue-accordion__item--expanded');
+          trigger.setAttribute('aria-expanded', 'false');
+          icon.textContent = 'add';
+        } else {
+          item.classList.add('cue-accordion__item--expanded');
+          trigger.setAttribute('aria-expanded', 'true');
+          icon.textContent = 'remove';
+        }
+      });
+      trigger.addEventListener('keydown', (e) => {
+        const accordion = trigger.closest('.cue-accordion');
+        const all = [...accordion.querySelectorAll('.cue-accordion__trigger')];
+        const i = all.indexOf(trigger);
+        if (e.key === 'ArrowDown') { e.preventDefault(); all[(i + 1) % all.length].focus(); }
+        if (e.key === 'ArrowUp')   { e.preventDefault(); all[(i - 1 + all.length) % all.length].focus(); }
+        if (e.key === 'Home')      { e.preventDefault(); all[0].focus(); }
+        if (e.key === 'End')       { e.preventDefault(); all[all.length - 1].focus(); }
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initAccordions);
+</script>
+
+</body>
+</html>

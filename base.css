@@ -1,0 +1,368 @@
+/* ================================================================
+   CUE CANVAS — BASE STYLES
+   base.css
+
+   Global reset, typography defaults, and shared utility classes.
+   Link this after tokens.css on every page.
+   
+   <link rel="stylesheet" href="../tokens.css" />
+   <link rel="stylesheet" href="../base.css" />
+================================================================ */
+
+
+/* ============================================================
+   RESET
+============================================================ */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-family-body);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--content-body-default);
+  background-color: var(--app-page-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img, svg {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+}
+
+a {
+  color: var(--content-body-link);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--content-body-link-hover);
+}
+
+ul, ol {
+  list-style: none;
+}
+
+
+/* ============================================================
+   TYPOGRAPHY
+============================================================ */
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family-heading);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--content-body-default);
+}
+
+h1 { font-size: 32px; }
+h2 { font-size: 24px; }
+h3 { font-size: 20px; }
+h4 { font-size: 16px; }
+h5 { font-size: 14px; }
+h6 { font-size: 12px; }
+
+p {
+  line-height: 1.6;
+}
+
+code, pre {
+  font-family: 'Fira Code', 'Courier New', monospace;
+  font-size: 13px;
+}
+
+
+/* ============================================================
+   MATERIAL ICONS
+   Standard filled style used across all CUE Canvas components.
+   Always pair with aria-hidden="true" when decorative.
+   Place accessible label on the parent interactive element.
+
+   Usage:
+   <span class="material-icons" aria-hidden="true">add</span>
+============================================================ */
+
+.material-icons {
+  font-size: 24px;
+  line-height: 1;
+  vertical-align: middle;
+  user-select: none;
+}
+
+/* Size variants */
+.material-icons--sm  { font-size: 16px; }
+.material-icons--md  { font-size: 20px; }
+.material-icons--lg  { font-size: 28px; }
+.material-icons--xl  { font-size: 32px; }
+
+
+/* ============================================================
+   DOCUMENTATION LAYOUT
+   Shared styles for the docs site pages.
+   Not part of the CUE Canvas component system.
+============================================================ */
+
+.docs-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.docs-sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  background-color: var(--bg-level-1);
+  border-right: 1px solid var(--border-level-1);
+  padding: var(--space-xl);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.docs-main {
+  flex: 1;
+  padding: 48px;
+  max-width: 900px;
+}
+
+.docs-sidebar__logo {
+  font-family: var(--font-family-heading);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--content-body-primary-brand);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: var(--space-xl);
+}
+
+.docs-sidebar__section-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--content-body-moderate);
+  margin-bottom: var(--space-xs);
+  margin-top: var(--space-l);
+}
+
+.docs-sidebar__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.docs-sidebar__nav-link {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--content-body-default);
+  padding: 6px var(--space-s);
+  border-radius: var(--corner-card-module);
+  transition: background-color 0.15s ease, color 0.15s ease;
+  display: block;
+}
+
+.docs-sidebar__nav-link:hover {
+  background-color: var(--bg-level-0);
+  color: var(--content-body-link);
+}
+
+.docs-sidebar__nav-link.active {
+  background-color: var(--primary-brand-extra-subtle);
+  color: var(--content-body-link);
+  font-weight: 600;
+}
+
+/* --- Page header --- */
+
+.docs-page-header {
+  margin-bottom: 40px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--border-level-1);
+}
+
+.docs-page-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--content-body-default);
+  margin-bottom: var(--space-s);
+}
+
+.docs-page-description {
+  font-size: 16px;
+  color: var(--content-body-moderate);
+  max-width: 600px;
+  line-height: 1.6;
+}
+
+/* --- Section --- */
+
+.docs-section {
+  margin-bottom: 48px;
+}
+
+.docs-section-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--content-body-moderate);
+  margin-bottom: var(--space-m);
+}
+
+/* --- Example canvas --- */
+
+.docs-example {
+  padding: 40px;
+  background-color: var(--bg-level-1);
+  border: 1px solid var(--border-level-1);
+  border-radius: var(--corner-card-module);
+  margin-bottom: var(--space-xl);
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: var(--space-l);
+}
+
+.docs-example--centered {
+  justify-content: center;
+  align-items: center;
+}
+
+/* --- Code block --- */
+
+.docs-code-tabs {
+  display: flex;
+  gap: 2px;
+}
+
+.docs-code-tab {
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  background-color: #2a2a2a;
+  color: #8a8a8a;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px 4px 0 0;
+  letter-spacing: 0.04em;
+  transition: background-color 0.1s ease, color 0.1s ease;
+}
+
+.docs-code-tab.active {
+  background-color: #1a1a1a;
+  color: #ffffff;
+}
+
+.docs-code-block {
+  background-color: #1a1a1a;
+  border-radius: 0 4px 4px 4px;
+  padding: 24px;
+  overflow-x: auto;
+  margin-bottom: var(--space-s);
+}
+
+.docs-code-block pre {
+  margin: 0;
+  font-family: 'Fira Code', 'Courier New', monospace;
+  font-size: 13px;
+  line-height: 1.65;
+  color: #e0e0e0;
+  white-space: pre;
+}
+
+.docs-code-panel {
+  display: none;
+}
+
+.docs-code-panel.active {
+  display: block;
+}
+
+/* --- Token table --- */
+
+.docs-token-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.docs-token-table th {
+  text-align: left;
+  padding: var(--space-s) var(--space-m);
+  background-color: var(--bg-level-0);
+  color: var(--content-body-moderate);
+  font-weight: 700;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid var(--border-level-1);
+}
+
+.docs-token-table td {
+  padding: 10px var(--space-m);
+  border-bottom: 1px solid var(--border-level-1);
+  color: var(--content-body-default);
+  vertical-align: middle;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.docs-token-table tr:last-child td {
+  border-bottom: none;
+}
+
+.docs-token-table td:first-child {
+  font-family: 'Fira Code', monospace;
+  font-size: 12px;
+  color: var(--content-body-link);
+}
+
+.docs-token-swatch {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  vertical-align: middle;
+  margin-right: var(--space-s);
+  flex-shrink: 0;
+}
+
+/* --- Divider --- */
+
+.docs-divider {
+  border: none;
+  border-top: 1px solid var(--border-level-1);
+  margin: 40px 0;
+}
+
+/* --- Utility --- */
+
+.docs-badge {
+  display: inline-block;
+  padding: 2px var(--space-s);
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background-color: var(--primary-brand-extra-subtle);
+  color: var(--content-body-link);
+}

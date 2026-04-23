@@ -1,0 +1,524 @@
+/* ================================================================
+   CUE CANVAS — DESIGN TOKENS
+   tokens.css
+
+   This file maps all Figma UI Theme variables to CSS custom
+   properties. Every component stylesheet references these tokens.
+   
+   Figma Library: CUE Back Office Source Library 2026
+   Token collection: UI Theme (CUE Brand Light mode)
+   
+   DO NOT use hardcoded color, spacing, or radius values in
+   component stylesheets. Always reference a token from this file.
+================================================================ */
+
+:root {
+
+  /* ============================================================
+     TYPOGRAPHY
+  ============================================================ */
+
+  /* Figma: Font/Family/Headings (20pt up) */
+  --font-family-heading: 'Public Sans', sans-serif;
+
+  /* Figma: Font/Family/Body (18pt down) */
+  --font-family-body: 'Public Sans', sans-serif;
+
+
+  /* ============================================================
+     SYSTEM — CONTENT
+     Used for text and icon colors.
+  ============================================================ */
+
+  /* Figma: System/Content/content-body-default */
+  --content-body-default: #262626;
+
+  /* Figma: System/Content/content-body-strong */
+  --content-body-strong: #1a1a1a;
+
+  /* Figma: System/Content/content-body-moderate */
+  --content-body-moderate: #8a8a8a;
+
+  /* Figma: System/Content/content-body-subdued */
+  --content-body-subdued: #8a8a8a;
+
+  /* Figma: System/Content/content-body-subtle */
+  --content-body-subtle: #d4d4d4;
+
+  /* Figma: System/Content/content-body-extra-subtle */
+  --content-body-extra-subtle: #ededed;
+
+  /* Figma: System/Content/content-body-weak */
+  --content-body-weak: #fafafa;
+
+  /* Figma: System/Content/content-body-extra-weak */
+  --content-body-extra-weak: #fafafa;
+
+  /* Figma: System/Content/content-body-inverse */
+  --content-body-inverse: #ffffff;
+
+  /* Figma: System/Content/content-body-link */
+  --content-body-link: #03618d;
+
+  /* Figma: System/Content/content-body-link-hover */
+  --content-body-link-hover: #0594d7;
+
+  /* Figma: System/Content/content-body-primary-brand */
+  --content-body-primary-brand: #03618d;
+
+  /* Figma: System/Content/content-body-secondary-brand */
+  --content-body-secondary-brand: #fab632;
+
+  /* Figma: System/Content/content-body-accent-brand */
+  --content-body-accent-brand: #03618d;
+
+
+  /* ============================================================
+     SYSTEM — BACKGROUND
+     Used for surface fills.
+  ============================================================ */
+
+  /* Figma: System/Background/app-page-bg */
+  --app-page-bg: #fafafa;
+
+  /* Figma: System/Background/bg-page-default */
+  --bg-page-default: #fafafa;
+
+  /* Figma: System/Background/bg-default */
+  --bg-default: #ffffff;
+
+  /* Figma: System/Background/bg-strong */
+  --bg-strong: #f5f5f5;
+
+  /* Figma: System/Background/bg-moderate */
+  --bg-moderate: #f0f0f0;
+
+  /* Figma: System/Background/bg-subdued */
+  --bg-subdued: #ededed;
+
+  /* Figma: System/Background/bg-subtle */
+  --bg-subtle: #fafafa;
+
+  /* Figma: System/Background/bg-extra-subtle */
+  --bg-extra-subtle: #fafafa;
+
+  /* Figma: System/Background/bg-weak */
+  --bg-weak: #fafafa;
+
+  /* Figma: System/Background/bg-extra-weak */
+  --bg-extra-weak: #ffffff;
+
+  /* Figma: System/Background/bg-inverse */
+  --bg-inverse: #262626;
+
+  /* Figma: System/Background/bg-interactive */
+  --bg-interactive: #2c70f4;
+
+  /* Figma: System/Background/bg-primary-brand */
+  --bg-primary-brand: #03618d;
+
+  /* Figma: System/Background/bg-secondary-brand */
+  --bg-secondary-brand: #fab632;
+
+  /* Figma: System/Background/bg-accent-brand */
+  --bg-accent-brand: #03618d;
+
+
+  /* ============================================================
+     SYSTEM — BORDER
+     Used for strokes and dividers.
+  ============================================================ */
+
+  /* Figma: System/Border/border-default */
+  --border-default: #262626;
+
+  /* Figma: System/Border/border-strong */
+  --border-strong: #1a1a1a;
+
+  /* Figma: System/Border/border-moderate */
+  --border-moderate: #8a8a8a;
+
+  /* Figma: System/Border/border-subdued */
+  --border-subdued: #d4d4d4;
+
+  /* Figma: System/Border/border-subtle */
+  --border-subtle: #ededed;
+
+  /* Figma: System/Border/border-extra-subtle */
+  --border-extra-subtle: #ededed;
+
+  /* Figma: System/Border/border-weak */
+  --border-weak: #fafafa;
+
+  /* Figma: System/Border/border-extra-weak */
+  --border-extra-weak: #ffffff;
+
+  /* Figma: System/Border/border-inverse */
+  --border-inverse: #ffffff;
+
+  /* Figma: System/Border/border-interactive */
+  --border-interactive: #2c70f4;
+
+  /* Figma: System/Border/border-primary-brand */
+  --border-primary-brand: #03618d;
+
+  /* Figma: System/Border/border-secondary-brand */
+  --border-secondary-brand: #fab632;
+
+  /* Figma: System/Border/border-accent-brand */
+  --border-accent-brand: #03618d;
+
+
+  /* ============================================================
+     SYSTEM — SURFACE LEVELS
+     Elevation-based surface hierarchy. Primarily used in dark mode
+     but defined here for light mode defaults.
+     Level 0 = farthest back, Level 4 = closest to user.
+  ============================================================ */
+
+  /* Figma: System/Surface/Level 0 */
+  --bg-level-0: #fafafa;
+  --border-level-0: #ededed;
+
+  /* Figma: System/Surface/Level 1 */
+  --bg-level-1: #ffffff;
+  --border-level-1: #ededed;
+
+  /* Figma: System/Surface/Level 2 */
+  --bg-level-2: #ffffff;
+  --border-level-2: #ededed;
+
+  /* Figma: System/Surface/Level 3 */
+  --bg-level-3: #ffffff;
+  --border-level-3: #ededed;
+
+  /* Figma: System/Surface/Level 4 */
+  --bg-level-4: #ffffff;
+  --border-level-4: #ededed;
+
+
+  /* ============================================================
+     SYSTEM — LAYOUT / SPACING
+     4px base grid. All spacing in the system is a multiple of 4.
+  ============================================================ */
+
+  /* Figma: System/Layout/Padding-XXS */
+  --space-xxs: 2px;
+
+  /* Figma: System/Layout/Padding-XS */
+  --space-xs: 4px;
+
+  /* Figma: System/Layout/Padding-S */
+  --space-s: 8px;
+
+  /* Figma: System/Layout/Padding-M */
+  --space-m: 12px;
+
+  /* Figma: System/Layout/Padding-L (Default) */
+  --space-l: 16px;
+
+  /* Figma: System/Layout/Padding-XL */
+  --space-xl: 24px;
+
+  /* Figma: System/Layout/Padding-XXL */
+  --space-xxl: 28px;
+
+
+  /* ============================================================
+     BRAND THEME TINTS — PRIMARY
+     CUE primary brand color scale (teal/blue).
+  ============================================================ */
+
+  --primary-brand-default:      #03618d;
+  --primary-brand-strong:       #012637;
+  --primary-brand-moderate:     #024f73;
+  --primary-brand-subdued:      #0594d7;
+  --primary-brand-subtle:       #6ecffc;
+  --primary-brand-extra-subtle: #d8ecf8;
+  --primary-brand-weak:         #f0faff;
+
+
+  /* ============================================================
+     BRAND THEME TINTS — SECONDARY
+     CUE secondary brand color scale (amber/gold).
+  ============================================================ */
+
+  --secondary-brand-default:      #fab632;
+  --secondary-brand-strong:       #775103;
+  --secondary-brand-moderate:     #ea9e06;
+  --secondary-brand-subdued:      #fbc65b;
+  --secondary-brand-subtle:       #fde3af;
+  --secondary-brand-extra-subtle: #fef1d7;
+  --secondary-brand-weak:         #fff8eb;
+
+
+  /* ============================================================
+     GLOBAL — INTERACTIVE
+     Blue scale for interactive UI elements.
+  ============================================================ */
+
+  --interactive-default:      #2c70f4;
+  --interactive-strong:       #06296f;
+  --interactive-subdued:      #558bf6;
+  --interactive-subtle:       #adc7fb;
+  --interactive-extra-subtle: #d3e1fd;
+  --interactive-weak:         #ecf2fe;
+
+
+  /* ============================================================
+     GLOBAL — STATUS COLORS
+  ============================================================ */
+
+  /* Info */
+  --info-default:      #2c70f4;
+  --info-strong:       #06296f;
+  --info-subdued:      #558bf6;
+  --info-subtle:       #adc7fb;
+  --info-extra-subtle: #d3e1fd;
+  --info-weak:         #ecf2fe;
+
+  /* Success */
+  --success-default:      #34c759;
+  --success-strong:       #207936;
+  --success-subdued:      #59d478;
+  --success-subtle:       #aeeabd;
+  --success-extra-subtle: #d7f4de;
+  --success-weak:         #ebfaef;
+
+  /* Warning */
+  --warning-default:      #f69c00;
+  --warning-strong:       #613d00;
+  --warning-subdued:      #ffb22e;
+  --warning-subtle:       #ffd894;
+  --warning-extra-subtle: #ffeccc;
+  --warning-weak:         #fff6e5;
+
+  /* Danger */
+  --danger-default:      #d80000;
+  --danger-strong:       #570000;
+  --danger-subdued:      #ff1414;
+  --danger-subtle:       #ff8a8a;
+  --danger-extra-subtle: #ffc2c2;
+  --danger-weak:         #ffe0e0;
+
+
+  /* ============================================================
+     BUTTONS — SIZING
+  ============================================================ */
+
+  /* Figma: Buttons/Button Sizing/Corner Radius */
+  --corner-button: 4px;
+
+  /* Figma: Buttons/Button Sizing/padding-* */
+  --button-padding-xsmall:  4px;
+  --button-padding-small:   8px;
+  --button-padding-default: 8px;
+  --button-padding-large:   12px;
+  --button-padding-xlarge:  16px;
+  --button-padding-none:    0px;
+
+
+  /* ============================================================
+     BUTTONS — PRIMARY
+  ============================================================ */
+
+  --content-button-primary:       #ffffff;
+  --content-button-primary-hover: #ffffff;
+  --bg-button-primary:            #03618d;
+  --bg-button-primary-hover:      #012637;
+
+
+  /* ============================================================
+     BUTTONS — SECONDARY
+  ============================================================ */
+
+  --content-button-secondary:       #03618d;
+  --content-button-secondary-hover: #012637;
+  --bg-button-secondary:            transparent;
+  --bg-button-secondary-hover:      #f0faff;
+  --border-button-secondary:        #03618d;
+  --border-button-secondary-hover:  #012637;
+
+
+  /* ============================================================
+     BUTTONS — TERTIARY / LINK
+  ============================================================ */
+
+  --content-button-tertiary-link:       #03618d;
+  --content-button-tertiary-link-hover: #0594d7;
+  --bg-button-tertiary-link:            transparent;
+  --bg-button-tertiary-link-hover:      transparent;
+  --border-button-tertiary-link:        transparent;
+  --border-button-tertiary-link-hover:  transparent;
+
+
+  /* ============================================================
+     BUTTONS — NEUTRAL
+  ============================================================ */
+
+  --content-button-neutral:       #262626;
+  --content-button-neutral-hover: #1a1a1a;
+  --bg-button-neutral:            #ededed;
+  --bg-button-neutral-hover:      #d4d4d4;
+  --border-button-neutral:        transparent;
+  --border-button-neutral-hover:  transparent;
+
+
+  /* ============================================================
+     BUTTONS — NEUTRAL STROKE
+  ============================================================ */
+
+  --content-button-neutral-stroke:       #262626;
+  --content-button-neutral-stroke-hover: #1a1a1a;
+  --bg-button-neutral-stroke:            transparent;
+  --bg-button-neutral-stroke-hover:      #fafafa;
+  --border-button-neutral-stroke:        #d4d4d4;
+  --border-button-neutral-stroke-hover:  #8a8a8a;
+
+
+  /* ============================================================
+     COMPONENTS — ACCORDION
+  ============================================================ */
+
+  /* Figma: Components/Accordion/bg-accordion */
+  --bg-accordion: #ffffff;
+
+  /* Figma: Components/Accordion/border-accordion */
+  --border-accordion: #ededed;
+
+
+  /* ============================================================
+     COMPONENTS — CARD OR MODULE
+  ============================================================ */
+
+  /* Figma: Components/Card or Module/bg-card-module */
+  --bg-card-module: #ffffff;
+
+  /* Figma: Components/Card or Module/border-card-module */
+  --border-card-module: #ededed;
+
+  /* Figma: Components/Card or Module/corner-card-module */
+  --corner-card-module: 4px;
+
+
+  /* ============================================================
+     COMPONENTS — APP TOP BAR
+  ============================================================ */
+
+  --bg-app-top-bar:         #03618d;
+  --content-app-top-bar:    #ffffff;
+  --border-bottom-app-top-bar: transparent;
+
+
+  /* ============================================================
+     COMPONENTS — SIDE NAV BUTTON
+  ============================================================ */
+
+  --bg-side-nav-default:    transparent;
+  --bg-side-nav-level-2:    transparent;
+  --bg-side-nav-open:       #f0faff;
+  --bg-side-nav-hover:      #f0faff;
+  --bg-side-nav-current:    #d8ecf8;
+  --border-side-nav-current: transparent;
+  --content-side-nav-default: #262626;
+  --content-side-nav-hover:   #03618d;
+  --content-side-nav-open:    #03618d;
+  --content-side-nav-current: #03618d;
+
+
+  /* ============================================================
+     COMPONENTS — FORM FIELDS
+  ============================================================ */
+
+  --bg-form-field-default:              #ffffff;
+  --border-form-field-default:          #d4d4d4;
+  --content-form-field-placeholder:     #8a8a8a;
+  --content-form-field-filled-read:     #262626;
+
+  --bg-form-field-solid:                #f5f5f5;
+  --border-form-field-solid:            transparent;
+  --content-form-field-solid-placeholder: #8a8a8a;
+  --content-form-field-solid-filled-read: #262626;
+
+  --bg-form-field-focus:                #ffffff;
+  --border-form-field-focus:            #03618d;
+
+  --corner-form-field:   4px;
+  --padding-form-field-default: 12px;
+  --padding-form-field-medium:  8px;
+  --padding-form-field-small:   6px;
+
+
+  /* ============================================================
+     COMPONENTS — STATUS BADGE
+  ============================================================ */
+
+  --bg-status-neutral:      #ededed;
+  --content-status-neutral: #262626;
+  --border-status-neutral:  #ededed;
+
+  --bg-status-info:         #d3e1fd;
+  --content-status-info:    #06296f;
+  --border-status-info:     #d3e1fd;
+
+  --bg-status-success:      #d7f4de;
+  --content-status-success: #207936;
+  --border-status-success:  #d7f4de;
+
+  --bg-status-warning:      #ffeccc;
+  --content-status-warning: #613d00;
+  --border-status-warning:  #ffeccc;
+
+  --bg-status-error:        #ffc2c2;
+  --content-status-error:   #570000;
+  --border-status-error:    #ffc2c2;
+
+
+  /* ============================================================
+     COMPONENTS — TABLE
+  ============================================================ */
+
+  --bg-table-row-default:   #ffffff;
+  --bg-table-row-alt:       #fafafa;
+  --bg-table-row-selected:  #d8ecf8;
+  --bg-table-header:        #f5f5f5;
+  --border-table-header:    #ededed;
+
+
+  /* ============================================================
+     COMPONENTS — TAB NAVIGATION
+  ============================================================ */
+
+  --content-tab-default:      #8a8a8a;
+  --content-tab-hover:        #262626;
+  --content-tab-active:       #03618d;
+  --bg-tab-active-indicator:  #03618d;
+  --content-tab-pill-default: #262626;
+  --bg-tab-pill-active:       #03618d;
+  --content-tab-pill-active:  #ffffff;
+
+
+  /* ============================================================
+     COMPONENTS — DROPDOWN
+  ============================================================ */
+
+  --bg-dropdown:     #ffffff;
+  --border-dropdown: #ededed;
+
+
+  /* ============================================================
+     COMPONENTS — FOOTER
+  ============================================================ */
+
+  --bg-footer:      #262626;
+  --content-footer: #ffffff;
+
+
+  /* ============================================================
+     COMPONENTS — SEGMENTED CONTROL
+  ============================================================ */
+
+  --corner-segmented-control-button:    4px;
+  --corner-segmented-control-container: 6px;
+
+}
