@@ -483,17 +483,17 @@
   ============================================================ */
 
   --bg-form-field-default:                #ffffff;
-  --border-form-field-default:            #d4d4d4;
+  --border-form-field-default:            #a3a3a3;
   --content-form-field-placeholder:       #8a8a8a;
   --content-form-field-filled-read:       #262626;
 
-  --bg-form-field-solid:                  #f5f5f5;
+  --bg-form-field-solid:                  #ededed;
   --border-form-field-solid:              transparent;
-  --content-form-field-solid-placeholder: #8a8a8a;
+  --content-form-field-solid-placeholder: #575757;
   --content-form-field-solid-filled-read: #262626;
 
   --bg-form-field-focus:                  #ffffff;
-  --border-form-field-focus:              #03618d;
+  --border-form-field-focus:              #0594d7;
 
   --corner-form-field:          4px;       /* px — fixed */
   --padding-form-field-default: 0.75rem;   /* 12px */
