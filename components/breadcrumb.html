@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CUE Canvas — Breadcrumb</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../tokens.css" />
+  <link rel="stylesheet" href="../base.css" />
+  <link rel="icon" type="image/svg+xml" href="https://raw.githubusercontent.com/toddcoleman-excellis/cue-canvas-docs/main/assets/logo_CUE_glyph.svg" />
+  <style>
+
+    /* ============================================================
+       BREADCRUMB COMPONENT
+
+       Anatomy:
+         .cue-breadcrumb               — full-width bar container
+           .cue-breadcrumb__content    — inner flex row
+             .cue-breadcrumb__back     — back button (left section)
+             .cue-breadcrumb__pipe     — vertical divider
+             .cue-breadcrumb__trail    — link trail (right section)
+               .cue-breadcrumb__item  — individual trail item
+                 a.cue-breadcrumb__link        — Home or intermediate link
+                 .cue-breadcrumb__chevron      — keyboard_arrow_right icon
+                 span.cue-breadcrumb__current  — current page (end of trail)
+
+       Usage:
+         The breadcrumb bar lives at the top of page content areas in
+         CUE Back Office, below the app top bar. It always spans the
+         full content width. Horizontal padding is inherited from the
+         page layout wrapper (120px on desktop).
+    ============================================================ */
+
+    /* --- Bar container --- */
+
+    .cue-breadcrumb {
+      background-color: var(--bg-header);
+      border-bottom: 1px solid var(--border-extra-subtle);
+      width: 100%;
+      padding: 0.5rem 1.5rem; /* 8px vertical; horizontal set by layout in production */
+    }
+
+    /* --- Inner content row --- */
+
+    .cue-breadcrumb__content {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* --- Back button --- */
+
+    .cue-breadcrumb__back {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      color: var(--content-body-default);
+      font-family: var(--font-family-body);
+      font-size: 0.75rem;   /* 12px */
+      font-weight: 400;
+      line-height: 1;
+      white-space: nowrap;
+      transition: color 0.15s ease;
+    }
+
+    .cue-breadcrumb__back:hover {
+      color: var(--content-body-link);
+    }
+
+    .cue-breadcrumb__back:focus-visible {
+      outline: 2px solid var(--border-interactive);
+      outline-offset: 2px;
+      border-radius: 2px;
+    }
+
+    .cue-breadcrumb__back-icon {
+      font-size: 12px;  /* px — Material Icons optical spec at small size */
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    /* --- Pipe divider --- */
+
+    .cue-breadcrumb__pipe {
+      display: inline-block;
+      width: 1px;
+      height: 1rem;
+      background-color: var(--content-body-subtle);
+      margin: 0 2px;
+      flex-shrink: 0;
+    }
+
+    /* --- Trail --- */
+
+    .cue-breadcrumb__trail {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      flex-wrap: wrap;
+    }
+
+    /* --- Trail item wrapper --- */
+
+    .cue-breadcrumb__item {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* --- Link (Home + intermediate links) --- */
+
+    .cue-breadcrumb__link {
+      font-family: var(--font-family-body);
+      font-size: 0.75rem;   /* 12px */
+      font-weight: 400;
+      line-height: 1;
+      color: var(--content-body-default);
+      text-decoration: none;
+      white-space: nowrap;
+      transition: color 0.15s ease;
+    }
+
+    .cue-breadcrumb__link:hover {
+      color: var(--content-body-link);
+    }
+
+    .cue-breadcrumb__link:focus-visible {
+      outline: 2px solid var(--border-interactive);
+      outline-offset: 2px;
+      border-radius: 2px;
+    }
+
+    /* --- Chevron separator --- */
+
+    .cue-breadcrumb__chevron {
+      font-size: 16px;  /* px — Material Icons optical spec */
+      line-height: 1;
+      color: var(--content-body-subtle);
+      flex-shrink: 0;
+    }
+
+    /* --- Current page (end of trail) --- */
+
+    .cue-breadcrumb__current {
+      font-family: var(--font-family-body);
+      font-size: 0.75rem;   /* 12px */
+      font-weight: 700;
+      line-height: 1;
+      color: var(--content-body-link);
+      white-space: nowrap;
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="docs-topbar" role="banner">
+  <a href="../index.html" class="docs-topbar__logo" aria-label="CUE Canvas home">
+    <img src="https://raw.githubusercontent.com/toddcoleman-excellis/cue-canvas-docs/main/assets/logo_CUE_glyph.svg" alt="CUE glyph" />
+    <span class="docs-topbar__logo-label">Canvas</span>
+  </a>
+  <button class="docs-topbar__hamburger" aria-label="Open navigation" aria-expanded="false" aria-controls="docs-sidebar">
+    <span class="material-icons" aria-hidden="true">menu</span>
+  </button>
+</div>
+
+<div class="docs-nav-overlay" aria-hidden="true"></div>
+
+<div class="docs-layout">
+
+  <nav class="docs-sidebar" id="docs-sidebar" aria-label="Documentation navigation">
+    <button class="docs-sidebar__close" aria-label="Close navigation">
+      <span class="material-icons" aria-hidden="true">close</span>
+    </button>
+    <a href="../index.html" class="docs-sidebar__logo" aria-label="CUE Canvas home">
+      <img src="https://raw.githubusercontent.com/toddcoleman-excellis/cue-canvas-docs/main/assets/logo_CUE_glyph.svg" alt="CUE glyph" />
+      <span class="docs-sidebar__logo-label">Canvas</span>
+    </a>
+    <p class="docs-sidebar__section-label">Getting Started</p>
+    <div class="docs-sidebar__nav">
+      <a href="../index.html" class="docs-sidebar__nav-link">Overview</a>
+    </div>
+    <p class="docs-sidebar__section-label">Components</p>
+    <div class="docs-sidebar__nav">
+      <a href="accordion.html" class="docs-sidebar__nav-link">Accordion</a>
+      <a href="alert.html" class="docs-sidebar__nav-link">Alert</a>
+      <a href="badge.html" class="docs-sidebar__nav-link">Badge</a>
+      <a href="breadcrumb.html" class="docs-sidebar__nav-link active">Breadcrumb</a>
+      <a href="button.html" class="docs-sidebar__nav-link">Button</a>
+      <a href="calendar-components.html" class="docs-sidebar__nav-link">Calendar Components</a>
+      <a href="calendar.html" class="docs-sidebar__nav-link">Calendar</a>
+      <a href="scheduler.html" class="docs-sidebar__nav-link">Scheduler</a>
+      <a href="card.html" class="docs-sidebar__nav-link">Card / Module</a>
+      <a href="form-field.html" class="docs-sidebar__nav-link">Form Field</a>
+      <a href="status-badge.html" class="docs-sidebar__nav-link">Status Badge</a>
+      <a href="table.html" class="docs-sidebar__nav-link">Table</a>
+      <a href="tabs.html" class="docs-sidebar__nav-link">Tab Navigation</a>
+      <a href="side-nav.html" class="docs-sidebar__nav-link">Side Navigation</a>
+      <a href="dropdown.html" class="docs-sidebar__nav-link">Dropdown</a>
+      <a href="date-picker.html" class="docs-sidebar__nav-link">Date Picker</a>
+      <a href="calendar.html" class="docs-sidebar__nav-link">Calendar</a>
+      <a href="step-process.html" class="docs-sidebar__nav-link">Step Process</a>
+      <a href="skeleton.html" class="docs-sidebar__nav-link">Skeleton Loader</a>
+      <a href="chat.html" class="docs-sidebar__nav-link">Chat</a>
+    </div>
+    <p class="docs-sidebar__section-label">Icons</p>
+    <div class="docs-sidebar__nav">
+      <a href="../icons/icons.html" class="docs-sidebar__nav-link">Icon Reference</a>
+    </div>
+  </nav>
+
+  <main class="docs-main">
+
+    <div class="docs-page-header">
+      <h1 class="docs-page-title">Breadcrumb</h1>
+      <p class="docs-page-description">
+        Breadcrumbs show the user's current location within the application hierarchy and provide a way to navigate back up through parent sections. The breadcrumb bar spans the full width of the content area and sits below the app top bar on every interior page of CUE Back Office.
+      </p>
+    </div>
+
+    <!-- ============================================================
+         EXAMPLE
+    ============================================================ -->
+
+    <div class="docs-section">
+      <p class="docs-section-label">Example</p>
+      <div class="docs-example" style="padding: 0; overflow: hidden; flex-direction: column; gap: 0;">
+
+        <nav class="cue-breadcrumb" aria-label="Breadcrumb">
+          <div class="cue-breadcrumb__content">
+
+            <!-- Back button -->
+            <button class="cue-breadcrumb__back" type="button" onclick="history.back()">
+              <span class="cue-breadcrumb__back-icon material-icons" aria-hidden="true">arrow_back</span>
+              Back
+            </button>
+
+            <!-- Pipe divider -->
+            <span class="cue-breadcrumb__pipe" aria-hidden="true"></span>
+
+            <!-- Trail -->
+            <ol class="cue-breadcrumb__trail" aria-label="Page navigation">
+              <li class="cue-breadcrumb__item">
+                <a href="#" class="cue-breadcrumb__link">Home</a>
+                <span class="cue-breadcrumb__chevron material-icons" aria-hidden="true">keyboard_arrow_right</span>
+              </li>
+              <li class="cue-breadcrumb__item">
+                <a href="#" class="cue-breadcrumb__link">Order Management</a>
+                <span class="cue-breadcrumb__chevron material-icons" aria-hidden="true">keyboard_arrow_right</span>
+              </li>
+              <li class="cue-breadcrumb__item">
+                <a href="#" class="cue-breadcrumb__link">Orders</a>
+                <span class="cue-breadcrumb__chevron material-icons" aria-hidden="true">keyboard_arrow_right</span>
+              </li>
+              <li class="cue-breadcrumb__item" aria-current="page">
+                <span class="cue-breadcrumb__current">Order #10482</span>
+              </li>
+            </ol>
+
+          </div>
+        </nav>
+
+      </div>
+      <p style="font-size: 0.75rem; color: var(--content-body-moderate); margin-top: -0.75rem; margin-bottom: var(--space-xl);">Note: in production the breadcrumb bar spans the full page width. Horizontal padding is inherited from the page layout wrapper.</p>
+    </div>
+
+    <hr class="docs-divider" />
+
+    <!-- ============================================================
+         ITEM TYPES
+    ============================================================ -->
+
+    <div class="docs-section">
+      <p class="docs-section-label">Item types</p>
+      <div class="docs-example" style="flex-direction: column; gap: 1.5rem; align-items: flex-start;">
+
+        <div>
+          <p class="docs-section-label" style="margin-bottom: 0.5rem;">Back — navigates to previous page</p>
+          <button class="cue-breadcrumb__back" type="button">
+            <span class="cue-breadcrumb__back-icon material-icons" aria-hidden="true">arrow_back</span>
+            Back
+          </button>
+        </div>
+
+        <div>
+          <p class="docs-section-label" style="margin-bottom: 0.5rem;">Home — first item in trail</p>
+          <div class="cue-breadcrumb__item">
+            <a href="#" class="cue-breadcrumb__link">Home</a>
+            <span class="cue-breadcrumb__chevron material-icons" aria-hidden="true">keyboard_arrow_right</span>
+          </div>
+        </div>
+
+        <div>
+          <p class="docs-section-label" style="margin-bottom: 0.5rem;">Link and Chevron — intermediate steps</p>
+          <div class="cue-breadcrumb__item">
+            <a href="#" class="cue-breadcrumb__link">Order Management</a>
+            <span class="cue-breadcrumb__chevron material-icons" aria-hidden="true">keyboard_arrow_right</span>
+          </div>
+        </div>
+
+        <div>
+          <p class="docs-section-label" style="margin-bottom: 0.5rem;">Current — end of trail, not a link</p>
+          <span class="cue-breadcrumb__current">Order #10482</span>
+        </div>
+
+      </div>
+    </div>
+
+    <hr class="docs-divider" />
+
+    <!-- ============================================================
+         CODE
+    ============================================================ -->
+
+    <div class="docs-section">
+      <p class="docs-section-label">Code</p>
+
+      <div class="docs-code-tabs">
+        <button class="docs-code-tab active" onclick="switchTab(event, 'tab-html')">HTML</button>
+        <button class="docs-code-tab" onclick="switchTab(event, 'tab-css')">CSS</button>
+      </div>
+
+      <div class="docs-code-panel active" id="tab-html">
+        <div class="docs-code-block"><pre><code>&lt;nav class="cue-breadcrumb" aria-label="Breadcrumb"&gt;
+  &lt;div class="cue-breadcrumb__content"&gt;
+
+    &lt;!-- Back button --&gt;
+    &lt;button class="cue-breadcrumb__back" type="button" onclick="history.back()"&gt;
+      &lt;span class="cue-breadcrumb__back-icon material-icons" aria-hidden="true"&gt;arrow_back&lt;/span&gt;
+      Back
+    &lt;/button&gt;
+
+    &lt;!-- Pipe divider --&gt;
+    &lt;span class="cue-breadcrumb__pipe" aria-hidden="true"&gt;&lt;/span&gt;
+
+    &lt;!-- Trail --&gt;
+    &lt;ol class="cue-breadcrumb__trail" aria-label="Page navigation"&gt;
+
+      &lt;!-- Home --&gt;
+      &lt;li class="cue-breadcrumb__item"&gt;
+        &lt;a href="/dashboard" class="cue-breadcrumb__link"&gt;Home&lt;/a&gt;
+        &lt;span class="cue-breadcrumb__chevron material-icons" aria-hidden="true"&gt;keyboard_arrow_right&lt;/span&gt;
+      &lt;/li&gt;
+
+      &lt;!-- Intermediate links --&gt;
+      &lt;li class="cue-breadcrumb__item"&gt;
+        &lt;a href="/orders" class="cue-breadcrumb__link"&gt;Order Management&lt;/a&gt;
+        &lt;span class="cue-breadcrumb__chevron material-icons" aria-hidden="true"&gt;keyboard_arrow_right&lt;/span&gt;
+      &lt;/li&gt;
+
+      &lt;!-- Current page — not a link --&gt;
+      &lt;li class="cue-breadcrumb__item" aria-current="page"&gt;
+        &lt;span class="cue-breadcrumb__current"&gt;Order #10482&lt;/span&gt;
+      &lt;/li&gt;
+
+    &lt;/ol&gt;
+  &lt;/div&gt;
+&lt;/nav&gt;</code></pre></div>
+      </div>
+
+      <div class="docs-code-panel" id="tab-css">
+        <div class="docs-code-block"><pre><code>/* Tokens defined in tokens.css */
+
+.cue-breadcrumb {
+  background-color: var(--bg-header);
+  border-bottom: 1px solid var(--border-extra-subtle);
+  width: 100%;
+  padding: 0.5rem 1.5rem;
+  /* In production: horizontal padding inherited from page layout */
+}
+
+.cue-breadcrumb__content {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Back button */
+.cue-breadcrumb__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--content-body-default);
+  font-family: var(--font-family-body);
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1;
+  white-space: nowrap;
+  transition: color 0.15s ease;
+}
+.cue-breadcrumb__back:hover { color: var(--content-body-link); }
+.cue-breadcrumb__back:focus-visible {
+  outline: 2px solid var(--border-interactive);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.cue-breadcrumb__back-icon {
+  font-size: 12px;  /* px — icon optical spec */
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+/* Pipe divider */
+.cue-breadcrumb__pipe {
+  display: inline-block;
+  width: 1px;
+  height: 1rem;
+  background-color: var(--content-body-subtle);
+  margin: 0 2px;
+  flex-shrink: 0;
+}
+
+/* Trail */
+.cue-breadcrumb__trail {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.cue-breadcrumb__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Links */
+.cue-breadcrumb__link {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--content-body-default);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.15s ease;
+}
+.cue-breadcrumb__link:hover { color: var(--content-body-link); }
+.cue-breadcrumb__link:focus-visible {
+  outline: 2px solid var(--border-interactive);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Chevron */
+.cue-breadcrumb__chevron {
+  font-size: 16px;  /* px — icon optical spec */
+  line-height: 1;
+  color: var(--content-body-subtle);
+  flex-shrink: 0;
+}
+
+/* Current page */
+.cue-breadcrumb__current {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--content-body-link);
+  white-space: nowrap;
+}</code></pre></div>
+      </div>
+    </div>
+
+    <hr class="docs-divider" />
+
+    <!-- ============================================================
+         DESIGN TOKENS
+    ============================================================ -->
+
+    <div class="docs-section">
+      <p class="docs-section-label">Design Tokens</p>
+      <table class="docs-token-table">
+        <thead>
+          <tr><th>CSS Variable</th><th>Figma Token</th><th>Value</th><th>Usage</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>--bg-header</td>
+            <td>Components/Header/bg-header</td>
+            <td><span class="docs-token-swatch" style="background:#ffffff; border-color:#ededed;"></span>#ffffff</td>
+            <td>Breadcrumb bar background</td>
+          </tr>
+          <tr>
+            <td>--border-extra-subtle</td>
+            <td>System/Border/border-extra-subtle</td>
+            <td><span class="docs-token-swatch" style="background:#ededed;"></span>#ededed</td>
+            <td>Bottom border of the breadcrumb bar</td>
+          </tr>
+          <tr>
+            <td>--content-body-default</td>
+            <td>System/Content/content-body-default</td>
+            <td><span class="docs-token-swatch" style="background:#262626;"></span>#262626</td>
+            <td>Back button and link text color</td>
+          </tr>
+          <tr>
+            <td>--content-body-link</td>
+            <td>System/Content/content-body-link</td>
+            <td><span class="docs-token-swatch" style="background:#03618d;"></span>#03618d</td>
+            <td>Current page label and hover color</td>
+          </tr>
+          <tr>
+            <td>--content-body-subtle</td>
+            <td>System/Content/content-body-subtle</td>
+            <td><span class="docs-token-swatch" style="background:#d4d4d4;"></span>#d4d4d4</td>
+            <td>Pipe divider and chevron icon color</td>
+          </tr>
+          <tr>
+            <td>--border-interactive</td>
+            <td>System/Border/border-interactive</td>
+            <td><span class="docs-token-swatch" style="background:#2c70f4;"></span>#2c70f4</td>
+            <td>Focus ring on back button and links</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <hr class="docs-divider" />
+
+    <!-- ============================================================
+         ACCESSIBILITY
+    ============================================================ -->
+
+    <div class="docs-section">
+      <p class="docs-section-label">Accessibility</p>
+      <table class="docs-token-table">
+        <thead>
+          <tr><th>Attribute / Pattern</th><th>Element</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>&lt;nav&gt; with aria-label</td>
+            <td>.cue-breadcrumb</td>
+            <td>Use a &lt;nav&gt; element with aria-label="Breadcrumb" to create a landmark for screen reader navigation.</td>
+          </tr>
+          <tr>
+            <td>&lt;ol&gt; for trail</td>
+            <td>.cue-breadcrumb__trail</td>
+            <td>An ordered list communicates the sequential hierarchy to screen readers.</td>
+          </tr>
+          <tr>
+            <td>aria-current="page"</td>
+            <td>.cue-breadcrumb__item (last)</td>
+            <td>Applied to the list item containing the current page label. Tells screen readers which item represents the current location.</td>
+          </tr>
+          <tr>
+            <td>Current is not a link</td>
+            <td>.cue-breadcrumb__current</td>
+            <td>Use a &lt;span&gt; not an &lt;a&gt; for the current page — it should not be navigable since the user is already there.</td>
+          </tr>
+          <tr>
+            <td>aria-hidden="true"</td>
+            <td>.cue-breadcrumb__chevron, .cue-breadcrumb__pipe</td>
+            <td>Decorative elements hidden from screen readers — the list structure communicates hierarchy.</td>
+          </tr>
+          <tr>
+            <td>:focus-visible</td>
+            <td>.cue-breadcrumb__back, .cue-breadcrumb__link</td>
+            <td>Visible focus ring on keyboard navigation using the interactive border color token.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  function switchTab(event, tabId) {
+    const section = event.target.closest('.docs-section');
+    section.querySelectorAll('.docs-code-tab').forEach(t => t.classList.remove('active'));
+    section.querySelectorAll('.docs-code-panel').forEach(p => p.classList.remove('active'));
+    event.target.classList.add('active');
+    document.getElementById(tabId).classList.add('active');
+  }
+
+  (function() {
+    var sidebar   = document.querySelector('.docs-sidebar');
+    var overlay   = document.querySelector('.docs-nav-overlay');
+    var hamburger = document.querySelector('.docs-topbar__hamburger');
+    var closeBtn  = document.querySelector('.docs-sidebar__close');
+
+    function openNav() {
+      sidebar.classList.add('is-open');
+      overlay.classList.add('is-visible');
+      document.body.style.overflow = 'hidden';
+      if (hamburger) hamburger.setAttribute('aria-expanded', 'true');
+      if (closeBtn) closeBtn.focus();
+    }
+
+    function closeNav() {
+      sidebar.classList.remove('is-open');
+      overlay.classList.remove('is-visible');
+      document.body.style.overflow = '';
+      if (hamburger) {
+        hamburger.setAttribute('aria-expanded', 'false');
+        hamburger.focus();
+      }
+    }
+
+    if (hamburger) hamburger.addEventListener('click', openNav);
+    if (closeBtn)  closeBtn.addEventListener('click', closeNav);
+    if (overlay)   overlay.addEventListener('click', closeNav);
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && sidebar.classList.contains('is-open')) closeNav();
+    });
+  })();
+</script>
+
+</body>
+</html>

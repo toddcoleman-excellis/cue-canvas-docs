@@ -402,6 +402,30 @@
   --border-button-neutral-stroke-hover:  #8a8a8a;
 
 
+
+  /* ============================================================
+     COMPONENTS — CALENDAR
+  ============================================================ */
+
+  --bg-hour-block:                        #ffffff;
+  --border-hour-block:                    #ededed;
+  --bg-hour-block-current-day:            #ffffff;
+  --border-hour-block-current-day:        #ededed;
+  --border-dashed-half-hour:              #ededed;
+  --border-dashed-half-hour-current-day:  #ededed;
+  --current-day-active-indicator:         #fab632;
+
+  --bg-cal-activity-block:                #ffffff;
+  --border-cal-activity-block:            #ededed;
+  --bg-cal-activity-block-hover:          #ffffff;
+  --border-cal-activity-block-hover:      #8a8a8a;
+
+  --bg-resource-sched-block:              #ffffff;
+  --border-resource-sched-block:          #ededed;
+  --bg-resource-sched-block-hover:        #ffffff;
+  --border-resource-sched-block-hover:    #8a8a8a;
+
+
   /* ============================================================
      COMPONENTS — ACCORDION
   ============================================================ */
@@ -482,24 +506,24 @@
   ============================================================ */
 
   --bg-status-neutral:      #ededed;
-  --content-status-neutral: #262626;
+  --content-status-neutral: #1a1a1a;
   --border-status-neutral:  #ededed;
 
-  --bg-status-info:         #d3e1fd;
-  --content-status-info:    #06296f;
-  --border-status-info:     #d3e1fd;
+  --bg-status-info:         #2c70f4;
+  --content-status-info:    #ecf2fe;
+  --border-status-info:     #2c70f4;
 
-  --bg-status-success:      #d7f4de;
-  --content-status-success: #207936;
-  --border-status-success:  #d7f4de;
+  --bg-status-success:      #207936;
+  --content-status-success: #ebfaef;
+  --border-status-success:  #207936;
 
-  --bg-status-warning:      #ffeccc;
+  --bg-status-warning:      #f69c00;
   --content-status-warning: #613d00;
-  --border-status-warning:  #ffeccc;
+  --border-status-warning:  #f69c00;
 
-  --bg-status-error:        #ffc2c2;
-  --content-status-error:   #570000;
-  --border-status-error:    #ffc2c2;
+  --bg-status-error:        #d80000;
+  --content-status-error:   #ffe0e0;
+  --border-status-error:    #d80000;
 
 
   /* ============================================================

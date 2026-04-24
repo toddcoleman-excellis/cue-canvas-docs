@@ -192,17 +192,20 @@ code, pre {
 ============================================================ */
 
 .docs-nav-overlay {
-  display: none;
   position: fixed;
   inset: 0;
   background-color: rgba(0, 0, 0, 0.4);
   z-index: 300;
   opacity: 0;
-  transition: opacity 0.25s ease;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
 }
 
 .docs-nav-overlay.is-visible {
   opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
 }
 
 
@@ -558,11 +561,6 @@ code, pre {
   /* Open state — toggled by JS adding .is-open */
   .docs-sidebar.is-open {
     transform: translateX(0);
-  }
-
-  /* Show overlay when nav is open */
-  .docs-nav-overlay {
-    display: block;
   }
 
   /* Show close button inside sidebar */

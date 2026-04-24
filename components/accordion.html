@@ -145,7 +145,12 @@
     <p class="docs-sidebar__section-label">Components</p>
     <div class="docs-sidebar__nav">
       <a href="accordion.html" class="docs-sidebar__nav-link active">Accordion</a>
+      <a href="badge.html" class="docs-sidebar__nav-link">Badge</a>
+      <a href="breadcrumb.html" class="docs-sidebar__nav-link">Breadcrumb</a>
       <a href="button.html" class="docs-sidebar__nav-link">Button</a>
+      <a href="calendar-components.html" class="docs-sidebar__nav-link">Calendar Components</a>
+      <a href="calendar.html" class="docs-sidebar__nav-link">Calendar</a>
+      <a href="scheduler.html" class="docs-sidebar__nav-link">Scheduler</a>
       <a href="card.html" class="docs-sidebar__nav-link">Card / Module</a>
       <a href="form-field.html" class="docs-sidebar__nav-link">Form Field</a>
       <a href="status-badge.html" class="docs-sidebar__nav-link">Status Badge</a>
@@ -580,14 +585,18 @@ document.addEventListener('DOMContentLoaded', initAccordions);</code></pre></div
       sidebar.classList.add('is-open');
       overlay.classList.add('is-visible');
       document.body.style.overflow = 'hidden';
-      closeBtn.focus();
+      if (hamburger) hamburger.setAttribute('aria-expanded', 'true');
+      if (closeBtn) closeBtn.focus();
     }
 
     function closeNav() {
       sidebar.classList.remove('is-open');
       overlay.classList.remove('is-visible');
       document.body.style.overflow = '';
-      if (hamburger) hamburger.focus();
+      if (hamburger) {
+        hamburger.setAttribute('aria-expanded', 'false');
+        hamburger.focus();
+      }
     }
 
     if (hamburger) hamburger.addEventListener('click', openNav);

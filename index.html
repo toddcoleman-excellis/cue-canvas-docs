@@ -175,7 +175,12 @@
     <div class="docs-sidebar__nav">
       <a href="components/accordion.html" class="docs-sidebar__nav-link">Accordion</a>
       <a href="components/alert.html" class="docs-sidebar__nav-link">Alert</a>
+      <a href="components/badge.html" class="docs-sidebar__nav-link">Badge</a>
+      <a href="components/breadcrumb.html" class="docs-sidebar__nav-link">Breadcrumb</a>
       <a href="components/button.html" class="docs-sidebar__nav-link">Button</a>
+      <a href="components/calendar-components.html" class="docs-sidebar__nav-link">Calendar Components</a>
+      <a href="components/calendar.html" class="docs-sidebar__nav-link">Calendar</a>
+      <a href="components/scheduler.html" class="docs-sidebar__nav-link">Scheduler</a>
       <a href="components/card.html" class="docs-sidebar__nav-link">Card / Module</a>
       <a href="components/form-field.html" class="docs-sidebar__nav-link">Form Field</a>
       <a href="components/status-badge.html" class="docs-sidebar__nav-link">Status Badge</a>
@@ -249,6 +254,30 @@
           </p>
         </a>
 
+                <a href="components/badge.html" class="component-card">
+          <div class="component-card__icon">
+            <span class="material-icons" aria-hidden="true">label</span>
+          </div>
+          <p class="component-card__name">Badge</p>
+          <p class="component-card__description">Compact status indicators for neutral, info, success, warning, and error states.</p>
+          <p class="component-card__status">
+            <span class="material-icons" aria-hidden="true">check_circle</span>
+            Ready
+          </p>
+        </a>
+
+                <a href="components/breadcrumb.html" class="component-card">
+          <div class="component-card__icon">
+            <span class="material-icons" aria-hidden="true">more_horiz</span>
+          </div>
+          <p class="component-card__name">Breadcrumb</p>
+          <p class="component-card__description">Hierarchical navigation trail showing the user's current location within the app.</p>
+          <p class="component-card__status">
+            <span class="material-icons" aria-hidden="true">check_circle</span>
+            Ready
+          </p>
+        </a>
+
                 <a href="components/button.html" class="component-card">
           <div class="component-card__icon">
             <span class="material-icons" aria-hidden="true">smart_button</span>
@@ -261,7 +290,43 @@
           </p>
         </a>
 
-        <a href="components/card.html" class="component-card">
+        <a href="components/calendar-components.html" class="component-card">
+          <div class="component-card__icon">
+            <span class="material-icons" aria-hidden="true">calendar_today</span>
+          </div>
+          <p class="component-card__name">Calendar Components</p>
+          <p class="component-card__description">Hour blocks, activity blocks, avatars, resource headers, and scheduler blocks for Calendar and Scheduler views.</p>
+          <p class="component-card__status">
+            <span class="material-icons" aria-hidden="true">check_circle</span>
+            Ready
+          </p>
+        </a>
+
+                <a href="components/calendar.html" class="component-card">
+          <div class="component-card__icon">
+            <span class="material-icons" aria-hidden="true">event</span>
+          </div>
+          <p class="component-card__name">Calendar</p>
+          <p class="component-card__description">Week-view scheduling interface for meetings and time blocking, assembled from Calendar Component building blocks.</p>
+          <p class="component-card__status">
+            <span class="material-icons" aria-hidden="true">check_circle</span>
+            Ready
+          </p>
+        </a>
+
+        <a href="components/scheduler.html" class="component-card">
+          <div class="component-card__icon">
+            <span class="material-icons" aria-hidden="true">view_timeline</span>
+          </div>
+          <p class="component-card__name">Scheduler</p>
+          <p class="component-card__description">Horizontal timeline view for production line planning and resource allocation across personnel.</p>
+          <p class="component-card__status">
+            <span class="material-icons" aria-hidden="true">check_circle</span>
+            Ready
+          </p>
+        </a>
+
+                <a href="components/card.html" class="component-card">
           <div class="component-card__icon">
             <span class="material-icons" aria-hidden="true">web_asset</span>
           </div>
@@ -410,14 +475,18 @@
       sidebar.classList.add('is-open');
       overlay.classList.add('is-visible');
       document.body.style.overflow = 'hidden';
-      closeBtn.focus();
+      if (hamburger) hamburger.setAttribute('aria-expanded', 'true');
+      if (closeBtn) closeBtn.focus();
     }
 
     function closeNav() {
       sidebar.classList.remove('is-open');
       overlay.classList.remove('is-visible');
       document.body.style.overflow = '';
-      if (hamburger) hamburger.focus();
+      if (hamburger) {
+        hamburger.setAttribute('aria-expanded', 'false');
+        hamburger.focus();
+      }
     }
 
     if (hamburger) hamburger.addEventListener('click', openNav);

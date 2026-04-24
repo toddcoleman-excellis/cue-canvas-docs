@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CUE Canvas — Badge</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../tokens.css" />
+  <link rel="stylesheet" href="../base.css" />
+  <link rel="icon" type="image/svg+xml" href="https://raw.githubusercontent.com/toddcoleman-excellis/cue-canvas-docs/main/assets/logo_CUE_glyph.svg" />
+  <style>
+
+    /* ============================================================
+       BADGE COMPONENT
+
+       Anatomy:
+         .cue-badge                  — badge container
+           .cue-badge__icon          — optional Material Icon (14px)
+           .cue-badge__label         — status label text
+
+       Type modifiers (add to .cue-badge):
+         .cue-badge--neutral
+         .cue-badge--info
+         .cue-badge--success
+         .cue-badge--warning
+         .cue-badge--error
+
+       Style modifiers (add to .cue-badge):
+         (default / no modifier)     — Default: 4px border radius
+         .cue-badge--round           — Round: pill shape (100px radius)
+
+       Usage note:
+         Badges are for communicating status only. Do not use them
+         for navigation, filtering, or decoration. For those use
+         cases consider a button or tag component instead.
+    ============================================================ */
+
+    .cue-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      padding: 4px;
+      border: 1px solid;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    /* Round style */
+    .cue-badge--round {
+      border-radius: 100px;
+    }
+
+    /* Icon */
+    .cue-badge__icon {
+      font-size: 14px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    /* Label */
+    .cue-badge__label {
+      font-family: var(--font-family-body);
+      font-size: 0.625rem;  /* 10px */
+      font-weight: 600;
+      line-height: 1;
+      text-align: center;
+    }
+
+    /* ============================================================
+       BADGE TYPES
+       Uses the Status Badge component tokens from the UI Theme.
+       Backgrounds are solid saturated colors — not tints.
+       Text uses the light end of each scale for contrast.
+    ============================================================ */
+
+    /* Neutral — light gray bg, dark text */
+    .cue-badge--neutral {
+      background-color: var(--bg-status-neutral);
+      border-color: var(--border-status-neutral);
+      color: var(--content-status-neutral);
+    }
+    .cue-badge--neutral .cue-badge__icon {
+      color: var(--content-status-neutral);
+    }
+
+    /* Info — blue bg, light text */
+    .cue-badge--info {
+      background-color: var(--bg-status-info);
+      border-color: var(--border-status-info);
+      color: var(--content-status-info);
+    }
+    .cue-badge--info .cue-badge__icon {
+      color: var(--content-status-info);
+    }
+
+    /* Success — green bg, light text */
+    .cue-badge--success {
+      background-color: var(--bg-status-success);
+      border-color: var(--border-status-success);
+      color: var(--content-status-success);
+    }
+    .cue-badge--success .cue-badge__icon {
+      color: var(--content-status-success);
+    }
+
+    /* Warning — amber bg, dark text for contrast */
+    .cue-badge--warning {
+      background-color: var(--bg-status-warning);
+      border-color: var(--border-status-warning);
+      color: var(--content-status-warning);
+    }
+    .cue-badge--warning .cue-badge__icon {
+      color: var(--content-status-warning);
+    }
+
+    /* Error — red bg, light text */
+    .cue-badge--error {
+      background-color: var(--bg-status-error);
+      border-color: var(--border-status-error);
+      color: var(--content-status-error);
+    }
+    .cue-badge--error .cue-badge__icon {
+      color: var(--content-status-error);
+    }
+
+    /* ============================================================
+       DOCS PAGE HELPERS
+    ============================================================ */
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .badge-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .badge-group-label {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--content-body-moderate);
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="docs-topbar" role="banner">
+  <a href="../index.html" class="docs-topbar__logo" aria-label="CUE Canvas home">
+    <img src="https://raw.githubusercontent.com/toddcoleman-excellis/cue-canvas-docs/main/assets/logo_CUE_glyph.svg" alt="CUE glyph" />
+    <span class="docs-topbar__logo-label">Canvas</span>
+  </a>
+  <button class="docs-topbar__hamburger" aria-label="Open navigation" aria-expanded="false" aria-controls="docs-sidebar">
+    <span class="material-icons" aria-hidden="true">menu</span>
+  </button>
+</div>
+
+<div class="docs-nav-overlay" aria-hidden="true"></div>
+
+<div class="docs-layout">
+
+  <nav class="docs-sidebar" id="docs-sidebar" aria-label="Documentation navigation">
+    <button class="docs-sidebar__close" aria-label="Close navigation">
+      <span class="material-icons" aria-hidden="true">close</span>
+    </button>
+    <a href="../index.html" class="docs-sidebar__logo" aria-label="CUE Canvas home">
+      <img src="https://raw.githubusercontent.com/toddcoleman-excellis/cue-canvas-docs/main/assets/logo_CUE_glyph.svg" alt="CUE glyph" />
+      <span class="docs-sidebar__logo-label">Canvas</span>
+    </a>
+    <p class="docs-sidebar__section-label">Getting Started</p>
+    <div class="docs-sidebar__nav">
+      <a href="../index.html" class="docs-sidebar__nav-link">Overview</a>
+    </div>
+    <p class="docs-sidebar__section-label">Components</p>
+    <div class="docs-sidebar__nav">
+      <a href="accordion.html" class="docs-sidebar__nav-link">Accordion</a>
+      <a href="alert.html" class="docs-sidebar__nav-link">Alert</a>
+      <a href="badge.html" class="docs-sidebar__nav-link active">Badge</a>
+      <a href="breadcrumb.html" class="docs-sidebar__nav-link">Breadcrumb</a>
+      <a href="button.html" class="docs-sidebar__nav-link">Button</a>
+      <a href="calendar-components.html" class="docs-sidebar__nav-link">Calendar Components</a>
+      <a href="calendar.html" class="docs-sidebar__nav-link">Calendar</a>
+      <a href="scheduler.html" class="docs-sidebar__nav-link">Scheduler</a>
+      <a href="card.html" class="docs-sidebar__nav-link">Card / Module</a>
+      <a href="form-field.html" class="docs-sidebar__nav-link">Form Field</a>
+      <a href="status-badge.html" class="docs-sidebar__nav-link">Status Badge</a>
+      <a href="table.html" class="docs-sidebar__nav-link">Table</a>
+      <a href="tabs.html" class="docs-sidebar__nav-link">Tab Navigation</a>
+      <a href="side-nav.html" class="docs-sidebar__nav-link">Side Navigation</a>
+      <a href="dropdown.html" class="docs-sidebar__nav-link">Dropdown</a>
+      <a href="date-picker.html" class="docs-sidebar__nav-link">Date Picker</a>
+      <a href="calendar.html" class="docs-sidebar__nav-link">Calendar</a>
+      <a href="step-process.html" class="docs-sidebar__nav-link">Step Process</a>
+      <a href="skeleton.html" class="docs-sidebar__nav-link">Skeleton Loader</a>
+      <a href="chat.html" class="docs-sidebar__nav-link">Chat</a>
+    </div>
+    <p class="docs-sidebar__section-label">Icons</p>
+    <div class="docs-sidebar__nav">
+      <a href="../icons/icons.html" class="docs-sidebar__nav-link">Icon Reference</a>
+    </div>
+  </nav>
+
+  <main class="docs-main">
+
+    <div class="docs-page-header">
+      <h1 class="docs-page-title">Badge</h1>
+      <p class="docs-page-description">
+        Badges communicate the status of an item at a glance. They are compact, non-interactive labels that appear inline with content — in tables, lists, cards, and alongside other UI elements. Use badges exclusively for status communication, not for navigation or decoration.
+      </p>
+    </div>
+
+    <!-- ============================================================
+         TYPES
+    ============================================================ -->
+
+    <div class="docs-section">
+      <p class="docs-section-label">Types</p>
+      <div class="docs-example">
+        <div class="badge-row">
+          <div class="badge-group">
+            <p class="badge-group-label">Neutral</p>
+            <span class="cue-badge cue-badge--neutral" role="status">
+              <span class="cue-badge__icon material-icons" aria-hidden="true">info</span>
+              <span class="cue-badge__label">Neutral</span>
+            </span>
+          </div>
+          <div class="badge-group">
+            <p class="badge-group-label">Info</p>
+            <span class="cue-badge cue-badge--info" role="status">
+              <span class="cue-badge__icon material-icons" aria-hidden="true">info</span>
+              <span class="cue-badge__label">Info</span>
+            </span>
+          </div>
+          <div class="badge-group">
+            <p class="badge-group-label">Success</p>
+            <span class="cue-badge cue-badge--success" role="status">
+              <span class="cue-badge__icon material-icons" aria-hidden="true">check_circle</span>
+              <span class="cue-badge__label">Success</span>
+            </span>
+          </div>
+          <div class="badge-group">
+            <p class="badge-group-label">Warning</p>
+            <span class="cue-badge cue-badge--warning" role="status">
+              <span class="cue-badge__icon material-icons" aria-hidden="true">warning</span>
+              <span class="cue-badge__label">Warning</span>
+            </span>
+          </div>
+          <div class="badge-group">
+            <p class="badge-group-label">Error</p>
+            <span class="cue-badge cue-badge--error" role="status">
+              <span class="cue-badge__icon material-icons" aria-hidden="true">error</span>
+              <span class="cue-badge__label">Error</span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="docs-divider" />
+
+    <!-- ============================================================
+         STYLES
+    ============================================================ -->
+
+    <div class="docs-section">
+      <p class="docs-section-label">Styles</p>
+      <div class="docs-example" style="flex-direction: column; gap: 1.5rem;">
+
+        <div>
+          <p class="badge-group-label" style="margin-bottom: 0.75rem;">Default — 4px border radius</p>
+          <div class="badge-row">
+            <span class="cue-badge cue-badge--neutral" role="status">
+              <span class="cue-badge__icon material-icons" aria-hidden="true">info</span>
+              <span class="cue-badge__label">Label</span>
+            </span>
+            <span class="cue-badge cue-badge--info" role="status">
+              <span class="cue-badge__icon material-icons" aria-hidden="true">info</span>
+              <span class="cue-badge__label">Label</span>
+            </span>
+            <span class="cue-badge cue-badge--success" role="status">
+              <span class="cue-badge__icon material-icons" aria-hidden="true">check_circle</span>
+              <span class="cue-badge__label">Label</span>
+            </span>
+            <span class="cue-badge cue-badge--warning" role="status">
+              <span class="cue-badge__icon material-icons" aria-hidden="true">warning</span>
+              <span class="cue-badge__label">Label</span>
+            </span>
+            <span class="cue-badge cue-badge--error" role="status">
+              <span class="cue-badge__icon material-icons" aria-hidden="true">error</span>
+              <span class="cue-badge__label">Label</span>
+            </span>
+          </div>
+        </div>
+
+        <div>
+          <p class="badge-group-label" style="margin-bottom: 0.75rem;">Round — pill shape</p>
+          <div class="badge-row">
+            <span class="cue-badge cue-badge--neutral cue-badge--round" role="status">
+              <span class="cue-badge__icon material-icons" aria-hidden="true">info</span>
+              <span class="cue-badge__label">Label</span>
+            </span>
+            <span class="cue-badge cue-badge--info cue-badge--round" role="status">
+              <span class="cue-badge__icon material-icons" aria-hidden="true">info</span>
+              <span class="cue-badge__label">Label</span>
+            </span>
+            <span class="cue-badge cue-badge--success cue-badge--round" role="status">
+              <span class="cue-badge__icon material-icons" aria-hidden="true">check_circle</span>
+              <span class="cue-badge__label">Label</span>
+            </span>
+            <span class="cue-badge cue-badge--warning cue-badge--round" role="status">
+              <span class="cue-badge__icon material-icons" aria-hidden="true">warning</span>
+              <span class="cue-badge__label">Label</span>
+            </span>
+            <span class="cue-badge cue-badge--error cue-badge--round" role="status">
+              <span class="cue-badge__icon material-icons" aria-hidden="true">error</span>
+              <span class="cue-badge__label">Label</span>
+            </span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <hr class="docs-divider" />
+
+    <!-- ============================================================
+         ICON OPTIONAL
+    ============================================================ -->
+
+    <div class="docs-section">
+      <p class="docs-section-label">Icon — optional</p>
+      <div class="docs-example">
+        <div class="badge-row">
+          <div class="badge-group">
+            <p class="badge-group-label">With icon</p>
+            <span class="cue-badge cue-badge--success" role="status">
+              <span class="cue-badge__icon material-icons" aria-hidden="true">check_circle</span>
+              <span class="cue-badge__label">Active</span>
+            </span>
+          </div>
+          <div class="badge-group">
+            <p class="badge-group-label">Label only</p>
+            <span class="cue-badge cue-badge--success" role="status">
+              <span class="cue-badge__label">Active</span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="docs-divider" />
+
+    <!-- ============================================================
+         IN CONTEXT
+    ============================================================ -->
+
+    <div class="docs-section">
+      <p class="docs-section-label">In context — order status example</p>
+      <div class="docs-example" style="flex-direction: column; gap: 0;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 0.875rem;">
+          <thead>
+            <tr style="border-bottom: 1px solid var(--border-level-1);">
+              <th style="text-align: left; padding: 0.5rem 0.75rem; font-size: 0.75rem; font-weight: 700; color: var(--content-body-moderate); text-transform: uppercase; letter-spacing: 0.06em;">Order</th>
+              <th style="text-align: left; padding: 0.5rem 0.75rem; font-size: 0.75rem; font-weight: 700; color: var(--content-body-moderate); text-transform: uppercase; letter-spacing: 0.06em;">Customer</th>
+              <th style="text-align: left; padding: 0.5rem 0.75rem; font-size: 0.75rem; font-weight: 700; color: var(--content-body-moderate); text-transform: uppercase; letter-spacing: 0.06em;">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid var(--border-level-1);">
+              <td style="padding: 0.75rem; color: var(--content-body-default);">#10482</td>
+              <td style="padding: 0.75rem; color: var(--content-body-default);">Clemens Food Group</td>
+              <td style="padding: 0.75rem;">
+                <span class="cue-badge cue-badge--success cue-badge--round" role="status">
+                  <span class="cue-badge__icon material-icons" aria-hidden="true">check_circle</span>
+                  <span class="cue-badge__label">Fulfilled</span>
+                </span>
+              </td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-level-1);">
+              <td style="padding: 0.75rem; color: var(--content-body-default);">#10481</td>
+              <td style="padding: 0.75rem; color: var(--content-body-default);">Southwire</td>
+              <td style="padding: 0.75rem;">
+                <span class="cue-badge cue-badge--info cue-badge--round" role="status">
+                  <span class="cue-badge__icon material-icons" aria-hidden="true">info</span>
+                  <span class="cue-badge__label">Processing</span>
+                </span>
+              </td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-level-1);">
+              <td style="padding: 0.75rem; color: var(--content-body-default);">#10480</td>
+              <td style="padding: 0.75rem; color: var(--content-body-default);">CertainTeed</td>
+              <td style="padding: 0.75rem;">
+                <span class="cue-badge cue-badge--warning cue-badge--round" role="status">
+                  <span class="cue-badge__icon material-icons" aria-hidden="true">warning</span>
+                  <span class="cue-badge__label">On Hold</span>
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 0.75rem; color: var(--content-body-default);">#10479</td>
+              <td style="padding: 0.75rem; color: var(--content-body-default);">Grainger</td>
+              <td style="padding: 0.75rem;">
+                <span class="cue-badge cue-badge--error cue-badge--round" role="status">
+                  <span class="cue-badge__icon material-icons" aria-hidden="true">error</span>
+                  <span class="cue-badge__label">Cancelled</span>
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <hr class="docs-divider" />
+
+    <!-- ============================================================
+         CODE
+    ============================================================ -->
+
+    <div class="docs-section">
+      <p class="docs-section-label">Code</p>
+
+      <div class="docs-code-tabs">
+        <button class="docs-code-tab active" onclick="switchTab(event, 'tab-html')">HTML</button>
+        <button class="docs-code-tab" onclick="switchTab(event, 'tab-css')">CSS</button>
+      </div>
+
+      <div class="docs-code-panel active" id="tab-html">
+        <div class="docs-code-block"><pre><code>&lt;!-- Neutral —  Default style --&gt;
+&lt;span class="cue-badge cue-badge--neutral" role="status"&gt;
+  &lt;span class="cue-badge__icon material-icons" aria-hidden="true"&gt;info&lt;/span&gt;
+  &lt;span class="cue-badge__label"&gt;Neutral&lt;/span&gt;
+&lt;/span&gt;
+
+&lt;!-- Info --&gt;
+&lt;span class="cue-badge cue-badge--info" role="status"&gt;
+  &lt;span class="cue-badge__icon material-icons" aria-hidden="true"&gt;info&lt;/span&gt;
+  &lt;span class="cue-badge__label"&gt;Info&lt;/span&gt;
+&lt;/span&gt;
+
+&lt;!-- Success --&gt;
+&lt;span class="cue-badge cue-badge--success" role="status"&gt;
+  &lt;span class="cue-badge__icon material-icons" aria-hidden="true"&gt;check_circle&lt;/span&gt;
+  &lt;span class="cue-badge__label"&gt;Success&lt;/span&gt;
+&lt;/span&gt;
+
+&lt;!-- Warning --&gt;
+&lt;span class="cue-badge cue-badge--warning" role="status"&gt;
+  &lt;span class="cue-badge__icon material-icons" aria-hidden="true"&gt;warning&lt;/span&gt;
+  &lt;span class="cue-badge__label"&gt;Warning&lt;/span&gt;
+&lt;/span&gt;
+
+&lt;!-- Error --&gt;
+&lt;span class="cue-badge cue-badge--error" role="status"&gt;
+  &lt;span class="cue-badge__icon material-icons" aria-hidden="true"&gt;error&lt;/span&gt;
+  &lt;span class="cue-badge__label"&gt;Error&lt;/span&gt;
+&lt;/span&gt;
+
+&lt;!-- Round style — add .cue-badge--round --&gt;
+&lt;span class="cue-badge cue-badge--success cue-badge--round" role="status"&gt;
+  &lt;span class="cue-badge__icon material-icons" aria-hidden="true"&gt;check_circle&lt;/span&gt;
+  &lt;span class="cue-badge__label"&gt;Fulfilled&lt;/span&gt;
+&lt;/span&gt;
+
+&lt;!-- Label only — icon is optional --&gt;
+&lt;span class="cue-badge cue-badge--info" role="status"&gt;
+  &lt;span class="cue-badge__label"&gt;Processing&lt;/span&gt;
+&lt;/span&gt;</code></pre></div>
+      </div>
+
+      <div class="docs-code-panel" id="tab-css">
+        <div class="docs-code-block"><pre><code>/* Tokens defined in tokens.css */
+
+.cue-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 4px;
+  border: 1px solid;
+  border-radius: 4px;     /* px — fixed design decision */
+  white-space: nowrap;
+}
+
+.cue-badge--round {
+  border-radius: 100px;   /* px — pill shape */
+}
+
+.cue-badge__icon {
+  font-size: 14px;        /* px — Material Icons optical spec */
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.cue-badge__label {
+  font-size: 0.625rem;    /* 10px */
+  font-weight: 600;
+  line-height: 1;
+}
+
+/* Types */
+.cue-badge--neutral {
+  background-color: var(--bg-status-neutral);
+  border-color: var(--border-status-neutral);
+  color: var(--content-status-neutral);
+}
+
+.cue-badge--info {
+  background-color: var(--bg-status-info);
+  border-color: var(--border-status-info);
+  color: var(--content-status-info);
+}
+
+.cue-badge--success {
+  background-color: var(--bg-status-success);
+  border-color: var(--border-status-success);
+  color: var(--content-status-success);
+}
+
+.cue-badge--warning {
+  background-color: var(--bg-status-warning);
+  border-color: var(--border-status-warning);
+  color: var(--content-status-warning);
+}
+
+.cue-badge--error {
+  background-color: var(--bg-status-error);
+  border-color: var(--border-status-error);
+  color: var(--content-status-error);
+}</code></pre></div>
+      </div>
+    </div>
+
+    <hr class="docs-divider" />
+
+    <!-- ============================================================
+         DESIGN TOKENS
+    ============================================================ -->
+
+    <div class="docs-section">
+      <p class="docs-section-label">Design Tokens</p>
+      <table class="docs-token-table">
+        <thead>
+          <tr><th>Type</th><th>CSS Variable</th><th>Figma Token</th><th>Value</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td rowspan="3" style="vertical-align: top; padding-top: 0.875rem;">Neutral</td>
+            <td>--bg-status-neutral</td>
+            <td>Components/Status Badge/Neutral/bg-status-neutral</td>
+            <td><span class="docs-token-swatch" style="background:#ededed;"></span>#ededed</td>
+          </tr>
+          <tr>
+            <td>--content-status-neutral</td>
+            <td>Components/Status Badge/Neutral/content-status-neutral</td>
+            <td><span class="docs-token-swatch" style="background:#1a1a1a;"></span>#1a1a1a</td>
+          </tr>
+          <tr>
+            <td>--border-status-neutral</td>
+            <td>Components/Status Badge/Neutral/border-status-neutral</td>
+            <td><span class="docs-token-swatch" style="background:#ededed;"></span>#ededed</td>
+          </tr>
+          <tr style="border-top: 2px solid var(--border-level-1);">
+            <td rowspan="3" style="vertical-align: top; padding-top: 0.875rem;">Info</td>
+            <td>--bg-status-info</td>
+            <td>Components/Status Badge/Info/bg-status-info</td>
+            <td><span class="docs-token-swatch" style="background:#2c70f4;"></span>#2c70f4</td>
+          </tr>
+          <tr>
+            <td>--content-status-info</td>
+            <td>Components/Status Badge/Info/content-status-info</td>
+            <td><span class="docs-token-swatch" style="background:#ecf2fe; border-color:#d0d0d0;"></span>#ecf2fe</td>
+          </tr>
+          <tr>
+            <td>--border-status-info</td>
+            <td>Components/Status Badge/Info/border-status-info</td>
+            <td><span class="docs-token-swatch" style="background:#2c70f4;"></span>#2c70f4</td>
+          </tr>
+          <tr style="border-top: 2px solid var(--border-level-1);">
+            <td rowspan="3" style="vertical-align: top; padding-top: 0.875rem;">Success</td>
+            <td>--bg-status-success</td>
+            <td>Components/Status Badge/Success/bg-status-success</td>
+            <td><span class="docs-token-swatch" style="background:#207936;"></span>#207936</td>
+          </tr>
+          <tr>
+            <td>--content-status-success</td>
+            <td>Components/Status Badge/Success/content-status-success</td>
+            <td><span class="docs-token-swatch" style="background:#ebfaef; border-color:#d0d0d0;"></span>#ebfaef</td>
+          </tr>
+          <tr>
+            <td>--border-status-success</td>
+            <td>Components/Status Badge/Success/border-status-success</td>
+            <td><span class="docs-token-swatch" style="background:#207936;"></span>#207936</td>
+          </tr>
+          <tr style="border-top: 2px solid var(--border-level-1);">
+            <td rowspan="3" style="vertical-align: top; padding-top: 0.875rem;">Warning</td>
+            <td>--bg-status-warning</td>
+            <td>Components/Status Badge/Warning/bg-status-warning</td>
+            <td><span class="docs-token-swatch" style="background:#f69c00;"></span>#f69c00</td>
+          </tr>
+          <tr>
+            <td>--content-status-warning</td>
+            <td>Components/Status Badge/Warning/content-status-warning</td>
+            <td><span class="docs-token-swatch" style="background:#613d00;"></span>#613d00</td>
+          </tr>
+          <tr>
+            <td>--border-status-warning</td>
+            <td>Components/Status Badge/Warning/border-status-warning</td>
+            <td><span class="docs-token-swatch" style="background:#f69c00;"></span>#f69c00</td>
+          </tr>
+          <tr style="border-top: 2px solid var(--border-level-1);">
+            <td rowspan="3" style="vertical-align: top; padding-top: 0.875rem;">Error</td>
+            <td>--bg-status-error</td>
+            <td>Components/Status Badge/Error/bg-status-error</td>
+            <td><span class="docs-token-swatch" style="background:#d80000;"></span>#d80000</td>
+          </tr>
+          <tr>
+            <td>--content-status-error</td>
+            <td>Components/Status Badge/Error/content-status-error</td>
+            <td><span class="docs-token-swatch" style="background:#ffe0e0; border-color:#d0d0d0;"></span>#ffe0e0</td>
+          </tr>
+          <tr>
+            <td>--border-status-error</td>
+            <td>Components/Status Badge/Error/border-status-error</td>
+            <td><span class="docs-token-swatch" style="background:#d80000;"></span>#d80000</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <hr class="docs-divider" />
+
+    <!-- ============================================================
+         ACCESSIBILITY
+    ============================================================ -->
+
+    <div class="docs-section">
+      <p class="docs-section-label">Accessibility</p>
+      <table class="docs-token-table">
+        <thead>
+          <tr><th>Attribute / Pattern</th><th>Element</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>role="status"</td>
+            <td>.cue-badge</td>
+            <td>Communicates the badge as a status region to screen readers without interrupting the user.</td>
+          </tr>
+          <tr>
+            <td>aria-hidden="true"</td>
+            <td>.cue-badge__icon</td>
+            <td>Icon is decorative — the label text communicates the status. Never rely on icon alone.</td>
+          </tr>
+          <tr>
+            <td>Use a &lt;span&gt;</td>
+            <td>.cue-badge</td>
+            <td>Badges are inline, non-interactive elements. Use &lt;span&gt; not &lt;div&gt; or &lt;button&gt;.</td>
+          </tr>
+          <tr>
+            <td>Meaningful label text</td>
+            <td>.cue-badge__label</td>
+            <td>Label must describe the status clearly — "Fulfilled", "Processing", "On Hold" — not just "Success" or "Warning".</td>
+          </tr>
+          <tr>
+            <td>Color contrast</td>
+            <td>All types</td>
+            <td>All type/color combinations meet WCAG AA 4.5:1. Warning uses dark text (#613d00) on amber for sufficient contrast.</td>
+          </tr>
+          <tr>
+            <td>Don't rely on color alone</td>
+            <td>All types</td>
+            <td>Each badge uses a distinct icon and label text in addition to color. Always include the label.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  function switchTab(event, tabId) {
+    const section = event.target.closest('.docs-section');
+    section.querySelectorAll('.docs-code-tab').forEach(t => t.classList.remove('active'));
+    section.querySelectorAll('.docs-code-panel').forEach(p => p.classList.remove('active'));
+    event.target.classList.add('active');
+    document.getElementById(tabId).classList.add('active');
+  }
+
+  (function() {
+    var sidebar   = document.querySelector('.docs-sidebar');
+    var overlay   = document.querySelector('.docs-nav-overlay');
+    var hamburger = document.querySelector('.docs-topbar__hamburger');
+    var closeBtn  = document.querySelector('.docs-sidebar__close');
+
+    function openNav() {
+      sidebar.classList.add('is-open');
+      overlay.classList.add('is-visible');
+      document.body.style.overflow = 'hidden';
+      if (hamburger) hamburger.setAttribute('aria-expanded', 'true');
+      if (closeBtn) closeBtn.focus();
+    }
+
+    function closeNav() {
+      sidebar.classList.remove('is-open');
+      overlay.classList.remove('is-visible');
+      document.body.style.overflow = '';
+      if (hamburger) {
+        hamburger.setAttribute('aria-expanded', 'false');
+        hamburger.focus();
+      }
+    }
+
+    if (hamburger) hamburger.addEventListener('click', openNav);
+    if (closeBtn)  closeBtn.addEventListener('click', closeNav);
+    if (overlay)   overlay.addEventListener('click', closeNav);
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && sidebar.classList.contains('is-open')) closeNav();
+    });
+  })();
+</script>
+
+</body>
+</html>
