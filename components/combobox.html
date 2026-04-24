@@ -34,9 +34,15 @@
       gap: 0.25rem;
       transition: border-color 0.15s ease;
       box-sizing: border-box;
+      font-family: var(--font-family-body);
+      text-align: left;
+      -webkit-appearance: none;
+      appearance: none;
+      user-select: none;
     }
 
-    .cue-combobox.is-open .cue-combobox__trigger {
+    .cue-combobox.is-open .cue-combobox__trigger,
+    .cue-combobox__trigger:focus-visible {
       border-color: var(--border-form-field-focus);
       outline: none;
     }
@@ -526,8 +532,10 @@
           <div class="cb-demo-col">
             <p class="cb-demo-label">With selection &amp; clear</p>
             <div class="cue-combobox" id="cb-2">
-              <button class="cue-combobox__trigger" type="button"
+              <div class="cue-combobox__trigger" role="combobox"
+                tabindex="0"
                 onclick="toggleCombobox('cb-2')"
+                onkeydown="if(event.key==='Enter'||event.key===' ')toggleCombobox('cb-2')"
                 aria-haspopup="listbox" aria-expanded="false" aria-label="Location">
                 <span class="cue-combobox__value has-value" id="cb-2-display">Reserved</span>
                 <div class="cue-combobox__actions">
@@ -539,7 +547,7 @@
                     <span class="material-icons" aria-hidden="true">expand_more</span>
                   </span>
                 </div>
-              </button>
+              </div>
               <div class="cue-combobox__panel" role="listbox" id="cb-2-panel">
                 <div class="cue-combobox__panel-search">
                   <span class="material-icons" aria-hidden="true">search</span>
@@ -1035,7 +1043,8 @@ document.addEventListener('keydown', function(e) {
   function toggleCombobox(id) {
     const el = document.getElementById(id);
     const isOpen = el.classList.toggle('is-open');
-    el.querySelector('.cue-combobox__trigger').setAttribute('aria-expanded', isOpen);
+    const trigger = el.querySelector('.cue-combobox__trigger');
+    trigger.setAttribute('aria-expanded', isOpen);
     if (isOpen) { setTimeout(() => el.querySelector('.cue-combobox__panel-search input')?.focus(), 50); }
   }
 
