@@ -828,10 +828,357 @@
       </table>
     </div>
 
+    <hr class="docs-divider" />
+
+    <!-- ============================================================
+         CODE
+    ============================================================ -->
+
+    <div class="docs-section">
+      <p class="docs-section-label">Code</p>
+
+      <div class="docs-code-tabs">
+        <button class="docs-code-tab active" onclick="switchTab(event, 'cal-html')">HTML</button>
+        <button class="docs-code-tab" onclick="switchTab(event, 'cal-css')">CSS</button>
+        <button class="docs-code-tab" onclick="switchTab(event, 'cal-js')">JS — Positioning</button>
+      </div>
+
+      <div class="docs-code-panel active" id="cal-html">
+        <div class="docs-code-block"><pre><code>&lt;div class="cue-calendar" role="region" aria-label="Calendar"&gt;
+
+  &lt;!-- Header --&gt;
+  &lt;div class="cue-calendar__header"&gt;
+    &lt;div class="cue-calendar__header-left"&gt;
+      &lt;div class="cue-calendar__arrow-group" role="group" aria-label="Navigate weeks"&gt;
+        &lt;button class="cue-calendar__arrow-btn" type="button" aria-label="Previous week"&gt;
+          &lt;span class="material-icons" aria-hidden="true"&gt;keyboard_arrow_left&lt;/span&gt;
+        &lt;/button&gt;
+        &lt;button class="cue-calendar__arrow-btn" type="button" aria-label="Next week"&gt;
+          &lt;span class="material-icons" aria-hidden="true"&gt;keyboard_arrow_right&lt;/span&gt;
+        &lt;/button&gt;
+      &lt;/div&gt;
+      &lt;button class="cue-calendar__today-btn" type="button"&gt;
+        &lt;span class="material-icons" aria-hidden="true"&gt;today&lt;/span&gt;
+        Today
+      &lt;/button&gt;
+    &lt;/div&gt;
+    &lt;div class="cue-calendar__header-center"&gt;
+      &lt;h2 class="cue-calendar__title"&gt;January 2025&lt;/h2&gt;
+    &lt;/div&gt;
+    &lt;div class="cue-calendar__header-right"&gt;
+      &lt;div class="cue-calendar__view-select" role="group" aria-label="Calendar view"&gt;
+        &lt;button class="cue-calendar__view-btn" type="button" aria-pressed="false"&gt;
+          &lt;span class="material-icons" aria-hidden="true"&gt;view_day&lt;/span&gt; Day
+        &lt;/button&gt;
+        &lt;button class="cue-calendar__view-btn cue-calendar__view-btn--active" type="button" aria-pressed="true"&gt;
+          &lt;span class="material-icons" aria-hidden="true"&gt;view_week&lt;/span&gt; Week
+        &lt;/button&gt;
+        &lt;button class="cue-calendar__view-btn" type="button" aria-pressed="false"&gt;
+          &lt;span class="material-icons" aria-hidden="true"&gt;calendar_month&lt;/span&gt; Month
+        &lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;!-- Grid --&gt;
+  &lt;div class="cue-calendar__grid-wrap"&gt;
+    &lt;div class="cue-calendar__grid" id="cal-grid"&gt;
+
+      &lt;!-- Time label column --&gt;
+      &lt;div class="cue-calendar__col" style="max-width: 90px;"&gt;
+        &lt;div class="cue-calendar__day-header"&gt;&lt;/div&gt;
+        &lt;div class="cue-hour"&gt;
+          &lt;div class="cue-hour__top"&gt;&lt;span class="cue-hour__time"&gt;07:00 AM&lt;/span&gt;&lt;/div&gt;
+          &lt;div class="cue-hour__bottom"&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;!-- Repeat for each hour... --&gt;
+      &lt;/div&gt;
+
+      &lt;!-- Day column (default) --&gt;
+      &lt;div class="cue-calendar__col"&gt;
+        &lt;div class="cue-calendar__day-header"&gt;
+          &lt;span class="cue-calendar__day-name"&gt;Monday&lt;/span&gt;
+          &lt;span class="cue-calendar__day-date"&gt;10&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div class="cue-hour"&gt;&lt;div class="cue-hour__top"&gt;&lt;/div&gt;&lt;div class="cue-hour__bottom"&gt;&lt;/div&gt;&lt;/div&gt;
+        &lt;!-- Repeat for each hour... --&gt;
+      &lt;/div&gt;
+
+      &lt;!-- Current day column --&gt;
+      &lt;div class="cue-calendar__col"&gt;
+        &lt;div class="cue-calendar__day-header cue-calendar__day-header--current"&gt;
+          &lt;span class="cue-calendar__day-name"&gt;Tuesday&lt;/span&gt;
+          &lt;span class="cue-calendar__day-date"&gt;11&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div class="cue-hour cue-hour--current"&gt;&lt;div class="cue-hour__top"&gt;&lt;/div&gt;&lt;div class="cue-hour__bottom"&gt;&lt;/div&gt;&lt;/div&gt;
+        &lt;!-- Repeat for each hour... --&gt;
+      &lt;/div&gt;
+
+      &lt;!-- Activity block — top/left/width/height set by JS --&gt;
+      &lt;div class="cue-calendar__activity" id="act-1" aria-label="Meeting title, 9:00–10:00 AM"&gt;
+        &lt;div class="cue-calendar__activity-top"&gt;
+          &lt;div&gt;
+            &lt;div class="cue-calendar__activity-title"&gt;Activity Title&lt;/div&gt;
+            &lt;div class="cue-calendar__activity-time"&gt;9:00 AM – 10:00 AM&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;button class="cue-calendar__actions-btn" aria-label="Activity options"&gt;
+            &lt;span class="material-icons" aria-hidden="true"&gt;more_horiz&lt;/span&gt;
+          &lt;/button&gt;
+        &lt;/div&gt;
+        &lt;div class="cue-calendar__activity-desc"&gt;Optional description text.&lt;/div&gt;
+        &lt;div class="cue-calendar__activity-avatars"&gt;
+          &lt;div class="cal-avatar"&gt;AH&lt;/div&gt;
+          &lt;div class="cal-avatar cal-avatar--action"&gt;
+            &lt;span class="material-icons" style="font-size:14px;" aria-hidden="true"&gt;add&lt;/span&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;!-- Current time indicator — top set by JS --&gt;
+      &lt;div class="cue-calendar__time-indicator" id="time-indicator"&gt;
+        &lt;div class="cue-calendar__time-indicator__lead" id="time-lead"&gt;&lt;/div&gt;
+        &lt;div class="cue-calendar__time-indicator__main"&gt;
+          &lt;div class="cue-calendar__time-indicator__circle"&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+&lt;/div&gt;</code></pre></div>
+      </div>
+
+      <div class="docs-code-panel" id="cal-css">
+        <div class="docs-code-block"><pre><code>/* Outer card container */
+.cue-calendar {
+  background-color: var(--bg-card-module);
+  border: 1px solid var(--border-card-module);
+  border-radius: var(--corner-card-module);
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  padding: 1rem;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Header */
+.cue-calendar__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 0;
+}
+.cue-calendar__header-left  { display: flex; align-items: center; gap: 1rem; flex: 1; }
+.cue-calendar__header-center { flex: 1; display: flex; align-items: center; justify-content: center; }
+.cue-calendar__header-right  { flex: 1; display: flex; align-items: center; justify-content: flex-end; }
+
+/* Arrow nav buttons */
+.cue-calendar__arrow-group { display: flex; }
+.cue-calendar__arrow-btn {
+  display: flex; align-items: center; justify-content: center;
+  background-color: var(--bg-default);
+  border: 1px solid var(--border-subtle);
+  padding: 2px; cursor: pointer;
+}
+.cue-calendar__arrow-btn:first-child { border-radius: var(--corner-button) 0 0 var(--corner-button); margin-right: -1px; }
+.cue-calendar__arrow-btn:last-child  { border-radius: 0 var(--corner-button) var(--corner-button) 0; }
+.cue-calendar__arrow-btn .material-icons { font-size: 28px; }
+
+/* Today button */
+.cue-calendar__today-btn {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 6px 0.5rem;
+  background-color: var(--bg-button-secondary);
+  border: 1px solid var(--border-button-secondary);
+  border-radius: var(--corner-button);
+  font-size: 0.875rem; font-weight: 700;
+  color: var(--content-button-secondary);
+  cursor: pointer;
+}
+
+/* Month/Year title */
+.cue-calendar__title {
+  font-family: var(--font-family-heading);
+  font-size: 1.5rem; font-weight: 600;
+  color: var(--content-body-primary-brand);
+}
+
+/* View selector */
+.cue-calendar__view-select { display: flex; }
+.cue-calendar__view-btn {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 0.5rem; width: 86px; justify-content: center;
+  background-color: var(--bg-default);
+  border: 1px solid var(--border-subtle);
+  font-size: 0.875rem; font-weight: 400;
+  color: var(--content-body-moderate);
+  cursor: pointer; margin-right: -1px;
+}
+.cue-calendar__view-btn:first-child { border-radius: var(--corner-button) 0 0 var(--corner-button); }
+.cue-calendar__view-btn:last-child  { border-radius: 0 var(--corner-button) var(--corner-button) 0; margin-right: 0; }
+.cue-calendar__view-btn--active { background-color: var(--bg-subdued); font-weight: 700; }
+
+/* Grid */
+.cue-calendar__grid-wrap { position: relative; width: 100%; overflow-x: auto; }
+.cue-calendar__grid { display: flex; align-items: flex-start; position: relative; min-width: 600px; }
+
+/* Columns */
+.cue-calendar__col {
+  display: flex; flex-direction: column;
+  flex: 1; min-width: 0; margin-right: -1px; position: relative;
+}
+
+/* Day header cell */
+.cue-calendar__day-header {
+  position: sticky; top: 0; z-index: 13;
+  border: 1px solid var(--border-hour-block);
+  background-color: var(--bg-hour-block);
+  display: flex; flex-direction: column;
+  align-items: flex-start; justify-content: center;
+  padding: 1rem; margin-bottom: -1px;
+  min-height: 77px; overflow: hidden;
+}
+.cue-calendar__day-header--current { position: relative; }
+.cue-calendar__day-header--current::before {
+  content: ''; position: absolute;
+  top: -1px; left: -1px; right: -1px; height: 4px;
+  background-color: var(--current-day-active-indicator);
+}
+.cue-calendar__day-name { font-size: 0.875rem; font-weight: 400; color: var(--content-body-default); }
+.cue-calendar__day-date { font-size: 1.5rem; font-weight: 600; color: var(--content-body-default); }
+
+/* Hour block */
+.cue-hour {
+  border: 1px solid var(--border-hour-block);
+  height: 120px; flex-shrink: 0; display: flex;
+  flex-direction: column; margin-bottom: -1px; overflow: hidden; width: 100%;
+}
+.cue-hour__top {
+  flex: 1; background-color: var(--bg-hour-block);
+  border-bottom: 1px dashed var(--border-dashed-half-hour);
+  margin-bottom: -1px; padding: 0.75rem;
+  display: flex; align-items: flex-start; z-index: 2;
+}
+.cue-hour__bottom { flex: 1; background-color: var(--bg-hour-block); z-index: 1; }
+.cue-hour__time { font-size: 0.875rem; font-weight: 400; color: var(--content-body-moderate); }
+
+/* Activity block */
+.cue-calendar__activity {
+  position: absolute;
+  background-color: var(--bg-cal-activity-block);
+  border: 1px solid var(--border-cal-activity-block);
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 0.5rem;
+  display: flex; flex-direction: column;
+  overflow: hidden; z-index: 20;
+}
+.cue-calendar__activity:hover {
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  border-color: var(--border-moderate);
+}
+.cue-calendar__activity-title { font-size: 0.875rem; font-weight: 700; color: var(--content-body-primary-brand); }
+.cue-calendar__activity-time  { font-size: 0.75rem; font-weight: 400; color: var(--content-body-moderate); }
+.cue-calendar__activity-desc  { font-size: 0.6875rem; color: var(--content-body-moderate); margin-top: 0.5rem; }
+
+/* Current time indicator */
+.cue-calendar__time-indicator {
+  position: absolute; left: 0; right: 0;
+  height: 12px; display: flex; align-items: center;
+  opacity: 0.75; z-index: 25; pointer-events: none;
+}
+.cue-calendar__time-indicator__lead { height: 2px; background-color: var(--current-day-active-indicator); flex-shrink: 0; }
+.cue-calendar__time-indicator__main { flex: 1; height: 2px; background-color: var(--current-day-active-indicator); position: relative; }
+.cue-calendar__time-indicator__circle {
+  position: absolute; left: -6px; top: 50%; transform: translateY(-50%);
+  width: 12px; height: 12px; border-radius: 50%;
+  background-color: var(--current-day-active-indicator);
+}</code></pre></div>
+      </div>
+
+      <div class="docs-code-panel" id="cal-js">
+        <div class="docs-code-block"><pre><code>// Activity positioning — run after DOM renders, re-run on resize.
+// GRID_START_HOUR: the first hour shown (e.g. 7 = 7:00 AM).
+// HOUR_PX: fixed height of each hour block in pixels (120).
+
+(function() {
+  var GRID_START_HOUR = 7;
+  var HOUR_PX = 120;
+
+  function getColLeft(colIndex) {
+    var grid = document.getElementById('cal-grid');
+    var cols = grid.querySelectorAll('.cue-calendar__col');
+    if (!cols[colIndex]) return 0;
+    return cols[colIndex].getBoundingClientRect().left
+      - grid.getBoundingClientRect().left;
+  }
+
+  function getColWidth(colIndex) {
+    var grid = document.getElementById('cal-grid');
+    var cols = grid.querySelectorAll('.cue-calendar__col');
+    return cols[colIndex] ? cols[colIndex].getBoundingClientRect().width : 0;
+  }
+
+  function getDayHeaderHeight() {
+    var header = document.querySelector('.cue-calendar__day-header');
+    return header ? header.getBoundingClientRect().height : 77;
+  }
+
+  function timeToTop(hour, min) {
+    return getDayHeaderHeight()
+      + ((hour - GRID_START_HOUR) * HOUR_PX)
+      + (min / 60 * HOUR_PX);
+  }
+
+  function positionActivity(id, colIndex, startH, startM, durationMin) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.style.top    = timeToTop(startH, startM) + 'px';
+    el.style.height = (durationMin / 60 * HOUR_PX) + 'px';
+    el.style.left   = (getColLeft(colIndex) + 4) + 'px';
+    el.style.width  = (getColWidth(colIndex) - 8) + 'px';
+  }
+
+  function positionIndicator(id, leadId, currentHour, currentMin, timeColIndex) {
+    var ind  = document.getElementById(id);
+    var lead = document.getElementById(leadId);
+    if (!ind || !lead) return;
+    ind.style.top    = timeToTop(currentHour, currentMin) + 'px';
+    lead.style.width = getColLeft(timeColIndex) + 'px';
+  }
+
+  function layout() {
+    // colIndex: 0 = time labels, 1 = Mon, 2 = Tue, 3 = Wed...
+    positionActivity('act-1', 2, 9,  0,  75);  // Tue 9:00–10:15
+    positionActivity('act-2', 3, 10, 0,  60);  // Wed 10:00–11:00
+    positionActivity('act-3', 4, 12, 0,  30);  // Thu 12:00–12:30
+    positionIndicator('time-indicator', 'time-lead', 9, 15, 2);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', layout);
+  } else {
+    layout();
+  }
+  window.addEventListener('resize', layout);
+})();</code></pre></div>
+      </div>
+
+    </div>
+
   </main>
 </div>
 
 <script>
+  function switchTab(event, tabId) {
+    const section = event.target.closest('.docs-section');
+    section.querySelectorAll('.docs-code-tab').forEach(t => t.classList.remove('active'));
+    section.querySelectorAll('.docs-code-panel').forEach(p => p.classList.remove('active'));
+    event.target.classList.add('active');
+    document.getElementById(tabId).classList.add('active');
+  }
+
   // Position activity blocks and time indicator after layout renders
   (function() {
     var GRID_START_HOUR = 7;  // 7:00 AM

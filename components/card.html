@@ -1007,10 +1007,273 @@
       </p>
     </div>
 
+    <hr class="docs-divider" />
+
+    <!-- ============================================================
+         CODE
+    ============================================================ -->
+
+    <div class="docs-section">
+      <p class="docs-section-label">Code</p>
+
+      <div class="docs-code-tabs">
+        <button class="docs-code-tab active" onclick="switchTab(event, 'card-html')">HTML</button>
+        <button class="docs-code-tab" onclick="switchTab(event, 'card-css')">CSS</button>
+      </div>
+
+      <div class="docs-code-panel active" id="card-html">
+        <div class="docs-code-block"><pre><code>&lt;!-- ── CARD LARGE ─────────────────────────────────────────── --&gt;
+&lt;div class="cue-card cue-card--shadow cue-card-large"&gt;
+  &lt;div class="cue-card-large__header"&gt;
+    &lt;div class="cue-card-large__icon"&gt;
+      &lt;!-- 48px card icon SVG or Material Icon placeholder --&gt;
+      &lt;span class="material-icons" aria-hidden="true"&gt;inventory_2&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;div class="cue-card-large__title-group"&gt;
+      &lt;div class="cue-card-large__title-desc"&gt;
+        &lt;span class="cue-card-large__title"&gt;Inventory&lt;/span&gt;
+        &lt;span class="cue-card-large__desc"&gt;Manage stock levels and product catalog.&lt;/span&gt;
+      &lt;/div&gt;
+      &lt;!-- Optional CTA button --&gt;
+      &lt;button class="cue-btn cue-btn--secondary" type="button"&gt;
+        &lt;span class="cue-btn__label"&gt;Manage&lt;/span&gt;
+      &lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;!-- Optional KPI stats row --&gt;
+  &lt;div class="cue-card-large__stats"&gt;
+    &lt;div class="cue-card-kpi"&gt;
+      &lt;span class="cue-card-kpi__title"&gt;Total SKUs&lt;/span&gt;
+      &lt;span class="cue-card-kpi__number"&gt;1,204&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;div class="cue-card-kpi"&gt;
+      &lt;span class="cue-card-kpi__title"&gt;Low Stock&lt;/span&gt;
+      &lt;span class="cue-card-kpi__number"&gt;38&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;div class="cue-card-kpi"&gt;
+      &lt;span class="cue-card-kpi__title"&gt;Out of Stock&lt;/span&gt;
+      &lt;span class="cue-card-kpi__number"&gt;7&lt;/span&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+
+&lt;!-- ── CARD MEDIUM ──────────────────────────────────────────── --&gt;
+&lt;div class="cue-card cue-card--shadow cue-card-medium"&gt;
+  &lt;div class="cue-card-medium__content"&gt;
+    &lt;div class="cue-card-medium__icon"&gt;
+      &lt;!-- 42px icon --&gt;
+      &lt;span class="material-icons" aria-hidden="true"&gt;badge&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;div class="cue-card-medium__body"&gt;
+      &lt;div class="cue-card-medium__info"&gt;
+        &lt;div class="cue-card-medium__title-row"&gt;
+          &lt;span class="cue-card-medium__title"&gt;Users&lt;/span&gt;
+          &lt;!-- Optional total badge --&gt;
+          &lt;div class="cue-card-medium__badge"&gt;
+            &lt;span class="cue-card-medium__badge-text"&gt;8 Roles&lt;/span&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;span class="cue-card-medium__desc"&gt;Manage users, roles, and permissions.&lt;/span&gt;
+      &lt;/div&gt;
+      &lt;div class="cue-card-medium__buttons"&gt;
+        &lt;button class="cue-btn cue-btn--secondary" type="button"&gt;
+          &lt;span class="cue-btn__icon-leading material-icons" aria-hidden="true"&gt;upload&lt;/span&gt;
+          &lt;span class="cue-btn__label"&gt;Upload&lt;/span&gt;
+        &lt;/button&gt;
+        &lt;button class="cue-btn cue-btn--primary" type="button"&gt;
+          &lt;span class="cue-btn__icon-leading material-icons" aria-hidden="true"&gt;add&lt;/span&gt;
+          &lt;span class="cue-btn__label"&gt;Add&lt;/span&gt;
+        &lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+
+&lt;!-- ── CARD KPI (standalone) ────────────────────────────────── --&gt;
+&lt;div class="cue-card-kpi"&gt;
+  &lt;span class="cue-card-kpi__title"&gt;Open Orders&lt;/span&gt;
+  &lt;span class="cue-card-kpi__number"&gt;148&lt;/span&gt;
+&lt;/div&gt;
+
+
+&lt;!-- ── CARD INFO AND ACTION ──────────────────────────────────── --&gt;
+&lt;div class="cue-card cue-card-info"&gt;
+  &lt;div class="cue-card-info__content"&gt;
+    &lt;div class="cue-card-info__top"&gt;
+      &lt;div class="cue-card-info__title-row"&gt;
+        &lt;div class="cue-card-info__title-group"&gt;
+          &lt;span class="cue-card-info__title-icon material-icons" aria-hidden="true"&gt;inventory_2&lt;/span&gt;
+          &lt;span class="cue-card-info__title"&gt;Order Summary&lt;/span&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="cue-card-info__slots"&gt;
+        &lt;!-- Left slot: large number + label --&gt;
+        &lt;div class="cue-card-info__slot"&gt;
+          &lt;span class="cue-card-info__slot-number"&gt;24&lt;/span&gt;
+          &lt;span class="cue-card-info__slot-label"&gt;Open Items&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div class="cue-card-info__divider" aria-hidden="true"&gt;&lt;/div&gt;
+        &lt;!-- Right slot: label + value + sub-info --&gt;
+        &lt;div class="cue-card-info__slot"&gt;
+          &lt;span class="cue-card-info__slot-desc-title"&gt;Next Ship Date&lt;/span&gt;
+          &lt;span class="cue-card-info__slot-value"&gt;Jan 22&lt;/span&gt;
+          &lt;span class="cue-card-info__slot-info"&gt;Est. delivery&lt;/span&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;button class="cue-card-full-btn" type="button"&gt;
+      &lt;span class="material-icons" aria-hidden="true"&gt;star&lt;/span&gt;
+      View Order
+    &lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+
+&lt;!-- ── CARD CUSTOMER DASHBOARD OVERVIEW ─────────────────────── --&gt;
+&lt;!-- Note: Marked "Detach and Modify" in Figma — use as a template. --&gt;
+&lt;div class="cue-card cue-card--shadow cue-card-customer"&gt;
+  &lt;div class="cue-card-customer__main"&gt;
+    &lt;div class="cue-card-customer__header"&gt;
+      &lt;span class="cue-card-customer__title"&gt;Clemens Food Group (Philadelphia, PA)&lt;/span&gt;
+      &lt;div class="cue-card-customer__attrs"&gt;
+        &lt;span class="cue-card-customer__attr"&gt;ID: 10042&lt;/span&gt;
+        &lt;div class="cue-card-customer__attr-divider" aria-hidden="true"&gt;&lt;/div&gt;
+        &lt;span class="cue-card-customer__attr"&gt;Net 30&lt;/span&gt;
+        &lt;div class="cue-card-customer__attr-divider" aria-hidden="true"&gt;&lt;/div&gt;
+        &lt;span class="cue-card-customer__attr"&gt;Active&lt;/span&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="cue-card-customer__list"&gt;
+      &lt;div class="cue-card-customer__item"&gt;
+        &lt;span class="cue-card-customer__item-icon material-icons" aria-hidden="true"&gt;receipt_long&lt;/span&gt;
+        &lt;div class="cue-card-customer__item-content"&gt;
+          &lt;div class="cue-card-customer__item-text"&gt;
+            &lt;span class="cue-card-customer__item-title"&gt;Open Orders&lt;/span&gt;
+            &lt;span class="cue-card-customer__item-subtitle"&gt;Last 30 days&lt;/span&gt;
+          &lt;/div&gt;
+          &lt;span class="cue-card-customer__item-number"&gt;12&lt;/span&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;!-- Repeat .cue-card-customer__item for each metric... --&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;button class="cue-card-full-btn" type="button"&gt;
+    View Customer
+    &lt;span class="material-icons" aria-hidden="true"&gt;arrow_forward&lt;/span&gt;
+  &lt;/button&gt;
+&lt;/div&gt;</code></pre></div>
+      </div>
+
+      <div class="docs-code-panel" id="card-css">
+        <div class="docs-code-block"><pre><code>/* ── BASE SHELL ──────────────────────────────────────────────── */
+.cue-card {
+  background-color: var(--bg-card-module);   /* #ffffff */
+  border: 1px solid var(--border-card-module); /* #ededed */
+  border-radius: var(--corner-card-module);    /* 4px */
+  overflow: hidden;
+}
+.cue-card--shadow { box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+
+
+/* ── CARD LARGE ──────────────────────────────────────────────── */
+.cue-card-large { display: flex; flex-direction: column; gap: 2rem; padding: 2rem 1.5rem; }
+.cue-card-large__header { display: flex; align-items: center; gap: 1rem; }
+.cue-card-large__icon .material-icons { font-size: 48px; color: var(--content-body-primary-brand); }
+.cue-card-large__title-group { display: flex; flex: 1; align-items: flex-start; justify-content: space-between; gap: 1.5rem; }
+.cue-card-large__title { font-family: var(--font-family-heading); font-size: 1.5rem; font-weight: 700; color: var(--content-body-primary-brand); line-height: 1.15; }
+.cue-card-large__desc  { font-size: 1rem; font-weight: 400; color: var(--content-body-default); }
+.cue-card-large__stats { display: flex; align-items: flex-start; gap: 1rem; padding-left: 4rem; }
+
+
+/* ── CARD KPI ────────────────────────────────────────────────── */
+/* Used standalone or embedded in Card Large stats row */
+.cue-card-kpi {
+  display: flex; flex-direction: column;
+  align-items: flex-start; justify-content: space-between;
+  flex: 1; min-width: 0; height: 109px; padding: 0.75rem;
+  background-color: var(--bg-level-2);
+  border: 1px solid var(--border-level-2);
+  border-radius: 2px;
+  transition: box-shadow 0.15s ease;
+}
+.cue-card-kpi:hover { box-shadow: 0 6px 8px rgba(0,0,0,0.1); }
+.cue-card-kpi__title  { font-size: 0.9375rem; font-weight: 400; color: var(--content-body-default); }
+.cue-card-kpi__number { font-family: var(--font-family-heading); font-size: 1.25rem; font-weight: 700; color: var(--content-body-default); }
+
+
+/* ── CARD MEDIUM ─────────────────────────────────────────────── */
+.cue-card-medium { display: flex; flex-direction: column; align-items: center; padding: 1.5rem 2rem 1.5rem 1.5rem; }
+.cue-card-medium__content { display: flex; align-items: center; gap: 1rem; width: 100%; }
+.cue-card-medium__icon .material-icons { font-size: 42px; color: var(--content-body-primary-brand); }
+.cue-card-medium__body { display: flex; flex: 1; flex-direction: column; gap: 2rem; }
+.cue-card-medium__title { font-family: var(--font-family-heading); font-size: 1.5rem; font-weight: 700; color: var(--content-body-primary-brand); }
+.cue-card-medium__badge { display: flex; align-items: center; padding: 0.5rem 1rem; background-color: var(--bg-subdued); border-radius: 300px; }
+.cue-card-medium__badge-text { font-size: 0.75rem; font-weight: 400; color: var(--content-body-moderate); }
+.cue-card-medium__desc { font-size: 1rem; font-weight: 400; color: var(--content-body-default); }
+.cue-card-medium__buttons { display: flex; align-items: center; gap: 1rem; }
+
+
+/* ── CARD INFO AND ACTION ────────────────────────────────────── */
+.cue-card-info { display: flex; flex-direction: column; padding: 1.5rem; }
+.cue-card-info__content { display: flex; flex-direction: column; gap: 1.5rem; align-items: center; width: 100%; }
+.cue-card-info__title-row { display: flex; align-items: center; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border-subtle); width: 100%; }
+.cue-card-info__title-icon { font-size: 24px; color: var(--content-body-primary-brand); }
+.cue-card-info__title { font-size: 1rem; font-weight: 700; color: var(--content-body-primary-brand); }
+.cue-card-info__slots { display: flex; align-items: center; width: 100%; }
+.cue-card-info__slot { display: flex; flex: 1; flex-direction: column; align-items: center; text-align: center; }
+.cue-card-info__slot-number     { font-family: var(--font-family-heading); font-size: 1.5rem; font-weight: 700; color: var(--content-body-default); }
+.cue-card-info__slot-label      { font-size: 0.75rem; font-weight: 700; color: var(--content-body-default); }
+.cue-card-info__slot-desc-title { font-size: 0.75rem; font-weight: 700; color: var(--content-body-primary-brand); }
+.cue-card-info__slot-value      { font-family: var(--font-family-heading); font-size: 1rem; font-weight: 700; color: var(--content-body-default); }
+.cue-card-info__slot-info       { font-size: 0.75rem; font-weight: 400; color: var(--content-body-moderate); }
+.cue-card-info__divider { width: 1px; height: 2rem; background-color: var(--border-subtle); flex-shrink: 0; margin: 0 0.625rem; }
+
+
+/* ── CARD CUSTOMER OVERVIEW ──────────────────────────────────── */
+.cue-card-customer { display: flex; flex-direction: column; gap: 1rem; padding: 1.5rem; }
+.cue-card-customer__header { display: flex; flex-direction: column; gap: 0.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-weak); }
+.cue-card-customer__title { font-size: 1.125rem; font-weight: 700; color: var(--content-body-default); }
+.cue-card-customer__attrs { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+.cue-card-customer__attr  { font-size: 0.75rem; font-weight: 400; color: var(--content-body-default); }
+.cue-card-customer__attr-divider { width: 1px; height: 0.875rem; background-color: var(--border-subtle); }
+
+.cue-card-customer__item { display: flex; align-items: flex-start; gap: 0.5rem; padding: 1rem 0; border-bottom: 1px solid var(--border-weak); width: 100%; }
+.cue-card-customer__item-icon    { font-size: 24px; color: var(--content-body-primary-brand); }
+.cue-card-customer__item-content { display: flex; flex: 1; align-items: flex-start; gap: 0.5rem; }
+.cue-card-customer__item-title   { font-size: 0.9375rem; font-weight: 600; color: var(--content-body-primary-brand); }
+.cue-card-customer__item-subtitle { font-size: 0.75rem; font-weight: 400; color: var(--content-body-subdued); }
+.cue-card-customer__item-number  { font-size: 1.125rem; font-weight: 700; color: var(--content-body-primary-brand); }
+
+
+/* ── FULL-WIDTH BUTTON (shared) ──────────────────────────────── */
+.cue-card-full-btn {
+  display: flex; align-items: center; justify-content: center;
+  gap: 4px; width: 100%; padding: 0.5rem; min-height: 2.75rem;
+  background-color: var(--bg-button-primary);
+  border: none; border-radius: var(--corner-button);
+  font-size: 0.875rem; font-weight: 700;
+  color: var(--content-button-primary); cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+.cue-card-full-btn:hover { background-color: var(--bg-button-primary-hover); }</code></pre></div>
+      </div>
+
+    </div>
+
   </main>
 </div>
 
 <script>
+  function switchTab(event, tabId) {
+    const section = event.target.closest('.docs-section');
+    section.querySelectorAll('.docs-code-tab').forEach(t => t.classList.remove('active'));
+    section.querySelectorAll('.docs-code-panel').forEach(p => p.classList.remove('active'));
+    event.target.classList.add('active');
+    document.getElementById(tabId).classList.add('active');
+  }
+
   // Button classes needed for card examples
   document.querySelectorAll('.cue-btn--secondary').forEach(function(btn) {
     btn.style.cssText += 'background-color: var(--bg-button-secondary); color: var(--content-button-secondary); border: 1px solid var(--border-button-secondary); border-radius: var(--corner-button); padding: var(--button-padding-default); font-family: var(--font-family-body); font-size: 0.875rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 2px;';
