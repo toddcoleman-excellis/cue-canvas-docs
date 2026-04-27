@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CUE Canvas — Chat</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../tokens.css" />
+  <link rel="stylesheet" href="../base.css" />
+  <link rel="icon" type="image/svg+xml" href="../assets/logo_CUE_glyph.svg" />
+  <style>
+
+    /* ============================================================
+       CHAT / COMMUNICATION COMPONENTS
+
+       Status: Concept phase — not yet implemented in production.
+       These components document the design intent for the CUE Back
+       Office internal messaging feature.
+
+       Components:
+         .cue-chat-avatar            — 36px user avatar circle
+         .cue-msg-bubble             — message bubble (from/to)
+         .cue-msg-group              — bubble + metadata row
+         .cue-msg-input              — message input field
+         .cue-msg-toolbar            — formatting toolbar
+         .cue-msg-actions            — attachment + mention + send
+         .cue-msg-panel              — left message list panel
+         .cue-msg-item               — conversation list item
+         .cue-chat-view              — full assembled view
+    ============================================================ */
+
+    /* ============================================================
+       USER AVATAR
+       36px circle. 4 types: initial, initials, photo, action.
+    ============================================================ */
+
+    .cue-chat-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background-color: var(--bg-primary-brand);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      overflow: hidden;
+      font-family: var(--font-family-body);
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: #ffffff;
+      user-select: none;
+    }
+
+    .cue-chat-avatar--action {
+      background-color: var(--bg-primary-brand);
+      cursor: pointer;
+    }
+
+    .cue-chat-avatar--action .material-icons {
+      font-size: 20px;
+      color: #ffffff;
+    }
+
+    .cue-chat-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+
+    /* ============================================================
+       MESSAGE BUBBLE
+       From (received): light gray bg, speech bubble points bottom-left
+       To (sent):       brand blue bg, speech bubble points bottom-right
+    ============================================================ */
+
+    .cue-msg-bubble {
+      padding: 0.75rem;
+      font-family: var(--font-family-body);
+      font-size: 0.875rem;
+      font-weight: 400;
+      line-height: 1.5;
+      max-width: 100%;
+      position: relative;
+    }
+
+    /* From: received — light gray, points bottom-left */
+    .cue-msg-bubble--from {
+      background-color: #f5f5f5;
+      color: var(--content-body-default);
+      border-radius: 12px 12px 12px 0;
+    }
+
+    /* To: sent — brand blue, points bottom-right */
+    .cue-msg-bubble--to {
+      background-color: var(--bg-primary-brand);
+      color: #fafafa;
+      border-radius: 12px 12px 0 12px;
+    }
+
+
+    /* ============================================================
+       MESSAGE GROUP
+       Bubble + name/date/time metadata. Avatar flanks the bubble.
+    ============================================================ */
+
+    .cue-msg-group {
+      display: flex;
+      flex-direction: column;
+      max-width: 75%;
+    }
+
+    /* From: avatar on left, content right */
+    .cue-msg-group--from {
+      align-items: flex-start;
+    }
+
+    /* To: avatar on right, content left */
+    .cue-msg-group--to {
+      align-items: flex-end;
+      margin-left: auto;
+    }
+
+    .cue-msg-group__row {
+      display: flex;
+      align-items: flex-end;
+      gap: 0.5rem;
+    }
+
+    .cue-msg-group--from .cue-msg-group__row {
+      flex-direction: row;
+    }
+
+    .cue-msg-group--to .cue-msg-group__row {
+      flex-direction: row-reverse;
+    }
+
+    .cue-msg-group__meta {
+      font-family: var(--font-family-body);
+      font-size: 0.75rem;
+      font-weight: 400;
+      color: var(--content-body-moderate);
+      margin-top: 4px;
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .cue-msg-group--to .cue-msg-group__meta {
+      justify-content: flex-end;
+    }
+
+
+    /* ============================================================
+       NEW MESSAGE INDICATOR
+       12px dot. Red when unread, transparent when read.
+    ============================================================ */
+
+    .cue-msg-indicator {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      background-color: transparent;
+    }
+
+    .cue-msg-indicator--new {
+      background-color: var(--danger-default);
+    }
+
+
+    /* ============================================================
+       MESSAGE LIST ITEM
+       Two states: Current (white + accent left border) and Inactive.
+    ============================================================ */
+
+    .cue-msg-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      padding: 0.75rem;
+      cursor: pointer;
+      position: relative;
+      transition: background-color 0.15s ease;
+    }
+
+    .cue-msg-item--current {
+      background-color: #ffffff;
+      box-shadow: inset 2px 0 0 0 #009cf9;
+    }
+
+    .cue-msg-item--inactive {
+      background-color: #f5f5f5;
+    }
+
+    .cue-msg-item--inactive:hover {
+      background-color: #ededed;
+    }
+
+    .cue-msg-item__indicator {
+      padding-top: 5px;
+      flex-shrink: 0;
+    }
+
+    .cue-msg-item__content {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .cue-msg-item__top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .cue-msg-item__names {
+      font-family: var(--font-family-body);
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--content-body-moderate);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .cue-msg-item--current .cue-msg-item__names {
+      color: var(--content-body-primary-brand);
+    }
+
+    .cue-msg-item__more {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--content-body-moderate);
+      padding: 0;
+      flex-shrink: 0;
+      border-radius: var(--corner-button);
+    }
+
+    .cue-msg-item__more .material-icons { font-size: 20px; }
+
+    .cue-msg-item__preview-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .cue-msg-item__preview {
+      font-family: var(--font-family-body);
+      font-size: 0.75rem;
+      font-weight: 400;
+      color: var(--content-body-moderate);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .cue-msg-item__time {
+      font-family: var(--font-family-body);
+      font-size: 0.625rem;
+      font-weight: 400;
+      color: var(--content-body-moderate);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .cue-msg-item--current .cue-msg-item__time {
+      color: var(--content-body-default);
+    }
+
+
+    /* ============================================================
+       MESSAGES PANEL HEADER + SEARCH
+    ============================================================ */
+
+    .cue-msg-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem;
+      border-bottom: 1px solid var(--border-level-1);
+    }
+
+    .cue-msg-panel-title {
+      font-family: var(--font-family-heading);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--content-body-primary-brand);
+      line-height: 1;
+    }
+
+    .cue-msg-compose-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      background-color: var(--bg-button-primary);
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      color: var(--content-button-primary);
+      transition: background-color 0.15s ease;
+    }
+
+    .cue-msg-compose-btn:hover { background-color: var(--bg-button-primary-hover); }
+    .cue-msg-compose-btn .material-icons { font-size: 18px; }
+
+    .cue-msg-panel-search {
+      padding: 0.5rem;
+      border-bottom: 1px solid var(--border-level-1);
+    }
+
+    .cue-msg-panel-search .cue-search-wrap {
+      width: 100%;
+    }
+
+
+    /* ============================================================
+       MESSAGE INPUT FIELD
+    ============================================================ */
+
+    .cue-msg-input-wrap {
+      display: flex;
+      flex-direction: column;
+      border-top: 1px solid var(--border-level-1);
+      background-color: var(--bg-card-module);
+    }
+
+    .cue-msg-toolbar-toggle {
+      padding: 0.375rem 0.75rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .cue-msg-toolbar-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--content-body-moderate);
+      display: flex;
+      align-items: center;
+      padding: 2px;
+      border-radius: 3px;
+      transition: background-color 0.1s ease, color 0.1s ease;
+      font-family: var(--font-family-body);
+      font-size: 0.875rem;
+      font-weight: 700;
+    }
+
+    .cue-msg-toolbar-btn:hover {
+      background-color: var(--bg-level-0);
+      color: var(--content-body-default);
+    }
+
+    .cue-msg-toolbar-btn .material-icons { font-size: 16px; }
+
+    .cue-msg-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      padding: 0.375rem 0.75rem;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--border-level-1);
+    }
+
+    .cue-msg-toolbar-divider {
+      width: 1px;
+      height: 16px;
+      background-color: var(--border-subdued);
+      margin: 0 2px;
+    }
+
+    .cue-msg-input {
+      width: 100%;
+      min-height: 90px;
+      padding: 0.75rem;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-family: var(--font-family-body);
+      font-size: 0.875rem;
+      font-weight: 400;
+      color: var(--content-body-default);
+      resize: none;
+      line-height: 1.5;
+    }
+
+    .cue-msg-input::placeholder {
+      color: var(--content-form-field-solid-placeholder);
+    }
+
+    .cue-msg-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+    }
+
+    .cue-msg-action-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--content-body-moderate);
+      padding: 4px;
+      border-radius: 4px;
+      transition: color 0.15s ease, background-color 0.15s ease;
+    }
+
+    .cue-msg-action-btn:hover {
+      color: var(--content-body-default);
+      background-color: var(--bg-level-0);
+    }
+
+    .cue-msg-action-btn .material-icons { font-size: 20px; }
+
+    .cue-msg-send-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 0.75rem;
+      background-color: var(--bg-button-secondary);
+      border: 1px solid var(--border-button-secondary);
+      border-radius: var(--corner-button);
+      font-family: var(--font-family-body);
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--content-button-secondary);
+      cursor: pointer;
+      transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .cue-msg-send-btn:hover {
+      background-color: var(--bg-button-secondary-hover);
+      border-color: var(--border-button-secondary-hover);
+      color: var(--content-button-secondary-hover);
+    }
+
+    .cue-msg-send-btn .material-icons { font-size: 16px; }
+
+
+    /* ============================================================
+       FULL CHAT VIEW
+       Left panel (list) + right panel (thread)
+    ============================================================ */
+
+    .cue-chat-view {
+      display: flex;
+      width: 100%;
+      height: 600px;
+      border: 1px solid var(--border-level-1);
+      border-radius: var(--corner-card-module);
+      overflow: hidden;
+      font-family: var(--font-family-body);
+    }
+
+    /* Left panel — message list */
+    .cue-chat-view__panel {
+      width: 280px;
+      flex-shrink: 0;
+      border-right: 1px solid var(--border-level-1);
+      display: flex;
+      flex-direction: column;
+      background-color: var(--bg-card-module);
+    }
+
+    .cue-chat-view__list {
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    /* Right panel — thread */
+    .cue-chat-view__thread {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--bg-card-module);
+    }
+
+    .cue-chat-view__thread-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border-level-1);
+      flex-shrink: 0;
+    }
+
+    .cue-chat-view__thread-title {
+      font-family: var(--font-family-heading);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--content-body-default);
+    }
+
+    .cue-chat-view__messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    /* Search wrap used inside panel */
+    .cue-search-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .cue-search {
+      width: 100%;
+      padding: 0.375rem 0.75rem 0.375rem 2rem;
+      border: 1px solid var(--border-form-field-default);
+      border-radius: var(--corner-form-field);
+      background-color: var(--bg-form-field-solid);
+      border-color: transparent;
+      font-family: var(--font-family-body);
+      font-size: 0.875rem;
+      color: var(--content-body-default);
+      outline: none;
+    }
+
+    .cue-search::placeholder { color: var(--content-form-field-placeholder); }
+    .cue-search:focus { border-color: var(--border-form-field-focus); }
+
+    .cue-search-icon {
+      position: absolute;
+      left: 0.5rem;
+      pointer-events: none;
+      color: var(--content-body-moderate);
+      display: flex;
+    }
+
+    .cue-search-icon .material-icons { font-size: 16px; }
+
+
+    /* ============================================================
+       DOCS HELPERS
+    ============================================================ */
+
+    .chat-demo-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      align-items: flex-start;
+    }
+
+    .chat-demo-col {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .chat-demo-label {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--content-body-moderate);
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="docs-topbar" role="banner">
+  <a href="../index.html" class="docs-topbar__logo" aria-label="CUE Canvas home">
+    <img src="../assets/logo_CUE_glyph.svg" alt="CUE glyph" />
+    <span class="docs-topbar__logo-label">Canvas</span>
+  </a>
+  <button class="docs-topbar__hamburger" aria-label="Open navigation" aria-expanded="false" aria-controls="docs-sidebar">
+    <span class="material-icons" aria-hidden="true">menu</span>
+  </button>
+</div>
+
+<div class="docs-nav-overlay" aria-hidden="true"></div>
+
+<div class="docs-layout">
+
+  <nav class="docs-sidebar" id="docs-sidebar" aria-label="Documentation navigation">
+    <button class="docs-sidebar__close" aria-label="Close navigation">
+      <span class="material-icons" aria-hidden="true">close</span>
+    </button>
+    <a href="../index.html" class="docs-sidebar__logo" aria-label="CUE Canvas home">
+      <img src="../assets/logo_CUE_glyph.svg" alt="CUE glyph" />
+      <span class="docs-sidebar__logo-label">Canvas</span>
+    </a>
+    <p class="docs-sidebar__section-label">Getting Started</p>
+    <div class="docs-sidebar__nav">
+      <a href="../index.html" class="docs-sidebar__nav-link">Overview</a>
+    </div>
+    <p class="docs-sidebar__section-label">Components</p>
+    <div class="docs-sidebar__nav">
+      <a href="accordion.html" class="docs-sidebar__nav-link">Accordion</a>
+      <a href="alert.html" class="docs-sidebar__nav-link">Alert</a>
+      <a href="badge.html" class="docs-sidebar__nav-link">Badge</a>
+      <a href="breadcrumb.html" class="docs-sidebar__nav-link">Breadcrumb</a>
+      <a href="button.html" class="docs-sidebar__nav-link">Button</a>
+      <a href="calendar-components.html" class="docs-sidebar__nav-link">Calendar Components</a>
+      <a href="calendar.html" class="docs-sidebar__nav-link">Calendar</a>
+      <a href="scheduler.html" class="docs-sidebar__nav-link">Scheduler</a>
+      <a href="card.html" class="docs-sidebar__nav-link">Card</a>
+      <a href="chat.html" class="docs-sidebar__nav-link active">Chat</a>
+      <a href="combobox.html" class="docs-sidebar__nav-link">Combobox &amp; Multiselect</a>
+      <a href="form-field.html" class="docs-sidebar__nav-link">Form Field</a>
+      <a href="in-progress.html" class="docs-sidebar__nav-link">Status Badge</a>
+      <a href="in-progress.html" class="docs-sidebar__nav-link">Table</a>
+      <a href="in-progress.html" class="docs-sidebar__nav-link">Tab Navigation</a>
+      <a href="in-progress.html" class="docs-sidebar__nav-link">Side Navigation</a>
+      <a href="in-progress.html" class="docs-sidebar__nav-link">Dropdown</a>
+      <a href="in-progress.html" class="docs-sidebar__nav-link">Date Picker</a>
+      <a href="in-progress.html" class="docs-sidebar__nav-link">Step Process</a>
+      <a href="in-progress.html" class="docs-sidebar__nav-link">Skeleton Loader</a>
+    </div>
+    <p class="docs-sidebar__section-label">Icons</p>
+    <div class="docs-sidebar__nav">
+      <a href="in-progress.html" class="docs-sidebar__nav-link">Icon Reference</a>
+    </div>
+  </nav>
+
+  <main class="docs-main">
+
+    <div class="docs-page-header">
+      <h1 class="docs-page-title">Chat</h1>
+      <p class="docs-page-description">
+        The Communication and Chat feature is a concept-phase internal messaging module for CUE Back Office — similar in intent to Slack or Microsoft Teams. Components are documented here to establish the design language ahead of implementation.
+      </p>
+      <div style="display: inline-flex; align-items: center; gap: 0.375rem; margin-top: 0.75rem; padding: 0.375rem 0.875rem; background-color: var(--warning-extra-subtle); border: 1px solid var(--warning-subdued); border-radius: 100px; font-size: 0.75rem; font-weight: 700; color: var(--warning-strong); text-transform: uppercase; letter-spacing: 0.08em;">
+        <span class="material-icons" aria-hidden="true" style="font-size: 14px;">build_circle</span>
+        Concept Phase
+      </div>
+    </div>
+
+    <!-- ============================================================
+         AVATARS
+    ============================================================ -->
+
+    <div class="docs-section">
+      <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">User Avatar</h2>
+      <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">36px circle. Four types: single initial, two-letter initials, photo, and action (used for "add participant"). All use primary brand blue background.</p>
+      <div class="docs-example" style="gap: 1.5rem; align-items: center;">
+        <div class="chat-demo-col">
+          <p class="chat-demo-label">Single Initial</p>
+          <div class="cue-chat-avatar">T</div>
+        </div>
+        <div class="chat-demo-col">
+          <p class="chat-demo-label">Initials</p>
+          <div class="cue-chat-avatar">AB</div>
+        </div>
+        <div class="chat-demo-col">
+          <p class="chat-demo-label">Photo</p>
+          <div class="cue-chat-avatar" style="background: var(--bg-level-0);">
+            <img src="https://i.pravatar.cc/36?img=47" alt="User photo" />
+          </div>
+        </div>
+        <div class="chat-demo-col">
+          <p class="chat-demo-label">Action (add)</p>
+          <div class="cue-chat-avatar cue-chat-avatar--action" role="button" tabindex="0" aria-label="Add participant">
+            <span class="material-icons" aria-hidden="true">add</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="docs-divider" />
+
+    <!-- ============================================================
+         MESSAGE BUBBLES
+    ============================================================ -->
+
+    <div class="docs-section">
+      <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Message Bubbles</h2>
+      <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">Two bubble types. <strong>From</strong> (received from someone else) uses a light gray background with a bottom-left tail. <strong>To</strong> (sent by the current user) uses the primary brand blue with a bottom-right tail. The border radius asymmetry creates the speech bubble direction.</p>
+      <div class="docs-example" style="flex-direction: column; gap: 1.5rem; align-items: flex-start;">
+
+        <div class="chat-demo-col">
+          <p class="chat-demo-label">From — received</p>
+          <div class="cue-msg-bubble cue-msg-bubble--from" style="max-width: 400px;">
+            This is a message from a coworker or client to you. It comes with the ability to change the avatar and show the username, time, and date.
+          </div>
+        </div>
+
+        <div class="chat-demo-col" style="align-items: flex-end; width: 100%;">
+          <p class="chat-demo-label">To — sent</p>
+          <div class="cue-msg-bubble cue-msg-bubble--to" style="max-width: 400px;">
+            This is a message from you to a client or coworker. It comes with the ability to change the avatar and show the username, time, and date.
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <hr class="docs-divider" />
+
+    <!-- ============================================================
+         MESSAGE GROUPS
+    ============================================================ -->
+
+    <div class="docs-section">
+      <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Message Groups</h2>
+      <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">A message group combines a bubble with the sender's avatar and the name / date / time metadata row. Received messages align left with avatar on the left. Sent messages align right with avatar on the right.</p>
+      <div class="docs-example" style="flex-direction: column; gap: 1.25rem;">
+
+        <!-- From -->
+        <div class="cue-msg-group cue-msg-group--from">
+          <div class="cue-msg-group__row">
+            <div class="cue-chat-avatar">CL</div>
+            <div class="cue-msg-bubble cue-msg-bubble--from">
+              This is a message from a coworker or client to you. It comes with the ability to change the avatar and show the username, time, and date.
+            </div>
+          </div>
+          <div class="cue-msg-group__meta">
+            <span>Firstname Lastname</span>
+            <span>10/15/25</span>
+            <span>11:00 AM</span>
+          </div>
+        </div>
+
+        <!-- To -->
+        <div class="cue-msg-group cue-msg-group--to">
+          <div class="cue-msg-group__row">
+            <div class="cue-chat-avatar">JF</div>
+            <div class="cue-msg-bubble cue-msg-bubble--to">
+              This is a message from you to a client or coworker. It comes with the ability to change the avatar and show the username, time, and date.
+            </div>
+          </div>
+          <div class="cue-msg-group__meta">
+            <span>Firstname Lastname</span>
+            <span>10/15/25</span>
+            <span>11:00 AM</span>
+          </div>
+        </div>
+
+        <!-- From again -->
+        <div class="cue-msg-group cue-msg-group--from">
+          <div class="cue-msg-group__row">
+            <div class="cue-chat-avatar">CL</div>
+            <div class="cue-msg-bubble cue-msg-bubble--from">
+              This is a message from a coworker or client to you. It comes with the ability to change the avatar and show the username, time, and date.
+            </div>
+          </div>
+          <div class="cue-msg-group__meta">
+            <span>Firstname Lastname</span>
+            <span>10/15/25</span>
+            <span>11:00 AM</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <hr class="docs-divider" />
+
+    <!-- ============================================================
+         MESSAGE INPUT
+    ============================================================ -->
+
+    <div class="docs-section">
+      <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Message Input</h2>
+      <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">The input area sits at the bottom of the chat thread. A formatting toolbar can be toggled via the "A" button — it slides open to show rich text controls. Attachment and mention buttons sit alongside the Send button in the actions row.</p>
+
+      <div class="docs-example" style="flex-direction: column; gap: 1.5rem;">
+
+        <div class="chat-demo-col" style="width: 100%;">
+          <p class="chat-demo-label">Closed — no toolbar</p>
+          <div class="cue-msg-input-wrap" style="border: 1px solid var(--border-level-1); border-radius: 6px;">
+            <div class="cue-msg-toolbar-toggle">
+              <button class="cue-msg-toolbar-btn" aria-label="Toggle formatting" type="button">A</button>
+            </div>
+            <textarea class="cue-msg-input" placeholder="Type a message" rows="3" aria-label="Message"></textarea>
+            <div class="cue-msg-actions">
+              <button class="cue-msg-action-btn" aria-label="Attach file" type="button">
+                <span class="material-icons" aria-hidden="true">attach_file</span>
+              </button>
+              <button class="cue-msg-action-btn" aria-label="Mention someone" type="button">
+                <span class="material-icons" aria-hidden="true">alternate_email</span>
+              </button>
+              <button class="cue-msg-send-btn" type="button">
+                Send
+                <span class="material-icons" aria-hidden="true">send</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="chat-demo-col" style="width: 100%;">
+          <p class="chat-demo-label">Open — with formatting toolbar</p>
+          <div class="cue-msg-input-wrap" style="border: 1px solid var(--border-level-1); border-radius: 6px;">
+            <div class="cue-msg-toolbar">
+              <button class="cue-msg-toolbar-btn" type="button" title="Font">A</button>
+              <div class="cue-msg-toolbar-divider"></div>
+              <button class="cue-msg-toolbar-btn" type="button" title="Bold"><strong>B</strong></button>
+              <button class="cue-msg-toolbar-btn" type="button" title="Italic"><em>I</em></button>
+              <button class="cue-msg-toolbar-btn" type="button" title="Underline"><u>U</u></button>
+              <div class="cue-msg-toolbar-divider"></div>
+              <button class="cue-msg-toolbar-btn" type="button" title="Link"><span class="material-icons" aria-hidden="true">link</span></button>
+              <button class="cue-msg-toolbar-btn" type="button" title="Image"><span class="material-icons" aria-hidden="true">image</span></button>
+              <div class="cue-msg-toolbar-divider"></div>
+              <button class="cue-msg-toolbar-btn" type="button" title="Align left"><span class="material-icons" aria-hidden="true">format_align_left</span></button>
+              <button class="cue-msg-toolbar-btn" type="button" title="Align center"><span class="material-icons" aria-hidden="true">format_align_center</span></button>
+              <button class="cue-msg-toolbar-btn" type="button" title="Align right"><span class="material-icons" aria-hidden="true">format_align_right</span></button>
+              <div class="cue-msg-toolbar-divider"></div>
+              <button class="cue-msg-toolbar-btn" type="button" title="Bullet list"><span class="material-icons" aria-hidden="true">format_list_bulleted</span></button>
+              <button class="cue-msg-toolbar-btn" type="button" title="Numbered list"><span class="material-icons" aria-hidden="true">format_list_numbered</span></button>
+              <button class="cue-msg-toolbar-btn" type="button" title="Indent"><span class="material-icons" aria-hidden="true">format_indent_increase</span></button>
+              <button class="cue-msg-toolbar-btn" type="button" title="Outdent"><span class="material-icons" aria-hidden="true">format_indent_decrease</span></button>
+            </div>
+            <textarea class="cue-msg-input" placeholder="Type a message" rows="3" aria-label="Message"></textarea>
+            <div class="cue-msg-actions">
+              <button class="cue-msg-action-btn" aria-label="Attach file" type="button">
+                <span class="material-icons" aria-hidden="true">attach_file</span>
+              </button>
+              <button class="cue-msg-action-btn" aria-label="Mention someone" type="button">
+                <span class="material-icons" aria-hidden="true">alternate_email</span>
+              </button>
+              <button class="cue-msg-send-btn" type="button">
+                Send
+                <span class="material-icons" aria-hidden="true">send</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <hr class="docs-divider" />
+
+    <!-- ============================================================
+         MESSAGE LIST ITEMS
+    ============================================================ -->
+
+    <div class="docs-section">
+      <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Message List Item</h2>
+      <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">Conversation rows in the left panel. The current conversation has a white background with a 2px accent blue left border. Inactive conversations use a light gray background. The unread indicator is a 12px red dot — absent when read.</p>
+      <div class="docs-example" style="flex-direction: column; padding: 0; overflow: hidden; gap: 0;">
+
+        <!-- Current + unread -->
+        <div class="cue-msg-item cue-msg-item--current">
+          <div class="cue-msg-item__indicator">
+            <div class="cue-msg-indicator cue-msg-indicator--new" aria-label="Unread messages"></div>
+          </div>
+          <div class="cue-msg-item__content">
+            <div class="cue-msg-item__top">
+              <span class="cue-msg-item__names">William, Anna, Charlene, +2</span>
+              <button class="cue-msg-item__more" type="button" aria-label="Conversation options">
+                <span class="material-icons" aria-hidden="true">more_horiz</span>
+              </button>
+            </div>
+            <div class="cue-msg-item__preview-row">
+              <span class="cue-msg-item__preview">Name: This is a preview of the m...</span>
+              <span class="cue-msg-item__time">10/15/25 &nbsp;11:00 AM</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Inactive + unread -->
+        <div class="cue-msg-item cue-msg-item--inactive">
+          <div class="cue-msg-item__indicator">
+            <div class="cue-msg-indicator cue-msg-indicator--new" aria-label="Unread messages"></div>
+          </div>
+          <div class="cue-msg-item__content">
+            <div class="cue-msg-item__top">
+              <span class="cue-msg-item__names">Charlene Landry</span>
+              <button class="cue-msg-item__more" type="button" aria-label="Conversation options">
+                <span class="material-icons" aria-hidden="true">more_horiz</span>
+              </button>
+            </div>
+            <div class="cue-msg-item__preview-row">
+              <span class="cue-msg-item__preview">Name: This is a preview of the m...</span>
+              <span class="cue-msg-item__time">10/15/25 &nbsp;11:00 AM</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Inactive + read -->
+        <div class="cue-msg-item cue-msg-item--inactive">
+          <div class="cue-msg-item__indicator">
+            <div class="cue-msg-indicator" aria-hidden="true"></div>
+          </div>
+          <div class="cue-msg-item__content">
+            <div class="cue-msg-item__top">
+              <span class="cue-msg-item__names">William, Anna, Charlene, +3</span>
+              <button class="cue-msg-item__more" type="button" aria-label="Conversation options">
+                <span class="material-icons" aria-hidden="true">more_horiz</span>
+              </button>
+            </div>
+            <div class="cue-msg-item__preview-row">
+              <span class="cue-msg-item__preview">Name: This is a preview of the m...</span>
+              <span class="cue-msg-item__time">10/15/25 &nbsp;11:00 AM</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <hr class="docs-divider" />
+
+    <!-- ============================================================
+         FULL VIEW DEMO
+    ============================================================ -->
+
+    <div class="docs-section">
+      <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Full Chat View</h2>
+      <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">The assembled chat interface. Left panel shows the conversation list. Right panel shows the active thread with the message input at the bottom. The full view sits inside the main page content area — not full-screen.</p>
+
+      <div class="cue-chat-view" role="main" aria-label="Chat">
+
+        <!-- Left panel: conversation list -->
+        <div class="cue-chat-view__panel">
+          <div class="cue-msg-panel-header">
+            <span class="cue-msg-panel-title">Messages</span>
+            <button class="cue-msg-compose-btn" type="button" aria-label="New message">
+              <span class="material-icons" aria-hidden="true">edit</span>
+            </button>
+          </div>
+          <div class="cue-msg-panel-search">
+            <div class="cue-search-wrap">
+              <span class="cue-search-icon material-icons" aria-hidden="true">search</span>
+              <input class="cue-search" type="search" placeholder="Search" aria-label="Search conversations" />
+            </div>
+          </div>
+          <div class="cue-chat-view__list" role="list" aria-label="Conversations">
+            <div class="cue-msg-item cue-msg-item--current" role="listitem">
+              <div class="cue-msg-item__indicator">
+                <div class="cue-msg-indicator cue-msg-indicator--new"></div>
+              </div>
+              <div class="cue-msg-item__content">
+                <div class="cue-msg-item__top">
+                  <span class="cue-msg-item__names">William, Anna, Charlene, +2</span>
+                  <button class="cue-msg-item__more" type="button" aria-label="Options"><span class="material-icons" aria-hidden="true">more_horiz</span></button>
+                </div>
+                <div class="cue-msg-item__preview-row">
+                  <span class="cue-msg-item__preview">Name: This is a preview of the m...</span>
+                  <span class="cue-msg-item__time">10/15/25</span>
+                </div>
+              </div>
+            </div>
+            <div class="cue-msg-item cue-msg-item--inactive" role="listitem">
+              <div class="cue-msg-item__indicator">
+                <div class="cue-msg-indicator cue-msg-indicator--new"></div>
+              </div>
+              <div class="cue-msg-item__content">
+                <div class="cue-msg-item__top">
+                  <span class="cue-msg-item__names">Charlene Landry</span>
+                  <button class="cue-msg-item__more" type="button" aria-label="Options"><span class="material-icons" aria-hidden="true">more_horiz</span></button>
+                </div>
+                <div class="cue-msg-item__preview-row">
+                  <span class="cue-msg-item__preview">Name: This is a preview of the m...</span>
+                  <span class="cue-msg-item__time">10/15/25</span>
+                </div>
+              </div>
+            </div>
+            <div class="cue-msg-item cue-msg-item--inactive" role="listitem">
+              <div class="cue-msg-item__indicator"><div class="cue-msg-indicator"></div></div>
+              <div class="cue-msg-item__content">
+                <div class="cue-msg-item__top">
+                  <span class="cue-msg-item__names">William, Anna, Charlene, +3</span>
+                  <button class="cue-msg-item__more" type="button" aria-label="Options"><span class="material-icons" aria-hidden="true">more_horiz</span></button>
+                </div>
+                <div class="cue-msg-item__preview-row">
+                  <span class="cue-msg-item__preview">Name: This is a preview of the m...</span>
+                  <span class="cue-msg-item__time">10/15/25</span>
+                </div>
+              </div>
+            </div>
+            <div class="cue-msg-item cue-msg-item--inactive" role="listitem">
+              <div class="cue-msg-item__indicator">
+                <div class="cue-msg-indicator cue-msg-indicator--new"></div>
+              </div>
+              <div class="cue-msg-item__content">
+                <div class="cue-msg-item__top">
+                  <span class="cue-msg-item__names">William, Anna, Charlene, +3</span>
+                  <button class="cue-msg-item__more" type="button" aria-label="Options"><span class="material-icons" aria-hidden="true">more_horiz</span></button>
+                </div>
+                <div class="cue-msg-item__preview-row">
+                  <span class="cue-msg-item__preview">Name: This is a preview of the m...</span>
+                  <span class="cue-msg-item__time">10/15/25</span>
+                </div>
+              </div>
+            </div>
+            <div class="cue-msg-item cue-msg-item--inactive" role="listitem">
+              <div class="cue-msg-item__indicator"><div class="cue-msg-indicator"></div></div>
+              <div class="cue-msg-item__content">
+                <div class="cue-msg-item__top">
+                  <span class="cue-msg-item__names">William, Anna, Charlene, +3</span>
+                  <button class="cue-msg-item__more" type="button" aria-label="Options"><span class="material-icons" aria-hidden="true">more_horiz</span></button>
+                </div>
+                <div class="cue-msg-item__preview-row">
+                  <span class="cue-msg-item__preview">Name: This is a preview of the m...</span>
+                  <span class="cue-msg-item__time">10/15/25</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right panel: thread -->
+        <div class="cue-chat-view__thread">
+          <div class="cue-chat-view__thread-header">
+            <span class="cue-chat-view__thread-title">William, Anna, Charlene, Tom, Fiona</span>
+            <button class="cue-msg-item__more" type="button" aria-label="Conversation options">
+              <span class="material-icons" aria-hidden="true">more_horiz</span>
+            </button>
+          </div>
+
+          <div class="cue-chat-view__messages" role="log" aria-label="Messages" aria-live="polite">
+
+            <!-- Sent by current user -->
+            <div class="cue-msg-group cue-msg-group--to">
+              <div class="cue-msg-group__row">
+                <div class="cue-chat-avatar">JF</div>
+                <div class="cue-msg-bubble cue-msg-bubble--to">
+                  This is a message from you to a client or coworker. It comes with the ability to change the avatar and show the username, time, and date.
+                </div>
+              </div>
+              <div class="cue-msg-group__meta">
+                <span>Firstname Lastname</span>
+                <span>10/15/25</span>
+                <span>11:00 AM</span>
+              </div>
+            </div>
+
+            <!-- Received -->
+            <div class="cue-msg-group cue-msg-group--from">
+              <div class="cue-msg-group__row">
+                <div class="cue-chat-avatar">CL</div>
+                <div class="cue-msg-bubble cue-msg-bubble--from">
+                  This is a message from a coworker or client to you. It comes with the ability to change the avatar and show the username, time, and date.
+                </div>
+              </div>
+              <div class="cue-msg-group__meta">
+                <span>Firstname Lastname</span>
+                <span>10/15/25</span>
+                <span>11:00 AM</span>
+              </div>
+            </div>
+
+            <!-- Sent -->
+            <div class="cue-msg-group cue-msg-group--to">
+              <div class="cue-msg-group__row">
+                <div class="cue-chat-avatar">JF</div>
+                <div class="cue-msg-bubble cue-msg-bubble--to">
+                  This is a message from you to a client or coworker. It comes with the ability to change the avatar and show the username, time, and date.
+                </div>
+              </div>
+              <div class="cue-msg-group__meta">
+                <span>Firstname Lastname</span>
+                <span>10/15/25</span>
+                <span>11:00 AM</span>
+              </div>
+            </div>
+
+            <!-- Received -->
+            <div class="cue-msg-group cue-msg-group--from">
+              <div class="cue-msg-group__row">
+                <div class="cue-chat-avatar">CL</div>
+                <div class="cue-msg-bubble cue-msg-bubble--from">
+                  This is a message from a coworker or client to you. It comes with the ability to change the avatar and show the username, time, and date.
+                </div>
+              </div>
+              <div class="cue-msg-group__meta">
+                <span>Firstname Lastname</span>
+                <span>10/15/25</span>
+                <span>11:00 AM</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Input area -->
+          <div class="cue-msg-input-wrap">
+            <div class="cue-msg-toolbar-toggle">
+              <button class="cue-msg-toolbar-btn" aria-label="Toggle formatting" type="button" onclick="toggleToolbar(this)">A</button>
+            </div>
+            <textarea class="cue-msg-input" placeholder="Type a message" rows="3" aria-label="Message"></textarea>
+            <div class="cue-msg-actions">
+              <button class="cue-msg-action-btn" aria-label="Attach file" type="button">
+                <span class="material-icons" aria-hidden="true">attach_file</span>
+              </button>
+              <button class="cue-msg-action-btn" aria-label="Mention someone" type="button">
+                <span class="material-icons" aria-hidden="true">alternate_email</span>
+              </button>
+              <button class="cue-msg-send-btn" type="button">
+                Send
+                <span class="material-icons" aria-hidden="true">send</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <hr class="docs-divider" />
+
+    <!-- ============================================================
+         DESIGN TOKENS
+    ============================================================ -->
+
+    <div class="docs-section">
+      <p class="docs-section-label">Design Tokens</p>
+      <table class="docs-token-table">
+        <thead>
+          <tr><th>CSS Variable</th><th>Figma Token</th><th>Value</th><th>Usage</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>--bg-message-from</td>
+            <td>Components/Chat/Message/bg-message-from</td>
+            <td><span class="docs-token-swatch" style="background:#f5f5f5;"></span>#f5f5f5</td>
+            <td>Received message bubble background</td>
+          </tr>
+          <tr>
+            <td>--bg-message-to</td>
+            <td>Components/Chat/Message/bg-message-to</td>
+            <td><span class="docs-token-swatch" style="background:#03618d;"></span>#03618d</td>
+            <td>Sent message bubble background</td>
+          </tr>
+          <tr>
+            <td>--content-message-to</td>
+            <td>System/Content/content-body-inverse</td>
+            <td><span class="docs-token-swatch" style="background:#fafafa; border-color:#ededed;"></span>#fafafa</td>
+            <td>Sent message text color</td>
+          </tr>
+          <tr>
+            <td>--bg-message-current</td>
+            <td>System/Surface/Level 2/bg-level-2</td>
+            <td><span class="docs-token-swatch" style="background:#ffffff; border-color:#ededed;"></span>#ffffff</td>
+            <td>Active conversation list item background</td>
+          </tr>
+          <tr>
+            <td>--border-message-current-accent</td>
+            <td>CUE Brand Color/accent-brand</td>
+            <td><span class="docs-token-swatch" style="background:#009cf9;"></span>#009cf9</td>
+            <td>2px inset left border on current conversation</td>
+          </tr>
+          <tr>
+            <td>--bg-message-inactive</td>
+            <td>System/Background/bg-weak</td>
+            <td><span class="docs-token-swatch" style="background:#f5f5f5;"></span>#f5f5f5</td>
+            <td>Inactive conversation list item background</td>
+          </tr>
+          <tr>
+            <td>--danger-default</td>
+            <td>Global/Danger/danger-default</td>
+            <td><span class="docs-token-swatch" style="background:#d80000;"></span>#d80000</td>
+            <td>New / unread message indicator dot</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  function toggleToolbar(btn) {
+    const wrap = btn.closest('.cue-msg-input-wrap');
+    let toolbar = wrap.querySelector('.cue-msg-toolbar');
+    if (toolbar) {
+      toolbar.remove();
+      btn.closest('.cue-msg-toolbar-toggle').style.borderBottom = '';
+    } else {
+      toolbar = document.createElement('div');
+      toolbar.className = 'cue-msg-toolbar';
+      toolbar.innerHTML = `
+        <button class="cue-msg-toolbar-btn" type="button" title="Font">A</button>
+        <div class="cue-msg-toolbar-divider"></div>
+        <button class="cue-msg-toolbar-btn" type="button" title="Bold"><strong>B</strong></button>
+        <button class="cue-msg-toolbar-btn" type="button" title="Italic"><em>I</em></button>
+        <button class="cue-msg-toolbar-btn" type="button" title="Underline"><u>U</u></button>
+        <div class="cue-msg-toolbar-divider"></div>
+        <button class="cue-msg-toolbar-btn" type="button" title="Link"><span class="material-icons" aria-hidden="true">link</span></button>
+        <button class="cue-msg-toolbar-btn" type="button" title="Image"><span class="material-icons" aria-hidden="true">image</span></button>
+        <div class="cue-msg-toolbar-divider"></div>
+        <button class="cue-msg-toolbar-btn" type="button" title="Align left"><span class="material-icons" aria-hidden="true">format_align_left</span></button>
+        <button class="cue-msg-toolbar-btn" type="button" title="Align center"><span class="material-icons" aria-hidden="true">format_align_center</span></button>
+        <button class="cue-msg-toolbar-btn" type="button" title="Align right"><span class="material-icons" aria-hidden="true">format_align_right</span></button>
+        <div class="cue-msg-toolbar-divider"></div>
+        <button class="cue-msg-toolbar-btn" type="button" title="Bullets"><span class="material-icons" aria-hidden="true">format_list_bulleted</span></button>
+        <button class="cue-msg-toolbar-btn" type="button" title="Numbered"><span class="material-icons" aria-hidden="true">format_list_numbered</span></button>
+        <button class="cue-msg-toolbar-btn" type="button" title="Indent"><span class="material-icons" aria-hidden="true">format_indent_increase</span></button>
+        <button class="cue-msg-toolbar-btn" type="button" title="Outdent"><span class="material-icons" aria-hidden="true">format_indent_decrease</span></button>
+      `;
+      const toggle = btn.closest('.cue-msg-toolbar-toggle');
+      toggle.insertAdjacentElement('afterend', toolbar);
+    }
+  }
+
+  (function() {
+    var sidebar   = document.querySelector('.docs-sidebar');
+    var overlay   = document.querySelector('.docs-nav-overlay');
+    var hamburger = document.querySelector('.docs-topbar__hamburger');
+    var closeBtn  = document.querySelector('.docs-sidebar__close');
+    function openNav() { sidebar.classList.add('is-open'); overlay.classList.add('is-visible'); document.body.style.overflow = 'hidden'; if (hamburger) hamburger.setAttribute('aria-expanded', 'true'); if (closeBtn) closeBtn.focus(); }
+    function closeNav() { sidebar.classList.remove('is-open'); overlay.classList.remove('is-visible'); document.body.style.overflow = ''; if (hamburger) { hamburger.setAttribute('aria-expanded', 'false'); hamburger.focus(); } }
+    if (hamburger) hamburger.addEventListener('click', openNav);
+    if (closeBtn)  closeBtn.addEventListener('click', closeNav);
+    if (overlay)   overlay.addEventListener('click', closeNav);
+    document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && sidebar.classList.contains('is-open')) closeNav(); });
+  })();
+</script>
+
+</body>
+</html>
