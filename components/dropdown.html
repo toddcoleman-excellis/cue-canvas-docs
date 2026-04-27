@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CUE Canvas — Dropdown Menu</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../tokens.css" />
+  <link rel="stylesheet" href="../base.css" />
+  <link rel="icon" type="image/svg+xml" href="../assets/logo_CUE_glyph.svg" />
+  <style>
+
+    /* ============================================================
+       DROPDOWN MENU
+
+       Anatomy:
+         .cue-dropdown                  — wrapper (position: relative)
+           [trigger button]             — any button type (see below)
+           .cue-dropdown__panel         — the floating menu panel
+             .cue-dropdown__item        — menu item (button)
+               .cue-dropdown__item-icon — leading icon (18px Material Icon)
+               .cue-dropdown__item-label— item label text
+               .cue-dropdown__item-trail— trailing icon (chevron_right for submenu)
+             .cue-dropdown__divider     — horizontal rule separator
+
+       Modifier on .cue-dropdown:
+         .is-open                       — shows panel, keeps trigger in active state
+
+       Trigger button types (all standard .cue-btn variants):
+         Neutral-Stroke: "Actions" with chevron down/up
+         Icon:           more_horiz icon only
+         Primary:        "Add New" with + icon
+
+       Panel positioning:
+         Default: top: calc(100% + 6px), right: 0  (aligns to trigger right edge)
+         Can be overridden with .cue-dropdown--left for left-aligned panels.
+    ============================================================ */
+
+    .cue-dropdown {
+      position: relative;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+
+    /* ---- Panel ---- */
+
+    .cue-dropdown__panel {
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      width: 160px;
+      background-color: var(--bg-dropdown);
+      border: 1px solid var(--border-dropdown);
+      border-radius: 4px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+      padding: 0.75rem;
+      display: none;
+      flex-direction: column;
+      gap: 0.5rem;
+      z-index: 500;
+    }
+
+    .cue-dropdown.is-open .cue-dropdown__panel {
+      display: flex;
+    }
+
+    /* Left-align variant */
+    .cue-dropdown--left .cue-dropdown__panel {
+      right: auto;
+      left: 0;
+    }
+
+    /* ---- Menu item ---- */
+
+    .cue-dropdown__item {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-radius: var(--corner-button);
+      cursor: pointer;
+      padding: 0;
+      text-align: left;
+      transition: background-color 0.1s ease;
+      font-family: var(--font-family-body);
+    }
+
+    .cue-dropdown__item:hover {
+      background-color: var(--bg-button-neutral-hover);
+    }
+
+    .cue-dropdown__item:focus-visible {
+      outline: 2px solid var(--border-interactive);
+      outline-offset: 1px;
+      border-radius: var(--corner-button);
+    }
+
+    /* Destructive item (Delete) */
+    .cue-dropdown__item--destructive:hover {
+      background-color: var(--danger-weak);
+    }
+
+    .cue-dropdown__item--destructive .cue-dropdown__item-label,
+    .cue-dropdown__item--destructive .cue-dropdown__item-icon {
+      color: var(--danger-default);
+    }
+
+    .cue-dropdown__item--destructive:hover .cue-dropdown__item-label,
+    .cue-dropdown__item--destructive:hover .cue-dropdown__item-icon {
+      color: var(--danger-strong);
+    }
+
+    /* Icon */
+    .cue-dropdown__item-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--content-body-default);
+    }
+
+    .cue-dropdown__item-icon .material-icons {
+      font-size: 18px;
+    }
+
+    /* Label */
+    .cue-dropdown__item-label {
+      flex: 1;
+      padding: 4px;
+      font-size: 0.875rem;
+      font-weight: 400;
+      color: var(--content-button-neutral);
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    /* Trailing icon (submenu indicator) */
+    .cue-dropdown__item-trail {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--content-body-moderate);
+    }
+
+    .cue-dropdown__item-trail .material-icons {
+      font-size: 16px;
+    }
+
+    /* ---- Divider ---- */
+
+    .cue-dropdown__divider {
+      width: 100%;
+      height: 1px;
+      background-color: var(--border-dropdown);
+      margin: 2px 0;
+      flex-shrink: 0;
+    }
+
+    /* ---- Trigger button active state ---- */
+    /* When open, the trigger gets a subtle shadow to look "pressed" */
+
+    .cue-dropdown.is-open .cue-btn--neutral-stroke,
+    .cue-dropdown.is-open .cue-btn--primary {
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1), inset 0 -1px 0 rgba(0,0,0,0.25);
+    }
+
+    /* Chevron rotates when open */
+    .cue-dropdown__chevron {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s ease;
+    }
+
+    .cue-dropdown.is-open .cue-dropdown__chevron {
+      transform: rotate(180deg);
+    }
+
+    .cue-dropdown__chevron .material-icons {
+      font-size: 16px;
+    }
+
+    /* ---- Button styles needed for triggers ---- */
+
+    .cue-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      padding: var(--button-padding-default);
+      border-radius: var(--corner-button);
+      border: 1px solid transparent;
+      font-family: var(--font-family-body);
+      font-size: 0.875rem;
+      font-weight: 700;
+      line-height: 1;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    }
+
+    .cue-btn__label { padding: 4px; }
+
+    .cue-btn--neutral-stroke {
+      background-color: var(--bg-button-neutral-stroke);
+      color: var(--content-button-neutral-stroke);
+      border-color: var(--border-button-neutral-stroke);
+    }
+    .cue-btn--neutral-stroke:hover {
+      background-color: var(--bg-button-neutral-stroke-hover);
+      color: var(--content-button-neutral-stroke-hover);
+      border-color: var(--border-button-neutral-stroke-hover);
+    }
+
+    .cue-btn--primary {
+      background-color: var(--bg-button-primary);
+      color: var(--content-button-primary);
+      border-color: transparent;
+    }
+    .cue-btn--primary:hover { background-color: var(--bg-button-primary-hover); }
+
+    .cue-btn--icon-only {
+      padding: 6px;
+    }
+
+    .cue-btn .material-icons { font-size: 18px; }
+
+    /* ============================================================
+       DOCS HELPERS
+    ============================================================ */
+
+    .dd-docs-example {
+      padding: 2rem;
+      background-color: var(--bg-level-1);
+      border: 1px solid var(--border-level-1);
+      border-radius: var(--corner-card-module);
+      margin-bottom: var(--space-xl);
+      overflow: visible;
+      min-height: 280px;
+    }
+
+    .dd-demo-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 3rem;
+      align-items: flex-start;
+    }
+
+    .dd-demo-col {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .dd-demo-label {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--content-body-moderate);
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="docs-topbar" role="banner">
+  <a href="../index.html" class="docs-topbar__logo" aria-label="CUE Canvas home">
+    <img src="../assets/logo_CUE_glyph.svg" alt="CUE glyph" />
+    <span class="docs-topbar__logo-label">Canvas</span>
+  </a>
+  <button class="docs-topbar__hamburger" aria-label="Open navigation" aria-expanded="false" aria-controls="docs-sidebar">
+    <span class="material-icons" aria-hidden="true">menu</span>
+  </button>
+</div>
+
+<div class="docs-nav-overlay" aria-hidden="true"></div>
+
+<div class="docs-layout">
+
+  <nav class="docs-sidebar" id="docs-sidebar" aria-label="Documentation navigation">
+    <button class="docs-sidebar__close" aria-label="Close navigation">
+      <span class="material-icons" aria-hidden="true">close</span>
+    </button>
+    <a href="../index.html" class="docs-sidebar__logo" aria-label="CUE Canvas home">
+      <img src="../assets/logo_CUE_glyph.svg" alt="CUE glyph" />
+      <span class="docs-sidebar__logo-label">Canvas</span>
+    </a>
+    <p class="docs-sidebar__section-label">Getting Started</p>
+    <div class="docs-sidebar__nav">
+      <a href="../index.html" class="docs-sidebar__nav-link">Overview</a>
+    </div>
+    <p class="docs-sidebar__section-label">Components</p>
+    <div class="docs-sidebar__nav">
+      <a href="accordion.html" class="docs-sidebar__nav-link">Accordion</a>
+      <a href="alert.html" class="docs-sidebar__nav-link">Alert</a>
+      <a href="badge.html" class="docs-sidebar__nav-link">Badge</a>
+      <a href="breadcrumb.html" class="docs-sidebar__nav-link">Breadcrumb</a>
+      <a href="button.html" class="docs-sidebar__nav-link">Button</a>
+      <a href="calendar-components.html" class="docs-sidebar__nav-link">Calendar Components</a>
+      <a href="calendar.html" class="docs-sidebar__nav-link">Calendar</a>
+      <a href="scheduler.html" class="docs-sidebar__nav-link">Scheduler</a>
+      <a href="card.html" class="docs-sidebar__nav-link">Card</a>
+      <a href="chat.html" class="docs-sidebar__nav-link">Chat</a>
+      <a href="combobox.html" class="docs-sidebar__nav-link">Combobox &amp; Multiselect</a>
+      <a href="date-picker.html" class="docs-sidebar__nav-link">Date Picker</a>
+      <a href="dropdown.html" class="docs-sidebar__nav-link active">Dropdown Menu</a>
+      <a href="form-field.html" class="docs-sidebar__nav-link">Form Field</a>
+      <a href="in-progress.html" class="docs-sidebar__nav-link">Status Badge</a>
+      <a href="in-progress.html" class="docs-sidebar__nav-link">Table</a>
+      <a href="in-progress.html" class="docs-sidebar__nav-link">Tab Navigation</a>
+      <a href="in-progress.html" class="docs-sidebar__nav-link">Side Navigation</a>
+      <a href="in-progress.html" class="docs-sidebar__nav-link">Step Process</a>
+      <a href="in-progress.html" class="docs-sidebar__nav-link">Skeleton Loader</a>
+    </div>
+    <p class="docs-sidebar__section-label">Icons</p>
+    <div class="docs-sidebar__nav">
+      <a href="in-progress.html" class="docs-sidebar__nav-link">Icon Reference</a>
+    </div>
+  </nav>
+
+  <main class="docs-main">
+
+    <div class="docs-page-header">
+      <h1 class="docs-page-title">Dropdown Menu</h1>
+      <p class="docs-page-description">
+        A contextual menu panel triggered by a button. Used throughout CUE Back Office for actions on records, row-level context menus, and "Add New" create flows. The panel appears anchored below the trigger button and can contain labeled actions, icons, submenu indicators, and a divider for visual grouping.
+      </p>
+    </div>
+
+    <!-- ============================================================
+         ACTIONS / CONTEXT MENU
+    ============================================================ -->
+
+    <div class="docs-section">
+      <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Actions / Context Menu</h2>
+      <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">Used for record-level actions. Triggered by an "Actions" label button or a <code>more_horiz</code> icon button. Contains labelled actions with leading icons. A divider separates destructive actions (Delete) from the rest. Download has a trailing <code>chevron_right</code> indicating a submenu.</p>
+
+      <div class="dd-docs-example">
+        <div class="dd-demo-row">
+
+          <!-- Neutral-Stroke trigger -->
+          <div class="dd-demo-col">
+            <p class="dd-demo-label">Neutral — stroke trigger</p>
+            <div class="cue-dropdown" id="dd-actions-1">
+              <button class="cue-btn cue-btn--neutral-stroke" type="button"
+                onclick="toggleDropdown('dd-actions-1')"
+                aria-haspopup="menu" aria-expanded="false"
+                aria-controls="dd-actions-1-panel">
+                <span class="cue-btn__label">Actions</span>
+                <span class="cue-dropdown__chevron" aria-hidden="true">
+                  <span class="material-icons">expand_more</span>
+                </span>
+              </button>
+              <div class="cue-dropdown__panel" id="dd-actions-1-panel" role="menu">
+                <button class="cue-dropdown__item" role="menuitem" type="button">
+                  <span class="cue-dropdown__item-icon material-icons" aria-hidden="true">edit</span>
+                  <span class="cue-dropdown__item-label">Rename</span>
+                </button>
+                <button class="cue-dropdown__item" role="menuitem" type="button">
+                  <span class="cue-dropdown__item-icon material-icons" aria-hidden="true">swap_horiz</span>
+                  <span class="cue-dropdown__item-label">Move</span>
+                </button>
+                <button class="cue-dropdown__item" role="menuitem" type="button">
+                  <span class="cue-dropdown__item-icon material-icons" aria-hidden="true">archive</span>
+                  <span class="cue-dropdown__item-label">Archive</span>
+                </button>
+                <button class="cue-dropdown__item" role="menuitem" type="button">
+                  <span class="cue-dropdown__item-icon material-icons" aria-hidden="true">file_copy</span>
+                  <span class="cue-dropdown__item-label">Duplicate</span>
+                </button>
+                <button class="cue-dropdown__item" role="menuitem" type="button" aria-haspopup="menu">
+                  <span class="cue-dropdown__item-icon material-icons" aria-hidden="true">download</span>
+                  <span class="cue-dropdown__item-label">Download</span>
+                  <span class="cue-dropdown__item-trail material-icons" aria-hidden="true">chevron_right</span>
+                </button>
+                <div class="cue-dropdown__divider" role="separator"></div>
+                <button class="cue-dropdown__item cue-dropdown__item--destructive" role="menuitem" type="button">
+                  <span class="cue-dropdown__item-icon material-icons" aria-hidden="true">delete</span>
+                  <span class="cue-dropdown__item-label">Delete</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Icon trigger (more_horiz) -->
+          <div class="dd-demo-col">
+            <p class="dd-demo-label">Icon trigger — more_horiz</p>
+            <div class="cue-dropdown" id="dd-actions-2">
+              <button class="cue-btn cue-btn--neutral-stroke cue-btn--icon-only" type="button"
+                onclick="toggleDropdown('dd-actions-2')"
+                aria-haspopup="menu" aria-expanded="false"
+                aria-controls="dd-actions-2-panel"
+                aria-label="More actions">
+                <span class="material-icons" aria-hidden="true" style="font-size: 22px;">more_horiz</span>
+              </button>
+              <div class="cue-dropdown__panel" id="dd-actions-2-panel" role="menu">
+                <button class="cue-dropdown__item" role="menuitem" type="button">
+                  <span class="cue-dropdown__item-icon material-icons" aria-hidden="true">edit</span>
+                  <span class="cue-dropdown__item-label">Rename</span>
+                </button>
+                <button class="cue-dropdown__item" role="menuitem" type="button">
+                  <span class="cue-dropdown__item-icon material-icons" aria-hidden="true">swap_horiz</span>
+                  <span class="cue-dropdown__item-label">Move</span>
+                </button>
+                <button class="cue-dropdown__item" role="menuitem" type="button">
+                  <span class="cue-dropdown__item-icon material-icons" aria-hidden="true">archive</span>
+                  <span class="cue-dropdown__item-label">Archive</span>
+                </button>
+                <button class="cue-dropdown__item" role="menuitem" type="button">
+                  <span class="cue-dropdown__item-icon material-icons" aria-hidden="true">file_copy</span>
+                  <span class="cue-dropdown__item-label">Duplicate</span>
+                </button>
+                <button class="cue-dropdown__item" role="menuitem" type="button" aria-haspopup="menu">
+                  <span class="cue-dropdown__item-icon material-icons" aria-hidden="true">download</span>
+                  <span class="cue-dropdown__item-label">Download</span>
+                  <span class="cue-dropdown__item-trail material-icons" aria-hidden="true">chevron_right</span>
+                </button>
+                <div class="cue-dropdown__divider" role="separator"></div>
+                <button class="cue-dropdown__item cue-dropdown__item--destructive" role="menuitem" type="button">
+                  <span class="cue-dropdown__item-icon material-icons" aria-hidden="true">delete</span>
+                  <span class="cue-dropdown__item-label">Delete</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Panel standalone (always open) -->
+          <div class="dd-demo-col">
+            <p class="dd-demo-label">Panel — standalone view</p>
+            <div style="background: var(--bg-dropdown); border: 1px solid var(--border-dropdown); border-radius: 4px; box-shadow: 0 4px 8px rgba(0,0,0,0.08); padding: 0.75rem; width: 160px; display: flex; flex-direction: column; gap: 0.5rem;">
+              <button class="cue-dropdown__item" type="button" style="pointer-events:none;">
+                <span class="cue-dropdown__item-icon material-icons" aria-hidden="true">edit</span>
+                <span class="cue-dropdown__item-label">Rename</span>
+              </button>
+              <button class="cue-dropdown__item" type="button" style="pointer-events:none;">
+                <span class="cue-dropdown__item-icon material-icons" aria-hidden="true">swap_horiz</span>
+                <span class="cue-dropdown__item-label">Move</span>
+              </button>
+              <button class="cue-dropdown__item" type="button" style="pointer-events:none;">
+                <span class="cue-dropdown__item-icon material-icons" aria-hidden="true">archive</span>
+                <span class="cue-dropdown__item-label">Archive</span>
+              </button>
+              <button class="cue-dropdown__item" type="button" style="pointer-events:none;">
+                <span class="cue-dropdown__item-icon material-icons" aria-hidden="true">file_copy</span>
+                <span class="cue-dropdown__item-label">Duplicate</span>
+              </button>
+              <button class="cue-dropdown__item" type="button" style="pointer-events:none;">
+                <span class="cue-dropdown__item-icon material-icons" aria-hidden="true">download</span>
+                <span class="cue-dropdown__item-label">Download</span>
+                <span class="cue-dropdown__item-trail material-icons" aria-hidden="true">chevron_right</span>
+              </button>
+              <div class="cue-dropdown__divider" role="separator"></div>
+              <button class="cue-dropdown__item cue-dropdown__item--destructive" type="button" style="pointer-events:none;">
+                <span class="cue-dropdown__item-icon material-icons" aria-hidden="true">delete</span>
+                <span class="cue-dropdown__item-label">Delete</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <hr class="docs-divider" />
+
+    <!-- ============================================================
+         ADD / CREATE MENU
+    ============================================================ -->
+
+    <div class="docs-section">
+      <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Add / Create Menu</h2>
+      <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">Used for "Add New" or "Create" flows. Typically triggered by a primary button. Items represent entity types to create (Contact, Folder, Row). Trailing <code>chevron_right</code> on items indicates a further step or sub-flow.</p>
+
+      <div class="dd-docs-example" style="min-height: 200px;">
+        <div class="dd-demo-row">
+
+          <!-- Primary trigger -->
+          <div class="dd-demo-col">
+            <p class="dd-demo-label">Primary trigger</p>
+            <div class="cue-dropdown" id="dd-add-1">
+              <button class="cue-btn cue-btn--primary" type="button"
+                onclick="toggleDropdown('dd-add-1')"
+                aria-haspopup="menu" aria-expanded="false"
+                aria-controls="dd-add-1-panel">
+                <span class="cue-btn__label">Add New</span>
+                <span class="material-icons" aria-hidden="true" style="font-size:18px;">add</span>
+              </button>
+              <div class="cue-dropdown__panel" id="dd-add-1-panel" role="menu">
+                <button class="cue-dropdown__item" role="menuitem" type="button" aria-haspopup="menu">
+                  <span class="cue-dropdown__item-icon material-icons" aria-hidden="true">contacts</span>
+                  <span class="cue-dropdown__item-label">Contact</span>
+                  <span class="cue-dropdown__item-trail material-icons" aria-hidden="true">chevron_right</span>
+                </button>
+                <button class="cue-dropdown__item" role="menuitem" type="button">
+                  <span class="cue-dropdown__item-icon material-icons" aria-hidden="true">folder</span>
+                  <span class="cue-dropdown__item-label">Folder</span>
+                </button>
+                <button class="cue-dropdown__item" role="menuitem" type="button">
+                  <span class="cue-dropdown__item-icon material-icons" aria-hidden="true">table_rows</span>
+                  <span class="cue-dropdown__item-label">Row</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Panel standalone -->
+          <div class="dd-demo-col">
+            <p class="dd-demo-label">Panel — standalone view</p>
+            <div style="background: var(--bg-dropdown); border: 1px solid var(--border-dropdown); border-radius: 4px; box-shadow: 0 4px 8px rgba(0,0,0,0.08); padding: 0.75rem; width: 160px; display: flex; flex-direction: column; gap: 0.5rem;">
+              <button class="cue-dropdown__item" type="button" style="pointer-events:none;">
+                <span class="cue-dropdown__item-icon material-icons" aria-hidden="true">contacts</span>
+                <span class="cue-dropdown__item-label">Contact</span>
+                <span class="cue-dropdown__item-trail material-icons" aria-hidden="true">chevron_right</span>
+              </button>
+              <button class="cue-dropdown__item" type="button" style="pointer-events:none;">
+                <span class="cue-dropdown__item-icon material-icons" aria-hidden="true">folder</span>
+                <span class="cue-dropdown__item-label">Folder</span>
+              </button>
+              <button class="cue-dropdown__item" type="button" style="pointer-events:none;">
+                <span class="cue-dropdown__item-icon material-icons" aria-hidden="true">table_rows</span>
+                <span class="cue-dropdown__item-label">Row</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <hr class="docs-divider" />
+
+    <!-- ============================================================
+         DESIGN TOKENS
+    ============================================================ -->
+
+    <div class="docs-section">
+      <p class="docs-section-label">Design Tokens</p>
+      <table class="docs-token-table">
+        <thead>
+          <tr><th>CSS Variable</th><th>Figma Token</th><th>Value</th><th>Usage</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>--bg-dropdown</td>
+            <td>Components/Dropdown/bg-dropdown</td>
+            <td><span class="docs-token-swatch" style="background:#ffffff; border-color:#ededed;"></span>#ffffff</td>
+            <td>Panel background</td>
+          </tr>
+          <tr>
+            <td>--border-dropdown</td>
+            <td>Components/Dropdown/border-dropdown</td>
+            <td><span class="docs-token-swatch" style="background:#ededed;"></span>#ededed</td>
+            <td>Panel border and divider color</td>
+          </tr>
+          <tr>
+            <td>Shadow</td>
+            <td>Form Field Effects/Dropdown Shadow</td>
+            <td>0 4px 8px rgba(0,0,0,0.08)</td>
+            <td>Panel drop shadow</td>
+          </tr>
+          <tr>
+            <td>Border radius</td>
+            <td>Components/Card or Module/corner-card-module</td>
+            <td>4px</td>
+            <td>Panel corner radius</td>
+          </tr>
+          <tr>
+            <td>--content-button-neutral</td>
+            <td>Buttons/Neutral Button/content-button-neutral</td>
+            <td><span class="docs-token-swatch" style="background:#262626;"></span>#262626</td>
+            <td>Default item label and icon color</td>
+          </tr>
+          <tr>
+            <td>--bg-button-neutral-hover</td>
+            <td>Buttons/Neutral Button/bg-button-neutral-hover</td>
+            <td><span class="docs-token-swatch" style="background:#d4d4d4;"></span>#d4d4d4</td>
+            <td>Item hover background</td>
+          </tr>
+          <tr>
+            <td>--danger-default</td>
+            <td>Global/Danger/danger-default</td>
+            <td><span class="docs-token-swatch" style="background:#d80000;"></span>#d80000</td>
+            <td>Destructive item label and icon color</td>
+          </tr>
+          <tr>
+            <td>--danger-weak</td>
+            <td>Global/Danger/danger-weak</td>
+            <td><span class="docs-token-swatch" style="background:#ffe0e0; border-color:#eee;"></span>#ffe0e0</td>
+            <td>Destructive item hover background</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <hr class="docs-divider" />
+
+    <!-- ============================================================
+         CODE
+    ============================================================ -->
+
+    <div class="docs-section">
+      <p class="docs-section-label">Code</p>
+      <div class="docs-code-tabs">
+        <button class="docs-code-tab active" onclick="switchTab(event, 'dd-html')">HTML</button>
+        <button class="docs-code-tab" onclick="switchTab(event, 'dd-css')">CSS</button>
+        <button class="docs-code-tab" onclick="switchTab(event, 'dd-js')">JS</button>
+      </div>
+
+      <div class="docs-code-panel active" id="dd-html">
+        <div class="docs-code-block"><pre><code>&lt;!-- Actions dropdown — neutral-stroke trigger --&gt;
+&lt;div class="cue-dropdown" id="my-dropdown"&gt;
+  &lt;button class="cue-btn cue-btn--neutral-stroke" type="button"
+    onclick="toggleDropdown('my-dropdown')"
+    aria-haspopup="menu" aria-expanded="false"
+    aria-controls="my-dropdown-panel"&gt;
+    &lt;span class="cue-btn__label"&gt;Actions&lt;/span&gt;
+    &lt;span class="cue-dropdown__chevron" aria-hidden="true"&gt;
+      &lt;span class="material-icons"&gt;expand_more&lt;/span&gt;
+    &lt;/span&gt;
+  &lt;/button&gt;
+  &lt;div class="cue-dropdown__panel" id="my-dropdown-panel" role="menu"&gt;
+
+    &lt;!-- Standard item: icon + label --&gt;
+    &lt;button class="cue-dropdown__item" role="menuitem" type="button"&gt;
+      &lt;span class="cue-dropdown__item-icon material-icons" aria-hidden="true"&gt;edit&lt;/span&gt;
+      &lt;span class="cue-dropdown__item-label"&gt;Rename&lt;/span&gt;
+    &lt;/button&gt;
+
+    &lt;!-- Item with submenu indicator --&gt;
+    &lt;button class="cue-dropdown__item" role="menuitem" type="button" aria-haspopup="menu"&gt;
+      &lt;span class="cue-dropdown__item-icon material-icons" aria-hidden="true"&gt;download&lt;/span&gt;
+      &lt;span class="cue-dropdown__item-label"&gt;Download&lt;/span&gt;
+      &lt;span class="cue-dropdown__item-trail material-icons" aria-hidden="true"&gt;chevron_right&lt;/span&gt;
+    &lt;/button&gt;
+
+    &lt;!-- Divider --&gt;
+    &lt;div class="cue-dropdown__divider" role="separator"&gt;&lt;/div&gt;
+
+    &lt;!-- Destructive item --&gt;
+    &lt;button class="cue-dropdown__item cue-dropdown__item--destructive" role="menuitem" type="button"&gt;
+      &lt;span class="cue-dropdown__item-icon material-icons" aria-hidden="true"&gt;delete&lt;/span&gt;
+      &lt;span class="cue-dropdown__item-label"&gt;Delete&lt;/span&gt;
+    &lt;/button&gt;
+
+  &lt;/div&gt;
+&lt;/div&gt;
+
+
+&lt;!-- Icon trigger (more_horiz) --&gt;
+&lt;div class="cue-dropdown" id="my-icon-dropdown"&gt;
+  &lt;button class="cue-btn cue-btn--neutral-stroke cue-btn--icon-only" type="button"
+    onclick="toggleDropdown('my-icon-dropdown')"
+    aria-haspopup="menu" aria-expanded="false"
+    aria-label="More actions"&gt;
+    &lt;span class="material-icons" aria-hidden="true"&gt;more_horiz&lt;/span&gt;
+  &lt;/button&gt;
+  &lt;!-- same panel structure as above --&gt;
+&lt;/div&gt;
+
+
+&lt;!-- Primary trigger (Add New) --&gt;
+&lt;div class="cue-dropdown" id="my-add-dropdown"&gt;
+  &lt;button class="cue-btn cue-btn--primary" type="button"
+    onclick="toggleDropdown('my-add-dropdown')"
+    aria-haspopup="menu" aria-expanded="false"&gt;
+    &lt;span class="cue-btn__label"&gt;Add New&lt;/span&gt;
+    &lt;span class="material-icons" aria-hidden="true"&gt;add&lt;/span&gt;
+  &lt;/button&gt;
+  &lt;div class="cue-dropdown__panel" role="menu"&gt;
+    &lt;button class="cue-dropdown__item" role="menuitem" type="button" aria-haspopup="menu"&gt;
+      &lt;span class="cue-dropdown__item-icon material-icons" aria-hidden="true"&gt;contacts&lt;/span&gt;
+      &lt;span class="cue-dropdown__item-label"&gt;Contact&lt;/span&gt;
+      &lt;span class="cue-dropdown__item-trail material-icons" aria-hidden="true"&gt;chevron_right&lt;/span&gt;
+    &lt;/button&gt;
+    &lt;button class="cue-dropdown__item" role="menuitem" type="button"&gt;
+      &lt;span class="cue-dropdown__item-icon material-icons" aria-hidden="true"&gt;folder&lt;/span&gt;
+      &lt;span class="cue-dropdown__item-label"&gt;Folder&lt;/span&gt;
+    &lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre></div>
+      </div>
+
+      <div class="docs-code-panel" id="dd-css">
+        <div class="docs-code-block"><pre><code>/* Wrapper — always position: relative */
+.cue-dropdown { position: relative; display: inline-flex; flex-direction: column; align-items: flex-end; }
+
+/* Panel */
+.cue-dropdown__panel {
+  position: absolute; top: calc(100% + 6px); right: 0;
+  width: 160px;
+  background-color: var(--bg-dropdown);    /* #ffffff */
+  border: 1px solid var(--border-dropdown);/* #ededed */
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08); /* Dropdown Shadow token */
+  padding: 0.75rem;
+  display: none; flex-direction: column; gap: 0.5rem;
+  z-index: 500;
+}
+.cue-dropdown.is-open .cue-dropdown__panel { display: flex; }
+
+/* Left-align (panel aligns to trigger left edge) */
+.cue-dropdown--left .cue-dropdown__panel { right: auto; left: 0; }
+
+/* Menu item */
+.cue-dropdown__item {
+  display: flex; align-items: center; gap: 2px; width: 100%;
+  background: transparent; border: none;
+  border-radius: var(--corner-button); /* 6px */
+  cursor: pointer; padding: 0; text-align: left;
+  transition: background-color 0.1s ease;
+}
+.cue-dropdown__item:hover { background-color: var(--bg-button-neutral-hover); }
+.cue-dropdown__item:focus-visible { outline: 2px solid var(--border-interactive); }
+
+/* Destructive item */
+.cue-dropdown__item--destructive:hover { background-color: var(--danger-weak); }
+.cue-dropdown__item--destructive .cue-dropdown__item-label,
+.cue-dropdown__item--destructive .cue-dropdown__item-icon { color: var(--danger-default); }
+
+/* Icon */
+.cue-dropdown__item-icon { display: flex; color: var(--content-body-default); }
+.cue-dropdown__item-icon .material-icons { font-size: 18px; }
+
+/* Label */
+.cue-dropdown__item-label { flex: 1; padding: 4px; font-size: 0.875rem; font-weight: 400; color: var(--content-button-neutral); line-height: 1; }
+
+/* Trailing icon */
+.cue-dropdown__item-trail { display: flex; color: var(--content-body-moderate); }
+.cue-dropdown__item-trail .material-icons { font-size: 16px; }
+
+/* Divider */
+.cue-dropdown__divider { width: 100%; height: 1px; background-color: var(--border-dropdown); margin: 2px 0; }
+
+/* Chevron rotates open/closed */
+.cue-dropdown__chevron { display: flex; transition: transform 0.2s ease; }
+.cue-dropdown.is-open .cue-dropdown__chevron { transform: rotate(180deg); }
+.cue-dropdown__chevron .material-icons { font-size: 16px; }</code></pre></div>
+      </div>
+
+      <div class="docs-code-panel" id="dd-js">
+        <div class="docs-code-block"><pre><code>function toggleDropdown(id, force) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const isOpen = force !== undefined ? force : !el.classList.contains('is-open');
+
+  // Close all other open dropdowns first
+  document.querySelectorAll('.cue-dropdown.is-open').forEach(d => {
+    if (d.id !== id) {
+      d.classList.remove('is-open');
+      d.querySelector('[aria-expanded]')?.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  el.classList.toggle('is-open', isOpen);
+  el.querySelector('[aria-expanded]')?.setAttribute('aria-expanded', isOpen);
+
+  // Focus first item when opening
+  if (isOpen) {
+    setTimeout(() => el.querySelector('.cue-dropdown__item')?.focus(), 50);
+  }
+}
+
+// Keyboard navigation within an open dropdown
+document.addEventListener('keydown', function(e) {
+  const open = document.querySelector('.cue-dropdown.is-open');
+  if (!open) return;
+
+  const items = [...open.querySelectorAll('.cue-dropdown__item')];
+  const focused = document.activeElement;
+  const idx = items.indexOf(focused);
+
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    items[(idx + 1) % items.length]?.focus();
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    items[(idx - 1 + items.length) % items.length]?.focus();
+  } else if (e.key === 'Escape') {
+    const trigger = open.querySelector('[aria-expanded]');
+    toggleDropdown(open.id, false);
+    trigger?.focus();
+  } else if (e.key === 'Tab') {
+    toggleDropdown(open.id, false);
+  }
+});
+
+// Close on outside click
+document.addEventListener('click', function(e) {
+  document.querySelectorAll('.cue-dropdown.is-open').forEach(el => {
+    if (!el.contains(e.target)) {
+      el.classList.remove('is-open');
+      el.querySelector('[aria-expanded]')?.setAttribute('aria-expanded', 'false');
+    }
+  });
+});</code></pre></div>
+      </div>
+
+    </div>
+
+  </main>
+</div>
+
+<script>
+  function switchTab(event, tabId) {
+    const section = event.target.closest('.docs-section');
+    section.querySelectorAll('.docs-code-tab').forEach(t => t.classList.remove('active'));
+    section.querySelectorAll('.docs-code-panel').forEach(p => p.classList.remove('active'));
+    event.target.classList.add('active');
+    document.getElementById(tabId).classList.add('active');
+  }
+
+  function toggleDropdown(id, force) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const isOpen = force !== undefined ? force : !el.classList.contains('is-open');
+    document.querySelectorAll('.cue-dropdown.is-open').forEach(d => {
+      if (d.id !== id) { d.classList.remove('is-open'); d.querySelector('[aria-expanded]')?.setAttribute('aria-expanded', 'false'); }
+    });
+    el.classList.toggle('is-open', isOpen);
+    el.querySelector('[aria-expanded]')?.setAttribute('aria-expanded', isOpen);
+    if (isOpen) { setTimeout(() => el.querySelector('.cue-dropdown__item')?.focus(), 50); }
+  }
+
+  document.addEventListener('keydown', function(e) {
+    const open = document.querySelector('.cue-dropdown.is-open');
+    if (!open) return;
+    const items = [...open.querySelectorAll('.cue-dropdown__item')];
+    const idx = items.indexOf(document.activeElement);
+    if (e.key === 'ArrowDown') { e.preventDefault(); items[(idx + 1) % items.length]?.focus(); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); items[(idx - 1 + items.length) % items.length]?.focus(); }
+    else if (e.key === 'Escape') { const t = open.querySelector('[aria-expanded]'); toggleDropdown(open.id, false); t?.focus(); }
+    else if (e.key === 'Tab') { toggleDropdown(open.id, false); }
+  });
+
+  document.addEventListener('click', function(e) {
+    document.querySelectorAll('.cue-dropdown.is-open').forEach(el => {
+      if (!el.contains(e.target)) { el.classList.remove('is-open'); el.querySelector('[aria-expanded]')?.setAttribute('aria-expanded', 'false'); }
+    });
+  });
+
+  (function() {
+    var sidebar = document.querySelector('.docs-sidebar');
+    var overlay = document.querySelector('.docs-nav-overlay');
+    var hamburger = document.querySelector('.docs-topbar__hamburger');
+    var closeBtn = document.querySelector('.docs-sidebar__close');
+    function openNav() { sidebar.classList.add('is-open'); overlay.classList.add('is-visible'); document.body.style.overflow = 'hidden'; if (hamburger) hamburger.setAttribute('aria-expanded', 'true'); if (closeBtn) closeBtn.focus(); }
+    function closeNav() { sidebar.classList.remove('is-open'); overlay.classList.remove('is-visible'); document.body.style.overflow = ''; if (hamburger) { hamburger.setAttribute('aria-expanded', 'false'); hamburger.focus(); } }
+    if (hamburger) hamburger.addEventListener('click', openNav);
+    if (closeBtn) closeBtn.addEventListener('click', closeNav);
+    if (overlay) overlay.addEventListener('click', closeNav);
+    document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && sidebar.classList.contains('is-open')) closeNav(); });
+  })();
+</script>
+
+</body>
+</html>
