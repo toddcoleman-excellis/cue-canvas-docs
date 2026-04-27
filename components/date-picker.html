@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CUE Canvas — Date Picker</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../tokens.css" />
+  <link rel="stylesheet" href="../base.css" />
+  <link rel="icon" type="image/svg+xml" href="../assets/logo_CUE_glyph.svg" />
+  <style>
+
+    /* ============================================================
+       DATE PICKER COMPONENT
+
+       Two variants:
+         .cue-datepicker        — Single date selection
+         .cue-daterange         — Date range with preset shortcuts
+
+       Both use:
+         .cue-dp-input          — the trigger input field
+         .cue-dp-calendar       — the calendar panel
+         .cue-dp-day-cell       — individual day cell
+
+       Day cell modifiers:
+         .is-dow                — Day-of-week header (S M T W T F S)
+         .is-other-month        — Prev/next month overflow dates
+         .is-today              — Current day (accent brand bg)
+         .is-selected           — Single selected date
+         .is-range-start        — Range start date
+         .is-range-end          — Range end date
+         .is-in-range           — In-between range dates
+         .is-disabled           — Unselectable date
+    ============================================================ */
+
+    /* ============================================================
+       INPUT FIELD
+    ============================================================ */
+
+    .cue-dp-wrap {
+      position: relative;
+      display: inline-block;
+    }
+
+    .cue-dp-input {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      padding: var(--padding-form-field-default);
+      border: 1px solid var(--border-form-field-default);
+      border-radius: var(--corner-form-field);
+      background-color: var(--bg-form-field-default);
+      font-family: var(--font-family-body);
+      font-size: 1rem;
+      font-weight: 400;
+      color: var(--content-form-field-placeholder);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: border-color 0.15s ease;
+      user-select: none;
+      min-width: 200px;
+    }
+
+    .cue-dp-input.has-value {
+      color: var(--content-form-field-filled-read);
+    }
+
+    .cue-dp-input:hover,
+    .cue-dp-wrap.is-open .cue-dp-input {
+      border-color: var(--border-form-field-focus);
+    }
+
+    .cue-dp-input .material-icons {
+      font-size: 18px;
+      color: var(--content-body-moderate);
+      flex-shrink: 0;
+    }
+
+
+    /* ============================================================
+       CALENDAR PANEL
+    ============================================================ */
+
+    .cue-dp-panel {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      background-color: var(--bg-default);
+      border: 1px solid var(--border-extra-subtle);
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+      z-index: 500;
+      display: none;
+      padding: 0.5rem;
+    }
+
+    .cue-dp-wrap.is-open .cue-dp-panel {
+      display: block;
+    }
+
+    /* Month/Year header */
+    .cue-dp-month-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.5rem 0.25rem;
+      margin-bottom: 2px;
+    }
+
+    .cue-dp-nav-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--content-body-default);
+      border-radius: 4px;
+      transition: background-color 0.1s ease;
+      flex-shrink: 0;
+    }
+
+    .cue-dp-nav-btn:hover { background-color: var(--bg-level-0); }
+    .cue-dp-nav-btn .material-icons { font-size: 20px; }
+
+    .cue-dp-month-label {
+      font-family: var(--font-family-body);
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--content-body-default);
+      text-align: center;
+      flex: 1;
+    }
+
+    /* Day grid */
+    .cue-dp-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      width: 294px;
+    }
+
+    /* Day cell */
+    .cue-dp-day-cell {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 38px;
+      font-family: var(--font-family-body);
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--content-body-default);
+      cursor: pointer;
+      position: relative;
+      transition: background-color 0.1s ease;
+      border: none;
+      background: transparent;
+      padding: 0;
+      width: 100%;
+    }
+
+    .cue-dp-day-cell:hover:not(.is-dow):not(.is-other-month):not(.is-disabled) {
+      background-color: var(--bg-level-0);
+    }
+
+    /* Day of week header */
+    .cue-dp-day-cell.is-dow {
+      font-weight: 400;
+      color: var(--content-form-field-solid-placeholder);
+      cursor: default;
+      height: 34px;
+    }
+
+    /* Prev/next month overflow */
+    .cue-dp-day-cell.is-other-month {
+      color: var(--content-body-moderate);
+      cursor: default;
+    }
+
+    /* Today — accent brand background */
+    .cue-dp-day-cell.is-today {
+      background-color: #009cf9;
+      color: var(--content-body-default);
+      border-radius: 2px;
+    }
+
+    /* Selected single date */
+    .cue-dp-day-cell.is-selected {
+      background-color: var(--bg-primary-brand);
+      color: #ffffff;
+      border-radius: 4px;
+    }
+
+    /* Range start */
+    .cue-dp-day-cell.is-range-start {
+      background-color: var(--bg-primary-brand);
+      color: #ffffff;
+      border-radius: 4px 0 0 4px;
+    }
+
+    /* Range end */
+    .cue-dp-day-cell.is-range-end {
+      background-color: var(--bg-primary-brand);
+      color: #ffffff;
+      border-radius: 0 4px 4px 0;
+    }
+
+    /* In-range days */
+    .cue-dp-day-cell.is-in-range {
+      background-color: var(--interactive-extra-subtle);
+      color: var(--content-body-default);
+      border-radius: 0;
+    }
+
+    /* Range start = end (single day range) */
+    .cue-dp-day-cell.is-range-start.is-range-end {
+      border-radius: 4px;
+    }
+
+
+    /* ============================================================
+       DATE RANGE PANEL
+       Two calendars side by side + preset shortcuts left
+    ============================================================ */
+
+    .cue-daterange-panel {
+      display: flex;
+      gap: 0;
+      padding: 0;
+    }
+
+    /* Preset shortcuts column */
+    .cue-dr-presets {
+      display: flex;
+      flex-direction: column;
+      padding: 1rem 1rem 1rem 0.75rem;
+      gap: 0.25rem;
+      border-right: 1px solid var(--border-extra-subtle);
+      min-width: 140px;
+    }
+
+    .cue-dr-preset-btn {
+      display: block;
+      text-align: left;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: var(--font-family-body);
+      font-size: 0.875rem;
+      font-weight: 400;
+      color: var(--content-body-default);
+      padding: 4px 0.5rem;
+      border-radius: 4px;
+      transition: background-color 0.1s ease, color 0.1s ease;
+      white-space: nowrap;
+    }
+
+    .cue-dr-preset-btn:hover {
+      background-color: var(--bg-level-0);
+    }
+
+    .cue-dr-preset-btn.is-active {
+      font-weight: 700;
+      color: var(--content-body-primary-brand);
+    }
+
+    /* Dual calendar area */
+    .cue-dr-calendars {
+      display: flex;
+      flex-direction: column;
+      padding: 0.5rem;
+    }
+
+    .cue-dr-months {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .cue-dr-month {
+      flex: 1;
+    }
+
+    /* Footer: Clear + Apply */
+    .cue-dr-footer {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.5rem;
+      padding: 0.5rem 0.25rem 0.25rem;
+      border-top: 1px solid var(--border-extra-subtle);
+      margin-top: 0.25rem;
+    }
+
+
+    /* ============================================================
+       DOCS HELPERS
+    ============================================================ */
+
+    .dp-demo-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+
+    .dp-demo-col {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .dp-demo-label {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--content-body-moderate);
+    }
+
+    /* Example area needs overflow:visible for dropdown panels */
+    .dp-docs-example {
+      padding: 2rem;
+      background-color: var(--bg-level-1);
+      border: 1px solid var(--border-level-1);
+      border-radius: var(--corner-card-module);
+      margin-bottom: var(--space-xl);
+      overflow: visible;
+      /* min-height so open panels don't get clipped */
+      min-height: 360px;
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="docs-topbar" role="banner">
+  <a href="../index.html" class="docs-topbar__logo" aria-label="CUE Canvas home">
+    <img src="../assets/logo_CUE_glyph.svg" alt="CUE glyph" />
+    <span class="docs-topbar__logo-label">Canvas</span>
+  </a>
+  <button class="docs-topbar__hamburger" aria-label="Open navigation" aria-expanded="false" aria-controls="docs-sidebar">
+    <span class="material-icons" aria-hidden="true">menu</span>
+  </button>
+</div>
+
+<div class="docs-nav-overlay" aria-hidden="true"></div>
+
+<div class="docs-layout">
+
+  <nav class="docs-sidebar" id="docs-sidebar" aria-label="Documentation navigation">
+    <button class="docs-sidebar__close" aria-label="Close navigation">
+      <span class="material-icons" aria-hidden="true">close</span>
+    </button>
+    <a href="../index.html" class="docs-sidebar__logo" aria-label="CUE Canvas home">
+      <img src="../assets/logo_CUE_glyph.svg" alt="CUE glyph" />
+      <span class="docs-sidebar__logo-label">Canvas</span>
+    </a>
+    <p class="docs-sidebar__section-label">Getting Started</p>
+    <div class="docs-sidebar__nav">
+      <a href="../index.html" class="docs-sidebar__nav-link">Overview</a>
+    </div>
+    <p class="docs-sidebar__section-label">Components</p>
+    <div class="docs-sidebar__nav">
+      <a href="accordion.html" class="docs-sidebar__nav-link">Accordion</a>
+      <a href="alert.html" class="docs-sidebar__nav-link">Alert</a>
+      <a href="badge.html" class="docs-sidebar__nav-link">Badge</a>
+      <a href="breadcrumb.html" class="docs-sidebar__nav-link">Breadcrumb</a>
+      <a href="button.html" class="docs-sidebar__nav-link">Button</a>
+      <a href="calendar-components.html" class="docs-sidebar__nav-link">Calendar Components</a>
+      <a href="calendar.html" class="docs-sidebar__nav-link">Calendar</a>
+      <a href="scheduler.html" class="docs-sidebar__nav-link">Scheduler</a>
+      <a href="card.html" class="docs-sidebar__nav-link">Card</a>
+      <a href="chat.html" class="docs-sidebar__nav-link">Chat</a>
+      <a href="combobox.html" class="docs-sidebar__nav-link">Combobox &amp; Multiselect</a>
+      <a href="date-picker.html" class="docs-sidebar__nav-link active">Date Picker</a>
+      <a href="form-field.html" class="docs-sidebar__nav-link">Form Field</a>
+      <a href="in-progress.html" class="docs-sidebar__nav-link">Status Badge</a>
+      <a href="in-progress.html" class="docs-sidebar__nav-link">Table</a>
+      <a href="in-progress.html" class="docs-sidebar__nav-link">Tab Navigation</a>
+      <a href="in-progress.html" class="docs-sidebar__nav-link">Side Navigation</a>
+      <a href="in-progress.html" class="docs-sidebar__nav-link">Dropdown</a>
+      <a href="in-progress.html" class="docs-sidebar__nav-link">Step Process</a>
+      <a href="in-progress.html" class="docs-sidebar__nav-link">Skeleton Loader</a>
+    </div>
+    <p class="docs-sidebar__section-label">Icons</p>
+    <div class="docs-sidebar__nav">
+      <a href="in-progress.html" class="docs-sidebar__nav-link">Icon Reference</a>
+    </div>
+  </nav>
+
+  <main class="docs-main">
+
+    <div class="docs-page-header">
+      <h1 class="docs-page-title">Date Picker</h1>
+      <p class="docs-page-description">
+        A form field that opens a calendar panel for date selection. Available in two variants: Single Date for selecting one date, and Date Range for selecting a start and end date with built-in preset shortcuts (Today, Last 30 Days, etc.).
+      </p>
+    </div>
+
+    <!-- ============================================================
+         DAY CELL ATOMS
+    ============================================================ -->
+
+    <div class="docs-section">
+      <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Day Cell Types</h2>
+      <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">Seven day cell variants used throughout both calendar variants. Each communicates a distinct state visually.</p>
+      <div class="docs-example" style="gap: 1rem; align-items: center; flex-wrap: wrap;">
+        <div class="dp-demo-col" style="align-items: center;">
+          <p class="dp-demo-label">Default</p>
+          <div class="cue-dp-day-cell" style="width: 38px;">15</div>
+        </div>
+        <div class="dp-demo-col" style="align-items: center;">
+          <p class="dp-demo-label">Day of Week</p>
+          <div class="cue-dp-day-cell is-dow" style="width: 38px;">M</div>
+        </div>
+        <div class="dp-demo-col" style="align-items: center;">
+          <p class="dp-demo-label">Other Month</p>
+          <div class="cue-dp-day-cell is-other-month" style="width: 38px;">3</div>
+        </div>
+        <div class="dp-demo-col" style="align-items: center;">
+          <p class="dp-demo-label">Today</p>
+          <div class="cue-dp-day-cell is-today" style="width: 38px;">12</div>
+        </div>
+        <div class="dp-demo-col" style="align-items: center;">
+          <p class="dp-demo-label">Selected</p>
+          <div class="cue-dp-day-cell is-selected" style="width: 38px;">20</div>
+        </div>
+        <div class="dp-demo-col" style="align-items: center;">
+          <p class="dp-demo-label">Range Start</p>
+          <div class="cue-dp-day-cell is-range-start" style="width: 38px;">10</div>
+        </div>
+        <div class="dp-demo-col" style="align-items: center;">
+          <p class="dp-demo-label">In Range</p>
+          <div class="cue-dp-day-cell is-in-range" style="width: 38px;">14</div>
+        </div>
+        <div class="dp-demo-col" style="align-items: center;">
+          <p class="dp-demo-label">Range End</p>
+          <div class="cue-dp-day-cell is-range-end" style="width: 38px;">20</div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="docs-divider" />
+
+    <!-- ============================================================
+         SINGLE DATE PICKER
+    ============================================================ -->
+
+    <div class="docs-section">
+      <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Single Date Picker</h2>
+      <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">Click the input to open the calendar. Navigate months with the arrow buttons. Click a date to select it — the panel closes and the input shows the selected date in MM/DD/YYYY format.</p>
+
+      <div class="dp-docs-example">
+        <div class="dp-demo-row">
+
+          <!-- Default (closed) -->
+          <div class="dp-demo-col">
+            <p class="dp-demo-label">Default — closed</p>
+            <div class="cue-dp-wrap" id="dp-1">
+              <div class="cue-dp-input" role="button" tabindex="0"
+                onclick="toggleDatepicker('dp-1')"
+                onkeydown="if(event.key==='Enter'||event.key===' ')toggleDatepicker('dp-1')"
+                aria-haspopup="dialog" aria-expanded="false" aria-label="Select date">
+                <span id="dp-1-display">12/01/2025</span>
+                <span class="material-icons" aria-hidden="true">event</span>
+              </div>
+              <div class="cue-dp-panel" id="dp-1-panel" role="dialog" aria-label="Calendar">
+                <div class="cue-dp-month-header">
+                  <button class="cue-dp-nav-btn" onclick="navMonth('dp-1',-1)" aria-label="Previous month">
+                    <span class="material-icons" aria-hidden="true">keyboard_arrow_left</span>
+                  </button>
+                  <span class="cue-dp-month-label" id="dp-1-label"></span>
+                  <button class="cue-dp-nav-btn" onclick="navMonth('dp-1',1)" aria-label="Next month">
+                    <span class="material-icons" aria-hidden="true">keyboard_arrow_right</span>
+                  </button>
+                </div>
+                <div class="cue-dp-grid" id="dp-1-grid"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Open (pre-selected) -->
+          <div class="dp-demo-col">
+            <p class="dp-demo-label">Open — date selected</p>
+            <div class="cue-dp-wrap is-open" id="dp-2">
+              <div class="cue-dp-input has-value" role="button" tabindex="0"
+                onclick="toggleDatepicker('dp-2')"
+                onkeydown="if(event.key==='Enter'||event.key===' ')toggleDatepicker('dp-2')"
+                aria-haspopup="dialog" aria-expanded="true" aria-label="Select date">
+                <span id="dp-2-display">01/12/2025</span>
+                <span class="material-icons" aria-hidden="true">event</span>
+              </div>
+              <div class="cue-dp-panel" id="dp-2-panel" role="dialog" aria-label="Calendar">
+                <div class="cue-dp-month-header">
+                  <button class="cue-dp-nav-btn" onclick="navMonth('dp-2',-1)" aria-label="Previous month">
+                    <span class="material-icons" aria-hidden="true">keyboard_arrow_left</span>
+                  </button>
+                  <span class="cue-dp-month-label" id="dp-2-label"></span>
+                  <button class="cue-dp-nav-btn" onclick="navMonth('dp-2',1)" aria-label="Next month">
+                    <span class="material-icons" aria-hidden="true">keyboard_arrow_right</span>
+                  </button>
+                </div>
+                <div class="cue-dp-grid" id="dp-2-grid"></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <hr class="docs-divider" />
+
+    <!-- ============================================================
+         DATE RANGE PICKER
+    ============================================================ -->
+
+    <div class="docs-section">
+      <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Date Range Picker</h2>
+      <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">Click the input to open the range panel. Preset shortcuts on the left apply a date range immediately. Custom Range allows clicking a start and end date across the two-month calendar view. Clear resets the selection; Apply confirms and closes the panel.</p>
+
+      <div class="dp-docs-example" style="min-height: 440px;">
+        <div class="dp-demo-row">
+
+          <!-- Default -->
+          <div class="dp-demo-col">
+            <p class="dp-demo-label">Default — closed</p>
+            <div class="cue-dp-wrap" id="dr-1">
+              <div class="cue-dp-input" role="button" tabindex="0"
+                onclick="toggleDaterange('dr-1')"
+                onkeydown="if(event.key==='Enter'||event.key===' ')toggleDaterange('dr-1')"
+                aria-haspopup="dialog" aria-expanded="false" aria-label="Select date range"
+                style="min-width: 180px;">
+                <span id="dr-1-display">Date Range</span>
+                <span class="material-icons" aria-hidden="true">event</span>
+              </div>
+              <div class="cue-dp-panel cue-daterange-panel" id="dr-1-panel" role="dialog" aria-label="Date range picker">
+                <!-- Presets -->
+                <div class="cue-dr-presets">
+                  <button class="cue-dr-preset-btn" onclick="applyPreset('dr-1','today')">Today</button>
+                  <button class="cue-dr-preset-btn is-active" onclick="applyPreset('dr-1','last30')">Last 30 Days</button>
+                  <button class="cue-dr-preset-btn" onclick="applyPreset('dr-1','last90')">Last 90 Days</button>
+                  <button class="cue-dr-preset-btn" onclick="applyPreset('dr-1','thisYear')">This Year</button>
+                  <button class="cue-dr-preset-btn" onclick="applyPreset('dr-1','lastYear')">Last Year</button>
+                  <button class="cue-dr-preset-btn" onclick="applyPreset('dr-1','custom')">Custom Range</button>
+                </div>
+                <!-- Dual calendars -->
+                <div class="cue-dr-calendars">
+                  <div class="cue-dr-months">
+                    <div class="cue-dr-month">
+                      <div class="cue-dp-month-header">
+                        <button class="cue-dp-nav-btn" onclick="navRangeMonth('dr-1',-1)" aria-label="Previous month">
+                          <span class="material-icons" aria-hidden="true">keyboard_arrow_left</span>
+                        </button>
+                        <span class="cue-dp-month-label" id="dr-1-label-left"></span>
+                        <span style="width: 28px;"></span>
+                      </div>
+                      <div class="cue-dp-grid" id="dr-1-grid-left"></div>
+                    </div>
+                    <div class="cue-dr-month">
+                      <div class="cue-dp-month-header">
+                        <span style="width: 28px;"></span>
+                        <span class="cue-dp-month-label" id="dr-1-label-right"></span>
+                        <button class="cue-dp-nav-btn" onclick="navRangeMonth('dr-1',1)" aria-label="Next month">
+                          <span class="material-icons" aria-hidden="true">keyboard_arrow_right</span>
+                        </button>
+                      </div>
+                      <div class="cue-dp-grid" id="dr-1-grid-right"></div>
+                    </div>
+                  </div>
+                  <div class="cue-dr-footer">
+                    <button class="cue-btn cue-btn--secondary" type="button" onclick="clearDaterange('dr-1')" style="padding: 6px 12px; font-size: 0.875rem; font-weight: 700; background: transparent; border: 1px solid var(--border-button-secondary); border-radius: var(--corner-button); color: var(--content-button-secondary); cursor: pointer;">
+                      Clear
+                    </button>
+                    <button class="cue-btn cue-btn--primary" type="button" onclick="applyDaterange('dr-1')" style="padding: 6px 12px; font-size: 0.875rem; font-weight: 700; background: var(--bg-button-primary); border: 1px solid transparent; border-radius: var(--corner-button); color: var(--content-button-primary); cursor: pointer;">
+                      Apply
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pre-set range (open) -->
+          <div class="dp-demo-col">
+            <p class="dp-demo-label">Open — with selection</p>
+            <div class="cue-dp-wrap is-open" id="dr-2">
+              <div class="cue-dp-input has-value" role="button" tabindex="0"
+                onclick="toggleDaterange('dr-2')"
+                onkeydown="if(event.key==='Enter'||event.key===' ')toggleDaterange('dr-2')"
+                aria-haspopup="dialog" aria-expanded="true" aria-label="Select date range"
+                style="min-width: 200px;">
+                <span id="dr-2-display">1/10/25 - 2/20/25</span>
+                <span class="material-icons" aria-hidden="true">event</span>
+              </div>
+              <div class="cue-dp-panel cue-daterange-panel" id="dr-2-panel" role="dialog" aria-label="Date range picker">
+                <div class="cue-dr-presets">
+                  <button class="cue-dr-preset-btn" onclick="applyPreset('dr-2','today')">Today</button>
+                  <button class="cue-dr-preset-btn is-active" onclick="applyPreset('dr-2','last30')">Last 30 Days</button>
+                  <button class="cue-dr-preset-btn" onclick="applyPreset('dr-2','last90')">Last 90 Days</button>
+                  <button class="cue-dr-preset-btn" onclick="applyPreset('dr-2','thisYear')">This Year</button>
+                  <button class="cue-dr-preset-btn" onclick="applyPreset('dr-2','lastYear')">Last Year</button>
+                  <button class="cue-dr-preset-btn" onclick="applyPreset('dr-2','custom')">Custom Range</button>
+                </div>
+                <div class="cue-dr-calendars">
+                  <div class="cue-dr-months">
+                    <div class="cue-dr-month">
+                      <div class="cue-dp-month-header">
+                        <button class="cue-dp-nav-btn" onclick="navRangeMonth('dr-2',-1)" aria-label="Previous month">
+                          <span class="material-icons" aria-hidden="true">keyboard_arrow_left</span>
+                        </button>
+                        <span class="cue-dp-month-label" id="dr-2-label-left"></span>
+                        <span style="width: 28px;"></span>
+                      </div>
+                      <div class="cue-dp-grid" id="dr-2-grid-left"></div>
+                    </div>
+                    <div class="cue-dr-month">
+                      <div class="cue-dp-month-header">
+                        <span style="width: 28px;"></span>
+                        <span class="cue-dp-month-label" id="dr-2-label-right"></span>
+                        <button class="cue-dp-nav-btn" onclick="navRangeMonth('dr-2',1)" aria-label="Next month">
+                          <span class="material-icons" aria-hidden="true">keyboard_arrow_right</span>
+                        </button>
+                      </div>
+                      <div class="cue-dp-grid" id="dr-2-grid-right"></div>
+                    </div>
+                  </div>
+                  <div class="cue-dr-footer">
+                    <button type="button" onclick="clearDaterange('dr-2')" style="padding: 6px 12px; font-size: 0.875rem; font-weight: 700; background: transparent; border: 1px solid var(--border-button-secondary); border-radius: var(--corner-button); color: var(--content-button-secondary); cursor: pointer;">Clear</button>
+                    <button type="button" onclick="applyDaterange('dr-2')" style="padding: 6px 12px; font-size: 0.875rem; font-weight: 700; background: var(--bg-button-primary); border: 1px solid transparent; border-radius: var(--corner-button); color: var(--content-button-primary); cursor: pointer;">Apply</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <hr class="docs-divider" />
+
+    <!-- ============================================================
+         DESIGN TOKENS
+    ============================================================ -->
+
+    <div class="docs-section">
+      <p class="docs-section-label">Design Tokens</p>
+      <table class="docs-token-table">
+        <thead>
+          <tr><th>CSS Variable / Value</th><th>Figma Token</th><th>Value</th><th>Usage</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>--bg-form-field-default</td>
+            <td>Form/Form Field/Default/bg-form-field-default</td>
+            <td><span class="docs-token-swatch" style="background:#ffffff; border-color:#ededed;"></span>#ffffff</td>
+            <td>Input field background</td>
+          </tr>
+          <tr>
+            <td>--border-form-field-default</td>
+            <td>Form/Form Field/Default/border-form-field-default</td>
+            <td><span class="docs-token-swatch" style="background:#a3a3a3;"></span>#a3a3a3</td>
+            <td>Input field border</td>
+          </tr>
+          <tr>
+            <td>--border-form-field-focus</td>
+            <td>Form/Form Field/Interactive/border-form-field-focus</td>
+            <td><span class="docs-token-swatch" style="background:#0594d7;"></span>#0594d7</td>
+            <td>Input open/hover border</td>
+          </tr>
+          <tr>
+            <td>--corner-form-field</td>
+            <td>Form/Form Field/Sizing/corner-radius</td>
+            <td>6px</td>
+            <td>Input field border radius</td>
+          </tr>
+          <tr>
+            <td>bg-date-block-default</td>
+            <td>Components/Date Picker/Date Block/bg-date-block-default</td>
+            <td><span class="docs-token-swatch" style="background:#ffffff; border-color:#ededed;"></span>#ffffff</td>
+            <td>Default day cell background</td>
+          </tr>
+          <tr>
+            <td>bg-date-block-current-date</td>
+            <td>Components/Date Picker/Date Block/bg-date-block-current-date</td>
+            <td><span class="docs-token-swatch" style="background:#009cf9;"></span>#009cf9</td>
+            <td>Today indicator background (accent brand)</td>
+          </tr>
+          <tr>
+            <td>content-date-block-prev-next-month</td>
+            <td>Components/Date Picker/Date Block/content-date-block-prev-next-month</td>
+            <td><span class="docs-token-swatch" style="background:#8a8a8a;"></span>#8a8a8a</td>
+            <td>Prev/next month day number color</td>
+          </tr>
+          <tr>
+            <td>--bg-primary-brand</td>
+            <td>System/Background/bg-primary-brand</td>
+            <td><span class="docs-token-swatch" style="background:#03618d;"></span>#03618d</td>
+            <td>Selected date and range start/end background</td>
+          </tr>
+          <tr>
+            <td>--interactive-extra-subtle</td>
+            <td>Global/Interactive/interactive-extra-subtle</td>
+            <td><span class="docs-token-swatch" style="background:#d3e1fd;"></span>#d3e1fd</td>
+            <td>In-range day background</td>
+          </tr>
+          <tr>
+            <td>content-day-of-week-default</td>
+            <td>Components/Date Picker/Day of Week Block/content-day-of-week-default</td>
+            <td><span class="docs-token-swatch" style="background:#575757;"></span>#575757</td>
+            <td>S M T W T F S header color</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <hr class="docs-divider" />
+
+    <!-- ============================================================
+         CODE
+    ============================================================ -->
+
+    <div class="docs-section">
+      <p class="docs-section-label">Code</p>
+      <div class="docs-code-tabs">
+        <button class="docs-code-tab active" onclick="switchTab(event, 'dp-html')">HTML</button>
+        <button class="docs-code-tab" onclick="switchTab(event, 'dp-css')">CSS</button>
+        <button class="docs-code-tab" onclick="switchTab(event, 'dp-js')">JS</button>
+      </div>
+
+      <div class="docs-code-panel active" id="dp-html">
+        <div class="docs-code-block"><pre><code>&lt;!-- Single Date Picker --&gt;
+&lt;div class="cue-dp-wrap" id="my-datepicker"&gt;
+  &lt;div class="cue-dp-input" role="button" tabindex="0"
+    onclick="toggleDatepicker('my-datepicker')"
+    onkeydown="if(event.key==='Enter'||event.key===' ')toggleDatepicker('my-datepicker')"
+    aria-haspopup="dialog" aria-expanded="false" aria-label="Select date"&gt;
+    &lt;span id="my-datepicker-display"&gt;Select date&lt;/span&gt;
+    &lt;span class="material-icons" aria-hidden="true"&gt;event&lt;/span&gt;
+  &lt;/div&gt;
+  &lt;div class="cue-dp-panel" id="my-datepicker-panel" role="dialog" aria-label="Calendar"&gt;
+    &lt;div class="cue-dp-month-header"&gt;
+      &lt;button class="cue-dp-nav-btn" onclick="navMonth('my-datepicker',-1)"&gt;
+        &lt;span class="material-icons" aria-hidden="true"&gt;keyboard_arrow_left&lt;/span&gt;
+      &lt;/button&gt;
+      &lt;span class="cue-dp-month-label" id="my-datepicker-label"&gt;&lt;/span&gt;
+      &lt;button class="cue-dp-nav-btn" onclick="navMonth('my-datepicker',1)"&gt;
+        &lt;span class="material-icons" aria-hidden="true"&gt;keyboard_arrow_right&lt;/span&gt;
+      &lt;/button&gt;
+    &lt;/div&gt;
+    &lt;div class="cue-dp-grid" id="my-datepicker-grid"&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+
+&lt;!-- Date Range Picker --&gt;
+&lt;div class="cue-dp-wrap" id="my-daterange"&gt;
+  &lt;div class="cue-dp-input" role="button" tabindex="0"
+    onclick="toggleDaterange('my-daterange')"
+    aria-haspopup="dialog" aria-expanded="false" aria-label="Select date range"&gt;
+    &lt;span id="my-daterange-display"&gt;Date Range&lt;/span&gt;
+    &lt;span class="material-icons" aria-hidden="true"&gt;event&lt;/span&gt;
+  &lt;/div&gt;
+  &lt;div class="cue-dp-panel cue-daterange-panel" id="my-daterange-panel"&gt;
+    &lt;!-- Preset shortcuts --&gt;
+    &lt;div class="cue-dr-presets"&gt;
+      &lt;button class="cue-dr-preset-btn" onclick="applyPreset('my-daterange','today')"&gt;Today&lt;/button&gt;
+      &lt;button class="cue-dr-preset-btn is-active" onclick="applyPreset('my-daterange','last30')"&gt;Last 30 Days&lt;/button&gt;
+      &lt;button class="cue-dr-preset-btn" onclick="applyPreset('my-daterange','last90')"&gt;Last 90 Days&lt;/button&gt;
+      &lt;button class="cue-dr-preset-btn" onclick="applyPreset('my-daterange','thisYear')"&gt;This Year&lt;/button&gt;
+      &lt;button class="cue-dr-preset-btn" onclick="applyPreset('my-daterange','lastYear')"&gt;Last Year&lt;/button&gt;
+      &lt;button class="cue-dr-preset-btn" onclick="applyPreset('my-daterange','custom')"&gt;Custom Range&lt;/button&gt;
+    &lt;/div&gt;
+    &lt;!-- Dual calendars --&gt;
+    &lt;div class="cue-dr-calendars"&gt;
+      &lt;div class="cue-dr-months"&gt;
+        &lt;div class="cue-dr-month"&gt;
+          &lt;div class="cue-dp-month-header"&gt;
+            &lt;button class="cue-dp-nav-btn" onclick="navRangeMonth('my-daterange',-1)"&gt;
+              &lt;span class="material-icons" aria-hidden="true"&gt;keyboard_arrow_left&lt;/span&gt;
+            &lt;/button&gt;
+            &lt;span class="cue-dp-month-label" id="my-daterange-label-left"&gt;&lt;/span&gt;
+            &lt;span style="width:28px"&gt;&lt;/span&gt;
+          &lt;/div&gt;
+          &lt;div class="cue-dp-grid" id="my-daterange-grid-left"&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class="cue-dr-month"&gt;
+          &lt;div class="cue-dp-month-header"&gt;
+            &lt;span style="width:28px"&gt;&lt;/span&gt;
+            &lt;span class="cue-dp-month-label" id="my-daterange-label-right"&gt;&lt;/span&gt;
+            &lt;button class="cue-dp-nav-btn" onclick="navRangeMonth('my-daterange',1)"&gt;
+              &lt;span class="material-icons" aria-hidden="true"&gt;keyboard_arrow_right&lt;/span&gt;
+            &lt;/button&gt;
+          &lt;/div&gt;
+          &lt;div class="cue-dp-grid" id="my-daterange-grid-right"&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="cue-dr-footer"&gt;
+        &lt;button onclick="clearDaterange('my-daterange')"&gt;Clear&lt;/button&gt;
+        &lt;button onclick="applyDaterange('my-daterange')"&gt;Apply&lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre></div>
+      </div>
+
+      <div class="docs-code-panel" id="dp-css">
+        <div class="docs-code-block"><pre><code>/* Input field — same tokens as form-field */
+.cue-dp-input {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 0.5rem; padding: var(--padding-form-field-default);
+  border: 1px solid var(--border-form-field-default);
+  border-radius: var(--corner-form-field);
+  font-size: 1rem; color: var(--content-form-field-placeholder);
+  cursor: pointer; user-select: none; min-width: 200px;
+}
+
+.cue-dp-input.has-value { color: var(--content-form-field-filled-read); }
+.cue-dp-wrap.is-open .cue-dp-input { border-color: var(--border-form-field-focus); }
+
+/* Panel */
+.cue-dp-panel {
+  position: absolute; top: calc(100% + 4px); left: 0;
+  background-color: var(--bg-default);
+  border: 1px solid var(--border-extra-subtle);
+  border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+  z-index: 500; display: none; padding: 0.5rem;
+}
+.cue-dp-wrap.is-open .cue-dp-panel { display: block; }
+
+/* 7-column day grid */
+.cue-dp-grid { display: grid; grid-template-columns: repeat(7, 1fr); width: 294px; }
+
+/* Day cell */
+.cue-dp-day-cell {
+  display: flex; align-items: center; justify-content: center;
+  height: 38px; font-size: 0.875rem; font-weight: 700;
+  cursor: pointer; background: transparent; border: none; padding: 0;
+}
+.cue-dp-day-cell:hover:not(.is-dow):not(.is-other-month) { background-color: var(--bg-level-0); }
+.cue-dp-day-cell.is-dow         { font-weight: 400; color: #575757; height: 34px; cursor: default; }
+.cue-dp-day-cell.is-other-month { color: var(--content-body-moderate); cursor: default; }
+.cue-dp-day-cell.is-today       { background-color: #009cf9; border-radius: 2px; }
+.cue-dp-day-cell.is-selected    { background-color: var(--bg-primary-brand); color: #fff; border-radius: 4px; }
+.cue-dp-day-cell.is-range-start { background-color: var(--bg-primary-brand); color: #fff; border-radius: 4px 0 0 4px; }
+.cue-dp-day-cell.is-range-end   { background-color: var(--bg-primary-brand); color: #fff; border-radius: 0 4px 4px 0; }
+.cue-dp-day-cell.is-in-range    { background-color: var(--interactive-extra-subtle); border-radius: 0; }
+
+/* Date range: presets + dual calendars */
+.cue-daterange-panel { display: flex; gap: 0; padding: 0; }
+.cue-dr-presets {
+  display: flex; flex-direction: column;
+  padding: 1rem 1rem 1rem 0.75rem; gap: 0.25rem;
+  border-right: 1px solid var(--border-extra-subtle); min-width: 140px;
+}
+.cue-dr-preset-btn {
+  text-align: left; background: none; border: none; cursor: pointer;
+  font-size: 0.875rem; padding: 4px 0.5rem; border-radius: 4px;
+  color: var(--content-body-default);
+}
+.cue-dr-preset-btn.is-active { font-weight: 700; color: var(--content-body-primary-brand); }
+.cue-dr-months { display: flex; gap: 0.5rem; }
+.cue-dr-footer { display: flex; justify-content: flex-end; gap: 0.5rem; padding: 0.5rem 0.25rem; border-top: 1px solid var(--border-extra-subtle); }</code></pre></div>
+      </div>
+
+      <div class="docs-code-panel" id="dp-js">
+        <div class="docs-code-block"><pre><code>/* ── SHARED HELPERS ───────────────────────────────────────────── */
+
+const MONTH_NAMES = ['January','February','March','April','May','June',
+  'July','August','September','October','November','December'];
+const DOW = ['S','M','T','W','T','F','S'];
+
+// State store: { viewYear, viewMonth, selected: Date|null }
+const dpState = {};
+
+function initDP(id, selectedDate) {
+  const now = selectedDate || new Date();
+  dpState[id] = {
+    viewYear: now.getFullYear(),
+    viewMonth: now.getMonth(),
+    selected: selectedDate || null,
+  };
+  renderSingleCalendar(id);
+}
+
+function renderSingleCalendar(id) {
+  const s = dpState[id];
+  const grid = document.getElementById(id + '-grid');
+  const label = document.getElementById(id + '-label');
+  if (!grid || !label) return;
+
+  label.textContent = MONTH_NAMES[s.viewMonth] + ' ' + s.viewYear;
+  grid.innerHTML = '';
+
+  // Day-of-week headers
+  DOW.forEach(d => {
+    const cell = document.createElement('div');
+    cell.className = 'cue-dp-day-cell is-dow';
+    cell.textContent = d;
+    grid.appendChild(cell);
+  });
+
+  const firstDay = new Date(s.viewYear, s.viewMonth, 1).getDay();
+  const daysInMonth = new Date(s.viewYear, s.viewMonth + 1, 0).getDate();
+  const daysInPrev = new Date(s.viewYear, s.viewMonth, 0).getDate();
+  const today = new Date(); today.setHours(0,0,0,0);
+
+  // Prev month overflow
+  for (let i = firstDay - 1; i >= 0; i--) {
+    const cell = document.createElement('div');
+    cell.className = 'cue-dp-day-cell is-other-month';
+    cell.textContent = daysInPrev - i;
+    grid.appendChild(cell);
+  }
+
+  // Current month days
+  for (let d = 1; d <= daysInMonth; d++) {
+    const date = new Date(s.viewYear, s.viewMonth, d);
+    date.setHours(0,0,0,0);
+    const cell = document.createElement('button');
+    cell.type = 'button';
+    cell.className = 'cue-dp-day-cell';
+    cell.textContent = d;
+    cell.setAttribute('aria-label', date.toDateString());
+    if (date.getTime() === today.getTime()) cell.classList.add('is-today');
+    if (s.selected && date.getTime() === s.selected.getTime()) cell.classList.add('is-selected');
+    cell.addEventListener('click', function(e) {
+      e.stopPropagation();
+      selectDate(id, date);
+    });
+    grid.appendChild(cell);
+  }
+
+  // Next month overflow
+  const totalCells = firstDay + daysInMonth;
+  const remaining = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7);
+  for (let i = 1; i <= remaining; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'cue-dp-day-cell is-other-month';
+    cell.textContent = i;
+    grid.appendChild(cell);
+  }
+}
+
+function selectDate(id, date) {
+  dpState[id].selected = date;
+  const display = document.getElementById(id + '-display');
+  if (display) {
+    const m = date.getMonth() + 1;
+    const d = date.getDate();
+    const y = date.getFullYear();
+    display.textContent = `${String(m).padStart(2,'0')}/${String(d).padStart(2,'0')}/${y}`;
+    display.closest('.cue-dp-input').classList.add('has-value');
+  }
+  renderSingleCalendar(id);
+  toggleDatepicker(id, false);
+}
+
+function toggleDatepicker(id, force) {
+  const wrap = document.getElementById(id);
+  if (!wrap) return;
+  const isOpen = force !== undefined ? force : !wrap.classList.contains('is-open');
+  wrap.classList.toggle('is-open', isOpen);
+  wrap.querySelector('.cue-dp-input')?.setAttribute('aria-expanded', isOpen);
+  if (isOpen && !dpState[id]) initDP(id, null);
+  if (isOpen) renderSingleCalendar(id);
+}
+
+function navMonth(id, delta) {
+  const s = dpState[id];
+  if (!s) return;
+  s.viewMonth += delta;
+  if (s.viewMonth > 11) { s.viewMonth = 0; s.viewYear++; }
+  if (s.viewMonth < 0)  { s.viewMonth = 11; s.viewYear--; }
+  renderSingleCalendar(id);
+}
+
+
+/* ── DATE RANGE ───────────────────────────────────────────────── */
+
+const drState = {};
+
+function initDR(id, startDate, endDate) {
+  const now = new Date();
+  drState[id] = {
+    viewYear: now.getFullYear(),
+    viewMonth: now.getMonth() - 1, // show prev+current by default
+    rangeStart: startDate || null,
+    rangeEnd:   endDate || null,
+    picking:    0, // 0=waiting for start, 1=waiting for end
+    activePreset: null,
+  };
+  renderRangeCalendars(id);
+}
+
+function renderRangeCalendars(id) {
+  const s = drState[id];
+  if (!s) return;
+
+  // Left = s.viewMonth, Right = s.viewMonth+1
+  renderRangeMonth(id, 'left',  s.viewYear, s.viewMonth);
+  const rYear = s.viewMonth === 11 ? s.viewYear + 1 : s.viewYear;
+  const rMonth = s.viewMonth === 11 ? 0 : s.viewMonth + 1;
+  renderRangeMonth(id, 'right', rYear, rMonth);
+}
+
+function renderRangeMonth(id, side, year, month) {
+  const s = drState[id];
+  const grid  = document.getElementById(id + '-grid-' + side);
+  const label = document.getElementById(id + '-label-' + side);
+  if (!grid || !label) return;
+
+  label.textContent = MONTH_NAMES[month] + ' ' + year;
+  grid.innerHTML = '';
+
+  DOW.forEach(d => {
+    const cell = document.createElement('div');
+    cell.className = 'cue-dp-day-cell is-dow';
+    cell.textContent = d;
+    grid.appendChild(cell);
+  });
+
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const daysInPrev  = new Date(year, month, 0).getDate();
+  const today = new Date(); today.setHours(0,0,0,0);
+
+  for (let i = firstDay - 1; i >= 0; i--) {
+    const cell = document.createElement('div');
+    cell.className = 'cue-dp-day-cell is-other-month';
+    cell.textContent = daysInPrev - i;
+    grid.appendChild(cell);
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const date = new Date(year, month, d);
+    date.setHours(0,0,0,0);
+    const cell = document.createElement('button');
+    cell.type = 'button';
+    cell.className = 'cue-dp-day-cell';
+    cell.textContent = d;
+
+    const t = date.getTime();
+    const rs = s.rangeStart ? s.rangeStart.getTime() : null;
+    const re = s.rangeEnd   ? s.rangeEnd.getTime()   : null;
+
+    if (date.getTime() === today.getTime()) cell.classList.add('is-today');
+    if (rs && t === rs && re && t === re) cell.classList.add('is-selected');
+    else if (rs && t === rs) cell.classList.add('is-range-start');
+    else if (re && t === re) cell.classList.add('is-range-end');
+    else if (rs && re && t > rs && t < re) cell.classList.add('is-in-range');
+
+    cell.addEventListener('click', function(e) {
+      e.stopPropagation();
+      pickRangeDate(id, date);
+    });
+    grid.appendChild(cell);
+  }
+
+  const totalCells = firstDay + daysInMonth;
+  const remaining = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7);
+  for (let i = 1; i <= remaining; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'cue-dp-day-cell is-other-month';
+    cell.textContent = i;
+    grid.appendChild(cell);
+  }
+}
+
+function pickRangeDate(id, date) {
+  const s = drState[id];
+  if (s.picking === 0 || (s.rangeStart && s.rangeEnd)) {
+    // Start new selection
+    s.rangeStart = date;
+    s.rangeEnd   = null;
+    s.picking    = 1;
+    setPresetActive(id, null);
+  } else {
+    // Complete the range
+    if (date < s.rangeStart) {
+      s.rangeEnd   = s.rangeStart;
+      s.rangeStart = date;
+    } else {
+      s.rangeEnd = date;
+    }
+    s.picking = 0;
+  }
+  renderRangeCalendars(id);
+}
+
+function applyDaterange(id) {
+  const s = drState[id];
+  const display = document.getElementById(id + '-display');
+  if (display && s.rangeStart) {
+    const fmt = d => `${d.getMonth()+1}/${d.getDate()}/${String(d.getFullYear()).slice(2)}`;
+    display.textContent = s.rangeEnd
+      ? `${fmt(s.rangeStart)} - ${fmt(s.rangeEnd)}`
+      : fmt(s.rangeStart);
+    display.closest('.cue-dp-input').classList.add('has-value');
+  }
+  toggleDaterange(id, false);
+}
+
+function clearDaterange(id) {
+  const s = drState[id];
+  s.rangeStart = null;
+  s.rangeEnd   = null;
+  s.picking    = 0;
+  s.activePreset = null;
+  const display = document.getElementById(id + '-display');
+  if (display) {
+    display.textContent = 'Date Range';
+    display.closest('.cue-dp-input').classList.remove('has-value');
+  }
+  setPresetActive(id, null);
+  renderRangeCalendars(id);
+}
+
+function applyPreset(id, preset) {
+  const s = drState[id];
+  const today = new Date(); today.setHours(0,0,0,0);
+  let start, end = new Date(today);
+
+  if (preset === 'today') {
+    start = new Date(today);
+  } else if (preset === 'last30') {
+    start = new Date(today); start.setDate(start.getDate() - 30);
+  } else if (preset === 'last90') {
+    start = new Date(today); start.setDate(start.getDate() - 90);
+  } else if (preset === 'thisYear') {
+    start = new Date(today.getFullYear(), 0, 1);
+    end   = new Date(today.getFullYear(), 11, 31);
+  } else if (preset === 'lastYear') {
+    start = new Date(today.getFullYear()-1, 0, 1);
+    end   = new Date(today.getFullYear()-1, 11, 31);
+  } else if (preset === 'custom') {
+    s.rangeStart = null; s.rangeEnd = null; s.picking = 0;
+    setPresetActive(id, 'custom');
+    renderRangeCalendars(id);
+    return;
+  }
+
+  s.rangeStart = start;
+  s.rangeEnd   = end;
+  s.picking    = 0;
+  // Show the start month on the left calendar
+  s.viewYear   = start.getFullYear();
+  s.viewMonth  = start.getMonth();
+  setPresetActive(id, preset);
+  renderRangeCalendars(id);
+}
+
+function setPresetActive(id, preset) {
+  const panel = document.getElementById(id + '-panel');
+  if (!panel) return;
+  panel.querySelectorAll('.cue-dr-preset-btn').forEach(btn => {
+    btn.classList.remove('is-active');
+  });
+  if (preset) {
+    const map = { today:'Today', last30:'Last 30 Days', last90:'Last 90 Days',
+                  thisYear:'This Year', lastYear:'Last Year', custom:'Custom Range' };
+    panel.querySelectorAll('.cue-dr-preset-btn').forEach(btn => {
+      if (btn.textContent.trim() === map[preset]) btn.classList.add('is-active');
+    });
+  }
+}
+
+function toggleDaterange(id, force) {
+  const wrap = document.getElementById(id);
+  if (!wrap) return;
+  const isOpen = force !== undefined ? force : !wrap.classList.contains('is-open');
+  wrap.classList.toggle('is-open', isOpen);
+  wrap.querySelector('.cue-dp-input')?.setAttribute('aria-expanded', isOpen);
+  if (isOpen && !drState[id]) initDR(id, null, null);
+  if (isOpen) renderRangeCalendars(id);
+}
+
+function navRangeMonth(id, delta) {
+  const s = drState[id];
+  if (!s) return;
+  s.viewMonth += delta;
+  if (s.viewMonth > 11) { s.viewMonth = 0; s.viewYear++; }
+  if (s.viewMonth < 0)  { s.viewMonth = 11; s.viewYear--; }
+  renderRangeCalendars(id);
+}
+
+/* Close on outside click / Escape */
+document.addEventListener('click', function(e) {
+  document.querySelectorAll('.cue-dp-wrap.is-open').forEach(wrap => {
+    if (!wrap.contains(e.target)) {
+      wrap.classList.remove('is-open');
+      wrap.querySelector('[aria-expanded]')?.setAttribute('aria-expanded','false');
+    }
+  });
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key !== 'Escape') return;
+  document.querySelectorAll('.cue-dp-wrap.is-open').forEach(wrap => {
+    wrap.classList.remove('is-open');
+    wrap.querySelector('[aria-expanded]')?.setAttribute('aria-expanded','false');
+  });
+});</code></pre></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  function switchTab(event, tabId) {
+    const section = event.target.closest('.docs-section');
+    section.querySelectorAll('.docs-code-tab').forEach(t => t.classList.remove('active'));
+    section.querySelectorAll('.docs-code-panel').forEach(p => p.classList.remove('active'));
+    event.target.classList.add('active');
+    document.getElementById(tabId).classList.add('active');
+  }
+
+  const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const DOW = ['S','M','T','W','T','F','S'];
+  const dpState = {};
+  const drState = {};
+
+  // ── Single Date Picker ──────────────────────────────────────────
+
+  function initDP(id, selectedDate) {
+    const now = selectedDate || new Date();
+    dpState[id] = { viewYear: now.getFullYear(), viewMonth: now.getMonth(), selected: selectedDate || null };
+    renderSingleCalendar(id);
+  }
+
+  function renderSingleCalendar(id) {
+    const s = dpState[id];
+    const grid = document.getElementById(id + '-grid');
+    const label = document.getElementById(id + '-label');
+    if (!grid || !label) return;
+    label.textContent = MONTH_NAMES[s.viewMonth] + ' ' + s.viewYear;
+    grid.innerHTML = '';
+    DOW.forEach(d => { const c = document.createElement('div'); c.className = 'cue-dp-day-cell is-dow'; c.textContent = d; grid.appendChild(c); });
+    const firstDay = new Date(s.viewYear, s.viewMonth, 1).getDay();
+    const daysInMonth = new Date(s.viewYear, s.viewMonth + 1, 0).getDate();
+    const daysInPrev  = new Date(s.viewYear, s.viewMonth, 0).getDate();
+    const today = new Date(); today.setHours(0,0,0,0);
+    for (let i = firstDay - 1; i >= 0; i--) { const c = document.createElement('div'); c.className = 'cue-dp-day-cell is-other-month'; c.textContent = daysInPrev - i; grid.appendChild(c); }
+    for (let d = 1; d <= daysInMonth; d++) {
+      const date = new Date(s.viewYear, s.viewMonth, d); date.setHours(0,0,0,0);
+      const c = document.createElement('button'); c.type = 'button'; c.className = 'cue-dp-day-cell'; c.textContent = d;
+      if (date.getTime() === today.getTime()) c.classList.add('is-today');
+      if (s.selected && date.getTime() === s.selected.getTime()) c.classList.add('is-selected');
+      c.addEventListener('click', (e) => { e.stopPropagation(); selectDate(id, date); });
+      grid.appendChild(c);
+    }
+    const total = firstDay + daysInMonth;
+    const rem = total % 7 === 0 ? 0 : 7 - (total % 7);
+    for (let i = 1; i <= rem; i++) { const c = document.createElement('div'); c.className = 'cue-dp-day-cell is-other-month'; c.textContent = i; grid.appendChild(c); }
+  }
+
+  function selectDate(id, date) {
+    dpState[id].selected = date;
+    const display = document.getElementById(id + '-display');
+    if (display) { const m = date.getMonth()+1, d = date.getDate(), y = date.getFullYear(); display.textContent = `${String(m).padStart(2,'0')}/${String(d).padStart(2,'0')}/${y}`; display.closest('.cue-dp-input').classList.add('has-value'); }
+    renderSingleCalendar(id);
+    toggleDatepicker(id, false);
+  }
+
+  function toggleDatepicker(id, force) {
+    const wrap = document.getElementById(id);
+    if (!wrap) return;
+    const isOpen = force !== undefined ? force : !wrap.classList.contains('is-open');
+    wrap.classList.toggle('is-open', isOpen);
+    wrap.querySelector('.cue-dp-input')?.setAttribute('aria-expanded', isOpen);
+    if (isOpen && !dpState[id]) initDP(id, null);
+    if (isOpen) renderSingleCalendar(id);
+  }
+
+  function navMonth(id, delta) {
+    const s = dpState[id]; if (!s) return;
+    s.viewMonth += delta;
+    if (s.viewMonth > 11) { s.viewMonth = 0; s.viewYear++; }
+    if (s.viewMonth < 0)  { s.viewMonth = 11; s.viewYear--; }
+    renderSingleCalendar(id);
+  }
+
+  // ── Date Range Picker ────────────────────────────────────────────
+
+  function initDR(id, startDate, endDate) {
+    const now = new Date();
+    drState[id] = { viewYear: now.getFullYear(), viewMonth: now.getMonth() - 1, rangeStart: startDate || null, rangeEnd: endDate || null, picking: 0, activePreset: null };
+    renderRangeCalendars(id);
+  }
+
+  function renderRangeCalendars(id) {
+    const s = drState[id]; if (!s) return;
+    renderRangeMonth(id, 'left', s.viewYear, s.viewMonth);
+    const rYear  = s.viewMonth === 11 ? s.viewYear + 1 : s.viewYear;
+    const rMonth = s.viewMonth === 11 ? 0 : s.viewMonth + 1;
+    renderRangeMonth(id, 'right', rYear, rMonth);
+  }
+
+  function renderRangeMonth(id, side, year, month) {
+    const s = drState[id];
+    const grid = document.getElementById(id + '-grid-' + side);
+    const label = document.getElementById(id + '-label-' + side);
+    if (!grid || !label) return;
+    label.textContent = MONTH_NAMES[month] + ' ' + year;
+    grid.innerHTML = '';
+    DOW.forEach(d => { const c = document.createElement('div'); c.className = 'cue-dp-day-cell is-dow'; c.textContent = d; grid.appendChild(c); });
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const daysInPrev  = new Date(year, month, 0).getDate();
+    const today = new Date(); today.setHours(0,0,0,0);
+    for (let i = firstDay - 1; i >= 0; i--) { const c = document.createElement('div'); c.className = 'cue-dp-day-cell is-other-month'; c.textContent = daysInPrev - i; grid.appendChild(c); }
+    for (let d = 1; d <= daysInMonth; d++) {
+      const date = new Date(year, month, d); date.setHours(0,0,0,0);
+      const c = document.createElement('button'); c.type = 'button'; c.className = 'cue-dp-day-cell'; c.textContent = d;
+      const t = date.getTime(), rs = s.rangeStart ? s.rangeStart.getTime() : null, re = s.rangeEnd ? s.rangeEnd.getTime() : null;
+      if (date.getTime() === today.getTime()) c.classList.add('is-today');
+      if (rs && t === rs && re && t === re) c.classList.add('is-selected');
+      else if (rs && t === rs) c.classList.add('is-range-start');
+      else if (re && t === re) c.classList.add('is-range-end');
+      else if (rs && re && t > rs && t < re) c.classList.add('is-in-range');
+      c.addEventListener('click', (e) => { e.stopPropagation(); pickRangeDate(id, date); });
+      grid.appendChild(c);
+    }
+    const total = firstDay + daysInMonth;
+    const rem = total % 7 === 0 ? 0 : 7 - (total % 7);
+    for (let i = 1; i <= rem; i++) { const c = document.createElement('div'); c.className = 'cue-dp-day-cell is-other-month'; c.textContent = i; grid.appendChild(c); }
+  }
+
+  function pickRangeDate(id, date) {
+    const s = drState[id];
+    if (s.picking === 0 || (s.rangeStart && s.rangeEnd)) { s.rangeStart = date; s.rangeEnd = null; s.picking = 1; setPresetActive(id, null); }
+    else { if (date < s.rangeStart) { s.rangeEnd = s.rangeStart; s.rangeStart = date; } else { s.rangeEnd = date; } s.picking = 0; }
+    renderRangeCalendars(id);
+  }
+
+  function applyDaterange(id) {
+    const s = drState[id];
+    const display = document.getElementById(id + '-display');
+    if (display && s.rangeStart) {
+      const fmt = d => `${d.getMonth()+1}/${d.getDate()}/${String(d.getFullYear()).slice(2)}`;
+      display.textContent = s.rangeEnd ? `${fmt(s.rangeStart)} - ${fmt(s.rangeEnd)}` : fmt(s.rangeStart);
+      display.closest('.cue-dp-input').classList.add('has-value');
+    }
+    toggleDaterange(id, false);
+  }
+
+  function clearDaterange(id) {
+    const s = drState[id];
+    s.rangeStart = null; s.rangeEnd = null; s.picking = 0; s.activePreset = null;
+    const display = document.getElementById(id + '-display');
+    if (display) { display.textContent = 'Date Range'; display.closest('.cue-dp-input').classList.remove('has-value'); }
+    setPresetActive(id, null);
+    renderRangeCalendars(id);
+  }
+
+  function applyPreset(id, preset) {
+    const s = drState[id];
+    const today = new Date(); today.setHours(0,0,0,0);
+    let start, end = new Date(today);
+    if (preset === 'today') { start = new Date(today); }
+    else if (preset === 'last30') { start = new Date(today); start.setDate(start.getDate() - 30); }
+    else if (preset === 'last90') { start = new Date(today); start.setDate(start.getDate() - 90); }
+    else if (preset === 'thisYear') { start = new Date(today.getFullYear(), 0, 1); end = new Date(today.getFullYear(), 11, 31); }
+    else if (preset === 'lastYear') { start = new Date(today.getFullYear()-1, 0, 1); end = new Date(today.getFullYear()-1, 11, 31); }
+    else if (preset === 'custom') { s.rangeStart = null; s.rangeEnd = null; s.picking = 0; setPresetActive(id, 'custom'); renderRangeCalendars(id); return; }
+    s.rangeStart = start; s.rangeEnd = end; s.picking = 0;
+    s.viewYear = start.getFullYear(); s.viewMonth = start.getMonth();
+    setPresetActive(id, preset);
+    renderRangeCalendars(id);
+  }
+
+  function setPresetActive(id, preset) {
+    const panel = document.getElementById(id + '-panel'); if (!panel) return;
+    panel.querySelectorAll('.cue-dr-preset-btn').forEach(btn => btn.classList.remove('is-active'));
+    if (preset) {
+      const map = { today:'Today', last30:'Last 30 Days', last90:'Last 90 Days', thisYear:'This Year', lastYear:'Last Year', custom:'Custom Range' };
+      panel.querySelectorAll('.cue-dr-preset-btn').forEach(btn => { if (btn.textContent.trim() === map[preset]) btn.classList.add('is-active'); });
+    }
+  }
+
+  function toggleDaterange(id, force) {
+    const wrap = document.getElementById(id); if (!wrap) return;
+    const isOpen = force !== undefined ? force : !wrap.classList.contains('is-open');
+    wrap.classList.toggle('is-open', isOpen);
+    wrap.querySelector('.cue-dp-input')?.setAttribute('aria-expanded', isOpen);
+    if (isOpen && !drState[id]) initDR(id, null, null);
+    if (isOpen) renderRangeCalendars(id);
+  }
+
+  function navRangeMonth(id, delta) {
+    const s = drState[id]; if (!s) return;
+    s.viewMonth += delta;
+    if (s.viewMonth > 11) { s.viewMonth = 0; s.viewYear++; }
+    if (s.viewMonth < 0)  { s.viewMonth = 11; s.viewYear--; }
+    renderRangeCalendars(id);
+  }
+
+  // Close on outside click / Escape
+  document.addEventListener('click', function(e) {
+    document.querySelectorAll('.cue-dp-wrap.is-open').forEach(wrap => {
+      if (!wrap.contains(e.target)) { wrap.classList.remove('is-open'); wrap.querySelector('[aria-expanded]')?.setAttribute('aria-expanded','false'); }
+    });
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key !== 'Escape') return;
+    document.querySelectorAll('.cue-dp-wrap.is-open').forEach(wrap => { wrap.classList.remove('is-open'); wrap.querySelector('[aria-expanded]')?.setAttribute('aria-expanded','false'); });
+  });
+
+  // Init pickers that start in known states
+  (function() {
+    // dp-1: no selection, today's month
+    initDP('dp-1', null);
+    // dp-2: pre-selected Jan 12 2025
+    initDP('dp-2', new Date(2025, 0, 12));
+    // dr-1: Last 30 Days preset
+    initDR('dr-1', null, null);
+    setTimeout(() => applyPreset('dr-1', 'last30'), 0);
+    // dr-2: pre-set Jan 10 – Feb 20 2025
+    initDR('dr-2', new Date(2025, 0, 10), new Date(2025, 1, 20));
+    drState['dr-2'].viewMonth = 0; drState['dr-2'].viewYear = 2025;
+    renderRangeCalendars('dr-2');
+    setPresetActive('dr-2', 'last30');
+  })();
+
+  // Off-canvas nav
+  (function() {
+    var sidebar = document.querySelector('.docs-sidebar');
+    var overlay = document.querySelector('.docs-nav-overlay');
+    var hamburger = document.querySelector('.docs-topbar__hamburger');
+    var closeBtn = document.querySelector('.docs-sidebar__close');
+    function openNav() { sidebar.classList.add('is-open'); overlay.classList.add('is-visible'); document.body.style.overflow = 'hidden'; if (hamburger) hamburger.setAttribute('aria-expanded','true'); if (closeBtn) closeBtn.focus(); }
+    function closeNav() { sidebar.classList.remove('is-open'); overlay.classList.remove('is-visible'); document.body.style.overflow = ''; if (hamburger) { hamburger.setAttribute('aria-expanded','false'); hamburger.focus(); } }
+    if (hamburger) hamburger.addEventListener('click', openNav);
+    if (closeBtn)  closeBtn.addEventListener('click', closeNav);
+    if (overlay)   overlay.addEventListener('click', closeNav);
+    document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && sidebar.classList.contains('is-open')) closeNav(); });
+  })();
+</script>
+
+</body>
+</html>
