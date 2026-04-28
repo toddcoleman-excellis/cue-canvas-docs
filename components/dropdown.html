@@ -8,6 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../tokens.css" />
   <link rel="stylesheet" href="../base.css" />
+  <link rel="stylesheet" href="../components.css" />
   <link rel="icon" type="image/svg+xml" href="../assets/logo_CUE_glyph.svg" />
   <style>
 
@@ -37,115 +38,46 @@
          Can be overridden with .cue-dropdown--left for left-aligned panels.
     ============================================================ */
 
-    .cue-dropdown {
-      position: relative;
-      display: inline-flex;
-      flex-direction: column;
-      align-items: flex-end;
-    }
+    
 
     /* ---- Panel ---- */
 
-    .cue-dropdown__panel {
-      position: absolute;
-      top: calc(100% + 6px);
-      right: 0;
-      width: 160px;
-      background-color: var(--bg-dropdown);
-      border: 1px solid var(--border-dropdown);
-      border-radius: 4px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
-      padding: 0.75rem;
-      display: none;
-      flex-direction: column;
-      gap: 0.5rem;
-      z-index: 500;
-    }
+    
 
-    .cue-dropdown.is-open .cue-dropdown__panel {
-      display: flex;
-    }
+    .cue-dropdown.is-open 
 
     /* Left-align variant */
-    .cue-dropdown--left .cue-dropdown__panel {
-      right: auto;
-      left: 0;
-    }
+    .cue-dropdown--left 
 
     /* ---- Menu item ---- */
 
-    .cue-dropdown__item {
-      display: flex;
-      align-items: center;
-      gap: 2px;
-      width: 100%;
-      background: transparent;
-      border: none;
-      border-radius: var(--corner-button);
-      cursor: pointer;
-      padding: 0;
-      text-align: left;
-      transition: background-color 0.1s ease;
-      font-family: var(--font-family-body);
-    }
+    
 
-    .cue-dropdown__item:hover {
-      background-color: var(--bg-button-neutral-hover);
-    }
+    
 
-    .cue-dropdown__item:focus-visible {
-      outline: 2px solid var(--border-interactive);
-      outline-offset: 1px;
-      border-radius: var(--corner-button);
-    }
+    
 
     /* Destructive item (Delete) */
-    .cue-dropdown__item--destructive:hover {
-      background-color: var(--danger-weak);
-    }
+    
 
     .cue-dropdown__item--destructive .cue-dropdown__item-label,
-    .cue-dropdown__item--destructive .cue-dropdown__item-icon {
-      color: var(--danger-default);
-    }
+    .cue-dropdown__item--destructive 
 
     .cue-dropdown__item--destructive:hover .cue-dropdown__item-label,
-    .cue-dropdown__item--destructive:hover .cue-dropdown__item-icon {
-      color: var(--danger-strong);
-    }
+    .cue-dropdown__item--destructive:hover 
 
     /* Icon */
-    .cue-dropdown__item-icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      color: var(--content-body-default);
-    }
+    
 
     .cue-dropdown__item-icon .material-icons {
       font-size: 18px;
     }
 
     /* Label */
-    .cue-dropdown__item-label {
-      flex: 1;
-      padding: 4px;
-      font-size: 0.875rem;
-      font-weight: 400;
-      color: var(--content-button-neutral);
-      line-height: 1;
-      white-space: nowrap;
-    }
+    
 
     /* Trailing icon (submenu indicator) */
-    .cue-dropdown__item-trail {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      color: var(--content-body-moderate);
-    }
+    
 
     .cue-dropdown__item-trail .material-icons {
       font-size: 16px;
@@ -153,33 +85,18 @@
 
     /* ---- Divider ---- */
 
-    .cue-dropdown__divider {
-      width: 100%;
-      height: 1px;
-      background-color: var(--border-dropdown);
-      margin: 2px 0;
-      flex-shrink: 0;
-    }
+    
 
     /* ---- Trigger button active state ---- */
     /* When open, the trigger gets a subtle shadow to look "pressed" */
 
     .cue-dropdown.is-open .cue-btn--neutral-stroke,
-    .cue-dropdown.is-open .cue-btn--primary {
-      box-shadow: 0 1px 2px rgba(0,0,0,0.1), inset 0 -1px 0 rgba(0,0,0,0.25);
-    }
+    .cue-dropdown.is-open 
 
     /* Chevron rotates when open */
-    .cue-dropdown__chevron {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform 0.2s ease;
-    }
+    
 
-    .cue-dropdown.is-open .cue-dropdown__chevron {
-      transform: rotate(180deg);
-    }
+    .cue-dropdown.is-open 
 
     .cue-dropdown__chevron .material-icons {
       font-size: 16px;
@@ -187,48 +104,23 @@
 
     /* ---- Button styles needed for triggers ---- */
 
-    .cue-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 2px;
-      padding: var(--button-padding-default);
-      border-radius: var(--corner-button);
-      border: 1px solid transparent;
-      font-family: var(--font-family-body);
-      font-size: 0.875rem;
-      font-weight: 700;
-      line-height: 1;
-      white-space: nowrap;
-      cursor: pointer;
-      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
-    }
+    
 
-    .cue-btn__label { padding: 4px; }
+    
 
-    .cue-btn--neutral-stroke {
-      background-color: var(--bg-button-neutral-stroke);
-      color: var(--content-button-neutral-stroke);
-      border-color: var(--border-button-neutral-stroke);
-    }
+    
     .cue-btn--neutral-stroke:hover {
       background-color: var(--bg-button-neutral-stroke-hover);
       color: var(--content-button-neutral-stroke-hover);
       border-color: var(--border-button-neutral-stroke-hover);
     }
 
-    .cue-btn--primary {
-      background-color: var(--bg-button-primary);
-      color: var(--content-button-primary);
-      border-color: transparent;
-    }
+    
     .cue-btn--primary:hover { background-color: var(--bg-button-primary-hover); }
 
-    .cue-btn--icon-only {
-      padding: 6px;
-    }
+    
 
-    .cue-btn .material-icons { font-size: 18px; }
+    
 
     /* ============================================================
        DOCS HELPERS
