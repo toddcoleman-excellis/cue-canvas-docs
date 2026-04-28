@@ -1,0 +1,706 @@
+---
+layout: default
+title: "Popover"
+activeNav: popover
+root: ../
+---
+
+<style>
+
+  /* ============================================================
+     POPOVER
+
+     A small floating panel anchored to a trigger element.
+     Triggered by click or hover. Dismisses on outside click
+     or Escape key. Content is fully flexible.
+
+     Anatomy:
+       .cue-popover-wrap         — position:relative container
+         [trigger]               — any element (button, icon, etc)
+         .cue-popover            — the floating panel
+           .cue-popover__arrow   — the caret pointing to trigger
+           .cue-popover__content — inner content area
+
+     Position modifiers on .cue-popover:
+       (default)                 — below trigger, left-aligned
+       .cue-popover--top         — above trigger
+       .cue-popover--right       — right of trigger
+       .cue-popover--left        — left of trigger
+       .cue-popover--center      — centered below trigger
+
+     Open/close:
+       .cue-popover-wrap.is-open — shows the panel
+       togglePopover(id)         — JS toggle function
+
+     Tokens:
+       bg:            --bg-default             (#ffffff)
+       border:        --border-subdued         (#bdbdbd)
+       border-radius: 4px
+       padding:       8px
+       shadow:        Shadow/4  →  0 4px 6px rgba(0,0,0,0.1)
+       text:          12px Regular --content-body-default
+  ============================================================ */
+
+  .cue-popover-wrap {
+    position: relative;
+    display: inline-flex;
+  }
+
+  .cue-popover {
+    position: absolute;
+    z-index: 600;
+    background-color: var(--bg-default);
+    border: 1px solid var(--border-subdued);
+    border-radius: 4px;
+    padding: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-family: var(--font-family-body);
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--content-body-default);
+    white-space: nowrap;
+    min-width: max-content;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(4px);
+    transition: opacity 0.15s ease, visibility 0.15s ease, transform 0.15s ease;
+    pointer-events: none;
+  }
+
+  .cue-popover-wrap.is-open .cue-popover {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  /* ---- Position variants ---- */
+
+  /* Default: below, left-aligned */
+  .cue-popover {
+    top: calc(100% + 8px);
+    left: 0;
+  }
+
+  /* Below, centered */
+  .cue-popover--center {
+    top: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+  }
+  .cue-popover-wrap.is-open .cue-popover--center {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* Below, right-aligned */
+  .cue-popover--right-align {
+    top: calc(100% + 8px);
+    left: auto;
+    right: 0;
+  }
+
+  /* Above, left-aligned */
+  .cue-popover--top {
+    top: auto;
+    bottom: calc(100% + 8px);
+    left: 0;
+    transform: translateY(-4px);
+  }
+  .cue-popover-wrap.is-open .cue-popover--top {
+    transform: translateY(0);
+  }
+
+  /* Right of trigger */
+  .cue-popover--right {
+    top: 50%;
+    left: calc(100% + 8px);
+    transform: translateX(4px) translateY(-50%);
+  }
+  .cue-popover-wrap.is-open .cue-popover--right {
+    transform: translateX(0) translateY(-50%);
+  }
+
+  /* Left of trigger */
+  .cue-popover--left {
+    top: 50%;
+    right: calc(100% + 8px);
+    left: auto;
+    transform: translateX(-4px) translateY(-50%);
+  }
+  .cue-popover-wrap.is-open .cue-popover--left {
+    transform: translateX(0) translateY(-50%);
+  }
+
+  /* ---- Caret arrow ---- */
+
+  .cue-popover__arrow {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background-color: var(--bg-default);
+    border: 1px solid var(--border-subdued);
+    transform: rotate(45deg);
+  }
+
+  /* Arrow for bottom-positioned popovers (points up) */
+  .cue-popover:not(.cue-popover--top):not(.cue-popover--right):not(.cue-popover--left) .cue-popover__arrow {
+    top: -5px;
+    left: 12px;
+    border-bottom: none;
+    border-right: none;
+  }
+
+  /* Arrow for .cue-popover--center */
+  .cue-popover--center .cue-popover__arrow {
+    top: -5px;
+    left: 50%;
+    margin-left: -4px;
+    border-bottom: none;
+    border-right: none;
+  }
+
+  /* Arrow for .cue-popover--right-align */
+  .cue-popover--right-align .cue-popover__arrow {
+    top: -5px;
+    left: auto;
+    right: 12px;
+    border-bottom: none;
+    border-right: none;
+  }
+
+  /* Arrow for top-positioned (points down) */
+  .cue-popover--top .cue-popover__arrow {
+    bottom: -5px;
+    top: auto;
+    left: 12px;
+    border-top: none;
+    border-left: none;
+  }
+
+  /* Arrow for right-positioned (points left) */
+  .cue-popover--right .cue-popover__arrow {
+    left: -5px;
+    top: 50%;
+    margin-top: -4px;
+    border-top: none;
+    border-right: none;
+  }
+
+  /* Arrow for left-positioned (points right) */
+  .cue-popover--left .cue-popover__arrow {
+    right: -5px;
+    left: auto;
+    top: 50%;
+    margin-top: -4px;
+    border-bottom: none;
+    border-left: none;
+  }
+
+  /* ---- Content area ---- */
+
+  .cue-popover__content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  /* Rich content helpers */
+  .cue-popover__title {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--content-body-default);
+    line-height: 1;
+  }
+
+  .cue-popover__body {
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--content-body-moderate);
+    line-height: 1.5;
+    white-space: normal;
+    max-width: 240px;
+  }
+
+  .cue-popover__divider {
+    height: 1px;
+    background-color: var(--border-subtle);
+    margin: 2px 0;
+  }
+
+  .cue-popover__action {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: var(--font-family-body);
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--content-body-default);
+    padding: 4px 2px;
+    border-radius: 4px;
+    text-align: left;
+    width: 100%;
+    transition: background-color 0.1s ease;
+  }
+
+  .cue-popover__action:hover { background-color: var(--bg-level-0); }
+  .cue-popover__action--destructive { color: var(--danger-default); }
+  .cue-popover__action--destructive:hover { background-color: var(--danger-weak); }
+  .cue-popover__action .material-icons { font-size: 14px; }
+
+  /* Demo layout helpers */
+  .popover-demo-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3rem;
+    align-items: flex-start;
+    padding: 2rem;
+  }
+
+  .popover-demo-col {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .popover-demo-label {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--content-body-moderate);
+  }
+
+  /* Extra space so open panels don't clip */
+  .popover-stage {
+    padding: 3rem 2rem;
+    background-color: var(--bg-level-1);
+    border: 1px solid var(--border-level-1);
+    border-radius: var(--corner-card-module);
+    margin-bottom: var(--space-xl);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3rem;
+    align-items: center;
+    overflow: visible;
+    min-height: 180px;
+  }
+
+</style>
+
+<div class="docs-page-header">
+  <h1 class="docs-page-title">Popover</h1>
+  <p class="docs-page-description">
+    A small floating panel anchored to a trigger element. Used for contextual information, quick actions, or supplementary content without leaving the current view. Triggered by click or hover. Dismisses on outside click or Escape. Content is fully flexible.
+  </p>
+</div>
+
+<!-- ============================================================
+     BASIC POPOVER
+============================================================ -->
+
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Basic</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">The base popover — a plain text message anchored below the trigger. Click the button to toggle.</p>
+
+  <div class="popover-stage">
+
+    <div class="popover-demo-col">
+      <p class="popover-demo-label">Simple message</p>
+      <div class="cue-popover-wrap" id="pop-basic">
+        <button class="cue-btn cue-btn--secondary" type="button" onclick="togglePopover('pop-basic')">
+          <span class="cue-btn__label">Click me</span>
+        </button>
+        <div class="cue-popover" role="tooltip">
+          <div class="cue-popover__arrow" aria-hidden="true"></div>
+          Simple popover message on hover or click.
+        </div>
+      </div>
+    </div>
+
+    <div class="popover-demo-col">
+      <p class="popover-demo-label">Icon trigger</p>
+      <div class="cue-popover-wrap" id="pop-icon">
+        <button class="cue-btn cue-btn--neutral-stroke cue-btn--icon-only" type="button"
+          onclick="togglePopover('pop-icon')" aria-label="More information">
+          <span class="material-icons" aria-hidden="true">info</span>
+        </button>
+        <div class="cue-popover cue-popover--center" role="tooltip">
+          <div class="cue-popover__arrow" aria-hidden="true"></div>
+          This field requires a unique identifier.
+        </div>
+      </div>
+    </div>
+
+    <div class="popover-demo-col">
+      <p class="popover-demo-label">Above trigger</p>
+      <div class="cue-popover-wrap" id="pop-top" style="margin-top: 4rem;">
+        <button class="cue-btn cue-btn--neutral-stroke" type="button" onclick="togglePopover('pop-top')">
+          <span class="cue-btn__label">Open above</span>
+        </button>
+        <div class="cue-popover cue-popover--top" role="tooltip">
+          <div class="cue-popover__arrow" aria-hidden="true"></div>
+          Popover positioned above the trigger.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ============================================================
+     RICH CONTENT
+============================================================ -->
+
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Rich content</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">The popover content area accepts any HTML. Common patterns include a title + body description, a list of quick actions, or form elements.</p>
+
+  <div class="popover-stage">
+
+    <!-- Title + description -->
+    <div class="popover-demo-col">
+      <p class="popover-demo-label">Title + description</p>
+      <div class="cue-popover-wrap" id="pop-rich">
+        <button class="cue-btn cue-btn--secondary" type="button" onclick="togglePopover('pop-rich')">
+          <span class="cue-btn__label">Details</span>
+        </button>
+        <div class="cue-popover" role="dialog" aria-label="Details">
+          <div class="cue-popover__arrow" aria-hidden="true"></div>
+          <div class="cue-popover__content">
+            <span class="cue-popover__title">Order #10042</span>
+            <p class="cue-popover__body">Last updated Jan 22, 2025. Net 30 terms apply. Contact your account manager for changes.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action list -->
+    <div class="popover-demo-col">
+      <p class="popover-demo-label">Quick actions</p>
+      <div class="cue-popover-wrap" id="pop-actions">
+        <button class="cue-btn cue-btn--neutral-stroke cue-btn--icon-only" type="button"
+          onclick="togglePopover('pop-actions')" aria-label="Row actions">
+          <span class="material-icons" aria-hidden="true">more_horiz</span>
+        </button>
+        <div class="cue-popover" role="dialog" aria-label="Row actions" style="min-width: 160px; white-space: normal;">
+          <div class="cue-popover__arrow" aria-hidden="true"></div>
+          <div class="cue-popover__content">
+            <button class="cue-popover__action" type="button">
+              <span class="material-icons" aria-hidden="true">edit</span> Edit
+            </button>
+            <button class="cue-popover__action" type="button">
+              <span class="material-icons" aria-hidden="true">file_copy</span> Duplicate
+            </button>
+            <div class="cue-popover__divider"></div>
+            <button class="cue-popover__action cue-popover__action--destructive" type="button">
+              <span class="material-icons" aria-hidden="true">delete</span> Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- User card -->
+    <div class="popover-demo-col">
+      <p class="popover-demo-label">User card</p>
+      <div class="cue-popover-wrap" id="pop-user">
+        <div class="cue-chat-avatar" style="cursor:pointer;" onclick="togglePopover('pop-user')" role="button" tabindex="0">JF</div>
+        <div class="cue-popover cue-popover--right-align" role="dialog" aria-label="User info" style="white-space: normal; min-width: 200px;">
+          <div class="cue-popover__arrow" aria-hidden="true"></div>
+          <div class="cue-popover__content">
+            <div style="display:flex; align-items:center; gap:0.5rem;">
+              <div class="cue-chat-avatar" style="width:32px;height:32px;font-size:0.75rem;">JF</div>
+              <div>
+                <div class="cue-popover__title">James Faulkner</div>
+                <div style="font-size:0.6875rem; color:var(--content-body-moderate);">james@excellis.com</div>
+              </div>
+            </div>
+            <div class="cue-popover__divider"></div>
+            <button class="cue-popover__action" type="button">
+              <span class="material-icons" aria-hidden="true">person</span> View profile
+            </button>
+            <button class="cue-popover__action" type="button">
+              <span class="material-icons" aria-hidden="true">logout</span> Sign out
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ============================================================
+     POSITIONS
+============================================================ -->
+
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Positions</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">Six position variants — below (default), below center, below right-aligned, above, right, and left. The caret arrow points back to the trigger in all positions.</p>
+
+  <div class="popover-stage" style="justify-content: center; padding: 4rem 2rem;">
+
+    <div class="popover-demo-col" style="align-items:center;">
+      <p class="popover-demo-label">Below left</p>
+      <div class="cue-popover-wrap" id="pop-pos-bl">
+        <button class="cue-btn cue-btn--neutral-stroke cue-btn--icon-only" onclick="togglePopover('pop-pos-bl')" type="button"><span class="material-icons" style="font-size:16px;">south</span></button>
+        <div class="cue-popover" role="tooltip"><div class="cue-popover__arrow" aria-hidden="true"></div>Below left</div>
+      </div>
+    </div>
+
+    <div class="popover-demo-col" style="align-items:center;">
+      <p class="popover-demo-label">Below center</p>
+      <div class="cue-popover-wrap" id="pop-pos-bc">
+        <button class="cue-btn cue-btn--neutral-stroke cue-btn--icon-only" onclick="togglePopover('pop-pos-bc')" type="button"><span class="material-icons" style="font-size:16px;">south</span></button>
+        <div class="cue-popover cue-popover--center" role="tooltip"><div class="cue-popover__arrow" aria-hidden="true"></div>Below center</div>
+      </div>
+    </div>
+
+    <div class="popover-demo-col" style="align-items:center;">
+      <p class="popover-demo-label">Below right</p>
+      <div class="cue-popover-wrap" id="pop-pos-br">
+        <button class="cue-btn cue-btn--neutral-stroke cue-btn--icon-only" onclick="togglePopover('pop-pos-br')" type="button"><span class="material-icons" style="font-size:16px;">south</span></button>
+        <div class="cue-popover cue-popover--right-align" role="tooltip"><div class="cue-popover__arrow" aria-hidden="true"></div>Below right</div>
+      </div>
+    </div>
+
+    <div class="popover-demo-col" style="align-items:center; margin-top: 5rem;">
+      <p class="popover-demo-label">Above</p>
+      <div class="cue-popover-wrap" id="pop-pos-top">
+        <button class="cue-btn cue-btn--neutral-stroke cue-btn--icon-only" onclick="togglePopover('pop-pos-top')" type="button"><span class="material-icons" style="font-size:16px;">north</span></button>
+        <div class="cue-popover cue-popover--top" role="tooltip"><div class="cue-popover__arrow" aria-hidden="true"></div>Above</div>
+      </div>
+    </div>
+
+    <div class="popover-demo-col" style="align-items:center; margin-top: 5rem;">
+      <p class="popover-demo-label">Right</p>
+      <div class="cue-popover-wrap" id="pop-pos-right">
+        <button class="cue-btn cue-btn--neutral-stroke cue-btn--icon-only" onclick="togglePopover('pop-pos-right')" type="button"><span class="material-icons" style="font-size:16px;">east</span></button>
+        <div class="cue-popover cue-popover--right" role="tooltip"><div class="cue-popover__arrow" aria-hidden="true"></div>Right of trigger</div>
+      </div>
+    </div>
+
+    <div class="popover-demo-col" style="align-items:center; margin-top: 5rem;">
+      <p class="popover-demo-label">Left</p>
+      <div class="cue-popover-wrap" id="pop-pos-left">
+        <button class="cue-btn cue-btn--neutral-stroke cue-btn--icon-only" onclick="togglePopover('pop-pos-left')" type="button"><span class="material-icons" style="font-size:16px;">west</span></button>
+        <div class="cue-popover cue-popover--left" role="tooltip"><div class="cue-popover__arrow" aria-hidden="true"></div>Left of trigger</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ============================================================
+     DESIGN TOKENS
+============================================================ -->
+
+<div class="docs-section">
+  <p class="docs-section-label">Design Tokens</p>
+  <table class="docs-token-table">
+    <thead>
+      <tr><th>Token / Value</th><th>Figma Token</th><th>Value</th><th>Usage</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>--bg-default</td><td>System/Background/bg-default</td><td><span class="docs-token-swatch" style="background:#ffffff; border-color:#ededed;"></span>#ffffff</td><td>Panel background</td></tr>
+      <tr><td>--border-subdued</td><td>System/Border/border-subdued</td><td><span class="docs-token-swatch" style="background:#bdbdbd;"></span>#bdbdbd</td><td>Panel border — slightly darker than card border</td></tr>
+      <tr><td>Shadow/4</td><td>Shadow/4</td><td>0 4px 6px rgba(0,0,0,0.1)</td><td>Panel drop shadow</td></tr>
+      <tr><td>border-radius</td><td>—</td><td>4px</td><td>Panel corner radius</td></tr>
+      <tr><td>padding</td><td>—</td><td>8px</td><td>Panel inner padding</td></tr>
+      <tr><td>--content-body-default</td><td>System/Content/content-body-default</td><td><span class="docs-token-swatch" style="background:#262626;"></span>#262626</td><td>Body text color</td></tr>
+      <tr><td>font-size</td><td>Back Office UI/Button Small 12pt/Regular</td><td>12px / 0.75rem</td><td>Base text size inside panel</td></tr>
+      <tr><td>Arrow size</td><td>—</td><td>8×8px, rotated 45°</td><td>Caret pointing to trigger — inherits panel bg and border</td></tr>
+      <tr><td>Offset from trigger</td><td>—</td><td>8px</td><td>Gap between trigger edge and panel</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ============================================================
+     CODE
+============================================================ -->
+
+<div class="docs-section">
+  <p class="docs-section-label">Code</p>
+  <div class="docs-code-tabs">
+    <button class="docs-code-tab active" onclick="switchTab(event, 'pop-html')">HTML</button>
+    <button class="docs-code-tab" onclick="switchTab(event, 'pop-css')">Key CSS</button>
+    <button class="docs-code-tab" onclick="switchTab(event, 'pop-js')">JS</button>
+  </div>
+
+  <div class="docs-code-panel active" id="pop-html">
+    <div class="docs-code-block"><pre><code>&lt;!-- Basic popover — below left (default) --&gt;
+&lt;div class="cue-popover-wrap" id="my-popover"&gt;
+  &lt;button class="cue-btn cue-btn--secondary" type="button"
+    onclick="togglePopover('my-popover')"&gt;
+    &lt;span class="cue-btn__label"&gt;Open&lt;/span&gt;
+  &lt;/button&gt;
+  &lt;div class="cue-popover" role="tooltip"&gt;
+    &lt;div class="cue-popover__arrow" aria-hidden="true"&gt;&lt;/div&gt;
+    Simple popover message.
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Position variants — add modifier to .cue-popover --&gt;
+&lt;div class="cue-popover cue-popover--center"&gt;...&lt;/div&gt;     &lt;!-- below, centered --&gt;
+&lt;div class="cue-popover cue-popover--right-align"&gt;...&lt;/div&gt; &lt;!-- below, right edge --&gt;
+&lt;div class="cue-popover cue-popover--top"&gt;...&lt;/div&gt;         &lt;!-- above --&gt;
+&lt;div class="cue-popover cue-popover--right"&gt;...&lt;/div&gt;        &lt;!-- right of trigger --&gt;
+&lt;div class="cue-popover cue-popover--left"&gt;...&lt;/div&gt;         &lt;!-- left of trigger --&gt;
+
+&lt;!-- Rich content --&gt;
+&lt;div class="cue-popover" role="dialog" aria-label="Details"&gt;
+  &lt;div class="cue-popover__arrow" aria-hidden="true"&gt;&lt;/div&gt;
+  &lt;div class="cue-popover__content"&gt;
+    &lt;span class="cue-popover__title"&gt;Title&lt;/span&gt;
+    &lt;p class="cue-popover__body"&gt;Description text goes here.&lt;/p&gt;
+    &lt;div class="cue-popover__divider"&gt;&lt;/div&gt;
+    &lt;button class="cue-popover__action" type="button"&gt;
+      &lt;span class="material-icons" aria-hidden="true"&gt;edit&lt;/span&gt; Edit
+    &lt;/button&gt;
+    &lt;button class="cue-popover__action cue-popover__action--destructive" type="button"&gt;
+      &lt;span class="material-icons" aria-hidden="true"&gt;delete&lt;/span&gt; Delete
+    &lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre></div>
+  </div>
+
+  <div class="docs-code-panel" id="pop-css">
+    <div class="docs-code-block"><pre><code>/* Wrapper — always position: relative + inline-flex */
+.cue-popover-wrap { position: relative; display: inline-flex; }
+
+/* Panel */
+.cue-popover {
+  position: absolute;
+  z-index: 600;
+  background-color: var(--bg-default);
+  border: 1px solid var(--border-subdued);    /* #bdbdbd */
+  border-radius: 4px;
+  padding: 0.5rem;                             /* 8px */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);  /* Shadow/4 */
+  font-size: 0.75rem;                          /* 12px */
+  color: var(--content-body-default);
+  white-space: nowrap;
+  min-width: max-content;
+  /* Hidden state */
+  opacity: 0; visibility: hidden;
+  transform: translateY(4px);
+  transition: opacity 0.15s ease, visibility 0.15s ease, transform 0.15s ease;
+  pointer-events: none;
+  /* Default position: below, left-aligned */
+  top: calc(100% + 8px); left: 0;
+}
+
+/* Open state */
+.cue-popover-wrap.is-open .cue-popover {
+  opacity: 1; visibility: visible;
+  transform: translateY(0); pointer-events: auto;
+}
+
+/* Caret arrow */
+.cue-popover__arrow {
+  position: absolute;
+  width: 8px; height: 8px;
+  background-color: var(--bg-default);
+  border: 1px solid var(--border-subdued);
+  transform: rotate(45deg);
+  /* Default: points up (for below-positioned popover) */
+  top: -5px; left: 12px;
+  border-bottom: none; border-right: none;
+}
+
+/* Position modifiers */
+.cue-popover--center   { left: 50%; transform: translateX(-50%) translateY(4px); }
+.cue-popover--right-align { left: auto; right: 0; }
+.cue-popover--top      { top: auto; bottom: calc(100% + 8px); transform: translateY(-4px); }
+.cue-popover--right    { top: 50%; left: calc(100% + 8px); transform: translateX(4px) translateY(-50%); }
+.cue-popover--left     { top: 50%; right: calc(100% + 8px); left: auto; transform: translateX(-4px) translateY(-50%); }
+
+/* Rich content helpers */
+.cue-popover__content  { display: flex; flex-direction: column; gap: 0.5rem; }
+.cue-popover__title    { font-size: 0.875rem; font-weight: 700; color: var(--content-body-default); }
+.cue-popover__body     { font-size: 0.75rem; color: var(--content-body-moderate); line-height: 1.5; white-space: normal; max-width: 240px; }
+.cue-popover__divider  { height: 1px; background-color: var(--border-subtle); margin: 2px 0; }
+.cue-popover__action   { display: flex; align-items: center; gap: 0.375rem; background: none; border: none; cursor: pointer; font-size: 0.75rem; color: var(--content-body-default); padding: 4px 2px; border-radius: 4px; width: 100%; }
+.cue-popover__action:hover { background-color: var(--bg-level-0); }
+.cue-popover__action--destructive { color: var(--danger-default); }
+.cue-popover__action--destructive:hover { background-color: var(--danger-weak); }</code></pre></div>
+  </div>
+
+  <div class="docs-code-panel" id="pop-js">
+    <div class="docs-code-block"><pre><code>// Toggle a popover open/closed
+function togglePopover(id, force) {
+  const wrap = document.getElementById(id);
+  if (!wrap) return;
+  const isOpen = force !== undefined ? force : !wrap.classList.contains('is-open');
+
+  // Close all other open popovers first
+  document.querySelectorAll('.cue-popover-wrap.is-open').forEach(w => {
+    if (w.id !== id) w.classList.remove('is-open');
+  });
+
+  wrap.classList.toggle('is-open', isOpen);
+}
+
+// Close on outside click
+document.addEventListener('click', function(e) {
+  document.querySelectorAll('.cue-popover-wrap.is-open').forEach(wrap => {
+    if (!wrap.contains(e.target)) {
+      wrap.classList.remove('is-open');
+    }
+  });
+});
+
+// Close on Escape
+document.addEventListener('keydown', function(e) {
+  if (e.key !== 'Escape') return;
+  document.querySelectorAll('.cue-popover-wrap.is-open').forEach(wrap => {
+    wrap.classList.remove('is-open');
+  });
+});
+
+// Hover trigger (optional — use instead of or alongside click)
+function initHoverPopover(id) {
+  const wrap = document.getElementById(id);
+  if (!wrap) return;
+  wrap.addEventListener('mouseenter', () => togglePopover(id, true));
+  wrap.addEventListener('mouseleave', () => togglePopover(id, false));
+}</code></pre></div>
+  </div>
+
+</div>
+
+<script>
+  function togglePopover(id, force) {
+    const wrap = document.getElementById(id);
+    if (!wrap) return;
+    const isOpen = force !== undefined ? force : !wrap.classList.contains('is-open');
+    document.querySelectorAll('.cue-popover-wrap.is-open').forEach(w => {
+      if (w.id !== id) w.classList.remove('is-open');
+    });
+    wrap.classList.toggle('is-open', isOpen);
+  }
+
+  document.addEventListener('click', function(e) {
+    document.querySelectorAll('.cue-popover-wrap.is-open').forEach(wrap => {
+      if (!wrap.contains(e.target)) wrap.classList.remove('is-open');
+    });
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key !== 'Escape') {
+      document.querySelectorAll('.cue-popover-wrap.is-open').forEach(w => w.classList.remove('is-open'));
+    }
+  });
+</script>
