@@ -1,0 +1,1127 @@
+---
+layout: default
+title: "Navigation"
+activeNav: navigation
+root: ../
+---
+
+<style>
+
+  /* ============================================================
+     TAB NAVIGATION
+
+     A horizontal row of tab items with an amber bottom indicator
+     on the active item. Used for primary section switching.
+
+     Item states:
+       Default — #575757 Regular 16px
+       Hover   — #03618d Regular 16px
+       Active  — #03618d Bold 16px + 2px amber bottom bar
+
+     Optional leading icon: 18px Material Icon.
+  ============================================================ */
+
+  .cue-tab-nav {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    border-bottom: 1px solid var(--border-level-1);
+    width: 100%;
+  }
+
+  .cue-tab-nav__item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 1rem 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: var(--font-family-body);
+    text-decoration: none;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .cue-tab-nav__item-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding-bottom: 4px;
+  }
+
+  .cue-tab-nav__item-content {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .cue-tab-nav__item-icon {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .cue-tab-nav__item-icon .material-icons { font-size: 18px; }
+
+  .cue-tab-nav__item-label {
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--content-tab-default);
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .cue-tab-nav__item-indicator {
+    height: 2px;
+    width: 100%;
+    background-color: transparent;
+    border-radius: 1px 1px 0 0;
+    transition: background-color 0.15s ease;
+  }
+
+  /* Hover */
+  .cue-tab-nav__item:hover .cue-tab-nav__item-label {
+    color: var(--content-tab-hover);
+  }
+
+  .cue-tab-nav__item:focus-visible {
+    outline: 2px solid var(--border-interactive);
+    outline-offset: -2px;
+    border-radius: 4px 4px 0 0;
+  }
+
+  /* Active */
+  .cue-tab-nav__item.is-active .cue-tab-nav__item-label {
+    font-weight: 700;
+    color: var(--content-tab-active);
+  }
+
+  .cue-tab-nav__item.is-active .cue-tab-nav__item-icon .material-icons {
+    color: var(--content-tab-active);
+  }
+
+  .cue-tab-nav__item.is-active .cue-tab-nav__item-indicator {
+    background-color: var(--bg-tab-active-indicator);
+  }
+
+  .cue-tab-nav__item:not(.is-active) .cue-tab-nav__item-icon .material-icons {
+    color: var(--content-tab-default);
+  }
+
+
+  /* ============================================================
+     SIDE NAVIGATION
+
+     A vertical stack of nav items with a 3px amber left indicator
+     on the active item. Used for secondary section navigation.
+
+     States: same colors as Tab Navigation.
+     Active indicator: 3px vertical bar on left.
+  ============================================================ */
+
+  .cue-side-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+  }
+
+  .cue-side-nav--loose {
+    gap: 1rem;
+  }
+
+  .cue-side-nav__item {
+    display: flex;
+    align-items: stretch;
+    height: 27px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    font-family: var(--font-family-body);
+    overflow: hidden;
+  }
+
+  .cue-side-nav__item:focus-visible {
+    outline: 2px solid var(--border-interactive);
+    outline-offset: 1px;
+    border-radius: 3px;
+  }
+
+  .cue-side-nav__item-indicator {
+    width: 3px;
+    height: 100%;
+    background-color: transparent;
+    flex-shrink: 0;
+    border-radius: 0 2px 2px 0;
+    transition: background-color 0.15s ease;
+  }
+
+  .cue-side-nav__item.is-active .cue-side-nav__item-indicator {
+    background-color: var(--bg-tab-active-indicator);
+  }
+
+  .cue-side-nav__item-content {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 0.5rem;
+  }
+
+  .cue-side-nav__item-icon {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .cue-side-nav__item-icon .material-icons {
+    font-size: 18px;
+    color: var(--content-tab-default);
+  }
+
+  .cue-side-nav__item-label {
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--content-tab-default);
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .cue-side-nav__item:hover .cue-side-nav__item-label,
+  .cue-side-nav__item:hover .cue-side-nav__item-icon .material-icons {
+    color: var(--content-tab-hover);
+  }
+
+  .cue-side-nav__item.is-active .cue-side-nav__item-label,
+  .cue-side-nav__item.is-active .cue-side-nav__item-icon .material-icons {
+    font-weight: 700;
+    color: var(--content-tab-active);
+  }
+
+
+  /* ============================================================
+     PILL NAVIGATION
+
+     Horizontal row of rounded pill items. Active item gets
+     a filled accent-blue background. Used for filter-style
+     navigation or top-level category switching.
+
+     Active: #61c5ff bg, #1a1a1a Bold text
+     Default: white bg, #575757 Regular text
+  ============================================================ */
+
+  .cue-pill-nav {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 8px;
+    background-color: var(--bg-default);
+    border-radius: 200px;
+  }
+
+  .cue-pill-nav__item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 12px;
+    border-radius: 200px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    font-family: var(--font-family-body);
+    transition: background-color 0.15s ease;
+  }
+
+  .cue-pill-nav__item:focus-visible {
+    outline: 2px solid var(--border-interactive);
+    outline-offset: 2px;
+  }
+
+  .cue-pill-nav__item-content {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .cue-pill-nav__item-icon {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .cue-pill-nav__item-icon .material-icons {
+    font-size: 18px;
+    color: var(--content-tab-default);
+  }
+
+  .cue-pill-nav__item-label {
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--content-body-subdued);
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .cue-pill-nav__item:hover {
+    background-color: var(--bg-level-0);
+  }
+
+  .cue-pill-nav__item:hover .cue-pill-nav__item-label {
+    color: var(--content-body-primary-brand);
+  }
+
+  .cue-pill-nav__item.is-active {
+    background-color: var(--bg-tab-pill-active);
+  }
+
+  .cue-pill-nav__item.is-active .cue-pill-nav__item-label {
+    font-weight: 700;
+    color: var(--content-tab-pill-active);
+  }
+
+  .cue-pill-nav__item.is-active .cue-pill-nav__item-icon .material-icons {
+    color: var(--content-tab-pill-active);
+  }
+
+
+  /* ============================================================
+     SUBNAV TABS
+
+     A horizontal secondary navigation bar used throughout CUE
+     Back Office pages. Sits below the page header or app top bar.
+
+     Item states:
+       Default — 14px SemiBold #575757
+       Hover   — 14px Bold #03618d
+       Active  — 14px Bold #03618d + 4px amber bottom bar
+
+     When items overflow the container width, the bar scrolls
+     horizontally with a gradient fade + chevron arrow button.
+
+     Subnav Cart variant adds a count badge (18px circle).
+  ============================================================ */
+
+  /* Container */
+  .cue-subnav {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    position: relative;
+    border-bottom: 1px solid var(--border-level-1);
+  }
+
+  /* Scrollable inner track */
+  .cue-subnav__track {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    overflow-x: auto;
+    overflow-y: visible;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .cue-subnav__track::-webkit-scrollbar { display: none; }
+
+  /* Individual subnav tab */
+  .cue-subnav__tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    font-family: var(--font-family-body);
+    flex-shrink: 0;
+  }
+
+  .cue-subnav__tab:focus-visible {
+    outline: 2px solid var(--border-interactive);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  .cue-subnav__tab-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--content-subnav-default);
+    line-height: 1;
+    white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
+  .cue-subnav__tab-indicator {
+    height: 4px;
+    width: 100%;
+    background-color: transparent;
+    border-radius: 2px 2px 0 0;
+    transition: background-color 0.15s ease;
+  }
+
+  .cue-subnav__tab:hover .cue-subnav__tab-label {
+    color: var(--content-subnav-active);
+    font-weight: 700;
+  }
+
+  .cue-subnav__tab.is-active .cue-subnav__tab-label {
+    color: var(--content-subnav-active);
+    font-weight: 700;
+  }
+
+  .cue-subnav__tab.is-active .cue-subnav__tab-indicator {
+    background-color: var(--bg-subnav-indicator);
+  }
+
+  /* Overflow controls */
+  .cue-subnav__overflow {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  .cue-subnav__gradient {
+    width: 24px;
+    height: 29px;
+    flex-shrink: 0;
+    pointer-events: none;
+  }
+
+  .cue-subnav__gradient--right {
+    background: linear-gradient(to right, rgba(255,255,255,0), #ffffff);
+  }
+
+  .cue-subnav__gradient--left {
+    background: linear-gradient(to right, #ffffff, rgba(255,255,255,0));
+  }
+
+  .cue-subnav__arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    color: var(--content-body-moderate);
+    transition: color 0.15s ease;
+    flex-shrink: 0;
+  }
+
+  .cue-subnav__arrow:hover { color: var(--content-body-default); }
+  .cue-subnav__arrow .material-icons { font-size: 18px; }
+
+  .cue-subnav__arrow.is-hidden { display: none; }
+
+  /* Cart count badge */
+  .cue-subnav-cart {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .cue-subnav-cart-count {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 200px;
+    background-color: var(--content-subnav-active);
+    flex-shrink: 0;
+  }
+
+  .cue-subnav-cart-count--alt {
+    background-color: var(--content-body-moderate);
+  }
+
+  .cue-subnav-cart-count span {
+    font-size: 0.625rem;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1;
+  }
+
+  /* Demo helpers */
+  .nav-demo-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    align-items: flex-start;
+  }
+
+  .nav-demo-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .nav-demo-label {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--content-body-moderate);
+  }
+
+</style>
+
+<div class="docs-page-header">
+  <h1 class="docs-page-title">Navigation</h1>
+  <p class="docs-page-description">
+    Four navigation patterns used throughout CUE Back Office. Tab Navigation for horizontal primary switching. Side Navigation for vertical secondary menus. Pill Navigation for filter-style category selection. Subnav Tabs for secondary page navigation with overflow scroll support.
+  </p>
+</div>
+
+<!-- ============================================================
+     TAB NAVIGATION
+============================================================ -->
+
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Tab Navigation</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">Horizontal tabs with a 2px amber bottom indicator on the active item. Supports optional leading icons. Active item is Bold; default items are Regular. Click tabs to switch.</p>
+
+  <div class="docs-example" style="flex-direction: column; gap: 1.5rem;">
+
+    <!-- With icons -->
+    <div class="nav-demo-col" style="width: 100%;">
+      <p class="nav-demo-label">With icons</p>
+      <nav class="cue-tab-nav" aria-label="Primary navigation">
+        <button class="cue-tab-nav__item is-active" type="button" onclick="activateTab(this)">
+          <div class="cue-tab-nav__item-inner">
+            <div class="cue-tab-nav__item-content">
+              <span class="cue-tab-nav__item-icon"><span class="material-icons" aria-hidden="true">home</span></span>
+              <span class="cue-tab-nav__item-label">Home</span>
+            </div>
+            <div class="cue-tab-nav__item-indicator"></div>
+          </div>
+        </button>
+        <button class="cue-tab-nav__item" type="button" onclick="activateTab(this)">
+          <div class="cue-tab-nav__item-inner">
+            <div class="cue-tab-nav__item-content">
+              <span class="cue-tab-nav__item-icon"><span class="material-icons" aria-hidden="true">menu_book</span></span>
+              <span class="cue-tab-nav__item-label">Catalog</span>
+            </div>
+            <div class="cue-tab-nav__item-indicator"></div>
+          </div>
+        </button>
+        <button class="cue-tab-nav__item" type="button" onclick="activateTab(this)">
+          <div class="cue-tab-nav__item-inner">
+            <div class="cue-tab-nav__item-content">
+              <span class="cue-tab-nav__item-icon"><span class="material-icons" aria-hidden="true">receipt</span></span>
+              <span class="cue-tab-nav__item-label">Orders</span>
+            </div>
+            <div class="cue-tab-nav__item-indicator"></div>
+          </div>
+        </button>
+        <button class="cue-tab-nav__item" type="button" onclick="activateTab(this)">
+          <div class="cue-tab-nav__item-inner">
+            <div class="cue-tab-nav__item-content">
+              <span class="cue-tab-nav__item-icon"><span class="material-icons" aria-hidden="true">description</span></span>
+              <span class="cue-tab-nav__item-label">Invoices</span>
+            </div>
+            <div class="cue-tab-nav__item-indicator"></div>
+          </div>
+        </button>
+      </nav>
+    </div>
+
+    <!-- Text only -->
+    <div class="nav-demo-col" style="width: 100%;">
+      <p class="nav-demo-label">Text only</p>
+      <nav class="cue-tab-nav" aria-label="Primary navigation">
+        <button class="cue-tab-nav__item is-active" type="button" onclick="activateTab(this)">
+          <div class="cue-tab-nav__item-inner">
+            <div class="cue-tab-nav__item-content">
+              <span class="cue-tab-nav__item-label">Home</span>
+            </div>
+            <div class="cue-tab-nav__item-indicator"></div>
+          </div>
+        </button>
+        <button class="cue-tab-nav__item" type="button" onclick="activateTab(this)">
+          <div class="cue-tab-nav__item-inner">
+            <div class="cue-tab-nav__item-content">
+              <span class="cue-tab-nav__item-label">Catalog</span>
+            </div>
+            <div class="cue-tab-nav__item-indicator"></div>
+          </div>
+        </button>
+        <button class="cue-tab-nav__item" type="button" onclick="activateTab(this)">
+          <div class="cue-tab-nav__item-inner">
+            <div class="cue-tab-nav__item-content">
+              <span class="cue-tab-nav__item-label">Orders</span>
+            </div>
+            <div class="cue-tab-nav__item-indicator"></div>
+          </div>
+        </button>
+        <button class="cue-tab-nav__item" type="button" onclick="activateTab(this)">
+          <div class="cue-tab-nav__item-inner">
+            <div class="cue-tab-nav__item-content">
+              <span class="cue-tab-nav__item-label">Invoices</span>
+            </div>
+            <div class="cue-tab-nav__item-indicator"></div>
+          </div>
+        </button>
+      </nav>
+    </div>
+
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ============================================================
+     SIDE NAVIGATION
+============================================================ -->
+
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Side Navigation</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">Vertical navigation with a 3px amber left border on the active item. Two variants: with icons (12px gap) and text only (16px gap). Click items to switch.</p>
+
+  <div class="docs-example" style="gap: 3rem; align-items: flex-start;">
+
+    <!-- With icons -->
+    <div class="nav-demo-col">
+      <p class="nav-demo-label">With icons</p>
+      <nav class="cue-side-nav" aria-label="Side navigation">
+        <button class="cue-side-nav__item is-active" type="button" onclick="activateSideNav(this)">
+          <div class="cue-side-nav__item-indicator"></div>
+          <div class="cue-side-nav__item-content">
+            <span class="cue-side-nav__item-icon"><span class="material-icons" aria-hidden="true">home</span></span>
+            <span class="cue-side-nav__item-label">Home</span>
+          </div>
+        </button>
+        <button class="cue-side-nav__item" type="button" onclick="activateSideNav(this)">
+          <div class="cue-side-nav__item-indicator"></div>
+          <div class="cue-side-nav__item-content">
+            <span class="cue-side-nav__item-icon"><span class="material-icons" aria-hidden="true">menu_book</span></span>
+            <span class="cue-side-nav__item-label">Catalog</span>
+          </div>
+        </button>
+        <button class="cue-side-nav__item" type="button" onclick="activateSideNav(this)">
+          <div class="cue-side-nav__item-indicator"></div>
+          <div class="cue-side-nav__item-content">
+            <span class="cue-side-nav__item-icon"><span class="material-icons" aria-hidden="true">receipt</span></span>
+            <span class="cue-side-nav__item-label">Orders</span>
+          </div>
+        </button>
+        <button class="cue-side-nav__item" type="button" onclick="activateSideNav(this)">
+          <div class="cue-side-nav__item-indicator"></div>
+          <div class="cue-side-nav__item-content">
+            <span class="cue-side-nav__item-icon"><span class="material-icons" aria-hidden="true">description</span></span>
+            <span class="cue-side-nav__item-label">Invoices</span>
+          </div>
+        </button>
+      </nav>
+    </div>
+
+    <!-- Text only -->
+    <div class="nav-demo-col">
+      <p class="nav-demo-label">Text only</p>
+      <nav class="cue-side-nav cue-side-nav--loose" aria-label="Side navigation">
+        <button class="cue-side-nav__item is-active" type="button" onclick="activateSideNav(this)">
+          <div class="cue-side-nav__item-indicator"></div>
+          <div class="cue-side-nav__item-content">
+            <span class="cue-side-nav__item-label">Home</span>
+          </div>
+        </button>
+        <button class="cue-side-nav__item" type="button" onclick="activateSideNav(this)">
+          <div class="cue-side-nav__item-indicator"></div>
+          <div class="cue-side-nav__item-content">
+            <span class="cue-side-nav__item-label">Catalog</span>
+          </div>
+        </button>
+        <button class="cue-side-nav__item" type="button" onclick="activateSideNav(this)">
+          <div class="cue-side-nav__item-indicator"></div>
+          <div class="cue-side-nav__item-content">
+            <span class="cue-side-nav__item-label">Orders</span>
+          </div>
+        </button>
+        <button class="cue-side-nav__item" type="button" onclick="activateSideNav(this)">
+          <div class="cue-side-nav__item-indicator"></div>
+          <div class="cue-side-nav__item-content">
+            <span class="cue-side-nav__item-label">Invoices</span>
+          </div>
+        </button>
+      </nav>
+    </div>
+
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ============================================================
+     PILL NAVIGATION
+============================================================ -->
+
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Pill Navigation</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">Horizontal pill-shaped items on a white container. Active item gets a filled accent-blue background (<code>#61c5ff</code>). Used for filter-style or category navigation. Click items to switch.</p>
+
+  <div class="docs-example" style="flex-direction: column; gap: 1.5rem;">
+
+    <!-- With icons -->
+    <div class="nav-demo-col">
+      <p class="nav-demo-label">With icons</p>
+      <nav class="cue-pill-nav" style="border: 1px solid var(--border-level-1);" aria-label="Pill navigation">
+        <button class="cue-pill-nav__item is-active" type="button" onclick="activatePillNav(this)">
+          <div class="cue-pill-nav__item-content">
+            <span class="cue-pill-nav__item-icon"><span class="material-icons" aria-hidden="true">home</span></span>
+            <span class="cue-pill-nav__item-label">Home</span>
+          </div>
+        </button>
+        <button class="cue-pill-nav__item" type="button" onclick="activatePillNav(this)">
+          <div class="cue-pill-nav__item-content">
+            <span class="cue-pill-nav__item-icon"><span class="material-icons" aria-hidden="true">menu_book</span></span>
+            <span class="cue-pill-nav__item-label">Catalog</span>
+          </div>
+        </button>
+        <button class="cue-pill-nav__item" type="button" onclick="activatePillNav(this)">
+          <div class="cue-pill-nav__item-content">
+            <span class="cue-pill-nav__item-icon"><span class="material-icons" aria-hidden="true">receipt</span></span>
+            <span class="cue-pill-nav__item-label">Orders</span>
+          </div>
+        </button>
+        <button class="cue-pill-nav__item" type="button" onclick="activatePillNav(this)">
+          <div class="cue-pill-nav__item-content">
+            <span class="cue-pill-nav__item-icon"><span class="material-icons" aria-hidden="true">description</span></span>
+            <span class="cue-pill-nav__item-label">Invoices</span>
+          </div>
+        </button>
+      </nav>
+    </div>
+
+    <!-- Text only -->
+    <div class="nav-demo-col">
+      <p class="nav-demo-label">Text only</p>
+      <nav class="cue-pill-nav" style="border: 1px solid var(--border-level-1);" aria-label="Pill navigation">
+        <button class="cue-pill-nav__item is-active" type="button" onclick="activatePillNav(this)">
+          <div class="cue-pill-nav__item-content">
+            <span class="cue-pill-nav__item-label">Home</span>
+          </div>
+        </button>
+        <button class="cue-pill-nav__item" type="button" onclick="activatePillNav(this)">
+          <div class="cue-pill-nav__item-content">
+            <span class="cue-pill-nav__item-label">Catalog</span>
+          </div>
+        </button>
+        <button class="cue-pill-nav__item" type="button" onclick="activatePillNav(this)">
+          <div class="cue-pill-nav__item-content">
+            <span class="cue-pill-nav__item-label">Orders</span>
+          </div>
+        </button>
+        <button class="cue-pill-nav__item" type="button" onclick="activatePillNav(this)">
+          <div class="cue-pill-nav__item-content">
+            <span class="cue-pill-nav__item-label">Invoices</span>
+          </div>
+        </button>
+      </nav>
+    </div>
+
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ============================================================
+     SUBNAV TABS
+============================================================ -->
+
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Subnav Tabs</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">Secondary navigation bar used throughout CUE Back Office pages. Items use 14px SemiBold text in uppercase. The active item is Bold with a 4px amber bottom bar. When items overflow the container width, the bar scrolls horizontally with a gradient fade and chevron arrow. A cart count badge variant is also available.</p>
+
+  <div class="docs-example" style="flex-direction: column; gap: 2rem;">
+
+    <!-- Basic subnav -->
+    <div class="nav-demo-col" style="width: 100%;">
+      <p class="nav-demo-label">Standard subnav</p>
+      <nav class="cue-subnav" aria-label="Sub navigation">
+        <div class="cue-subnav__track">
+          <button class="cue-subnav__tab is-active" type="button" onclick="activateSubnav(this)">
+            <span class="cue-subnav__tab-label">Subnav Item Active</span>
+            <div class="cue-subnav__tab-indicator"></div>
+          </button>
+          <button class="cue-subnav__tab" type="button" onclick="activateSubnav(this)">
+            <span class="cue-subnav__tab-label">Subnav Item Default</span>
+            <div class="cue-subnav__tab-indicator"></div>
+          </button>
+          <button class="cue-subnav__tab" type="button" onclick="activateSubnav(this)">
+            <span class="cue-subnav__tab-label">Subnav Item Default</span>
+            <div class="cue-subnav__tab-indicator"></div>
+          </button>
+          <button class="cue-subnav__tab" type="button" onclick="activateSubnav(this)">
+            <span class="cue-subnav__tab-label">Subnav Item Default</span>
+            <div class="cue-subnav__tab-indicator"></div>
+          </button>
+          <button class="cue-subnav__tab" type="button" onclick="activateSubnav(this)">
+            <span class="cue-subnav__tab-label">Subnav Item Default</span>
+            <div class="cue-subnav__tab-indicator"></div>
+          </button>
+        </div>
+      </nav>
+    </div>
+
+    <!-- Overflow scroll subnav -->
+    <div class="nav-demo-col" style="width: 100%;">
+      <p class="nav-demo-label">Overflow — scroll with arrows</p>
+      <nav class="cue-subnav" id="subnav-overflow" aria-label="Sub navigation">
+        <button class="cue-subnav__arrow is-hidden" id="subnav-prev" type="button"
+          onclick="scrollSubnav('subnav-overflow', -1)" aria-label="Scroll left">
+          <span class="material-icons" aria-hidden="true">chevron_left</span>
+        </button>
+        <div class="cue-subnav__gradient cue-subnav__gradient--left is-hidden" id="subnav-grad-left"></div>
+        <div class="cue-subnav__track" id="subnav-overflow-track">
+          <button class="cue-subnav__tab is-active" type="button" onclick="activateSubnav(this)">
+            <span class="cue-subnav__tab-label">Subnav Item Active</span>
+            <div class="cue-subnav__tab-indicator"></div>
+          </button>
+          <button class="cue-subnav__tab" type="button" onclick="activateSubnav(this)">
+            <span class="cue-subnav__tab-label">Subnav Item Default</span>
+            <div class="cue-subnav__tab-indicator"></div>
+          </button>
+          <button class="cue-subnav__tab" type="button" onclick="activateSubnav(this)">
+            <span class="cue-subnav__tab-label">Subnav Item Default</span>
+            <div class="cue-subnav__tab-indicator"></div>
+          </button>
+          <button class="cue-subnav__tab" type="button" onclick="activateSubnav(this)">
+            <span class="cue-subnav__tab-label">Subnav Item Default</span>
+            <div class="cue-subnav__tab-indicator"></div>
+          </button>
+          <button class="cue-subnav__tab" type="button" onclick="activateSubnav(this)">
+            <span class="cue-subnav__tab-label">Subnav Item Default</span>
+            <div class="cue-subnav__tab-indicator"></div>
+          </button>
+          <button class="cue-subnav__tab" type="button" onclick="activateSubnav(this)">
+            <span class="cue-subnav__tab-label">Subnav Item Default</span>
+            <div class="cue-subnav__tab-indicator"></div>
+          </button>
+          <button class="cue-subnav__tab" type="button" onclick="activateSubnav(this)">
+            <span class="cue-subnav__tab-label">Subnav Item Default</span>
+            <div class="cue-subnav__tab-indicator"></div>
+          </button>
+          <button class="cue-subnav__tab" type="button" onclick="activateSubnav(this)">
+            <span class="cue-subnav__tab-label">Subnav Item Default</span>
+            <div class="cue-subnav__tab-indicator"></div>
+          </button>
+          <button class="cue-subnav__tab" type="button" onclick="activateSubnav(this)">
+            <span class="cue-subnav__tab-label">Subnav Item Default</span>
+            <div class="cue-subnav__tab-indicator"></div>
+          </button>
+          <button class="cue-subnav__tab" type="button" onclick="activateSubnav(this)">
+            <span class="cue-subnav__tab-label">Subnav Item Default</span>
+            <div class="cue-subnav__tab-indicator"></div>
+          </button>
+        </div>
+        <div class="cue-subnav__gradient cue-subnav__gradient--right" id="subnav-grad-right"></div>
+        <button class="cue-subnav__arrow" id="subnav-next" type="button"
+          onclick="scrollSubnav('subnav-overflow', 1)" aria-label="Scroll right">
+          <span class="material-icons" aria-hidden="true">chevron_right</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- Cart count variant -->
+    <div class="nav-demo-col" style="width: 100%;">
+      <p class="nav-demo-label">With cart count badge</p>
+      <nav class="cue-subnav" aria-label="Sub navigation with cart">
+        <div class="cue-subnav__track">
+          <button class="cue-subnav__tab" type="button" onclick="activateSubnav(this)">
+            <span class="cue-subnav__tab-label">Label</span>
+            <div class="cue-subnav__tab-indicator"></div>
+          </button>
+          <button class="cue-subnav__tab" type="button" onclick="activateSubnav(this)">
+            <div class="cue-subnav-cart">
+              <div class="cue-subnav-cart-count"><span>1</span></div>
+              <span class="cue-subnav__tab-label" style="font-weight: 700; color: var(--content-subnav-default);">CART</span>
+            </div>
+            <div class="cue-subnav__tab-indicator"></div>
+          </button>
+          <button class="cue-subnav__tab is-active" type="button" onclick="activateSubnav(this)">
+            <div class="cue-subnav-cart">
+              <div class="cue-subnav-cart-count"><span>1</span></div>
+              <span class="cue-subnav__tab-label">CART</span>
+            </div>
+            <div class="cue-subnav__tab-indicator"></div>
+          </button>
+          <button class="cue-subnav__tab" type="button" onclick="activateSubnav(this)">
+            <span class="cue-subnav__tab-label">Label</span>
+            <div class="cue-subnav__tab-indicator"></div>
+          </button>
+        </div>
+      </nav>
+    </div>
+
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ============================================================
+     DESIGN TOKENS
+============================================================ -->
+
+<div class="docs-section">
+  <p class="docs-section-label">Design Tokens</p>
+  <table class="docs-token-table">
+    <thead>
+      <tr><th>CSS Variable</th><th>Figma Token</th><th>Value</th><th>Usage</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>--content-tab-default</td><td>Components/Tab Navigation/content-tab-default</td><td><span class="docs-token-swatch" style="background:#575757;"></span>#575757</td><td>Default tab/side nav label</td></tr>
+      <tr><td>--content-tab-hover</td><td>Components/Tab Navigation/content-tab-hover</td><td><span class="docs-token-swatch" style="background:#03618d;"></span>#03618d</td><td>Hovered tab/side nav label</td></tr>
+      <tr><td>--content-tab-active</td><td>Components/Tab Navigation/content-tab-active</td><td><span class="docs-token-swatch" style="background:#03618d;"></span>#03618d</td><td>Active tab/side nav label</td></tr>
+      <tr><td>--bg-tab-active-indicator</td><td>Components/Tab Navigation/bg-tab-active-indicator</td><td><span class="docs-token-swatch" style="background:#fab632;"></span>#fab632</td><td>Tab 2px bottom bar and side nav 3px left bar</td></tr>
+      <tr><td>--bg-tab-pill-active</td><td>Components/Tab Navigation/bg-tab-pill-active</td><td><span class="docs-token-swatch" style="background:#61c5ff;"></span>#61c5ff</td><td>Active pill background</td></tr>
+      <tr><td>--content-tab-pill-active</td><td>Components/Tab Navigation/content-tab-pill-active</td><td><span class="docs-token-swatch" style="background:#1a1a1a;"></span>#1a1a1a</td><td>Active pill label color</td></tr>
+      <tr><td>--content-subnav-default</td><td>Components/Subnav/content-subnav-default</td><td><span class="docs-token-swatch" style="background:#575757;"></span>#575757</td><td>Default subnav item label (SemiBold)</td></tr>
+      <tr><td>--content-subnav-active</td><td>Components/Subnav/content-subnav-hover-active</td><td><span class="docs-token-swatch" style="background:#03618d;"></span>#03618d</td><td>Active/hover subnav item label (Bold)</td></tr>
+      <tr><td>--bg-subnav-indicator</td><td>Components/Subnav/bg-subnav-active-indicator</td><td><span class="docs-token-swatch" style="background:#fab632;"></span>#fab632</td><td>Subnav 4px bottom bar</td></tr>
+      <tr>
+        <td>Tab indicator height</td><td>—</td><td>2px</td>
+        <td>Tab Navigation bottom bar</td>
+      </tr>
+      <tr>
+        <td>Side nav indicator width</td><td>—</td><td>3px</td>
+        <td>Side Navigation left bar</td>
+      </tr>
+      <tr>
+        <td>Subnav indicator height</td><td>—</td><td>4px</td>
+        <td>Subnav Tab bottom bar — thicker than Tab Navigation</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ============================================================
+     CODE
+============================================================ -->
+
+<div class="docs-section">
+  <p class="docs-section-label">Code</p>
+  <div class="docs-code-tabs">
+    <button class="docs-code-tab active" onclick="switchTab(event, 'nav-html')">HTML</button>
+    <button class="docs-code-tab" onclick="switchTab(event, 'nav-js')">JS</button>
+  </div>
+
+  <div class="docs-code-panel active" id="nav-html">
+    <div class="docs-code-block"><pre><code>&lt;!-- Tab Navigation --&gt;
+&lt;nav class="cue-tab-nav" aria-label="Primary navigation"&gt;
+  &lt;button class="cue-tab-nav__item is-active" type="button" onclick="activateTab(this)"&gt;
+    &lt;div class="cue-tab-nav__item-inner"&gt;
+      &lt;div class="cue-tab-nav__item-content"&gt;
+        &lt;span class="cue-tab-nav__item-icon"&gt;
+          &lt;span class="material-icons" aria-hidden="true"&gt;home&lt;/span&gt;
+        &lt;/span&gt;
+        &lt;span class="cue-tab-nav__item-label"&gt;Home&lt;/span&gt;
+      &lt;/div&gt;
+      &lt;div class="cue-tab-nav__item-indicator"&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/button&gt;
+  &lt;!-- Repeat for each tab... --&gt;
+&lt;/nav&gt;
+
+
+&lt;!-- Side Navigation --&gt;
+&lt;nav class="cue-side-nav" aria-label="Side navigation"&gt;
+  &lt;button class="cue-side-nav__item is-active" type="button" onclick="activateSideNav(this)"&gt;
+    &lt;div class="cue-side-nav__item-indicator"&gt;&lt;/div&gt;
+    &lt;div class="cue-side-nav__item-content"&gt;
+      &lt;span class="cue-side-nav__item-icon"&gt;
+        &lt;span class="material-icons" aria-hidden="true"&gt;home&lt;/span&gt;
+      &lt;/span&gt;
+      &lt;span class="cue-side-nav__item-label"&gt;Home&lt;/span&gt;
+    &lt;/div&gt;
+  &lt;/button&gt;
+  &lt;!-- Repeat for each item... --&gt;
+&lt;/nav&gt;
+
+&lt;!-- Side Navigation — text only (add .cue-side-nav--loose for 16px gap) --&gt;
+&lt;nav class="cue-side-nav cue-side-nav--loose" aria-label="Side navigation"&gt;
+  &lt;button class="cue-side-nav__item is-active" type="button" onclick="activateSideNav(this)"&gt;
+    &lt;div class="cue-side-nav__item-indicator"&gt;&lt;/div&gt;
+    &lt;div class="cue-side-nav__item-content"&gt;
+      &lt;span class="cue-side-nav__item-label"&gt;Home&lt;/span&gt;
+    &lt;/div&gt;
+  &lt;/button&gt;
+&lt;/nav&gt;
+
+
+&lt;!-- Pill Navigation --&gt;
+&lt;nav class="cue-pill-nav" aria-label="Pill navigation"&gt;
+  &lt;button class="cue-pill-nav__item is-active" type="button" onclick="activatePillNav(this)"&gt;
+    &lt;div class="cue-pill-nav__item-content"&gt;
+      &lt;span class="cue-pill-nav__item-icon"&gt;
+        &lt;span class="material-icons" aria-hidden="true"&gt;home&lt;/span&gt;
+      &lt;/span&gt;
+      &lt;span class="cue-pill-nav__item-label"&gt;Home&lt;/span&gt;
+    &lt;/div&gt;
+  &lt;/button&gt;
+  &lt;!-- Repeat for each item... --&gt;
+&lt;/nav&gt;
+
+
+&lt;!-- Subnav Tabs — standard --&gt;
+&lt;nav class="cue-subnav" aria-label="Sub navigation"&gt;
+  &lt;div class="cue-subnav__track"&gt;
+    &lt;button class="cue-subnav__tab is-active" type="button" onclick="activateSubnav(this)"&gt;
+      &lt;span class="cue-subnav__tab-label"&gt;Section Name&lt;/span&gt;
+      &lt;div class="cue-subnav__tab-indicator"&gt;&lt;/div&gt;
+    &lt;/button&gt;
+    &lt;!-- Repeat for each tab... --&gt;
+  &lt;/div&gt;
+&lt;/nav&gt;
+
+&lt;!-- Subnav Tabs — with overflow scroll --&gt;
+&lt;nav class="cue-subnav" id="my-subnav" aria-label="Sub navigation"&gt;
+  &lt;button class="cue-subnav__arrow is-hidden" id="my-subnav-prev" type="button"
+    onclick="scrollSubnav('my-subnav', -1)" aria-label="Scroll left"&gt;
+    &lt;span class="material-icons" aria-hidden="true"&gt;chevron_left&lt;/span&gt;
+  &lt;/button&gt;
+  &lt;div class="cue-subnav__gradient cue-subnav__gradient--left is-hidden" id="my-subnav-grad-left"&gt;&lt;/div&gt;
+  &lt;div class="cue-subnav__track" id="my-subnav-track"&gt;
+    &lt;!-- tabs... --&gt;
+  &lt;/div&gt;
+  &lt;div class="cue-subnav__gradient cue-subnav__gradient--right" id="my-subnav-grad-right"&gt;&lt;/div&gt;
+  &lt;button class="cue-subnav__arrow" id="my-subnav-next" type="button"
+    onclick="scrollSubnav('my-subnav', 1)" aria-label="Scroll right"&gt;
+    &lt;span class="material-icons" aria-hidden="true"&gt;chevron_right&lt;/span&gt;
+  &lt;/button&gt;
+&lt;/nav&gt;</code></pre></div>
+  </div>
+
+  <div class="docs-code-panel" id="nav-js">
+    <div class="docs-code-block"><pre><code>// Tab Navigation — activate clicked item, deactivate siblings
+function activateTab(btn) {
+  const nav = btn.closest('.cue-tab-nav');
+  nav.querySelectorAll('.cue-tab-nav__item').forEach(b => b.classList.remove('is-active'));
+  btn.classList.add('is-active');
+}
+
+// Side Navigation — activate clicked item, deactivate siblings
+function activateSideNav(btn) {
+  const nav = btn.closest('.cue-side-nav');
+  nav.querySelectorAll('.cue-side-nav__item').forEach(b => b.classList.remove('is-active'));
+  btn.classList.add('is-active');
+}
+
+// Pill Navigation — activate clicked item, deactivate siblings
+function activatePillNav(btn) {
+  const nav = btn.closest('.cue-pill-nav');
+  nav.querySelectorAll('.cue-pill-nav__item').forEach(b => b.classList.remove('is-active'));
+  btn.classList.add('is-active');
+}
+
+// Subnav Tabs — activate clicked tab
+function activateSubnav(btn) {
+  const nav = btn.closest('.cue-subnav');
+  nav.querySelectorAll('.cue-subnav__tab').forEach(b => b.classList.remove('is-active'));
+  btn.classList.add('is-active');
+}
+
+// Subnav overflow scroll — delta: 1 = right, -1 = left
+function scrollSubnav(navId, delta) {
+  const nav = document.getElementById(navId);
+  const track = nav.querySelector('.cue-subnav__track');
+  if (!track) return;
+  track.scrollBy({ left: delta * 200, behavior: 'smooth' });
+  setTimeout(() => updateSubnavArrows(navId), 300);
+}
+
+// Show/hide arrows based on scroll position
+function updateSubnavArrows(navId) {
+  const nav   = document.getElementById(navId);
+  const track = nav.querySelector('.cue-subnav__track');
+  const prev  = nav.querySelector('.cue-subnav__arrow:first-of-type, #' + navId + '-prev');
+  const next  = nav.querySelector('.cue-subnav__arrow:last-of-type,  #' + navId + '-next');
+  const gradL = document.getElementById(navId + '-grad-left');
+  const gradR = document.getElementById(navId + '-grad-right');
+  if (!track) return;
+
+  const atStart = track.scrollLeft <= 0;
+  const atEnd   = track.scrollLeft + track.clientWidth >= track.scrollWidth - 2;
+
+  prev?.classList.toggle('is-hidden', atStart);
+  gradL?.classList.toggle('is-hidden', atStart);
+  next?.classList.toggle('is-hidden', atEnd);
+  gradR?.classList.toggle('is-hidden', atEnd);
+}
+
+// Initialise overflow subnavs on load
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.cue-subnav').forEach(function(nav) {
+    const track = nav.querySelector('.cue-subnav__track');
+    if (!track) return;
+    track.addEventListener('scroll', function() {
+      updateSubnavArrows(nav.id);
+    });
+    updateSubnavArrows(nav.id);
+  });
+});</code></pre></div>
+  </div>
+</div>
+
+<script>
+  function activateTab(btn) {
+    btn.closest('.cue-tab-nav').querySelectorAll('.cue-tab-nav__item').forEach(b => b.classList.remove('is-active'));
+    btn.classList.add('is-active');
+  }
+
+  function activateSideNav(btn) {
+    btn.closest('.cue-side-nav').querySelectorAll('.cue-side-nav__item').forEach(b => b.classList.remove('is-active'));
+    btn.classList.add('is-active');
+  }
+
+  function activatePillNav(btn) {
+    btn.closest('.cue-pill-nav').querySelectorAll('.cue-pill-nav__item').forEach(b => b.classList.remove('is-active'));
+    btn.classList.add('is-active');
+  }
+
+  function activateSubnav(btn) {
+    btn.closest('.cue-subnav').querySelectorAll('.cue-subnav__tab').forEach(b => b.classList.remove('is-active'));
+    btn.classList.add('is-active');
+  }
+
+  function scrollSubnav(navId, delta) {
+    const track = document.getElementById(navId).querySelector('.cue-subnav__track');
+    if (!track) return;
+    track.scrollBy({ left: delta * 200, behavior: 'smooth' });
+    setTimeout(() => updateSubnavArrows(navId), 300);
+  }
+
+  function updateSubnavArrows(navId) {
+    const nav   = document.getElementById(navId);
+    if (!nav) return;
+    const track = nav.querySelector('.cue-subnav__track');
+    if (!track) return;
+    const atStart = track.scrollLeft <= 0;
+    const atEnd   = track.scrollLeft + track.clientWidth >= track.scrollWidth - 2;
+    const prev    = document.getElementById('subnav-prev');
+    const next    = document.getElementById('subnav-next');
+    const gradL   = document.getElementById('subnav-grad-left');
+    const gradR   = document.getElementById('subnav-grad-right');
+    if (prev)  prev.classList.toggle('is-hidden', atStart);
+    if (gradL) gradL.classList.toggle('is-hidden', atStart);
+    if (next)  next.classList.toggle('is-hidden', atEnd);
+    if (gradR) gradR.classList.toggle('is-hidden', atEnd);
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const track = document.getElementById('subnav-overflow-track');
+    if (track) {
+      track.addEventListener('scroll', () => updateSubnavArrows('subnav-overflow'));
+      updateSubnavArrows('subnav-overflow');
+    }
+  });
+</script>

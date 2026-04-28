@@ -313,7 +313,17 @@
   --content-tab-active:      #03618d;
   --bg-tab-active-indicator: #03618d;
   --bg-tab-pill-active:      #03618d;
-  --content-tab-pill-active: #ffffff;
+  --content-tab-pill-active: #1a1a1a;   /* Active pill text — near-black */
+  --bg-tab-pill-active:      #61c5ff;   /* Active pill background — accent brand light */
+
+
+  /* ============================================================
+     COMPONENTS — SUBNAV TABS
+  ============================================================ */
+
+  --content-subnav-default: #575757;   /* Default subnav label (SemiBold) */
+  --content-subnav-active:  #03618d;   /* Active/hover subnav label (Bold) */
+  --bg-subnav-indicator:    #fab632;   /* Subnav 4px bottom bar */
 
 
   /* ============================================================
