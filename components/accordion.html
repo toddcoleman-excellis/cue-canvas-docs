@@ -1,182 +1,178 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CUE Canvas — Accordion</title>
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../tokens.css" />
-  <link rel="icon" type="image/svg+xml" href="../assets/logo_CUE_glyph.svg" />
-  <link rel="stylesheet" href="../base.css" />
-  <link rel="stylesheet" href="../components.css" />
-  <style>
-
-    /* ============================================================
-       ACCORDION COMPONENT
-       
-       Anatomy:
-         .cue-accordion               — wrapper container
-           .cue-accordion__item       — individual item
-             .cue-accordion__trigger  — clickable header row (button)
-               .cue-accordion__label  — item label text
-               .cue-accordion__icon   — Material Icon toggle (add/remove)
-             .cue-accordion__panel    — collapsible content region
-               .cue-accordion__body   — content inside panel
-
-       States:
-         .cue-accordion__item--expanded  — toggles expanded visual state
-    ============================================================ */
-
-    .cue-accordion {
-      background-color: var(--bg-accordion);
-      border: 1px solid var(--border-level-1);
-      border-radius: var(--corner-card-module);
-      overflow: hidden;
-      width: 100%;
-      max-width: 37.5rem;
+---
+layout: default
+title: "Accordion"
+activeNav: accordion
+root: ../
+extraCSS: |
+  /* ============================================================
+         ACCORDION COMPONENT
+         
+         Anatomy:
+           .cue-accordion               — wrapper container
+             .cue-accordion__item       — individual item
+               .cue-accordion__trigger  — clickable header row (button)
+                 .cue-accordion__label  — item label text
+                 .cue-accordion__icon   — Material Icon toggle (add/remove)
+               .cue-accordion__panel    — collapsible content region
+                 .cue-accordion__body   — content inside panel
+  
+         States:
+           .cue-accordion__item--expanded  — toggles expanded visual state
+      ============================================================ */
+  
+      .cue-accordion {
+        background-color: var(--bg-accordion);
+        border: 1px solid var(--border-level-1);
+        border-radius: var(--corner-card-module);
+        overflow: hidden;
+        width: 100%;
+        max-width: 37.5rem;
+      }
+  
+      .cue-accordion__item {
+        border-bottom: 1px solid var(--border-accordion);
+      }
+  
+      .cue-accordion__item:last-child {
+        border-bottom: none;
+      }
+  
+      .cue-accordion__trigger {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: var(--space-m);
+        background-color: var(--bg-accordion);
+        border: none;
+        cursor: pointer;
+        text-align: left;
+        transition: background-color 0.15s ease;
+      }
+  
+      .cue-accordion__trigger:hover {
+        background-color: var(--bg-level-0);
+      }
+  
+      .cue-accordion__trigger:focus-visible {
+        outline: 2px solid var(--border-interactive);
+        outline-offset: -2px;
+      }
+  
+      .cue-accordion__label {
+        font-family: var(--font-family-body);
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1;
+        color: var(--content-body-link);
+        transition: color 0.15s ease;
+      }
+  
+      .cue-accordion__item--expanded .cue-accordion__label {
+        color: var(--content-body-default);
+        font-weight: 700;
+      }
+  
+      .cue-accordion__icon {
+        flex-shrink: 0;
+        color: var(--content-body-link);
+        font-size: 1.5rem;
+        transition: color 0.15s ease;
+      }
+  
+      .cue-accordion__item--expanded .cue-accordion__icon {
+        color: var(--content-body-default);
+      }
+  
+      .cue-accordion__panel {
+        overflow: hidden;
+        max-height: 0;
+        opacity: 0;
+        transition: max-height 0.25s ease, opacity 0.2s ease;
+      }
+  
+      .cue-accordion__item--expanded .cue-accordion__panel {
+        max-height: 800px;
+        opacity: 1;
+      }
+  
+      .cue-accordion__body {
+        padding: var(--space-m) var(--space-m) var(--space-xl) var(--space-m);
+        font-family: var(--font-family-body);
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.6;
+        color: var(--content-body-default);
+      }
+pageScript: |
+  function initAccordions() {
+      const triggers = document.querySelectorAll('.cue-accordion__trigger');
+      triggers.forEach(trigger => {
+        trigger.addEventListener('click', () => {
+          const item = trigger.closest('.cue-accordion__item');
+          const isExpanded = item.classList.contains('cue-accordion__item--expanded');
+          const icon = trigger.querySelector('.cue-accordion__icon');
+          if (isExpanded) {
+            item.classList.remove('cue-accordion__item--expanded');
+            trigger.setAttribute('aria-expanded', 'false');
+            icon.textContent = 'add';
+          } else {
+            item.classList.add('cue-accordion__item--expanded');
+            trigger.setAttribute('aria-expanded', 'true');
+            icon.textContent = 'remove';
+          }
+        });
+        trigger.addEventListener('keydown', (e) => {
+          const accordion = trigger.closest('.cue-accordion');
+          const all = [...accordion.querySelectorAll('.cue-accordion__trigger')];
+          const i = all.indexOf(trigger);
+          if (e.key === 'ArrowDown') { e.preventDefault(); all[(i + 1) % all.length].focus(); }
+          if (e.key === 'ArrowUp')   { e.preventDefault(); all[(i - 1 + all.length) % all.length].focus(); }
+          if (e.key === 'Home')      { e.preventDefault(); all[0].focus(); }
+          if (e.key === 'End')       { e.preventDefault(); all[all.length - 1].focus(); }
+        });
+      });
     }
-
-    .cue-accordion__item {
-      border-bottom: 1px solid var(--border-accordion);
-    }
-
-    .cue-accordion__item:last-child {
-      border-bottom: none;
-    }
-
-    .cue-accordion__trigger {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
-      padding: var(--space-m);
-      background-color: var(--bg-accordion);
-      border: none;
-      cursor: pointer;
-      text-align: left;
-      transition: background-color 0.15s ease;
-    }
-
-    .cue-accordion__trigger:hover {
-      background-color: var(--bg-level-0);
-    }
-
-    .cue-accordion__trigger:focus-visible {
-      outline: 2px solid var(--border-interactive);
-      outline-offset: -2px;
-    }
-
-    .cue-accordion__label {
-      font-family: var(--font-family-body);
-      font-size: 1rem;
-      font-weight: 400;
-      line-height: 1;
-      color: var(--content-body-link);
-      transition: color 0.15s ease;
-    }
-
-    .cue-accordion__item--expanded .cue-accordion__label {
-      color: var(--content-body-default);
-      font-weight: 700;
-    }
-
-    .cue-accordion__icon {
-      flex-shrink: 0;
-      color: var(--content-body-link);
-      font-size: 1.5rem;
-      transition: color 0.15s ease;
-    }
-
-    .cue-accordion__item--expanded .cue-accordion__icon {
-      color: var(--content-body-default);
-    }
-
-    .cue-accordion__panel {
-      overflow: hidden;
-      max-height: 0;
-      opacity: 0;
-      transition: max-height 0.25s ease, opacity 0.2s ease;
-    }
-
-    .cue-accordion__item--expanded .cue-accordion__panel {
-      max-height: 800px;
-      opacity: 1;
-    }
-
-    .cue-accordion__body {
-      padding: var(--space-m) var(--space-m) var(--space-xl) var(--space-m);
-      font-family: var(--font-family-body);
-      font-size: 1rem;
-      font-weight: 400;
-      line-height: 1.6;
-      color: var(--content-body-default);
-    }
-
-  </style>
-</head>
-<body>
-
-<div class="docs-topbar" role="banner">
-  <a href="../index.html" class="docs-topbar__logo" aria-label="CUE Canvas home">
-    <img src="../assets/logo_CUE_glyph.svg" alt="CUE glyph" />
-    <span class="docs-topbar__logo-label">Canvas</span>
-  </a>
-  <button class="docs-topbar__hamburger" aria-label="Open navigation" aria-expanded="false" aria-controls="docs-sidebar">
-    <span class="material-icons" aria-hidden="true">menu</span>
-  </button>
-</div>
-
-<div class="docs-nav-overlay" aria-hidden="true"></div>
-
-<div class="docs-layout">
-
-  <nav class="docs-sidebar" id="docs-sidebar" aria-label="Documentation navigation">
-    <button class="docs-sidebar__close" aria-label="Close navigation">
-      <span class="material-icons" aria-hidden="true">close</span>
-    </button>
-    <a href="../index.html" class="docs-sidebar__logo" aria-label="CUE Canvas home">
-      <img src="../assets/logo_CUE_glyph.svg" alt="CUE glyph" />
-      <span class="docs-sidebar__logo-label">Canvas</span>
-    </a>
-    <p class="docs-sidebar__section-label">Getting Started</p>
-    <div class="docs-sidebar__nav">
-      <a href="../index.html" class="docs-sidebar__nav-link">Overview</a>
-    </div>
-    <p class="docs-sidebar__section-label">Components</p>
-    <div class="docs-sidebar__nav">
-      <a href="accordion.html" class="docs-sidebar__nav-link active">Accordion</a>
-      <a href="alert.html" class="docs-sidebar__nav-link">Alert</a>
-      <a href="badge.html" class="docs-sidebar__nav-link">Badge</a>
-      <a href="breadcrumb.html" class="docs-sidebar__nav-link">Breadcrumb</a>
-      <a href="button.html" class="docs-sidebar__nav-link">Button</a>
-      <a href="calendar-components.html" class="docs-sidebar__nav-link">Calendar Components</a>
-      <a href="calendar.html" class="docs-sidebar__nav-link">Calendar</a>
-      <a href="card.html" class="docs-sidebar__nav-link">Card</a>
-      <a href="chat.html" class="docs-sidebar__nav-link">Chat</a>
-      <a href="combobox.html" class="docs-sidebar__nav-link">Combobox &amp; Multiselect</a>
-      <a href="date-picker.html" class="docs-sidebar__nav-link">Date Picker</a>
-      <a href="dropdown.html" class="docs-sidebar__nav-link">Dropdown Menu</a>
-      <a href="expand-collapse.html" class="docs-sidebar__nav-link">Expand / Collapse</a>
-      <a href="form-field.html" class="docs-sidebar__nav-link">Form Field</a>
-      <a href="modal.html" class="docs-sidebar__nav-link">Modal</a>
-      <a href="scheduler.html" class="docs-sidebar__nav-link">Scheduler</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Side Navigation</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Skeleton Loader</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Status Badge</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Step Process</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Tab Navigation</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Table</a>
-    </div>
-    <p class="docs-sidebar__section-label">Icons</p>
-    <div class="docs-sidebar__nav">
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Icon Reference</a>
-    </div>
-  </nav>
-
-  <main class="docs-main">
-
-    <div class="docs-page-header">
+  
+    document.addEventListener('DOMContentLoaded', initAccordions);
+  </script>
+  
+  
+  <script>
+    (function() {
+      var sidebar  = document.querySelector('.docs-sidebar');
+      var overlay  = document.querySelector('.docs-nav-overlay');
+      var hamburger = document.querySelector('.docs-topbar__hamburger');
+      var closeBtn  = document.querySelector('.docs-sidebar__close');
+  
+      function openNav() {
+        sidebar.classList.add('is-open');
+        overlay.classList.add('is-visible');
+        document.body.style.overflow = 'hidden';
+        if (hamburger) hamburger.setAttribute('aria-expanded', 'true');
+        if (closeBtn) closeBtn.focus();
+      }
+  
+      function closeNav() {
+        sidebar.classList.remove('is-open');
+        overlay.classList.remove('is-visible');
+        document.body.style.overflow = '';
+        if (hamburger) {
+          hamburger.setAttribute('aria-expanded', 'false');
+          hamburger.focus();
+        }
+      }
+  
+      if (hamburger) hamburger.addEventListener('click', openNav);
+      if (closeBtn)  closeBtn.addEventListener('click', closeNav);
+      if (overlay)   overlay.addEventListener('click', closeNav);
+  
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && sidebar.classList.contains('is-open')) closeNav();
+      });
+    })();
+---
+<div class="docs-page-header">
       <h1 class="docs-page-title">Accordion</h1>
       <p class="docs-page-description">
         Accordions display a list of items that can be individually expanded or collapsed to reveal associated content. Use them to progressively disclose information and reduce cognitive load on complex pages.
@@ -532,85 +528,3 @@ document.addEventListener('DOMContentLoaded', initAccordions);</code></pre></div
         </tbody>
       </table>
     </div>
-
-  </main>
-</div>
-
-<script>
-  function switchTab(event, tabId) {
-    const section = event.target.closest('.docs-section');
-    section.querySelectorAll('.docs-code-tab').forEach(t => t.classList.remove('active'));
-    section.querySelectorAll('.docs-code-panel').forEach(p => p.classList.remove('active'));
-    event.target.classList.add('active');
-    document.getElementById(tabId).classList.add('active');
-  }
-
-  function initAccordions() {
-    const triggers = document.querySelectorAll('.cue-accordion__trigger');
-    triggers.forEach(trigger => {
-      trigger.addEventListener('click', () => {
-        const item = trigger.closest('.cue-accordion__item');
-        const isExpanded = item.classList.contains('cue-accordion__item--expanded');
-        const icon = trigger.querySelector('.cue-accordion__icon');
-        if (isExpanded) {
-          item.classList.remove('cue-accordion__item--expanded');
-          trigger.setAttribute('aria-expanded', 'false');
-          icon.textContent = 'add';
-        } else {
-          item.classList.add('cue-accordion__item--expanded');
-          trigger.setAttribute('aria-expanded', 'true');
-          icon.textContent = 'remove';
-        }
-      });
-      trigger.addEventListener('keydown', (e) => {
-        const accordion = trigger.closest('.cue-accordion');
-        const all = [...accordion.querySelectorAll('.cue-accordion__trigger')];
-        const i = all.indexOf(trigger);
-        if (e.key === 'ArrowDown') { e.preventDefault(); all[(i + 1) % all.length].focus(); }
-        if (e.key === 'ArrowUp')   { e.preventDefault(); all[(i - 1 + all.length) % all.length].focus(); }
-        if (e.key === 'Home')      { e.preventDefault(); all[0].focus(); }
-        if (e.key === 'End')       { e.preventDefault(); all[all.length - 1].focus(); }
-      });
-    });
-  }
-
-  document.addEventListener('DOMContentLoaded', initAccordions);
-</script>
-
-
-<script>
-  (function() {
-    var sidebar  = document.querySelector('.docs-sidebar');
-    var overlay  = document.querySelector('.docs-nav-overlay');
-    var hamburger = document.querySelector('.docs-topbar__hamburger');
-    var closeBtn  = document.querySelector('.docs-sidebar__close');
-
-    function openNav() {
-      sidebar.classList.add('is-open');
-      overlay.classList.add('is-visible');
-      document.body.style.overflow = 'hidden';
-      if (hamburger) hamburger.setAttribute('aria-expanded', 'true');
-      if (closeBtn) closeBtn.focus();
-    }
-
-    function closeNav() {
-      sidebar.classList.remove('is-open');
-      overlay.classList.remove('is-visible');
-      document.body.style.overflow = '';
-      if (hamburger) {
-        hamburger.setAttribute('aria-expanded', 'false');
-        hamburger.focus();
-      }
-    }
-
-    if (hamburger) hamburger.addEventListener('click', openNav);
-    if (closeBtn)  closeBtn.addEventListener('click', closeNav);
-    if (overlay)   overlay.addEventListener('click', closeNav);
-
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape' && sidebar.classList.contains('is-open')) closeNav();
-    });
-  })();
-</script>
-</body>
-</html>

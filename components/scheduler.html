@@ -1,487 +1,466 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CUE Canvas — Scheduler</title>
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../tokens.css" />
-  <link rel="stylesheet" href="../base.css" />
-  <link rel="stylesheet" href="../components.css" />
-  <link rel="icon" type="image/svg+xml" href="../assets/logo_CUE_glyph.svg" />
-  <style>
-
-    /* ============================================================
-       RESOURCE SCHEDULER — FULL VIEW
-
-       Structure:
-         .cue-scheduler                    — outer wrapper (no card border)
-           .cue-scheduler__header          — title + date nav + view select
-             .cue-scheduler__title         — "Resources" heading
-             .cue-scheduler__header-right  — nav arrows + date + view select
-           .cue-scheduler__body            — main grid area
-             .cue-scheduler__fixed-col     — sticky left resource column
-               .cue-scheduler__corner      — top-left empty corner cell
-               .cue-scheduler__resource    — one resource row header
-             .cue-scheduler__scroll-area   — horizontally scrollable grid
-               .cue-scheduler__time-header — sticky row of hour labels
-               .cue-scheduler__rows        — grid rows (one per resource)
-                 .cue-scheduler__row       — one row of time cells
-                   .cue-scheduler__cell    — one hour-width time cell
-
-       Activity blocks (.cue-sched-activity) are absolutely positioned
-       inside .cue-scheduler__scroll-area using left/width/top/height.
-
-       Formula:
-         left   = (startHour - gridStartHour) * cellWidth + (startMin/60 * cellWidth)
-         width  = (durationMinutes / 60) * cellWidth
-         top    = timeHeaderHeight + (rowIndex * rowHeight)
-         height = rowHeight - 1px (fits within row border)
-
-       Current time indicator:
-         left = same formula as activity left
-         Vertical amber line spanning from time header to bottom of grid.
-    ============================================================ */
-
-    /* ---- Outer wrapper ---- */
-
-    .cue-scheduler {
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-      width: 100%;
-      font-family: var(--font-family-body);
-    }
-
-    /* ---- Header ---- */
-
-    .cue-scheduler__header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding-bottom: 1rem;
-      width: 100%;
-      flex-shrink: 0;
-    }
-
-    .cue-scheduler__title {
-      font-family: var(--font-family-heading);
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--content-body-primary-brand);
-      line-height: 1.15;
-    }
-
-    .cue-scheduler__header-right {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    /* Arrow buttons */
-    .cue-scheduler__arrow-group {
-      display: flex;
-      align-items: center;
-    }
-
-    .cue-scheduler__arrow-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: var(--bg-default);
-      border: 1px solid var(--border-subtle);
-      padding: 4px;
-      cursor: pointer;
-      transition: background-color 0.15s ease;
-    }
-
-    .cue-scheduler__arrow-btn:first-child {
-      border-radius: var(--corner-button) 0 0 var(--corner-button);
-      margin-right: -1px;
-    }
-
-    .cue-scheduler__arrow-btn:last-child {
-      border-radius: 0 var(--corner-button) var(--corner-button) 0;
-    }
-
-    .cue-scheduler__arrow-btn:hover {
-      background-color: var(--bg-level-0);
-    }
-
-    .cue-scheduler__arrow-btn .material-icons {
-      font-size: 22px;
-      color: var(--content-body-default);
-    }
-
-    /* Date label */
-    .cue-scheduler__date-label {
-      font-family: var(--font-family-heading);
-      font-size: 1.125rem;
-      font-weight: 600;
-      color: var(--content-body-primary-brand);
-      white-space: nowrap;
-    }
-
-    /* View selector */
-    .cue-scheduler__view-select {
-      display: flex;
-      align-items: center;
-    }
-
-    .cue-scheduler__view-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 0.5rem;
-      width: 86px;
-      justify-content: center;
-      background-color: var(--bg-default);
-      border: 1px solid var(--border-subtle);
-      font-family: var(--font-family-body);
-      font-size: 0.875rem;
-      font-weight: 400;
-      color: var(--content-body-moderate);
-      cursor: pointer;
-      transition: background-color 0.15s ease;
-      margin-right: -1px;
-    }
-
-    .cue-scheduler__view-btn:first-child {
-      border-radius: var(--corner-button) 0 0 var(--corner-button);
-    }
-
-    .cue-scheduler__view-btn:last-child {
-      border-radius: 0 var(--corner-button) var(--corner-button) 0;
-      margin-right: 0;
-    }
-
-    .cue-scheduler__view-btn--active {
-      background-color: var(--bg-subdued);
-      font-weight: 700;
-    }
-
-    .cue-scheduler__view-btn .material-icons {
-      font-size: 16px;
-    }
-
-    /* ---- Body: fixed left column + scrollable grid ---- */
-
-    .cue-scheduler__body {
-      display: flex;
-      align-items: flex-start;
-      width: 100%;
-      overflow: hidden;
-      border: 1px solid var(--border-hour-block);
-    }
-
-    /* Fixed left column — resource headers */
-    .cue-scheduler__fixed-col {
-      flex-shrink: 0;
-      width: 220px;
-      display: flex;
-      flex-direction: column;
-      border-right: 1px solid var(--border-hour-block);
-      position: relative;
-      z-index: 10;
-      background-color: var(--bg-hour-block);
-    }
-
-    /* Top-left corner cell (aligns with time header row) */
-    .cue-scheduler__corner {
-      height: 48px;
-      flex-shrink: 0;
-      border-bottom: 1px solid var(--border-hour-block);
-      background-color: var(--bg-hour-block);
-    }
-
-    /* Resource row header */
-    .cue-scheduler__resource {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.5rem;
-      padding: 0.75rem 1rem;
-      border-bottom: 1px solid var(--border-hour-block);
-      background-color: var(--bg-hour-block);
-      min-height: 90px;
-      flex-shrink: 0;
-    }
-
-    .cue-scheduler__resource-avatar {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background-color: var(--bg-accent-brand);
-      border: 1px solid rgba(0,0,0,0.15);
-      box-shadow: 0 0 0 1px #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: var(--content-body-inverse);
-    }
-
-    .cue-scheduler__resource-info {
-      flex: 1;
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .cue-scheduler__resource-name {
-      font-size: 0.875rem;
-      font-weight: 600;
-      color: var(--content-body-default);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    /* Resource status tag */
-    .cue-resource-tag {
-      display: inline-flex;
-      align-items: center;
-      padding: 3px 6px;
-      border-radius: 4px;
-      font-size: 0.5625rem;
-      font-weight: 600;
-      line-height: 1;
-      white-space: nowrap;
-    }
-
-    .cue-resource-tag--full-time  { background: #d7f4de; color: #155124; }
-    .cue-resource-tag--part-time  { background: #ffeccc; color: #945e00; }
-    .cue-resource-tag--temp       { background: var(--bg-status-neutral); color: var(--content-status-neutral); }
-
-    .cue-scheduler__resource-actions {
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      padding: 0;
-      color: var(--content-body-moderate);
-      border-radius: var(--corner-button);
-      margin-left: auto;
-    }
-
-    .cue-scheduler__resource-actions .material-icons {
-      font-size: 18px;
-    }
-
-    /* ---- Scrollable grid area ---- */
-
-    .cue-scheduler__scroll-area {
-      flex: 1;
-      overflow-x: auto;
-      position: relative;
-    }
-
-    /* Time header row */
-    .cue-scheduler__time-header {
-      display: flex;
-      position: sticky;
-      top: 0;
-      z-index: 5;
-      background-color: var(--bg-hour-block);
-      border-bottom: 1px solid var(--border-hour-block);
-    }
-
-    .cue-scheduler__time-cell {
-      flex-shrink: 0;
-      width: 160px;
-      height: 48px;
-      display: flex;
-      align-items: center;
-      padding: 0 0.75rem;
-      border-right: 1px solid var(--border-hour-block);
-      font-size: 0.8125rem;
-      font-weight: 400;
-      color: var(--content-body-moderate);
-      white-space: nowrap;
-    }
-
-    /* Grid rows */
-    .cue-scheduler__rows {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .cue-scheduler__row {
-      display: flex;
-      border-bottom: 1px solid var(--border-hour-block);
-      min-height: 90px;
-      flex-shrink: 0;
-    }
-
-    .cue-scheduler__cell {
-      flex-shrink: 0;
-      width: 160px;
-      min-height: 90px;
-      border-right: 1px solid var(--border-hour-block);
-      background-color: var(--bg-hour-block);
-    }
-
-    /* ---- Scheduler activity blocks ---- */
-
-    .cue-sched-activity {
-      position: absolute;
-      background-color: var(--bg-resource-sched-block);
-      border: 1px solid var(--border-resource-sched-block);
-      border-radius: 4px;
-      padding: 0.5rem;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      z-index: 4;
-    }
-
-    .cue-sched-activity:hover {
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      border-color: var(--border-moderate);
-    }
-
-    .cue-sched-activity__top {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 0.5rem;
-    }
-
-    .cue-sched-activity__title {
-      font-size: 0.875rem;
-      font-weight: 700;
-      color: var(--content-body-primary-brand);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .cue-sched-activity__time {
-      font-size: 0.75rem;
-      font-weight: 400;
-      color: var(--content-body-moderate);
-      white-space: nowrap;
-    }
-
-    .cue-sched-activity__desc {
-      font-size: 0.6875rem;
-      font-weight: 400;
-      color: var(--content-body-moderate);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      margin-top: 2px;
-    }
-
-    .cue-sched-activity__actions {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      padding: 0;
-      color: var(--content-body-moderate);
-      flex-shrink: 0;
-    }
-
-    .cue-sched-activity__actions .material-icons { font-size: 18px; }
-
-    /* ---- Vertical current time indicator ---- */
-
-    .cue-scheduler__time-indicator {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      width: 2px;
-      background-color: var(--current-day-active-indicator);
-      z-index: 6;
-      pointer-events: none;
-    }
-
-    .cue-scheduler__time-indicator::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background-color: var(--current-day-active-indicator);
-    }
-
-  </style>
-</head>
-<body>
-
-<div class="docs-topbar" role="banner">
-  <a href="../index.html" class="docs-topbar__logo" aria-label="CUE Canvas home">
-    <img src="../assets/logo_CUE_glyph.svg" alt="CUE glyph" />
-    <span class="docs-topbar__logo-label">Canvas</span>
-  </a>
-  <button class="docs-topbar__hamburger" aria-label="Open navigation" aria-expanded="false" aria-controls="docs-sidebar">
-    <span class="material-icons" aria-hidden="true">menu</span>
-  </button>
-</div>
-
-<div class="docs-nav-overlay" aria-hidden="true"></div>
-
-<div class="docs-layout">
-
-  <nav class="docs-sidebar" id="docs-sidebar" aria-label="Documentation navigation">
-    <button class="docs-sidebar__close" aria-label="Close navigation">
-      <span class="material-icons" aria-hidden="true">close</span>
-    </button>
-    <a href="../index.html" class="docs-sidebar__logo" aria-label="CUE Canvas home">
-      <img src="../assets/logo_CUE_glyph.svg" alt="CUE glyph" />
-      <span class="docs-sidebar__logo-label">Canvas</span>
-    </a>
-    <p class="docs-sidebar__section-label">Getting Started</p>
-    <div class="docs-sidebar__nav">
-      <a href="../index.html" class="docs-sidebar__nav-link">Overview</a>
-    </div>
-    <p class="docs-sidebar__section-label">Components</p>
-    <div class="docs-sidebar__nav">
-      <a href="accordion.html" class="docs-sidebar__nav-link">Accordion</a>
-      <a href="alert.html" class="docs-sidebar__nav-link">Alert</a>
-      <a href="badge.html" class="docs-sidebar__nav-link">Badge</a>
-      <a href="breadcrumb.html" class="docs-sidebar__nav-link">Breadcrumb</a>
-      <a href="button.html" class="docs-sidebar__nav-link">Button</a>
-      <a href="calendar-components.html" class="docs-sidebar__nav-link">Calendar Components</a>
-      <a href="calendar.html" class="docs-sidebar__nav-link">Calendar</a>
-      <a href="card.html" class="docs-sidebar__nav-link">Card</a>
-      <a href="chat.html" class="docs-sidebar__nav-link">Chat</a>
-      <a href="combobox.html" class="docs-sidebar__nav-link">Combobox &amp; Multiselect</a>
-      <a href="date-picker.html" class="docs-sidebar__nav-link">Date Picker</a>
-      <a href="dropdown.html" class="docs-sidebar__nav-link">Dropdown Menu</a>
-      <a href="expand-collapse.html" class="docs-sidebar__nav-link">Expand / Collapse</a>
-      <a href="form-field.html" class="docs-sidebar__nav-link">Form Field</a>
-      <a href="modal.html" class="docs-sidebar__nav-link">Modal</a>
-      <a href="scheduler.html" class="docs-sidebar__nav-link active">Scheduler</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Side Navigation</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Skeleton Loader</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Status Badge</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Step Process</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Tab Navigation</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Table</a>
-    </div>
-    <p class="docs-sidebar__section-label">Icons</p>
-    <div class="docs-sidebar__nav">
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Icon Reference</a>
-    </div>
-  </nav>
-
-  <main class="docs-main">
-
-    <div class="docs-page-header">
+---
+layout: default
+title: "Scheduler"
+activeNav: scheduler
+root: ../
+extraCSS: |
+  /* ============================================================
+         RESOURCE SCHEDULER — FULL VIEW
+  
+         Structure:
+           .cue-scheduler                    — outer wrapper (no card border)
+             .cue-scheduler__header          — title + date nav + view select
+               .cue-scheduler__title         — "Resources" heading
+               .cue-scheduler__header-right  — nav arrows + date + view select
+             .cue-scheduler__body            — main grid area
+               .cue-scheduler__fixed-col     — sticky left resource column
+                 .cue-scheduler__corner      — top-left empty corner cell
+                 .cue-scheduler__resource    — one resource row header
+               .cue-scheduler__scroll-area   — horizontally scrollable grid
+                 .cue-scheduler__time-header — sticky row of hour labels
+                 .cue-scheduler__rows        — grid rows (one per resource)
+                   .cue-scheduler__row       — one row of time cells
+                     .cue-scheduler__cell    — one hour-width time cell
+  
+         Activity blocks (.cue-sched-activity) are absolutely positioned
+         inside .cue-scheduler__scroll-area using left/width/top/height.
+  
+         Formula:
+           left   = (startHour - gridStartHour) * cellWidth + (startMin/60 * cellWidth)
+           width  = (durationMinutes / 60) * cellWidth
+           top    = timeHeaderHeight + (rowIndex * rowHeight)
+           height = rowHeight - 1px (fits within row border)
+  
+         Current time indicator:
+           left = same formula as activity left
+           Vertical amber line spanning from time header to bottom of grid.
+      ============================================================ */
+  
+      /* ---- Outer wrapper ---- */
+  
+      .cue-scheduler {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        width: 100%;
+        font-family: var(--font-family-body);
+      }
+  
+      /* ---- Header ---- */
+  
+      .cue-scheduler__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-bottom: 1rem;
+        width: 100%;
+        flex-shrink: 0;
+      }
+  
+      .cue-scheduler__title {
+        font-family: var(--font-family-heading);
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--content-body-primary-brand);
+        line-height: 1.15;
+      }
+  
+      .cue-scheduler__header-right {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+  
+      /* Arrow buttons */
+      .cue-scheduler__arrow-group {
+        display: flex;
+        align-items: center;
+      }
+  
+      .cue-scheduler__arrow-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--bg-default);
+        border: 1px solid var(--border-subtle);
+        padding: 4px;
+        cursor: pointer;
+        transition: background-color 0.15s ease;
+      }
+  
+      .cue-scheduler__arrow-btn:first-child {
+        border-radius: var(--corner-button) 0 0 var(--corner-button);
+        margin-right: -1px;
+      }
+  
+      .cue-scheduler__arrow-btn:last-child {
+        border-radius: 0 var(--corner-button) var(--corner-button) 0;
+      }
+  
+      .cue-scheduler__arrow-btn:hover {
+        background-color: var(--bg-level-0);
+      }
+  
+      .cue-scheduler__arrow-btn .material-icons {
+        font-size: 22px;
+        color: var(--content-body-default);
+      }
+  
+      /* Date label */
+      .cue-scheduler__date-label {
+        font-family: var(--font-family-heading);
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: var(--content-body-primary-brand);
+        white-space: nowrap;
+      }
+  
+      /* View selector */
+      .cue-scheduler__view-select {
+        display: flex;
+        align-items: center;
+      }
+  
+      .cue-scheduler__view-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 0.5rem;
+        width: 86px;
+        justify-content: center;
+        background-color: var(--bg-default);
+        border: 1px solid var(--border-subtle);
+        font-family: var(--font-family-body);
+        font-size: 0.875rem;
+        font-weight: 400;
+        color: var(--content-body-moderate);
+        cursor: pointer;
+        transition: background-color 0.15s ease;
+        margin-right: -1px;
+      }
+  
+      .cue-scheduler__view-btn:first-child {
+        border-radius: var(--corner-button) 0 0 var(--corner-button);
+      }
+  
+      .cue-scheduler__view-btn:last-child {
+        border-radius: 0 var(--corner-button) var(--corner-button) 0;
+        margin-right: 0;
+      }
+  
+      .cue-scheduler__view-btn--active {
+        background-color: var(--bg-subdued);
+        font-weight: 700;
+      }
+  
+      .cue-scheduler__view-btn .material-icons {
+        font-size: 16px;
+      }
+  
+      /* ---- Body: fixed left column + scrollable grid ---- */
+  
+      .cue-scheduler__body {
+        display: flex;
+        align-items: flex-start;
+        width: 100%;
+        overflow: hidden;
+        border: 1px solid var(--border-hour-block);
+      }
+  
+      /* Fixed left column — resource headers */
+      .cue-scheduler__fixed-col {
+        flex-shrink: 0;
+        width: 220px;
+        display: flex;
+        flex-direction: column;
+        border-right: 1px solid var(--border-hour-block);
+        position: relative;
+        z-index: 10;
+        background-color: var(--bg-hour-block);
+      }
+  
+      /* Top-left corner cell (aligns with time header row) */
+      .cue-scheduler__corner {
+        height: 48px;
+        flex-shrink: 0;
+        border-bottom: 1px solid var(--border-hour-block);
+        background-color: var(--bg-hour-block);
+      }
+  
+      /* Resource row header */
+      .cue-scheduler__resource {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid var(--border-hour-block);
+        background-color: var(--bg-hour-block);
+        min-height: 90px;
+        flex-shrink: 0;
+      }
+  
+      .cue-scheduler__resource-avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background-color: var(--bg-accent-brand);
+        border: 1px solid rgba(0,0,0,0.15);
+        box-shadow: 0 0 0 1px #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: var(--content-body-inverse);
+      }
+  
+      .cue-scheduler__resource-info {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+  
+      .cue-scheduler__resource-name {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--content-body-default);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+  
+      /* Resource status tag */
+      .cue-resource-tag {
+        display: inline-flex;
+        align-items: center;
+        padding: 3px 6px;
+        border-radius: 4px;
+        font-size: 0.5625rem;
+        font-weight: 600;
+        line-height: 1;
+        white-space: nowrap;
+      }
+  
+      .cue-resource-tag--full-time  { background: #d7f4de; color: #155124; }
+      .cue-resource-tag--part-time  { background: #ffeccc; color: #945e00; }
+      .cue-resource-tag--temp       { background: var(--bg-status-neutral); color: var(--content-status-neutral); }
+  
+      .cue-scheduler__resource-actions {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        color: var(--content-body-moderate);
+        border-radius: var(--corner-button);
+        margin-left: auto;
+      }
+  
+      .cue-scheduler__resource-actions .material-icons {
+        font-size: 18px;
+      }
+  
+      /* ---- Scrollable grid area ---- */
+  
+      .cue-scheduler__scroll-area {
+        flex: 1;
+        overflow-x: auto;
+        position: relative;
+      }
+  
+      /* Time header row */
+      .cue-scheduler__time-header {
+        display: flex;
+        position: sticky;
+        top: 0;
+        z-index: 5;
+        background-color: var(--bg-hour-block);
+        border-bottom: 1px solid var(--border-hour-block);
+      }
+  
+      .cue-scheduler__time-cell {
+        flex-shrink: 0;
+        width: 160px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        padding: 0 0.75rem;
+        border-right: 1px solid var(--border-hour-block);
+        font-size: 0.8125rem;
+        font-weight: 400;
+        color: var(--content-body-moderate);
+        white-space: nowrap;
+      }
+  
+      /* Grid rows */
+      .cue-scheduler__rows {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+      }
+  
+      .cue-scheduler__row {
+        display: flex;
+        border-bottom: 1px solid var(--border-hour-block);
+        min-height: 90px;
+        flex-shrink: 0;
+      }
+  
+      .cue-scheduler__cell {
+        flex-shrink: 0;
+        width: 160px;
+        min-height: 90px;
+        border-right: 1px solid var(--border-hour-block);
+        background-color: var(--bg-hour-block);
+      }
+  
+      /* ---- Scheduler activity blocks ---- */
+  
+      .cue-sched-activity {
+        position: absolute;
+        background-color: var(--bg-resource-sched-block);
+        border: 1px solid var(--border-resource-sched-block);
+        border-radius: 4px;
+        padding: 0.5rem;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        z-index: 4;
+      }
+  
+      .cue-sched-activity:hover {
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        border-color: var(--border-moderate);
+      }
+  
+      .cue-sched-activity__top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 0.5rem;
+      }
+  
+      .cue-sched-activity__title {
+        font-size: 0.875rem;
+        font-weight: 700;
+        color: var(--content-body-primary-brand);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+  
+      .cue-sched-activity__time {
+        font-size: 0.75rem;
+        font-weight: 400;
+        color: var(--content-body-moderate);
+        white-space: nowrap;
+      }
+  
+      .cue-sched-activity__desc {
+        font-size: 0.6875rem;
+        font-weight: 400;
+        color: var(--content-body-moderate);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-top: 2px;
+      }
+  
+      .cue-sched-activity__actions {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        color: var(--content-body-moderate);
+        flex-shrink: 0;
+      }
+  
+      .cue-sched-activity__actions .material-icons { font-size: 18px; }
+  
+      /* ---- Vertical current time indicator ---- */
+  
+      .cue-scheduler__time-indicator {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background-color: var(--current-day-active-indicator);
+        z-index: 6;
+        pointer-events: none;
+      }
+  
+      .cue-scheduler__time-indicator::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: var(--current-day-active-indicator);
+      }
+pageScript: |
+  (function() {
+      var GRID_START_HOUR = 8;   // 8:00 AM
+      var CELL_WIDTH      = 160; // px per hour
+      var ROW_HEIGHT      = 90;  // px per resource row
+      var HEADER_HEIGHT   = 48;  // px time header
+  
+      function timeToLeft(hour, min) {
+        return (hour - GRID_START_HOUR) * CELL_WIDTH + (min / 60 * CELL_WIDTH);
+      }
+  
+      function rowTop(rowIndex) {
+        return HEADER_HEIGHT + (rowIndex * ROW_HEIGHT);
+      }
+  
+      function positionActivities() {
+        var activities = [
+          // { id, rowIndex, startH, startM, endH, endM }
+          { id: 'sa-1', row: 1, sh: 9,  sm: 0,  eh: 11, em: 0  },
+          { id: 'sa-2', row: 3, sh: 11, sm: 0,  eh: 12, em: 30 },
+          { id: 'sa-3', row: 4, sh: 9,  sm: 0,  eh: 11, em: 0  },
+          { id: 'sa-4', row: 7, sh: 8,  sm: 30, eh: 11, em: 30 },
+          { id: 'sa-5', row: 9, sh: 9,  sm: 30, eh: 11, em: 0  },
+        ];
+  
+        activities.forEach(function(a) {
+          var el = document.getElementById(a.id);
+          if (!el) return;
+          var durationMin = (a.eh - a.sh) * 60 + (a.em - a.sm);
+          el.style.left   = timeToLeft(a.sh, a.sm) + 'px';
+          el.style.width  = (durationMin / 60 * CELL_WIDTH - 8) + 'px';
+          el.style.top    = rowTop(a.row) + 4 + 'px';
+          el.style.height = (ROW_HEIGHT - 12) + 'px';
+        });
+  
+        // Time indicator at 10:00 AM
+        var ind = document.getElementById('sched-time-indicator');
+        if (ind) {
+          ind.style.left = timeToLeft(10, 0) + 'px';
+          ind.style.top  = '0';
+        }
+      }
+  
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', positionActivities);
+      } else {
+        positionActivities();
+      }
+      window.addEventListener('resize', positionActivities);
+    })();
+---
+<div class="docs-page-header">
       <h1 class="docs-page-title">Scheduler</h1>
       <p class="docs-page-description">
         The Resource Scheduler provides a horizontal timeline view for production line planning, personnel scheduling, and resource allocation. Resources are listed in a fixed left column with time slots scrolling horizontally. Activity blocks are placed in rows at the appropriate time positions.
@@ -1005,102 +984,3 @@
       </div>
 
     </div>
-
-  </main>
-</div>
-
-<script>
-  function switchTab(event, tabId) {
-    const section = event.target.closest('.docs-section');
-    section.querySelectorAll('.docs-code-tab').forEach(t => t.classList.remove('active'));
-    section.querySelectorAll('.docs-code-panel').forEach(p => p.classList.remove('active'));
-    event.target.classList.add('active');
-    document.getElementById(tabId).classList.add('active');
-  }
-
-  (function() {
-    var GRID_START_HOUR = 8;   // 8:00 AM
-    var CELL_WIDTH      = 160; // px per hour
-    var ROW_HEIGHT      = 90;  // px per resource row
-    var HEADER_HEIGHT   = 48;  // px time header
-
-    function timeToLeft(hour, min) {
-      return (hour - GRID_START_HOUR) * CELL_WIDTH + (min / 60 * CELL_WIDTH);
-    }
-
-    function rowTop(rowIndex) {
-      return HEADER_HEIGHT + (rowIndex * ROW_HEIGHT);
-    }
-
-    function positionActivities() {
-      var activities = [
-        // { id, rowIndex, startH, startM, endH, endM }
-        { id: 'sa-1', row: 1, sh: 9,  sm: 0,  eh: 11, em: 0  },
-        { id: 'sa-2', row: 3, sh: 11, sm: 0,  eh: 12, em: 30 },
-        { id: 'sa-3', row: 4, sh: 9,  sm: 0,  eh: 11, em: 0  },
-        { id: 'sa-4', row: 7, sh: 8,  sm: 30, eh: 11, em: 30 },
-        { id: 'sa-5', row: 9, sh: 9,  sm: 30, eh: 11, em: 0  },
-      ];
-
-      activities.forEach(function(a) {
-        var el = document.getElementById(a.id);
-        if (!el) return;
-        var durationMin = (a.eh - a.sh) * 60 + (a.em - a.sm);
-        el.style.left   = timeToLeft(a.sh, a.sm) + 'px';
-        el.style.width  = (durationMin / 60 * CELL_WIDTH - 8) + 'px';
-        el.style.top    = rowTop(a.row) + 4 + 'px';
-        el.style.height = (ROW_HEIGHT - 12) + 'px';
-      });
-
-      // Time indicator at 10:00 AM
-      var ind = document.getElementById('sched-time-indicator');
-      if (ind) {
-        ind.style.left = timeToLeft(10, 0) + 'px';
-        ind.style.top  = '0';
-      }
-    }
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', positionActivities);
-    } else {
-      positionActivities();
-    }
-    window.addEventListener('resize', positionActivities);
-  })();
-
-  // Off-canvas nav
-  (function() {
-    var sidebar   = document.querySelector('.docs-sidebar');
-    var overlay   = document.querySelector('.docs-nav-overlay');
-    var hamburger = document.querySelector('.docs-topbar__hamburger');
-    var closeBtn  = document.querySelector('.docs-sidebar__close');
-
-    function openNav() {
-      sidebar.classList.add('is-open');
-      overlay.classList.add('is-visible');
-      document.body.style.overflow = 'hidden';
-      if (hamburger) hamburger.setAttribute('aria-expanded', 'true');
-      if (closeBtn) closeBtn.focus();
-    }
-
-    function closeNav() {
-      sidebar.classList.remove('is-open');
-      overlay.classList.remove('is-visible');
-      document.body.style.overflow = '';
-      if (hamburger) {
-        hamburger.setAttribute('aria-expanded', 'false');
-        hamburger.focus();
-      }
-    }
-
-    if (hamburger) hamburger.addEventListener('click', openNav);
-    if (closeBtn)  closeBtn.addEventListener('click', closeNav);
-    if (overlay)   overlay.addEventListener('click', closeNav);
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape' && sidebar.classList.contains('is-open')) closeNav();
-    });
-  })();
-</script>
-
-</body>
-</html>

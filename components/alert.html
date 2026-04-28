@@ -1,215 +1,179 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CUE Canvas — Alert</title>
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../tokens.css" />
-  <link rel="icon" type="image/svg+xml" href="../assets/logo_CUE_glyph.svg" />
-  <link rel="stylesheet" href="../base.css" />
-  <link rel="stylesheet" href="../components.css" />
-  <style>
-
-    /* ============================================================
-       ALERT COMPONENT
-
-       Anatomy:
-         .cue-alert                  — alert container
-           .cue-alert__icon-wrapper  — icon container (self-stretches vertically)
-             .cue-alert__icon        — Material Icon (24px)
-           .cue-alert__content       — text content container
-             .cue-alert__title       — alert title (bold, 16px)
-             .cue-alert__body        — alert body text (regular, 15px)
-
-       Type modifiers (add to .cue-alert):
-         .cue-alert--success
-         .cue-alert--info
-         .cue-alert--warning
-         .cue-alert--error
-
-       Orientation modifiers (add to .cue-alert):
-         (default / no modifier)     — Stack: title above body
-         .cue-alert--inline          — Inline: title and body side by side
-
-       Note: Alert colors are drawn from the Color Primitives scale,
-       not the Global semantic tokens. Each type uses the 50 tint for
-       background, 300 stop for border, and 800 stop for text.
-    ============================================================ */
-
-    /* --- Base --- */
-
-    .cue-alert {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 12px;
-      border: 1px solid;
-      border-radius: 6px;
-      width: 100%;
-    }
-
-    /* --- Icon wrapper --- */
-
-    .cue-alert__icon-wrapper {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      align-self: stretch;
-      padding: 4px;
-      flex-shrink: 0;
-    }
-
-    .cue-alert__icon {
-      font-size: 26px;
-      line-height: 1;
-      flex-shrink: 0;
-    }
-
-    /* --- Content --- */
-
-    .cue-alert__content {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0;
-    }
-
-    /* Inline orientation — title and body side by side */
-    .cue-alert--inline .cue-alert__content {
-      flex-direction: row;
-      align-items: baseline;
-      gap: 0.5rem;
-    }
-
-    .cue-alert__title {
-      font-family: var(--font-family-body);
-      font-size: 1rem;
-      font-weight: 700;
-      line-height: 1.3;
-      white-space: nowrap;
-    }
-
-    .cue-alert__body {
-      font-family: var(--font-family-body);
-      font-size: 0.9375rem;
-      font-weight: 400;
-      line-height: 1.4;
-    }
-
-    /* ============================================================
-       ALERT TYPES
-       Colors pulled from Color Primitives scale, not Global tokens.
-       Background: 50 tint | Border: 300 stop | Text: 800 stop
-    ============================================================ */
-
-    /* Success — Green primitive scale */
-    .cue-alert--success {
-      background-color: #ebfaef; /* green-50 */
-      border-color: #86df9c;     /* green-300 */
-      color: #155124;            /* green-800 */
-    }
-    .cue-alert--success .cue-alert__icon {
-      color: #155124;            /* green-800 */
-    }
-
-    /* Info — Blue primitive scale */
-    .cue-alert--info {
-      background-color: #ecf2fe; /* blue-50 */
-      border-color: #81a9f8;     /* blue-300 */
-      color: #06296f;            /* blue-800 */
-    }
-    .cue-alert--info .cue-alert__icon {
-      color: #06296f;            /* blue-800 */
-    }
-
-    /* Warning — Orange primitive scale */
-    .cue-alert--warning {
-      background-color: #fff6e5; /* orange-50 */
-      border-color: #ffc561;     /* orange-300 */
-      color: #613d00;            /* orange-800 */
-    }
-    .cue-alert--warning .cue-alert__icon {
-      color: #613d00;            /* orange-800 */
-    }
-
-    /* Error — Red primitive scale */
-    .cue-alert--error {
-      background-color: #ffe0e0; /* red-50 */
-      border-color: #ff4d4d;     /* red-300 */
-      color: #570000;            /* red-800 */
-    }
-    .cue-alert--error .cue-alert__icon {
-      color: #570000;            /* red-800 */
-    }
-
-  </style>
-</head>
-<body>
-
-<div class="docs-topbar" role="banner">
-  <a href="../index.html" class="docs-topbar__logo" aria-label="CUE Canvas home">
-    <img src="../assets/logo_CUE_glyph.svg" alt="CUE glyph" />
-    <span class="docs-topbar__logo-label">Canvas</span>
-  </a>
-  <button class="docs-topbar__hamburger" aria-label="Open navigation" aria-expanded="false" aria-controls="docs-sidebar">
-    <span class="material-icons" aria-hidden="true">menu</span>
-  </button>
-</div>
-
-<div class="docs-nav-overlay" aria-hidden="true"></div>
-
-<div class="docs-layout">
-
-  <!-- Sidebar -->
-  <nav class="docs-sidebar" id="docs-sidebar" aria-label="Documentation navigation">
-    <button class="docs-sidebar__close" aria-label="Close navigation">
-      <span class="material-icons" aria-hidden="true">close</span>
-    </button>
-    <a href="../index.html" class="docs-sidebar__logo" aria-label="CUE Canvas home">
-      <img src="../assets/logo_CUE_glyph.svg" alt="CUE glyph" />
-      <span class="docs-sidebar__logo-label">Canvas</span>
-    </a>
-    <p class="docs-sidebar__section-label">Getting Started</p>
-    <div class="docs-sidebar__nav">
-      <a href="../index.html" class="docs-sidebar__nav-link">Overview</a>
-    </div>
-    <p class="docs-sidebar__section-label">Components</p>
-    <div class="docs-sidebar__nav">
-      <a href="accordion.html" class="docs-sidebar__nav-link">Accordion</a>
-      <a href="alert.html" class="docs-sidebar__nav-link active">Alert</a>
-      <a href="badge.html" class="docs-sidebar__nav-link">Badge</a>
-      <a href="breadcrumb.html" class="docs-sidebar__nav-link">Breadcrumb</a>
-      <a href="button.html" class="docs-sidebar__nav-link">Button</a>
-      <a href="calendar-components.html" class="docs-sidebar__nav-link">Calendar Components</a>
-      <a href="calendar.html" class="docs-sidebar__nav-link">Calendar</a>
-      <a href="card.html" class="docs-sidebar__nav-link">Card</a>
-      <a href="chat.html" class="docs-sidebar__nav-link">Chat</a>
-      <a href="combobox.html" class="docs-sidebar__nav-link">Combobox &amp; Multiselect</a>
-      <a href="date-picker.html" class="docs-sidebar__nav-link">Date Picker</a>
-      <a href="dropdown.html" class="docs-sidebar__nav-link">Dropdown Menu</a>
-      <a href="expand-collapse.html" class="docs-sidebar__nav-link">Expand / Collapse</a>
-      <a href="form-field.html" class="docs-sidebar__nav-link">Form Field</a>
-      <a href="modal.html" class="docs-sidebar__nav-link">Modal</a>
-      <a href="scheduler.html" class="docs-sidebar__nav-link">Scheduler</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Side Navigation</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Skeleton Loader</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Status Badge</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Step Process</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Tab Navigation</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Table</a>
-    </div>
-    <p class="docs-sidebar__section-label">Icons</p>
-    <div class="docs-sidebar__nav">
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Icon Reference</a>
-    </div>
-  </nav>
-
-  <!-- Main -->
-  <main class="docs-main">
-
-    <div class="docs-page-header">
+---
+layout: default
+title: "Alert"
+activeNav: alert
+root: ../
+extraCSS: |
+  /* ============================================================
+         ALERT COMPONENT
+  
+         Anatomy:
+           .cue-alert                  — alert container
+             .cue-alert__icon-wrapper  — icon container (self-stretches vertically)
+               .cue-alert__icon        — Material Icon (24px)
+             .cue-alert__content       — text content container
+               .cue-alert__title       — alert title (bold, 16px)
+               .cue-alert__body        — alert body text (regular, 15px)
+  
+         Type modifiers (add to .cue-alert):
+           .cue-alert--success
+           .cue-alert--info
+           .cue-alert--warning
+           .cue-alert--error
+  
+         Orientation modifiers (add to .cue-alert):
+           (default / no modifier)     — Stack: title above body
+           .cue-alert--inline          — Inline: title and body side by side
+  
+         Note: Alert colors are drawn from the Color Primitives scale,
+         not the Global semantic tokens. Each type uses the 50 tint for
+         background, 300 stop for border, and 800 stop for text.
+      ============================================================ */
+  
+      /* --- Base --- */
+  
+      .cue-alert {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 12px;
+        border: 1px solid;
+        border-radius: 6px;
+        width: 100%;
+      }
+  
+      /* --- Icon wrapper --- */
+  
+      .cue-alert__icon-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        align-self: stretch;
+        padding: 4px;
+        flex-shrink: 0;
+      }
+  
+      .cue-alert__icon {
+        font-size: 26px;
+        line-height: 1;
+        flex-shrink: 0;
+      }
+  
+      /* --- Content --- */
+  
+      .cue-alert__content {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0;
+      }
+  
+      /* Inline orientation — title and body side by side */
+      .cue-alert--inline .cue-alert__content {
+        flex-direction: row;
+        align-items: baseline;
+        gap: 0.5rem;
+      }
+  
+      .cue-alert__title {
+        font-family: var(--font-family-body);
+        font-size: 1rem;
+        font-weight: 700;
+        line-height: 1.3;
+        white-space: nowrap;
+      }
+  
+      .cue-alert__body {
+        font-family: var(--font-family-body);
+        font-size: 0.9375rem;
+        font-weight: 400;
+        line-height: 1.4;
+      }
+  
+      /* ============================================================
+         ALERT TYPES
+         Colors pulled from Color Primitives scale, not Global tokens.
+         Background: 50 tint | Border: 300 stop | Text: 800 stop
+      ============================================================ */
+  
+      /* Success — Green primitive scale */
+      .cue-alert--success {
+        background-color: #ebfaef; /* green-50 */
+        border-color: #86df9c;     /* green-300 */
+        color: #155124;            /* green-800 */
+      }
+      .cue-alert--success .cue-alert__icon {
+        color: #155124;            /* green-800 */
+      }
+  
+      /* Info — Blue primitive scale */
+      .cue-alert--info {
+        background-color: #ecf2fe; /* blue-50 */
+        border-color: #81a9f8;     /* blue-300 */
+        color: #06296f;            /* blue-800 */
+      }
+      .cue-alert--info .cue-alert__icon {
+        color: #06296f;            /* blue-800 */
+      }
+  
+      /* Warning — Orange primitive scale */
+      .cue-alert--warning {
+        background-color: #fff6e5; /* orange-50 */
+        border-color: #ffc561;     /* orange-300 */
+        color: #613d00;            /* orange-800 */
+      }
+      .cue-alert--warning .cue-alert__icon {
+        color: #613d00;            /* orange-800 */
+      }
+  
+      /* Error — Red primitive scale */
+      .cue-alert--error {
+        background-color: #ffe0e0; /* red-50 */
+        border-color: #ff4d4d;     /* red-300 */
+        color: #570000;            /* red-800 */
+      }
+      .cue-alert--error .cue-alert__icon {
+        color: #570000;            /* red-800 */
+      }
+pageScript: |
+  </script>
+  
+  
+  <script>
+    (function() {
+      var sidebar  = document.querySelector('.docs-sidebar');
+      var overlay  = document.querySelector('.docs-nav-overlay');
+      var hamburger = document.querySelector('.docs-topbar__hamburger');
+      var closeBtn  = document.querySelector('.docs-sidebar__close');
+  
+      function openNav() {
+        sidebar.classList.add('is-open');
+        overlay.classList.add('is-visible');
+        document.body.style.overflow = 'hidden';
+        if (hamburger) hamburger.setAttribute('aria-expanded', 'true');
+        if (closeBtn) closeBtn.focus();
+      }
+  
+      function closeNav() {
+        sidebar.classList.remove('is-open');
+        overlay.classList.remove('is-visible');
+        document.body.style.overflow = '';
+        if (hamburger) {
+          hamburger.setAttribute('aria-expanded', 'false');
+          hamburger.focus();
+        }
+      }
+  
+      if (hamburger) hamburger.addEventListener('click', openNav);
+      if (closeBtn)  closeBtn.addEventListener('click', closeNav);
+      if (overlay)   overlay.addEventListener('click', closeNav);
+  
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && sidebar.classList.contains('is-open')) closeNav();
+      });
+    })();
+---
+<div class="docs-page-header">
       <h1 class="docs-page-title">Alert</h1>
       <p class="docs-page-description">
         Alerts communicate important contextual information to the user — confirmations, notices, warnings, and errors. They are non-interactive by default and appear inline within page content. Each type uses a distinct color drawn from the primitive color scale to ensure immediate visual recognition.
@@ -589,54 +553,3 @@
         </tbody>
       </table>
     </div>
-
-  </main>
-</div>
-
-<script>
-  function switchTab(event, tabId) {
-    const section = event.target.closest('.docs-section');
-    section.querySelectorAll('.docs-code-tab').forEach(t => t.classList.remove('active'));
-    section.querySelectorAll('.docs-code-panel').forEach(p => p.classList.remove('active'));
-    event.target.classList.add('active');
-    document.getElementById(tabId).classList.add('active');
-  }
-</script>
-
-
-<script>
-  (function() {
-    var sidebar  = document.querySelector('.docs-sidebar');
-    var overlay  = document.querySelector('.docs-nav-overlay');
-    var hamburger = document.querySelector('.docs-topbar__hamburger');
-    var closeBtn  = document.querySelector('.docs-sidebar__close');
-
-    function openNav() {
-      sidebar.classList.add('is-open');
-      overlay.classList.add('is-visible');
-      document.body.style.overflow = 'hidden';
-      if (hamburger) hamburger.setAttribute('aria-expanded', 'true');
-      if (closeBtn) closeBtn.focus();
-    }
-
-    function closeNav() {
-      sidebar.classList.remove('is-open');
-      overlay.classList.remove('is-visible');
-      document.body.style.overflow = '';
-      if (hamburger) {
-        hamburger.setAttribute('aria-expanded', 'false');
-        hamburger.focus();
-      }
-    }
-
-    if (hamburger) hamburger.addEventListener('click', openNav);
-    if (closeBtn)  closeBtn.addEventListener('click', closeNav);
-    if (overlay)   overlay.addEventListener('click', closeNav);
-
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape' && sidebar.classList.contains('is-open')) closeNav();
-    });
-  })();
-</script>
-</body>
-</html>

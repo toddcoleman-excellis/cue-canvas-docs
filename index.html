@@ -1,215 +1,169 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CUE Canvas — Design System</title>
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="tokens.css" />
-  <link rel="icon" type="image/svg+xml" href="assets/logo_CUE_glyph.svg" />
-  <link rel="stylesheet" href="base.css" />
-  <link rel="stylesheet" href="components.css" />
-  <style>
-
-    .home-hero {
-      padding: 4rem 0 3rem;
-      border-bottom: 1px solid var(--border-level-1);
-      margin-bottom: 3rem;
-    }
-
-    .home-hero__logos {
-      display: flex;
-      align-items: center;
-      gap: 1.5rem;
-      margin-bottom: var(--space-xl);
-    }
-
-    .home-hero__cue-logo {
-      height: 2.5rem;
-      width: auto;
-    }
-
-    .home-hero__logos-divider {
-      display: block;
-      width: 1px;
-      height: 2rem;
-      background-color: var(--border-subdued);
-    }
-
-    .home-hero__canvas-logo {
-      height: 1.75rem;
-      width: auto;
-    }
-
-    .home-hero__description {
-      font-size: 1.0625rem;
-      color: var(--content-body-moderate);
-      max-width: 520px;
-      line-height: 1.65;
-    }
-
-    .home-meta {
-      display: flex;
-      gap: var(--space-xl);
-      margin-top: var(--space-xl);
-      font-size: 0.8125rem;
-      color: var(--content-body-moderate);
-    }
-
-    .home-meta strong {
-      color: var(--content-body-default);
-      font-weight: 600;
-    }
-
-    .component-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: var(--space-l);
-      margin-bottom: 3rem;
-    }
-
-    .component-card {
-      display: block;
-      padding: var(--space-xl);
-      background-color: var(--bg-level-1);
-      border: 1px solid var(--border-level-1);
-      border-radius: var(--corner-card-module);
-      text-decoration: none;
-      transition: border-color 0.15s ease, box-shadow 0.15s ease;
-    }
-
-    .component-card:hover {
-      border-color: var(--border-primary-brand);
-      box-shadow: 0 2px 8px rgba(3, 97, 141, 0.08);
-      color: inherit;
-    }
-
-    .component-card__icon {
-      width: 2.25rem;
-      height: 2.25rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: var(--primary-brand-extra-subtle);
-      border-radius: var(--corner-card-module);
-      color: var(--content-body-link);
-      margin-bottom: var(--space-m);
-      font-size: 20px;
-    }
-
-    .component-card__name {
-      font-size: 0.9375rem;
-      font-weight: 700;
-      color: var(--content-body-default);
-      margin-bottom: var(--space-xs);
-    }
-
-    .component-card__description {
-      font-size: 0.8125rem;
-      color: var(--content-body-moderate);
-      line-height: 1.5;
-    }
-
-    .component-card__status {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      margin-top: var(--space-m);
-      font-size: 0.6875rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--success-strong);
-    }
-
-    .component-card__status--wip {
-      color: var(--warning-strong);
-    }
-
-    .component-card__status--planned {
-      color: var(--content-body-moderate);
-    }
-
-    .component-card__status .material-icons {
-      font-size: 0.875rem;
-    }
-
-  </style>
-</head>
-<body>
-
-<div class="docs-topbar" role="banner">
-  <a href="index.html" class="docs-topbar__logo" aria-label="CUE Canvas home">
-    <img src="assets/logo_CUE_glyph.svg" alt="CUE glyph" />
-    <span class="docs-topbar__logo-label">Canvas</span>
-  </a>
-  <button class="docs-topbar__hamburger" aria-label="Open navigation" aria-expanded="false" aria-controls="docs-sidebar">
-    <span class="material-icons" aria-hidden="true">menu</span>
-  </button>
-</div>
-
-<div class="docs-nav-overlay" aria-hidden="true"></div>
-
-<div class="docs-layout">
-
-  <!-- ============================================================
-       SIDEBAR
-  ============================================================ -->
-
-  <nav class="docs-sidebar" id="docs-sidebar" aria-label="Documentation navigation">
-    <button class="docs-sidebar__close" aria-label="Close navigation">
-      <span class="material-icons" aria-hidden="true">close</span>
-    </button>
-    <a href="index.html" class="docs-sidebar__logo" aria-label="CUE Canvas home">
-      <img src="assets/logo_CUE_glyph.svg" alt="CUE glyph" />
-      <span class="docs-sidebar__logo-label">Canvas</span>
-    </a>
-
-    <p class="docs-sidebar__section-label">Getting Started</p>
-    <div class="docs-sidebar__nav">
-      <a href="index.html" class="docs-sidebar__nav-link active">Overview</a>
-    </div>
-
-    <p class="docs-sidebar__section-label">Components</p>
-    <div class="docs-sidebar__nav">
-      <a href="components/accordion.html" class="docs-sidebar__nav-link">Accordion</a>
-      <a href="components/alert.html" class="docs-sidebar__nav-link">Alert</a>
-      <a href="components/badge.html" class="docs-sidebar__nav-link">Badge</a>
-      <a href="components/breadcrumb.html" class="docs-sidebar__nav-link">Breadcrumb</a>
-      <a href="components/button.html" class="docs-sidebar__nav-link">Button</a>
-      <a href="components/calendar-components.html" class="docs-sidebar__nav-link">Calendar Components</a>
-      <a href="components/calendar.html" class="docs-sidebar__nav-link">Calendar</a>
-      <a href="components/card.html" class="docs-sidebar__nav-link">Card</a>
-      <a href="components/chat.html" class="docs-sidebar__nav-link">Chat</a>
-      <a href="components/combobox.html" class="docs-sidebar__nav-link">Combobox &amp; Multiselect</a>
-      <a href="components/date-picker.html" class="docs-sidebar__nav-link">Date Picker</a>
-      <a href="components/dropdown.html" class="docs-sidebar__nav-link">Dropdown Menu</a>
-      <a href="components/expand-collapse.html" class="docs-sidebar__nav-link">Expand / Collapse</a>
-      <a href="components/form-field.html" class="docs-sidebar__nav-link">Form Field</a>
-      <a href="components/modal.html" class="docs-sidebar__nav-link">Modal</a>
-      <a href="components/scheduler.html" class="docs-sidebar__nav-link">Scheduler</a>
-      <a href="components/in-progress.html" class="docs-sidebar__nav-link">Side Navigation</a>
-      <a href="components/in-progress.html" class="docs-sidebar__nav-link">Skeleton Loader</a>
-      <a href="components/in-progress.html" class="docs-sidebar__nav-link">Status Badge</a>
-      <a href="components/in-progress.html" class="docs-sidebar__nav-link">Step Process</a>
-      <a href="components/in-progress.html" class="docs-sidebar__nav-link">Tab Navigation</a>
-      <a href="components/in-progress.html" class="docs-sidebar__nav-link">Table</a>
-    </div>
-
-    <p class="docs-sidebar__section-label">Icons</p>
-    <div class="docs-sidebar__nav">
-      <a href="components/in-progress.html" class="docs-sidebar__nav-link">Icon Reference</a>
-    </div>
-  </nav>
-
-  <!-- ============================================================
-       MAIN CONTENT
-  ============================================================ -->
-
-  <main class="docs-main">
-
-    <div class="home-hero">
+---
+layout: default
+activeNav: overview
+root: 
+extraCSS: |
+  .home-hero {
+        padding: 4rem 0 3rem;
+        border-bottom: 1px solid var(--border-level-1);
+        margin-bottom: 3rem;
+      }
+  
+      .home-hero__logos {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        margin-bottom: var(--space-xl);
+      }
+  
+      .home-hero__cue-logo {
+        height: 2.5rem;
+        width: auto;
+      }
+  
+      .home-hero__logos-divider {
+        display: block;
+        width: 1px;
+        height: 2rem;
+        background-color: var(--border-subdued);
+      }
+  
+      .home-hero__canvas-logo {
+        height: 1.75rem;
+        width: auto;
+      }
+  
+      .home-hero__description {
+        font-size: 1.0625rem;
+        color: var(--content-body-moderate);
+        max-width: 520px;
+        line-height: 1.65;
+      }
+  
+      .home-meta {
+        display: flex;
+        gap: var(--space-xl);
+        margin-top: var(--space-xl);
+        font-size: 0.8125rem;
+        color: var(--content-body-moderate);
+      }
+  
+      .home-meta strong {
+        color: var(--content-body-default);
+        font-weight: 600;
+      }
+  
+      .component-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: var(--space-l);
+        margin-bottom: 3rem;
+      }
+  
+      .component-card {
+        display: block;
+        padding: var(--space-xl);
+        background-color: var(--bg-level-1);
+        border: 1px solid var(--border-level-1);
+        border-radius: var(--corner-card-module);
+        text-decoration: none;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      }
+  
+      .component-card:hover {
+        border-color: var(--border-primary-brand);
+        box-shadow: 0 2px 8px rgba(3, 97, 141, 0.08);
+        color: inherit;
+      }
+  
+      .component-card__icon {
+        width: 2.25rem;
+        height: 2.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--primary-brand-extra-subtle);
+        border-radius: var(--corner-card-module);
+        color: var(--content-body-link);
+        margin-bottom: var(--space-m);
+        font-size: 20px;
+      }
+  
+      .component-card__name {
+        font-size: 0.9375rem;
+        font-weight: 700;
+        color: var(--content-body-default);
+        margin-bottom: var(--space-xs);
+      }
+  
+      .component-card__description {
+        font-size: 0.8125rem;
+        color: var(--content-body-moderate);
+        line-height: 1.5;
+      }
+  
+      .component-card__status {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        margin-top: var(--space-m);
+        font-size: 0.6875rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--success-strong);
+      }
+  
+      .component-card__status--wip {
+        color: var(--warning-strong);
+      }
+  
+      .component-card__status--planned {
+        color: var(--content-body-moderate);
+      }
+  
+      .component-card__status .material-icons {
+        font-size: 0.875rem;
+      }
+pageScript: |
+  </script>
+  
+  
+  <script>
+    (function() {
+      var sidebar  = document.querySelector('.docs-sidebar');
+      var overlay  = document.querySelector('.docs-nav-overlay');
+      var hamburger = document.querySelector('.docs-topbar__hamburger');
+      var closeBtn  = document.querySelector('.docs-sidebar__close');
+  
+      function openNav() {
+        sidebar.classList.add('is-open');
+        overlay.classList.add('is-visible');
+        document.body.style.overflow = 'hidden';
+        if (hamburger) hamburger.setAttribute('aria-expanded', 'true');
+        if (closeBtn) closeBtn.focus();
+      }
+  
+      function closeNav() {
+        sidebar.classList.remove('is-open');
+        overlay.classList.remove('is-visible');
+        document.body.style.overflow = '';
+        if (hamburger) {
+          hamburger.setAttribute('aria-expanded', 'false');
+          hamburger.focus();
+        }
+      }
+  
+      if (hamburger) hamburger.addEventListener('click', openNav);
+      if (closeBtn)  closeBtn.addEventListener('click', closeNav);
+      if (overlay)   overlay.addEventListener('click', closeNav);
+  
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && sidebar.classList.contains('is-open')) closeNav();
+      });
+    })();
+---
+<div class="home-hero">
       <div class="home-hero__logos">
         <img src="assets/logo_CUE.svg" alt="CUE" class="home-hero__cue-logo" />
         <span class="home-hero__logos-divider" aria-hidden="true"></span>
@@ -507,55 +461,3 @@
         </a>
 
       </div>
-
-  </main>
-
-</div>
-
-<script>
-  function switchTab(event, tabId) {
-    const section = event.target.closest('.docs-section');
-    section.querySelectorAll('.docs-code-tab').forEach(t => t.classList.remove('active'));
-    section.querySelectorAll('.docs-code-panel').forEach(p => p.classList.remove('active'));
-    event.target.classList.add('active');
-    document.getElementById(tabId).classList.add('active');
-  }
-</script>
-
-
-<script>
-  (function() {
-    var sidebar  = document.querySelector('.docs-sidebar');
-    var overlay  = document.querySelector('.docs-nav-overlay');
-    var hamburger = document.querySelector('.docs-topbar__hamburger');
-    var closeBtn  = document.querySelector('.docs-sidebar__close');
-
-    function openNav() {
-      sidebar.classList.add('is-open');
-      overlay.classList.add('is-visible');
-      document.body.style.overflow = 'hidden';
-      if (hamburger) hamburger.setAttribute('aria-expanded', 'true');
-      if (closeBtn) closeBtn.focus();
-    }
-
-    function closeNav() {
-      sidebar.classList.remove('is-open');
-      overlay.classList.remove('is-visible');
-      document.body.style.overflow = '';
-      if (hamburger) {
-        hamburger.setAttribute('aria-expanded', 'false');
-        hamburger.focus();
-      }
-    }
-
-    if (hamburger) hamburger.addEventListener('click', openNav);
-    if (closeBtn)  closeBtn.addEventListener('click', closeNav);
-    if (overlay)   overlay.addEventListener('click', closeNav);
-
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape' && sidebar.classList.contains('is-open')) closeNav();
-    });
-  })();
-</script>
-</body>
-</html>

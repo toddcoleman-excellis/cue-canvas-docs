@@ -1,476 +1,521 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CUE Canvas — Combobox &amp; Multiselect</title>
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../tokens.css" />
-  <link rel="stylesheet" href="../base.css" />
-  <link rel="stylesheet" href="../components.css" />
-  <link rel="icon" type="image/svg+xml" href="../assets/logo_CUE_glyph.svg" />
-  <style>
-
-    /* ============================================================
-       COMBOBOX — Single Select with Search
-    ============================================================ */
-
-    .cue-combobox {
-      position: relative;
-      width: 320px;
-      flex-shrink: 0;
+---
+layout: default
+title: "Combobox & Multiselect"
+activeNav: combobox
+root: ../
+extraCSS: |
+  /* ============================================================
+         COMBOBOX — Single Select with Search
+      ============================================================ */
+  
+      .cue-combobox {
+        position: relative;
+        width: 320px;
+        flex-shrink: 0;
+      }
+  
+      .cue-combobox__trigger {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        height: 41px;
+        padding: 0 0.5rem 0 0.75rem;
+        border: 1px solid var(--border-form-field-default);
+        border-radius: var(--corner-form-field);
+        background-color: var(--bg-form-field-default);
+        cursor: pointer;
+        gap: 0.25rem;
+        transition: border-color 0.15s ease;
+        box-sizing: border-box;
+        font-family: var(--font-family-body);
+        text-align: left;
+        -webkit-appearance: none;
+        appearance: none;
+        user-select: none;
+      }
+  
+      .cue-combobox.is-open .cue-combobox__trigger,
+      .cue-combobox__trigger:focus-visible {
+        border-color: var(--border-form-field-focus);
+        outline: none;
+      }
+  
+      .cue-combobox__value {
+        flex: 1;
+        min-width: 0;
+        text-align: left;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-family: var(--font-family-body);
+        font-size: 0.875rem;
+        font-weight: 400;
+        color: var(--content-form-field-placeholder);
+        line-height: 1;
+      }
+  
+      .cue-combobox__value.has-value {
+        color: var(--content-form-field-filled-read);
+      }
+  
+      .cue-combobox__actions {
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
+      }
+  
+      .cue-combobox__clear {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--content-body-moderate);
+        border-radius: 100px;
+        padding: 0;
+        flex-shrink: 0;
+        transition: color 0.1s ease;
+      }
+      .cue-combobox__clear:hover { color: var(--content-body-default); }
+      .cue-combobox__clear .material-icons { font-size: 16px; }
+  
+      .cue-combobox__chevron {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        flex-shrink: 0;
+        color: var(--content-body-moderate);
+        transition: transform 0.2s ease;
+        pointer-events: none;
+      }
+      .cue-combobox.is-open .cue-combobox__chevron { transform: rotate(180deg); }
+      .cue-combobox__chevron .material-icons { font-size: 22px; }
+  
+      /* Panel */
+      .cue-combobox__panel {
+        position: absolute;
+        top: calc(100% + 4px);
+        left: 0;
+        width: 100%;
+        background-color: var(--bg-default);
+        border: 1px solid var(--border-extra-subtle);
+        border-radius: 6px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+        z-index: 500;
+        display: none;
+        overflow: hidden;
+      }
+      .cue-combobox.is-open .cue-combobox__panel { display: block; }
+  
+      .cue-combobox__panel-search {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 0.75rem;
+        border-bottom: 1px solid var(--border-extra-subtle);
+      }
+      .cue-combobox__panel-search .material-icons {
+        font-size: 16px;
+        color: var(--content-body-moderate);
+        flex-shrink: 0;
+      }
+      .cue-combobox__panel-search input {
+        flex: 1;
+        border: none;
+        outline: none;
+        background: transparent;
+        font-family: var(--font-family-body);
+        font-size: 0.875rem;
+        color: var(--content-body-default);
+      }
+      .cue-combobox__panel-search input::placeholder {
+        color: var(--content-form-field-placeholder);
+      }
+  
+      .cue-combobox__list {
+        padding: 0.375rem 0;
+        max-height: 220px;
+        overflow-y: auto;
+      }
+  
+      .cue-combobox__option {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 6px 0.75rem;
+        font-family: var(--font-family-body);
+        font-size: 0.875rem;
+        font-weight: 400;
+        color: var(--content-body-strong);
+        cursor: pointer;
+        gap: 0.5rem;
+        transition: background-color 0.1s ease;
+        border-radius: 4px;
+        margin: 0 2px;
+      }
+      .cue-combobox__option:hover     { background-color: var(--bg-weak); }
+      .cue-combobox__option.is-selected { background-color: var(--bg-weak); }
+      .cue-combobox__option.is-hidden   { display: none; }
+  
+      .cue-combobox__option-check {
+        display: none;
+        align-items: center;
+        flex-shrink: 0;
+        color: var(--content-body-link);
+      }
+      .cue-combobox__option-check .material-icons { font-size: 16px; }
+      .cue-combobox__option.is-selected .cue-combobox__option-check { display: flex; }
+  
+  
+      /* ============================================================
+         MULTISELECT — Multiple Select with Checkboxes
+      ============================================================ */
+  
+      .cue-multiselect {
+        position: relative;
+        width: 320px;
+        flex-shrink: 0;
+      }
+  
+      .cue-multiselect__trigger {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        min-height: 41px;
+        padding: 4px 0.5rem 4px 0.75rem;
+        border: 1px solid var(--border-form-field-default);
+        border-radius: var(--corner-form-field);
+        background-color: var(--bg-form-field-default);
+        cursor: pointer;
+        gap: 0.375rem;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        box-sizing: border-box;
+      }
+      .cue-multiselect.is-open .cue-multiselect__trigger {
+        border-color: var(--border-form-field-focus);
+        box-shadow: 0 0 0 3px var(--interactive-extra-subtle);
+      }
+  
+      .cue-multiselect__tags {
+        display: flex;
+        align-items: center;
+        flex-wrap: nowrap;
+        gap: 4px;
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+      }
+  
+      .cue-multiselect__tag {
+        display: inline-flex;
+        align-items: center;
+        padding: 3px 8px;
+        background-color: var(--bg-subdued);
+        border-radius: 4px;
+        font-family: var(--font-family-body);
+        font-size: 0.75rem;
+        font-weight: 400;
+        color: var(--content-body-default);
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+  
+      .cue-multiselect__overflow {
+        display: inline-flex;
+        align-items: center;
+        padding: 3px 6px;
+        background-color: var(--bg-subdued);
+        border-radius: 4px;
+        font-family: var(--font-family-body);
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: var(--content-body-moderate);
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+  
+      .cue-multiselect__placeholder {
+        font-family: var(--font-family-body);
+        font-size: 0.875rem;
+        font-weight: 400;
+        color: var(--content-form-field-placeholder);
+        line-height: 1;
+      }
+  
+      .cue-multiselect__chevron {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        flex-shrink: 0;
+        color: var(--content-body-moderate);
+        pointer-events: none;
+        transition: transform 0.2s ease;
+      }
+      .cue-multiselect.is-open .cue-multiselect__chevron { transform: rotate(180deg); }
+      .cue-multiselect__chevron .material-icons { font-size: 22px; }
+  
+      /* Panel */
+      .cue-multiselect__panel {
+        position: absolute;
+        top: calc(100% + 4px);
+        left: 0;
+        width: 100%;
+        background-color: var(--bg-default);
+        border: 1px solid var(--border-extra-subtle);
+        border-radius: 6px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+        z-index: 500;
+        display: none;
+        overflow: hidden;
+      }
+      .cue-multiselect.is-open .cue-multiselect__panel { display: block; }
+  
+      .cue-multiselect__search {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin: 0.5rem;
+        padding: 0.375rem 0.625rem;
+        background-color: var(--bg-form-field-solid);
+        border-radius: 4px;
+      }
+      .cue-multiselect__search .material-icons {
+        font-size: 14px;
+        color: var(--content-body-moderate);
+        flex-shrink: 0;
+      }
+      .cue-multiselect__search input {
+        flex: 1;
+        border: none;
+        outline: none;
+        background: transparent;
+        font-family: var(--font-family-body);
+        font-size: 0.875rem;
+        color: var(--content-body-default);
+      }
+      .cue-multiselect__search input::placeholder {
+        color: var(--content-form-field-placeholder);
+      }
+  
+      .cue-multiselect__list {
+        padding: 0 0 0.5rem;
+        max-height: 220px;
+        overflow-y: auto;
+      }
+  
+      .cue-multiselect__option {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 6px 0.75rem;
+        cursor: pointer;
+        transition: background-color 0.1s ease;
+      }
+      .cue-multiselect__option:hover { background-color: var(--bg-extra-subtle); }
+      .cue-multiselect__option.is-hidden { display: none; }
+  
+      .cue-multiselect__checkbox {
+        width: 18px;
+        height: 18px;
+        border: 1px solid #575757;
+        border-radius: 4px;
+        background-color: var(--bg-default);
+        flex-shrink: 0;
+        position: relative;
+        pointer-events: none;
+      }
+      .cue-multiselect__option.is-selected .cue-multiselect__checkbox {
+        background-color: #03618d;
+        border-color: #03618d;
+      }
+      .cue-multiselect__option.is-selected .cue-multiselect__checkbox::after {
+        content: '';
+        position: absolute;
+        left: 3px;
+        top: 2px;
+        width: 10px;
+        height: 6px;
+        border: 2px solid #ffffff;
+        border-top: none;
+        border-right: none;
+        transform: rotate(-45deg);
+      }
+  
+      .cue-multiselect__option-label {
+        font-family: var(--font-family-body);
+        font-size: 0.875rem;
+        font-weight: 400;
+        color: var(--content-body-strong);
+        line-height: 1;
+        white-space: nowrap;
+      }
+  
+  
+      /* ============================================================
+         DOCS LAYOUT — constrain demos, allow panels to overflow
+      ============================================================ */
+  
+      .cb-docs-example {
+        padding: 2rem;
+        background-color: var(--bg-level-1);
+        border: 1px solid var(--border-level-1);
+        border-radius: var(--corner-card-module);
+        margin-bottom: var(--space-xl);
+      }
+  
+      .cb-demo-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+        align-items: flex-start;
+      }
+  
+      .cb-demo-col {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+  
+      .cb-demo-label {
+        font-size: 0.6875rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        color: var(--content-body-moderate);
+      }
+  
+      /* Important: give the demo area enough min-height so open panels
+         don't get clipped. Panels use position:absolute so they escape
+         the flex container naturally — we just need to make sure there's
+         no overflow:hidden on a parent. */
+      .cb-docs-example {
+        overflow: visible;
+      }
+pageScript: |
+  function toggleCombobox(id) {
+      const el = document.getElementById(id);
+      const isOpen = el.classList.toggle('is-open');
+      const trigger = el.querySelector('.cue-combobox__trigger');
+      trigger.setAttribute('aria-expanded', isOpen);
+      if (isOpen) { setTimeout(() => el.querySelector('.cue-combobox__panel-search input')?.focus(), 50); }
     }
-
-    .cue-combobox__trigger {
-      display: flex;
-      align-items: center;
-      width: 100%;
-      height: 41px;
-      padding: 0 0.5rem 0 0.75rem;
-      border: 1px solid var(--border-form-field-default);
-      border-radius: var(--corner-form-field);
-      background-color: var(--bg-form-field-default);
-      cursor: pointer;
-      gap: 0.25rem;
-      transition: border-color 0.15s ease;
-      box-sizing: border-box;
-      font-family: var(--font-family-body);
-      text-align: left;
-      -webkit-appearance: none;
-      appearance: none;
-      user-select: none;
+  
+    function selectCombobox(id, option) {
+      const el = document.getElementById(id);
+      el.querySelectorAll('.cue-combobox__option').forEach(o => { o.classList.remove('is-selected'); o.setAttribute('aria-selected', 'false'); });
+      option.classList.add('is-selected');
+      option.setAttribute('aria-selected', 'true');
+      const display = document.getElementById(id + '-display');
+      if (display) { display.textContent = option.dataset.value; display.classList.add('has-value'); }
+      const search = el.querySelector('.cue-combobox__panel-search input');
+      if (search) { search.value = ''; filterCombobox(id, ''); }
+      el.classList.remove('is-open');
+      el.querySelector('.cue-combobox__trigger').setAttribute('aria-expanded', 'false');
     }
-
-    .cue-combobox.is-open .cue-combobox__trigger,
-    .cue-combobox__trigger:focus-visible {
-      border-color: var(--border-form-field-focus);
-      outline: none;
+  
+    function clearCombobox(id, event) {
+      event.stopPropagation();
+      const el = document.getElementById(id);
+      el.querySelectorAll('.cue-combobox__option').forEach(o => { o.classList.remove('is-selected'); o.setAttribute('aria-selected', 'false'); });
+      const display = document.getElementById(id + '-display');
+      if (display) { display.textContent = 'Select'; display.classList.remove('has-value'); }
     }
-
-    .cue-combobox__value {
-      flex: 1;
-      min-width: 0;
-      text-align: left;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      font-family: var(--font-family-body);
-      font-size: 0.875rem;
-      font-weight: 400;
-      color: var(--content-form-field-placeholder);
-      line-height: 1;
+  
+    function filterCombobox(id, query) {
+      const q = query.toLowerCase().trim();
+      document.getElementById(id).querySelectorAll('.cue-combobox__option').forEach(opt => {
+        opt.classList.toggle('is-hidden', q !== '' && !(opt.dataset.value || '').toLowerCase().includes(q));
+      });
     }
-
-    .cue-combobox__value.has-value {
-      color: var(--content-form-field-filled-read);
+  
+    function toggleMultiselect(id) {
+      const el = document.getElementById(id);
+      const isOpen = el.classList.toggle('is-open');
+      el.querySelector('.cue-multiselect__trigger').setAttribute('aria-expanded', isOpen);
+      if (isOpen) { setTimeout(() => el.querySelector('.cue-multiselect__search input')?.focus(), 50); }
     }
-
-    .cue-combobox__actions {
-      display: flex;
-      align-items: center;
-      flex-shrink: 0;
+  
+    function toggleMultiselectOption(id, option) {
+      option.classList.toggle('is-selected');
+      option.setAttribute('aria-selected', option.classList.contains('is-selected'));
+      syncAllCheckbox(id);
+      updateMultiselectTags(id);
     }
-
-    .cue-combobox__clear {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 24px;
-      height: 24px;
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: var(--content-body-moderate);
-      border-radius: 100px;
-      padding: 0;
-      flex-shrink: 0;
-      transition: color 0.1s ease;
+  
+    function toggleAll(id, allOption) {
+      const el = document.getElementById(id);
+      const willSelect = !allOption.classList.contains('is-selected');
+      el.querySelectorAll('.cue-multiselect__option').forEach(o => { o.classList.toggle('is-selected', willSelect); o.setAttribute('aria-selected', willSelect); });
+      updateMultiselectTags(id);
     }
-    .cue-combobox__clear:hover { color: var(--content-body-default); }
-    .cue-combobox__clear .material-icons { font-size: 16px; }
-
-    .cue-combobox__chevron {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 24px;
-      height: 24px;
-      flex-shrink: 0;
-      color: var(--content-body-moderate);
-      transition: transform 0.2s ease;
-      pointer-events: none;
+  
+    function syncAllCheckbox(id) {
+      const el = document.getElementById(id);
+      const all = el.querySelector('.cue-multiselect__option.is-all');
+      if (!all) return;
+      const opts = el.querySelectorAll('.cue-multiselect__option:not(.is-all)');
+      all.classList.toggle('is-selected', [...opts].every(o => o.classList.contains('is-selected')));
     }
-    .cue-combobox.is-open .cue-combobox__chevron { transform: rotate(180deg); }
-    .cue-combobox__chevron .material-icons { font-size: 22px; }
-
-    /* Panel */
-    .cue-combobox__panel {
-      position: absolute;
-      top: calc(100% + 4px);
-      left: 0;
-      width: 100%;
-      background-color: var(--bg-default);
-      border: 1px solid var(--border-extra-subtle);
-      border-radius: 6px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
-      z-index: 500;
-      display: none;
-      overflow: hidden;
+  
+    function updateMultiselectTags(id) {
+      const el = document.getElementById(id);
+      const tagsEl = document.getElementById(id + '-tags');
+      if (!tagsEl) return;
+      const MAX = 3;
+      const selected = [...el.querySelectorAll('.cue-multiselect__option:not(.is-all).is-selected')].map(o => o.dataset.value).filter(Boolean);
+      if (selected.length === 0) {
+        tagsEl.innerHTML = '<span class="cue-multiselect__placeholder">Select</span>';
+      } else {
+        const shown = selected.slice(0, MAX);
+        const overflow = selected.length - MAX;
+        tagsEl.innerHTML = shown.map(v => `<span class="cue-multiselect__tag">${v}</span>`).join('') + (overflow > 0 ? `<span class="cue-multiselect__overflow">+${overflow}</span>` : '');
+      }
     }
-    .cue-combobox.is-open .cue-combobox__panel { display: block; }
-
-    .cue-combobox__panel-search {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.5rem 0.75rem;
-      border-bottom: 1px solid var(--border-extra-subtle);
+  
+    function filterMultiselect(id, query) {
+      const q = query.toLowerCase().trim();
+      document.getElementById(id).querySelectorAll('.cue-multiselect__option:not(.is-all)').forEach(opt => {
+        opt.classList.toggle('is-hidden', q !== '' && !(opt.dataset.value || '').toLowerCase().includes(q));
+      });
     }
-    .cue-combobox__panel-search .material-icons {
-      font-size: 16px;
-      color: var(--content-body-moderate);
-      flex-shrink: 0;
-    }
-    .cue-combobox__panel-search input {
-      flex: 1;
-      border: none;
-      outline: none;
-      background: transparent;
-      font-family: var(--font-family-body);
-      font-size: 0.875rem;
-      color: var(--content-body-default);
-    }
-    .cue-combobox__panel-search input::placeholder {
-      color: var(--content-form-field-placeholder);
-    }
-
-    .cue-combobox__list {
-      padding: 0.375rem 0;
-      max-height: 220px;
-      overflow-y: auto;
-    }
-
-    .cue-combobox__option {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 6px 0.75rem;
-      font-family: var(--font-family-body);
-      font-size: 0.875rem;
-      font-weight: 400;
-      color: var(--content-body-strong);
-      cursor: pointer;
-      gap: 0.5rem;
-      transition: background-color 0.1s ease;
-      border-radius: 4px;
-      margin: 0 2px;
-    }
-    .cue-combobox__option:hover     { background-color: var(--bg-weak); }
-    .cue-combobox__option.is-selected { background-color: var(--bg-weak); }
-    .cue-combobox__option.is-hidden   { display: none; }
-
-    .cue-combobox__option-check {
-      display: none;
-      align-items: center;
-      flex-shrink: 0;
-      color: var(--content-body-link);
-    }
-    .cue-combobox__option-check .material-icons { font-size: 16px; }
-    .cue-combobox__option.is-selected .cue-combobox__option-check { display: flex; }
-
-
-    /* ============================================================
-       MULTISELECT — Multiple Select with Checkboxes
-    ============================================================ */
-
-    .cue-multiselect {
-      position: relative;
-      width: 320px;
-      flex-shrink: 0;
-    }
-
-    .cue-multiselect__trigger {
-      display: flex;
-      align-items: center;
-      width: 100%;
-      min-height: 41px;
-      padding: 4px 0.5rem 4px 0.75rem;
-      border: 1px solid var(--border-form-field-default);
-      border-radius: var(--corner-form-field);
-      background-color: var(--bg-form-field-default);
-      cursor: pointer;
-      gap: 0.375rem;
-      transition: border-color 0.15s ease, box-shadow 0.15s ease;
-      box-sizing: border-box;
-    }
-    .cue-multiselect.is-open .cue-multiselect__trigger {
-      border-color: var(--border-form-field-focus);
-      box-shadow: 0 0 0 3px var(--interactive-extra-subtle);
-    }
-
-    .cue-multiselect__tags {
-      display: flex;
-      align-items: center;
-      flex-wrap: nowrap;
-      gap: 4px;
-      flex: 1;
-      min-width: 0;
-      overflow: hidden;
-    }
-
-    .cue-multiselect__tag {
-      display: inline-flex;
-      align-items: center;
-      padding: 3px 8px;
-      background-color: var(--bg-subdued);
-      border-radius: 4px;
-      font-family: var(--font-family-body);
-      font-size: 0.75rem;
-      font-weight: 400;
-      color: var(--content-body-default);
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    .cue-multiselect__overflow {
-      display: inline-flex;
-      align-items: center;
-      padding: 3px 6px;
-      background-color: var(--bg-subdued);
-      border-radius: 4px;
-      font-family: var(--font-family-body);
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: var(--content-body-moderate);
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    .cue-multiselect__placeholder {
-      font-family: var(--font-family-body);
-      font-size: 0.875rem;
-      font-weight: 400;
-      color: var(--content-form-field-placeholder);
-      line-height: 1;
-    }
-
-    .cue-multiselect__chevron {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 24px;
-      height: 24px;
-      flex-shrink: 0;
-      color: var(--content-body-moderate);
-      pointer-events: none;
-      transition: transform 0.2s ease;
-    }
-    .cue-multiselect.is-open .cue-multiselect__chevron { transform: rotate(180deg); }
-    .cue-multiselect__chevron .material-icons { font-size: 22px; }
-
-    /* Panel */
-    .cue-multiselect__panel {
-      position: absolute;
-      top: calc(100% + 4px);
-      left: 0;
-      width: 100%;
-      background-color: var(--bg-default);
-      border: 1px solid var(--border-extra-subtle);
-      border-radius: 6px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
-      z-index: 500;
-      display: none;
-      overflow: hidden;
-    }
-    .cue-multiselect.is-open .cue-multiselect__panel { display: block; }
-
-    .cue-multiselect__search {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin: 0.5rem;
-      padding: 0.375rem 0.625rem;
-      background-color: var(--bg-form-field-solid);
-      border-radius: 4px;
-    }
-    .cue-multiselect__search .material-icons {
-      font-size: 14px;
-      color: var(--content-body-moderate);
-      flex-shrink: 0;
-    }
-    .cue-multiselect__search input {
-      flex: 1;
-      border: none;
-      outline: none;
-      background: transparent;
-      font-family: var(--font-family-body);
-      font-size: 0.875rem;
-      color: var(--content-body-default);
-    }
-    .cue-multiselect__search input::placeholder {
-      color: var(--content-form-field-placeholder);
-    }
-
-    .cue-multiselect__list {
-      padding: 0 0 0.5rem;
-      max-height: 220px;
-      overflow-y: auto;
-    }
-
-    .cue-multiselect__option {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 6px 0.75rem;
-      cursor: pointer;
-      transition: background-color 0.1s ease;
-    }
-    .cue-multiselect__option:hover { background-color: var(--bg-extra-subtle); }
-    .cue-multiselect__option.is-hidden { display: none; }
-
-    .cue-multiselect__checkbox {
-      width: 18px;
-      height: 18px;
-      border: 1px solid #575757;
-      border-radius: 4px;
-      background-color: var(--bg-default);
-      flex-shrink: 0;
-      position: relative;
-      pointer-events: none;
-    }
-    .cue-multiselect__option.is-selected .cue-multiselect__checkbox {
-      background-color: #03618d;
-      border-color: #03618d;
-    }
-    .cue-multiselect__option.is-selected .cue-multiselect__checkbox::after {
-      content: '';
-      position: absolute;
-      left: 3px;
-      top: 2px;
-      width: 10px;
-      height: 6px;
-      border: 2px solid #ffffff;
-      border-top: none;
-      border-right: none;
-      transform: rotate(-45deg);
-    }
-
-    .cue-multiselect__option-label {
-      font-family: var(--font-family-body);
-      font-size: 0.875rem;
-      font-weight: 400;
-      color: var(--content-body-strong);
-      line-height: 1;
-      white-space: nowrap;
-    }
-
-
-    /* ============================================================
-       DOCS LAYOUT — constrain demos, allow panels to overflow
-    ============================================================ */
-
-    .cb-docs-example {
-      padding: 2rem;
-      background-color: var(--bg-level-1);
-      border: 1px solid var(--border-level-1);
-      border-radius: var(--corner-card-module);
-      margin-bottom: var(--space-xl);
-    }
-
-    .cb-demo-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 2rem;
-      align-items: flex-start;
-    }
-
-    .cb-demo-col {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .cb-demo-label {
-      font-size: 0.6875rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.07em;
-      color: var(--content-body-moderate);
-    }
-
-    /* Important: give the demo area enough min-height so open panels
-       don't get clipped. Panels use position:absolute so they escape
-       the flex container naturally — we just need to make sure there's
-       no overflow:hidden on a parent. */
-    .cb-docs-example {
-      overflow: visible;
-    }
-
-  </style>
-</head>
-<body>
-
-<div class="docs-topbar" role="banner">
-  <a href="../index.html" class="docs-topbar__logo" aria-label="CUE Canvas home">
-    <img src="../assets/logo_CUE_glyph.svg" alt="CUE glyph" />
-    <span class="docs-topbar__logo-label">Canvas</span>
-  </a>
-  <button class="docs-topbar__hamburger" aria-label="Open navigation" aria-expanded="false" aria-controls="docs-sidebar">
-    <span class="material-icons" aria-hidden="true">menu</span>
-  </button>
-</div>
-
-<div class="docs-nav-overlay" aria-hidden="true"></div>
-
-<div class="docs-layout">
-
-  <nav class="docs-sidebar" id="docs-sidebar" aria-label="Documentation navigation">
-    <button class="docs-sidebar__close" aria-label="Close navigation">
-      <span class="material-icons" aria-hidden="true">close</span>
-    </button>
-    <a href="../index.html" class="docs-sidebar__logo" aria-label="CUE Canvas home">
-      <img src="../assets/logo_CUE_glyph.svg" alt="CUE glyph" />
-      <span class="docs-sidebar__logo-label">Canvas</span>
-    </a>
-    <p class="docs-sidebar__section-label">Getting Started</p>
-    <div class="docs-sidebar__nav">
-      <a href="../index.html" class="docs-sidebar__nav-link">Overview</a>
-    </div>
-    <p class="docs-sidebar__section-label">Components</p>
-    <div class="docs-sidebar__nav">
-      <a href="accordion.html" class="docs-sidebar__nav-link">Accordion</a>
-      <a href="alert.html" class="docs-sidebar__nav-link">Alert</a>
-      <a href="badge.html" class="docs-sidebar__nav-link">Badge</a>
-      <a href="breadcrumb.html" class="docs-sidebar__nav-link">Breadcrumb</a>
-      <a href="button.html" class="docs-sidebar__nav-link">Button</a>
-      <a href="calendar-components.html" class="docs-sidebar__nav-link">Calendar Components</a>
-      <a href="calendar.html" class="docs-sidebar__nav-link">Calendar</a>
-      <a href="card.html" class="docs-sidebar__nav-link">Card</a>
-      <a href="chat.html" class="docs-sidebar__nav-link">Chat</a>
-      <a href="combobox.html" class="docs-sidebar__nav-link active">Combobox &amp; Multiselect</a>
-      <a href="date-picker.html" class="docs-sidebar__nav-link">Date Picker</a>
-      <a href="dropdown.html" class="docs-sidebar__nav-link">Dropdown Menu</a>
-      <a href="expand-collapse.html" class="docs-sidebar__nav-link">Expand / Collapse</a>
-      <a href="form-field.html" class="docs-sidebar__nav-link">Form Field</a>
-      <a href="modal.html" class="docs-sidebar__nav-link">Modal</a>
-      <a href="scheduler.html" class="docs-sidebar__nav-link">Scheduler</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Side Navigation</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Skeleton Loader</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Status Badge</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Step Process</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Tab Navigation</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Table</a>
-    </div>
-    <p class="docs-sidebar__section-label">Icons</p>
-    <div class="docs-sidebar__nav">
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Icon Reference</a>
-    </div>
-  </nav>
-
-  <main class="docs-main">
-
-    <div class="docs-page-header">
+  
+    document.addEventListener('click', function(e) {
+      document.querySelectorAll('.cue-combobox.is-open, .cue-multiselect.is-open').forEach(el => {
+        if (!el.contains(e.target)) { el.classList.remove('is-open'); el.querySelector('[aria-expanded]')?.setAttribute('aria-expanded', 'false'); }
+      });
+    });
+  
+    document.addEventListener('keydown', function(e) {
+      if (e.key !== 'Escape') return;
+      document.querySelectorAll('.cue-combobox.is-open, .cue-multiselect.is-open').forEach(el => {
+        el.classList.remove('is-open');
+        const t = el.querySelector('[aria-expanded]');
+        t?.setAttribute('aria-expanded', 'false');
+        t?.focus();
+      });
+    });
+  
+    (function() {
+      var sidebar   = document.querySelector('.docs-sidebar');
+      var overlay   = document.querySelector('.docs-nav-overlay');
+      var hamburger = document.querySelector('.docs-topbar__hamburger');
+      var closeBtn  = document.querySelector('.docs-sidebar__close');
+      function openNav() { sidebar.classList.add('is-open'); overlay.classList.add('is-visible'); document.body.style.overflow = 'hidden'; if (hamburger) hamburger.setAttribute('aria-expanded', 'true'); if (closeBtn) closeBtn.focus(); }
+      function closeNav() { sidebar.classList.remove('is-open'); overlay.classList.remove('is-visible'); document.body.style.overflow = ''; if (hamburger) { hamburger.setAttribute('aria-expanded', 'false'); hamburger.focus(); } }
+      if (hamburger) hamburger.addEventListener('click', openNav);
+      if (closeBtn)  closeBtn.addEventListener('click', closeNav);
+      if (overlay)   overlay.addEventListener('click', closeNav);
+      document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && sidebar.classList.contains('is-open')) closeNav(); });
+    })();
+---
+<div class="docs-page-header">
       <h1 class="docs-page-title">Combobox &amp; Multiselect</h1>
       <p class="docs-page-description">
         Two enhanced select components built on the Form Field token set. The Combobox provides single-selection with an inline search filter. The Multiselect provides multiple-selection with checkboxes and a search field inside the dropdown panel.
@@ -1030,135 +1075,3 @@ document.addEventListener('keydown', function(e) {
 });</code></pre></div>
       </div>
     </div>
-
-  </main>
-</div>
-
-<script>
-  function switchTab(event, tabId) {
-    const section = event.target.closest('.docs-section');
-    section.querySelectorAll('.docs-code-tab').forEach(t => t.classList.remove('active'));
-    section.querySelectorAll('.docs-code-panel').forEach(p => p.classList.remove('active'));
-    event.target.classList.add('active');
-    document.getElementById(tabId).classList.add('active');
-  }
-
-  function toggleCombobox(id) {
-    const el = document.getElementById(id);
-    const isOpen = el.classList.toggle('is-open');
-    const trigger = el.querySelector('.cue-combobox__trigger');
-    trigger.setAttribute('aria-expanded', isOpen);
-    if (isOpen) { setTimeout(() => el.querySelector('.cue-combobox__panel-search input')?.focus(), 50); }
-  }
-
-  function selectCombobox(id, option) {
-    const el = document.getElementById(id);
-    el.querySelectorAll('.cue-combobox__option').forEach(o => { o.classList.remove('is-selected'); o.setAttribute('aria-selected', 'false'); });
-    option.classList.add('is-selected');
-    option.setAttribute('aria-selected', 'true');
-    const display = document.getElementById(id + '-display');
-    if (display) { display.textContent = option.dataset.value; display.classList.add('has-value'); }
-    const search = el.querySelector('.cue-combobox__panel-search input');
-    if (search) { search.value = ''; filterCombobox(id, ''); }
-    el.classList.remove('is-open');
-    el.querySelector('.cue-combobox__trigger').setAttribute('aria-expanded', 'false');
-  }
-
-  function clearCombobox(id, event) {
-    event.stopPropagation();
-    const el = document.getElementById(id);
-    el.querySelectorAll('.cue-combobox__option').forEach(o => { o.classList.remove('is-selected'); o.setAttribute('aria-selected', 'false'); });
-    const display = document.getElementById(id + '-display');
-    if (display) { display.textContent = 'Select'; display.classList.remove('has-value'); }
-  }
-
-  function filterCombobox(id, query) {
-    const q = query.toLowerCase().trim();
-    document.getElementById(id).querySelectorAll('.cue-combobox__option').forEach(opt => {
-      opt.classList.toggle('is-hidden', q !== '' && !(opt.dataset.value || '').toLowerCase().includes(q));
-    });
-  }
-
-  function toggleMultiselect(id) {
-    const el = document.getElementById(id);
-    const isOpen = el.classList.toggle('is-open');
-    el.querySelector('.cue-multiselect__trigger').setAttribute('aria-expanded', isOpen);
-    if (isOpen) { setTimeout(() => el.querySelector('.cue-multiselect__search input')?.focus(), 50); }
-  }
-
-  function toggleMultiselectOption(id, option) {
-    option.classList.toggle('is-selected');
-    option.setAttribute('aria-selected', option.classList.contains('is-selected'));
-    syncAllCheckbox(id);
-    updateMultiselectTags(id);
-  }
-
-  function toggleAll(id, allOption) {
-    const el = document.getElementById(id);
-    const willSelect = !allOption.classList.contains('is-selected');
-    el.querySelectorAll('.cue-multiselect__option').forEach(o => { o.classList.toggle('is-selected', willSelect); o.setAttribute('aria-selected', willSelect); });
-    updateMultiselectTags(id);
-  }
-
-  function syncAllCheckbox(id) {
-    const el = document.getElementById(id);
-    const all = el.querySelector('.cue-multiselect__option.is-all');
-    if (!all) return;
-    const opts = el.querySelectorAll('.cue-multiselect__option:not(.is-all)');
-    all.classList.toggle('is-selected', [...opts].every(o => o.classList.contains('is-selected')));
-  }
-
-  function updateMultiselectTags(id) {
-    const el = document.getElementById(id);
-    const tagsEl = document.getElementById(id + '-tags');
-    if (!tagsEl) return;
-    const MAX = 3;
-    const selected = [...el.querySelectorAll('.cue-multiselect__option:not(.is-all).is-selected')].map(o => o.dataset.value).filter(Boolean);
-    if (selected.length === 0) {
-      tagsEl.innerHTML = '<span class="cue-multiselect__placeholder">Select</span>';
-    } else {
-      const shown = selected.slice(0, MAX);
-      const overflow = selected.length - MAX;
-      tagsEl.innerHTML = shown.map(v => `<span class="cue-multiselect__tag">${v}</span>`).join('') + (overflow > 0 ? `<span class="cue-multiselect__overflow">+${overflow}</span>` : '');
-    }
-  }
-
-  function filterMultiselect(id, query) {
-    const q = query.toLowerCase().trim();
-    document.getElementById(id).querySelectorAll('.cue-multiselect__option:not(.is-all)').forEach(opt => {
-      opt.classList.toggle('is-hidden', q !== '' && !(opt.dataset.value || '').toLowerCase().includes(q));
-    });
-  }
-
-  document.addEventListener('click', function(e) {
-    document.querySelectorAll('.cue-combobox.is-open, .cue-multiselect.is-open').forEach(el => {
-      if (!el.contains(e.target)) { el.classList.remove('is-open'); el.querySelector('[aria-expanded]')?.setAttribute('aria-expanded', 'false'); }
-    });
-  });
-
-  document.addEventListener('keydown', function(e) {
-    if (e.key !== 'Escape') return;
-    document.querySelectorAll('.cue-combobox.is-open, .cue-multiselect.is-open').forEach(el => {
-      el.classList.remove('is-open');
-      const t = el.querySelector('[aria-expanded]');
-      t?.setAttribute('aria-expanded', 'false');
-      t?.focus();
-    });
-  });
-
-  (function() {
-    var sidebar   = document.querySelector('.docs-sidebar');
-    var overlay   = document.querySelector('.docs-nav-overlay');
-    var hamburger = document.querySelector('.docs-topbar__hamburger');
-    var closeBtn  = document.querySelector('.docs-sidebar__close');
-    function openNav() { sidebar.classList.add('is-open'); overlay.classList.add('is-visible'); document.body.style.overflow = 'hidden'; if (hamburger) hamburger.setAttribute('aria-expanded', 'true'); if (closeBtn) closeBtn.focus(); }
-    function closeNav() { sidebar.classList.remove('is-open'); overlay.classList.remove('is-visible'); document.body.style.overflow = ''; if (hamburger) { hamburger.setAttribute('aria-expanded', 'false'); hamburger.focus(); } }
-    if (hamburger) hamburger.addEventListener('click', openNav);
-    if (closeBtn)  closeBtn.addEventListener('click', closeNav);
-    if (overlay)   overlay.addEventListener('click', closeNav);
-    document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && sidebar.classList.contains('is-open')) closeNav(); });
-  })();
-</script>
-
-</body>
-</html>

@@ -1,619 +1,580 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CUE Canvas — Calendar &amp; Scheduler Components</title>
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../tokens.css" />
-  <link rel="stylesheet" href="../base.css" />
-  <link rel="stylesheet" href="../components.css" />
-  <link rel="icon" type="image/svg+xml" href="../assets/logo_CUE_glyph.svg" />
-  <style>
-
-    /* ============================================================
-       CALENDAR & SCHEDULER COMPONENTS
-
-       These components are the atomic building blocks used to
-       assemble the full Calendar and Resource Scheduler views
-       in CUE Back Office.
-
-       CALENDAR components:
-         .cue-cal-day-header         — day/date column header
-         .cue-cal-hour-block         — one-hour time slot
-         .cue-cal-time-indicator     — current time marker line
-         .cue-cal-activity           — calendar event block
-         .cue-cal-avatar             — user avatar circle
-         .cue-cal-avatar-group       — stacked avatar row
-         .cue-cal-actions-btn        — more_horiz actions button
-
-       SCHEDULER components:
-         .cue-sched-resource         — resource/personnel header block
-         .cue-sched-block            — scheduler activity block
-         .cue-resource-tag           — employment status tag
-
-       All blocks use the Calendar token group from the UI Theme.
-    ============================================================ */
-
-
-    /* ============================================================
-       SHARED TOKEN VALUES (Calendar group)
-       bg:     --bg-hour-block       (#ffffff)
-       border: --border-hour-block   (#ededed)
-       dash:   --border-dashed-half-hour (#ededed)
-       current indicator: --current-day-active-indicator (#fab632)
-       activity bg:     --bg-cal-activity-block    (#ffffff)
-       activity border: --border-cal-activity-block (#ededed)
-       sched bg:        --bg-resource-sched-block  (#ffffff)
-       sched border:    --border-resource-sched-block (#ededed)
-    ============================================================ */
-
-
-    /* ============================================================
-       CALENDAR — DAY AND DATE HEADER
-    ============================================================ */
-
-    .cue-cal-day-header {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      justify-content: center;
-      width: 189px;
-      padding: 1rem;
-      border: 1px solid var(--border-hour-block);
-      background-color: var(--bg-hour-block);
-      overflow: hidden;
-    }
-
-    /* Current day — amber top bar indicator */
-    .cue-cal-day-header--current::before {
-      content: '';
-      position: absolute;
-      top: -1px;
-      left: -1px;
-      right: -1px;
-      height: 4px;
-      background-color: var(--current-day-active-indicator);
-    }
-
-    .cue-cal-day-header__day {
-      font-size: 0.875rem;   /* 14px */
-      font-weight: 400;
-      color: var(--content-body-default);
-      line-height: 1;
-    }
-
-    .cue-cal-day-header__date {
-      font-size: 1.5rem;     /* 24px */
-      font-weight: 600;
-      color: var(--content-body-default);
-      line-height: 1.15;
-    }
-
-
-    /* ============================================================
-       CALENDAR — HOUR BLOCK
-       Each block = one hour, split into two 30-min halves.
-       The dashed border marks the half-hour.
-    ============================================================ */
-
-    .cue-cal-hour-block {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      width: 189px;
-      height: 120px;
-      border: 1px solid var(--border-hour-block);
-      overflow: hidden;
-    }
-
-    .cue-cal-hour-block--vertical {
-      flex-direction: row;
-    }
-
-    /* First half — shows time label, dashed bottom border */
-    .cue-cal-hour-block__first-half {
-      flex: 1;
-      display: flex;
-      align-items: flex-start;
-      padding: 0.75rem;
-      background-color: var(--bg-hour-block);
-      border-bottom: 1px dashed var(--border-dashed-half-hour);
-      margin-bottom: -1px;
-      position: relative;
-      z-index: 2;
-    }
-
-    .cue-cal-hour-block--vertical .cue-cal-hour-block__first-half {
-      border-bottom: none;
-      border-right: 1px dashed var(--border-dashed-half-hour);
-      margin-bottom: 0;
-      margin-right: -1px;
-    }
-
-    /* Second half — empty, lower z-index */
-    .cue-cal-hour-block__second-half {
-      flex: 1;
-      background-color: var(--bg-hour-block);
-      z-index: 1;
-    }
-
-    /* Current day — slightly tinted surface (very subtle in light mode) */
-    .cue-cal-hour-block--current .cue-cal-hour-block__first-half,
-    .cue-cal-hour-block--current .cue-cal-hour-block__second-half {
-      background-color: #ffffff; /* same in light mode; tinted in dark mode */
-    }
-
-    .cue-cal-hour-block__time {
-      display: flex;
-      align-items: center;
-      gap: 2px;
-      font-size: 0.875rem;   /* 14px */
-      font-weight: 400;
-      color: var(--content-body-moderate);
-      white-space: nowrap;
-    }
-
-
-    /* ============================================================
-       CALENDAR — CURRENT TIME INDICATOR
-       Full-width horizontal line at current time position.
-       Positioned absolutely over the hour grid — the parent
-       grid container must be position: relative.
-    ============================================================ */
-
-    .cue-cal-time-indicator {
-      position: absolute;
-      left: 0;
-      right: 0;
-      height: 12px;
-      display: flex;
-      align-items: center;
-      pointer-events: none;
-      z-index: 10;
-    }
-
-    /* Left segment — line only (no circle, covers time label column) */
-    .cue-cal-time-indicator__line-only {
-      width: 200px;
-      height: 2px;
-      background-color: var(--current-day-active-indicator);
-      flex-shrink: 0;
-    }
-
-    /* Right segment — circle + line */
-    .cue-cal-time-indicator__main {
-      flex: 1;
-      height: 2px;
-      background-color: var(--current-day-active-indicator);
-      position: relative;
-    }
-
-    .cue-cal-time-indicator__circle {
-      position: absolute;
-      left: -6px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background-color: var(--current-day-active-indicator);
-    }
-
-
-    /* ============================================================
-       CALENDAR — ACTIVITY BLOCK
-       Event card placed over the hour grid.
-       Width and top/height are set dynamically by the layout.
-    ============================================================ */
-
-    .cue-cal-activity {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      width: 189px;
-      padding: 0.5rem;
-      border: 1px solid var(--border-cal-activity-block);
-      border-radius: 4px;
-      background-color: var(--bg-cal-activity-block);
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      overflow: hidden;
-    }
-
-    .cue-cal-activity:hover {
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      border-color: var(--border-moderate);
-    }
-
-    /* Title and time row */
-    .cue-cal-activity__top {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 0.625rem;
-      width: 100%;
-    }
-
-    .cue-cal-activity__title-time {
-      flex: 1;
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .cue-cal-activity__title {
-      font-size: 0.875rem;   /* 14px */
-      font-weight: 700;
-      color: var(--content-body-primary-brand);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .cue-cal-activity__time {
-      display: flex;
-      align-items: center;
-      gap: 2px;
-      font-size: 0.75rem;    /* 12px */
-      font-weight: 400;
-      color: var(--content-body-moderate);
-      white-space: nowrap;
-    }
-
-    /* Description (middle slot) */
-    .cue-cal-activity__desc {
-      font-size: 0.6875rem;  /* 11px */
-      font-weight: 400;
-      color: var(--content-body-moderate);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      width: 100%;
-      margin-top: 0.5rem;
-    }
-
-    /* Actions menu button */
-    .cue-cal-actions-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      padding: 0;
-      color: var(--content-body-moderate);
-      flex-shrink: 0;
-      border-radius: var(--corner-button);
-      transition: color 0.15s ease, background-color 0.15s ease;
-    }
-
-    .cue-cal-actions-btn:hover {
-      color: var(--content-body-default);
-      background-color: var(--bg-level-0);
-    }
-
-    .cue-cal-actions-btn .material-icons {
-      font-size: 18px;
-    }
-
-    /* Avatar group (bottom slot) */
-    .cue-cal-activity__avatars {
-      display: flex;
-      align-items: center;
-      padding-right: 4px;
-      margin-top: auto;
-      padding-top: 0.5rem;
-    }
-
-
-    /* ============================================================
-       SHARED — USER AVATAR
-       24px circle with white initials on accent brand blue.
-       Stacked using negative margin-right.
-    ============================================================ */
-
-    .cue-cal-avatar {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background-color: var(--bg-accent-brand);
-      border: 1px solid rgba(0, 0, 0, 0.2);
-      box-shadow: 0 0 0 1px #ffffff;
-      overflow: hidden;
-      flex-shrink: 0;
-      margin-right: -4px;
-    }
-
-    .cue-cal-avatar--action {
-      background-color: var(--bg-primary-brand);
-    }
-
-    .cue-cal-avatar__initials {
-      font-size: 0.625rem;   /* 10px */
-      font-weight: 700;
-      color: var(--content-body-inverse);
-      text-align: center;
-      line-height: 1;
-    }
-
-    .cue-cal-avatar--single .cue-cal-avatar__initials {
-      font-size: 0.75rem;    /* 12px */
-    }
-
-    .cue-cal-avatar__icon {
-      font-size: 14px;
-      color: var(--content-body-inverse);
-    }
-
-
-    /* ============================================================
-       SCHEDULER — RESOURCE / PERSONNEL BLOCK
-       Column header in the resource scheduler view.
-    ============================================================ */
-
-    .cue-sched-resource {
-      display: flex;
-      flex-direction: column;
-      gap: 0.625rem;
-      width: 234px;
-      height: 90px;
-      padding: 1rem;
-      border: 1px solid var(--border-hour-block);
-      background-color: var(--bg-hour-block);
-    }
-
-    .cue-sched-resource__row {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.5rem;
-      width: 100%;
-    }
-
-    .cue-sched-resource__avatar {
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background-color: var(--bg-accent-brand);
-      border: 1px solid rgba(0, 0, 0, 0.2);
-      box-shadow: 0 0 0 1px #ffffff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    .cue-sched-resource__avatar-initial {
-      font-size: 0.5625rem;  /* 9px */
-      font-weight: 700;
-      color: var(--content-body-inverse);
-    }
-
-    .cue-sched-resource__info {
-      flex: 1;
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .cue-sched-resource__name {
-      font-size: 0.875rem;   /* 14px */
-      font-weight: 600;
-      color: var(--content-body-default);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-
-    /* ============================================================
-       SCHEDULER — ACTIVITY BLOCK
-       Event card placed in the scheduler grid.
-       Wider than calendar activity block (248px vs 189px).
-    ============================================================ */
-
-    .cue-sched-block {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      width: 248px;
-      padding: 0.5rem;
-      border: 1px solid var(--border-resource-sched-block);
-      border-radius: 4px;
-      background-color: var(--bg-resource-sched-block);
-      overflow: hidden;
-    }
-
-    .cue-sched-block:hover {
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .cue-sched-block__top {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 0.625rem;
-      width: 100%;
-    }
-
-    .cue-sched-block__title-time {
-      flex: 1;
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .cue-sched-block__title {
-      font-size: 0.875rem;   /* 14px */
-      font-weight: 700;
-      color: var(--content-body-primary-brand);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .cue-sched-block__time {
-      display: flex;
-      align-items: center;
-      gap: 2px;
-      font-size: 0.75rem;    /* 12px */
-      font-weight: 400;
-      color: var(--content-body-moderate);
-      white-space: nowrap;
-    }
-
-    .cue-sched-block__desc {
-      font-size: 0.6875rem;  /* 11px */
-      font-weight: 400;
-      color: var(--content-body-moderate);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      width: 100%;
-      margin-top: 4px;
-    }
-
-
-    /* ============================================================
-       SCHEDULER — RESOURCE STATUS TAG
-       Employment type badge used in resource headers.
-       Uses primitive color scale directly (not global tokens).
-    ============================================================ */
-
-    .cue-resource-tag {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 4px 6px;
-      border-radius: 4px;
-      font-size: 0.5625rem;  /* 9px */
-      font-weight: 600;
-      line-height: 1;
-      white-space: nowrap;
-    }
-
-    .cue-resource-tag--full-time {
-      background-color: #d7f4de;  /* green-100 */
-      color: #155124;             /* green-800 */
-    }
-
-    .cue-resource-tag--part-time {
-      background-color: #ffeccc;  /* orange-100 */
-      color: #945e00;             /* orange-700 */
-    }
-
-    .cue-resource-tag--temp {
-      background-color: var(--bg-status-neutral);
-      color: var(--content-status-neutral);
-    }
-
-
-    /* ============================================================
-       DOCS LAYOUT HELPERS
-    ============================================================ */
-
-    .cal-demo-grid {
-      display: flex;
-      gap: 0;
-    }
-
-    .cal-demo-col {
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-    }
-
-    .component-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-
-    .component-row {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: flex-start;
-      gap: 1rem;
-    }
-
-    .component-label {
-      font-size: 0.6875rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.07em;
-      color: var(--content-body-moderate);
-      margin-bottom: 0.5rem;
-    }
-
-  </style>
-</head>
-<body>
-
-<div class="docs-topbar" role="banner">
-  <a href="../index.html" class="docs-topbar__logo" aria-label="CUE Canvas home">
-    <img src="../assets/logo_CUE_glyph.svg" alt="CUE glyph" />
-    <span class="docs-topbar__logo-label">Canvas</span>
-  </a>
-  <button class="docs-topbar__hamburger" aria-label="Open navigation" aria-expanded="false" aria-controls="docs-sidebar">
-    <span class="material-icons" aria-hidden="true">menu</span>
-  </button>
-</div>
-
-<div class="docs-nav-overlay" aria-hidden="true"></div>
-
-<div class="docs-layout">
-
-  <nav class="docs-sidebar" id="docs-sidebar" aria-label="Documentation navigation">
-    <button class="docs-sidebar__close" aria-label="Close navigation">
-      <span class="material-icons" aria-hidden="true">close</span>
-    </button>
-    <a href="../index.html" class="docs-sidebar__logo" aria-label="CUE Canvas home">
-      <img src="../assets/logo_CUE_glyph.svg" alt="CUE glyph" />
-      <span class="docs-sidebar__logo-label">Canvas</span>
-    </a>
-    <p class="docs-sidebar__section-label">Getting Started</p>
-    <div class="docs-sidebar__nav">
-      <a href="../index.html" class="docs-sidebar__nav-link">Overview</a>
-    </div>
-    <p class="docs-sidebar__section-label">Components</p>
-    <div class="docs-sidebar__nav">
-      <a href="accordion.html" class="docs-sidebar__nav-link">Accordion</a>
-      <a href="alert.html" class="docs-sidebar__nav-link">Alert</a>
-      <a href="badge.html" class="docs-sidebar__nav-link">Badge</a>
-      <a href="breadcrumb.html" class="docs-sidebar__nav-link">Breadcrumb</a>
-      <a href="button.html" class="docs-sidebar__nav-link">Button</a>
-      <a href="calendar-components.html" class="docs-sidebar__nav-link active">Calendar Components</a>
-      <a href="calendar.html" class="docs-sidebar__nav-link">Calendar</a>
-      <a href="card.html" class="docs-sidebar__nav-link">Card</a>
-      <a href="chat.html" class="docs-sidebar__nav-link">Chat</a>
-      <a href="combobox.html" class="docs-sidebar__nav-link">Combobox &amp; Multiselect</a>
-      <a href="date-picker.html" class="docs-sidebar__nav-link">Date Picker</a>
-      <a href="dropdown.html" class="docs-sidebar__nav-link">Dropdown Menu</a>
-      <a href="expand-collapse.html" class="docs-sidebar__nav-link">Expand / Collapse</a>
-      <a href="form-field.html" class="docs-sidebar__nav-link">Form Field</a>
-      <a href="modal.html" class="docs-sidebar__nav-link">Modal</a>
-      <a href="scheduler.html" class="docs-sidebar__nav-link">Scheduler</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Side Navigation</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Skeleton Loader</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Status Badge</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Step Process</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Tab Navigation</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Table</a>
-    </div>
-    <p class="docs-sidebar__section-label">Icons</p>
-    <div class="docs-sidebar__nav">
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Icon Reference</a>
-    </div>
-  </nav>
-
-  <main class="docs-main">
-
-    <div class="docs-page-header">
+---
+layout: default
+title: "Calendar Components"
+activeNav: calendar-components
+root: ../
+extraCSS: |
+  /* ============================================================
+         CALENDAR & SCHEDULER COMPONENTS
+  
+         These components are the atomic building blocks used to
+         assemble the full Calendar and Resource Scheduler views
+         in CUE Back Office.
+  
+         CALENDAR components:
+           .cue-cal-day-header         — day/date column header
+           .cue-cal-hour-block         — one-hour time slot
+           .cue-cal-time-indicator     — current time marker line
+           .cue-cal-activity           — calendar event block
+           .cue-cal-avatar             — user avatar circle
+           .cue-cal-avatar-group       — stacked avatar row
+           .cue-cal-actions-btn        — more_horiz actions button
+  
+         SCHEDULER components:
+           .cue-sched-resource         — resource/personnel header block
+           .cue-sched-block            — scheduler activity block
+           .cue-resource-tag           — employment status tag
+  
+         All blocks use the Calendar token group from the UI Theme.
+      ============================================================ */
+  
+  
+      /* ============================================================
+         SHARED TOKEN VALUES (Calendar group)
+         bg:     --bg-hour-block       (#ffffff)
+         border: --border-hour-block   (#ededed)
+         dash:   --border-dashed-half-hour (#ededed)
+         current indicator: --current-day-active-indicator (#fab632)
+         activity bg:     --bg-cal-activity-block    (#ffffff)
+         activity border: --border-cal-activity-block (#ededed)
+         sched bg:        --bg-resource-sched-block  (#ffffff)
+         sched border:    --border-resource-sched-block (#ededed)
+      ============================================================ */
+  
+  
+      /* ============================================================
+         CALENDAR — DAY AND DATE HEADER
+      ============================================================ */
+  
+      .cue-cal-day-header {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        width: 189px;
+        padding: 1rem;
+        border: 1px solid var(--border-hour-block);
+        background-color: var(--bg-hour-block);
+        overflow: hidden;
+      }
+  
+      /* Current day — amber top bar indicator */
+      .cue-cal-day-header--current::before {
+        content: '';
+        position: absolute;
+        top: -1px;
+        left: -1px;
+        right: -1px;
+        height: 4px;
+        background-color: var(--current-day-active-indicator);
+      }
+  
+      .cue-cal-day-header__day {
+        font-size: 0.875rem;   /* 14px */
+        font-weight: 400;
+        color: var(--content-body-default);
+        line-height: 1;
+      }
+  
+      .cue-cal-day-header__date {
+        font-size: 1.5rem;     /* 24px */
+        font-weight: 600;
+        color: var(--content-body-default);
+        line-height: 1.15;
+      }
+  
+  
+      /* ============================================================
+         CALENDAR — HOUR BLOCK
+         Each block = one hour, split into two 30-min halves.
+         The dashed border marks the half-hour.
+      ============================================================ */
+  
+      .cue-cal-hour-block {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        width: 189px;
+        height: 120px;
+        border: 1px solid var(--border-hour-block);
+        overflow: hidden;
+      }
+  
+      .cue-cal-hour-block--vertical {
+        flex-direction: row;
+      }
+  
+      /* First half — shows time label, dashed bottom border */
+      .cue-cal-hour-block__first-half {
+        flex: 1;
+        display: flex;
+        align-items: flex-start;
+        padding: 0.75rem;
+        background-color: var(--bg-hour-block);
+        border-bottom: 1px dashed var(--border-dashed-half-hour);
+        margin-bottom: -1px;
+        position: relative;
+        z-index: 2;
+      }
+  
+      .cue-cal-hour-block--vertical .cue-cal-hour-block__first-half {
+        border-bottom: none;
+        border-right: 1px dashed var(--border-dashed-half-hour);
+        margin-bottom: 0;
+        margin-right: -1px;
+      }
+  
+      /* Second half — empty, lower z-index */
+      .cue-cal-hour-block__second-half {
+        flex: 1;
+        background-color: var(--bg-hour-block);
+        z-index: 1;
+      }
+  
+      /* Current day — slightly tinted surface (very subtle in light mode) */
+      .cue-cal-hour-block--current .cue-cal-hour-block__first-half,
+      .cue-cal-hour-block--current .cue-cal-hour-block__second-half {
+        background-color: #ffffff; /* same in light mode; tinted in dark mode */
+      }
+  
+      .cue-cal-hour-block__time {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        font-size: 0.875rem;   /* 14px */
+        font-weight: 400;
+        color: var(--content-body-moderate);
+        white-space: nowrap;
+      }
+  
+  
+      /* ============================================================
+         CALENDAR — CURRENT TIME INDICATOR
+         Full-width horizontal line at current time position.
+         Positioned absolutely over the hour grid — the parent
+         grid container must be position: relative.
+      ============================================================ */
+  
+      .cue-cal-time-indicator {
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: 12px;
+        display: flex;
+        align-items: center;
+        pointer-events: none;
+        z-index: 10;
+      }
+  
+      /* Left segment — line only (no circle, covers time label column) */
+      .cue-cal-time-indicator__line-only {
+        width: 200px;
+        height: 2px;
+        background-color: var(--current-day-active-indicator);
+        flex-shrink: 0;
+      }
+  
+      /* Right segment — circle + line */
+      .cue-cal-time-indicator__main {
+        flex: 1;
+        height: 2px;
+        background-color: var(--current-day-active-indicator);
+        position: relative;
+      }
+  
+      .cue-cal-time-indicator__circle {
+        position: absolute;
+        left: -6px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: var(--current-day-active-indicator);
+      }
+  
+  
+      /* ============================================================
+         CALENDAR — ACTIVITY BLOCK
+         Event card placed over the hour grid.
+         Width and top/height are set dynamically by the layout.
+      ============================================================ */
+  
+      .cue-cal-activity {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        width: 189px;
+        padding: 0.5rem;
+        border: 1px solid var(--border-cal-activity-block);
+        border-radius: 4px;
+        background-color: var(--bg-cal-activity-block);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+  
+      .cue-cal-activity:hover {
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-color: var(--border-moderate);
+      }
+  
+      /* Title and time row */
+      .cue-cal-activity__top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 0.625rem;
+        width: 100%;
+      }
+  
+      .cue-cal-activity__title-time {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+      }
+  
+      .cue-cal-activity__title {
+        font-size: 0.875rem;   /* 14px */
+        font-weight: 700;
+        color: var(--content-body-primary-brand);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+  
+      .cue-cal-activity__time {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        font-size: 0.75rem;    /* 12px */
+        font-weight: 400;
+        color: var(--content-body-moderate);
+        white-space: nowrap;
+      }
+  
+      /* Description (middle slot) */
+      .cue-cal-activity__desc {
+        font-size: 0.6875rem;  /* 11px */
+        font-weight: 400;
+        color: var(--content-body-moderate);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 100%;
+        margin-top: 0.5rem;
+      }
+  
+      /* Actions menu button */
+      .cue-cal-actions-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        color: var(--content-body-moderate);
+        flex-shrink: 0;
+        border-radius: var(--corner-button);
+        transition: color 0.15s ease, background-color 0.15s ease;
+      }
+  
+      .cue-cal-actions-btn:hover {
+        color: var(--content-body-default);
+        background-color: var(--bg-level-0);
+      }
+  
+      .cue-cal-actions-btn .material-icons {
+        font-size: 18px;
+      }
+  
+      /* Avatar group (bottom slot) */
+      .cue-cal-activity__avatars {
+        display: flex;
+        align-items: center;
+        padding-right: 4px;
+        margin-top: auto;
+        padding-top: 0.5rem;
+      }
+  
+  
+      /* ============================================================
+         SHARED — USER AVATAR
+         24px circle with white initials on accent brand blue.
+         Stacked using negative margin-right.
+      ============================================================ */
+  
+      .cue-cal-avatar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background-color: var(--bg-accent-brand);
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        box-shadow: 0 0 0 1px #ffffff;
+        overflow: hidden;
+        flex-shrink: 0;
+        margin-right: -4px;
+      }
+  
+      .cue-cal-avatar--action {
+        background-color: var(--bg-primary-brand);
+      }
+  
+      .cue-cal-avatar__initials {
+        font-size: 0.625rem;   /* 10px */
+        font-weight: 700;
+        color: var(--content-body-inverse);
+        text-align: center;
+        line-height: 1;
+      }
+  
+      .cue-cal-avatar--single .cue-cal-avatar__initials {
+        font-size: 0.75rem;    /* 12px */
+      }
+  
+      .cue-cal-avatar__icon {
+        font-size: 14px;
+        color: var(--content-body-inverse);
+      }
+  
+  
+      /* ============================================================
+         SCHEDULER — RESOURCE / PERSONNEL BLOCK
+         Column header in the resource scheduler view.
+      ============================================================ */
+  
+      .cue-sched-resource {
+        display: flex;
+        flex-direction: column;
+        gap: 0.625rem;
+        width: 234px;
+        height: 90px;
+        padding: 1rem;
+        border: 1px solid var(--border-hour-block);
+        background-color: var(--bg-hour-block);
+      }
+  
+      .cue-sched-resource__row {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+        width: 100%;
+      }
+  
+      .cue-sched-resource__avatar {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background-color: var(--bg-accent-brand);
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        box-shadow: 0 0 0 1px #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+  
+      .cue-sched-resource__avatar-initial {
+        font-size: 0.5625rem;  /* 9px */
+        font-weight: 700;
+        color: var(--content-body-inverse);
+      }
+  
+      .cue-sched-resource__info {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+  
+      .cue-sched-resource__name {
+        font-size: 0.875rem;   /* 14px */
+        font-weight: 600;
+        color: var(--content-body-default);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+  
+  
+      /* ============================================================
+         SCHEDULER — ACTIVITY BLOCK
+         Event card placed in the scheduler grid.
+         Wider than calendar activity block (248px vs 189px).
+      ============================================================ */
+  
+      .cue-sched-block {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        width: 248px;
+        padding: 0.5rem;
+        border: 1px solid var(--border-resource-sched-block);
+        border-radius: 4px;
+        background-color: var(--bg-resource-sched-block);
+        overflow: hidden;
+      }
+  
+      .cue-sched-block:hover {
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+  
+      .cue-sched-block__top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 0.625rem;
+        width: 100%;
+      }
+  
+      .cue-sched-block__title-time {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+      }
+  
+      .cue-sched-block__title {
+        font-size: 0.875rem;   /* 14px */
+        font-weight: 700;
+        color: var(--content-body-primary-brand);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+  
+      .cue-sched-block__time {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        font-size: 0.75rem;    /* 12px */
+        font-weight: 400;
+        color: var(--content-body-moderate);
+        white-space: nowrap;
+      }
+  
+      .cue-sched-block__desc {
+        font-size: 0.6875rem;  /* 11px */
+        font-weight: 400;
+        color: var(--content-body-moderate);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 100%;
+        margin-top: 4px;
+      }
+  
+  
+      /* ============================================================
+         SCHEDULER — RESOURCE STATUS TAG
+         Employment type badge used in resource headers.
+         Uses primitive color scale directly (not global tokens).
+      ============================================================ */
+  
+      .cue-resource-tag {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4px 6px;
+        border-radius: 4px;
+        font-size: 0.5625rem;  /* 9px */
+        font-weight: 600;
+        line-height: 1;
+        white-space: nowrap;
+      }
+  
+      .cue-resource-tag--full-time {
+        background-color: #d7f4de;  /* green-100 */
+        color: #155124;             /* green-800 */
+      }
+  
+      .cue-resource-tag--part-time {
+        background-color: #ffeccc;  /* orange-100 */
+        color: #945e00;             /* orange-700 */
+      }
+  
+      .cue-resource-tag--temp {
+        background-color: var(--bg-status-neutral);
+        color: var(--content-status-neutral);
+      }
+  
+  
+      /* ============================================================
+         DOCS LAYOUT HELPERS
+      ============================================================ */
+  
+      .cal-demo-grid {
+        display: flex;
+        gap: 0;
+      }
+  
+      .cal-demo-col {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+      }
+  
+      .component-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+  
+      .component-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+  
+      .component-label {
+        font-size: 0.6875rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        color: var(--content-body-moderate);
+        margin-bottom: 0.5rem;
+      }
+pageScript: |
+  (function() {
+      var sidebar   = document.querySelector('.docs-sidebar');
+      var overlay   = document.querySelector('.docs-nav-overlay');
+      var hamburger = document.querySelector('.docs-topbar__hamburger');
+      var closeBtn  = document.querySelector('.docs-sidebar__close');
+  
+      function openNav() {
+        sidebar.classList.add('is-open');
+        overlay.classList.add('is-visible');
+        document.body.style.overflow = 'hidden';
+        if (hamburger) hamburger.setAttribute('aria-expanded', 'true');
+        if (closeBtn) closeBtn.focus();
+      }
+  
+      function closeNav() {
+        sidebar.classList.remove('is-open');
+        overlay.classList.remove('is-visible');
+        document.body.style.overflow = '';
+        if (hamburger) {
+          hamburger.setAttribute('aria-expanded', 'false');
+          hamburger.focus();
+        }
+      }
+  
+      if (hamburger) hamburger.addEventListener('click', openNav);
+      if (closeBtn)  closeBtn.addEventListener('click', closeNav);
+      if (overlay)   overlay.addEventListener('click', closeNav);
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && sidebar.classList.contains('is-open')) closeNav();
+      });
+    })();
+---
+<div class="docs-page-header">
       <h1 class="docs-page-title">Calendar &amp; Scheduler Components</h1>
       <p class="docs-page-description">
         These are the atomic building blocks used to assemble the Calendar and Resource Scheduler views in CUE Back Office. The Calendar supports daily and weekly meeting or time-block scheduling. The Resource Scheduler supports production line and personnel planning across time.
@@ -1081,43 +1042,3 @@
 --border-resource-sched-block-hover:  #8a8a8a;</code></pre>
       </div>
     </div>
-
-  </main>
-</div>
-
-<script>
-  (function() {
-    var sidebar   = document.querySelector('.docs-sidebar');
-    var overlay   = document.querySelector('.docs-nav-overlay');
-    var hamburger = document.querySelector('.docs-topbar__hamburger');
-    var closeBtn  = document.querySelector('.docs-sidebar__close');
-
-    function openNav() {
-      sidebar.classList.add('is-open');
-      overlay.classList.add('is-visible');
-      document.body.style.overflow = 'hidden';
-      if (hamburger) hamburger.setAttribute('aria-expanded', 'true');
-      if (closeBtn) closeBtn.focus();
-    }
-
-    function closeNav() {
-      sidebar.classList.remove('is-open');
-      overlay.classList.remove('is-visible');
-      document.body.style.overflow = '';
-      if (hamburger) {
-        hamburger.setAttribute('aria-expanded', 'false');
-        hamburger.focus();
-      }
-    }
-
-    if (hamburger) hamburger.addEventListener('click', openNav);
-    if (closeBtn)  closeBtn.addEventListener('click', closeNav);
-    if (overlay)   overlay.addEventListener('click', closeNav);
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape' && sidebar.classList.contains('is-open')) closeNav();
-    });
-  })();
-</script>
-
-</body>
-</html>

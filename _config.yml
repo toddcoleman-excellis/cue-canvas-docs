@@ -1,0 +1,12 @@
+title: CUE Canvas
+description: CUE Back Office Design System Documentation
+baseurl: ""
+url: "https://toddcoleman-excellis.github.io/cue-canvas-docs"
+
+# Tell Jekyll not to process these as pages
+exclude:
+  - README.md
+  - "*.zip"
+
+# Keep .nojekyll absent so Jekyll runs
+plugins: []

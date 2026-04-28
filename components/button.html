@@ -1,374 +1,338 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CUE Canvas — Button</title>
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../tokens.css" />
-  <link rel="icon" type="image/svg+xml" href="../assets/logo_CUE_glyph.svg" />
-  <link rel="stylesheet" href="../base.css" />
-  <link rel="stylesheet" href="../components.css" />
-  <style>
-
-    /* ============================================================
-       BUTTON COMPONENT
-
-       Anatomy:
-         .cue-btn                    — button element (base)
-           .cue-btn__icon-leading    — optional leading icon (Material Icon)
-           .cue-btn__label           — button text label
-           .cue-btn__icon-trailing   — optional trailing icon (Material Icon)
-
-       Type modifiers (add to .cue-btn):
-         .cue-btn--primary           — filled primary brand color
-         .cue-btn--secondary         — outlined primary brand color
-         .cue-btn--tertiary          — ghost, brand color text
-         .cue-btn--neutral           — filled neutral (light gray)
-         .cue-btn--neutral-stroke    — outlined neutral
-         .cue-btn--link              — no padding, link style (inline use)
-         .cue-btn--neutral-link      — no padding, neutral text (inline use)
-         .cue-btn--brand-accent      — filled accent/highlight brand color
-         .cue-btn--custom            — custom color via CSS variable override
-
-       Size modifiers (add to .cue-btn):
-         .cue-btn--xsmall
-         .cue-btn--small
-         .cue-btn--large
-         .cue-btn--xlarge
-
-       State:
-         :hover / :focus-visible handled in CSS
-         [disabled] / .cue-btn--disabled
-    ============================================================ */
-
-    /* --- Base --- */
-
-    .cue-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 2px;
-      padding: var(--button-padding-default);
-      border-radius: var(--corner-button);
-      border: 1px solid transparent;
-      font-family: var(--font-family-body);
-      font-size: 0.875rem;
-      font-weight: 700;
-      line-height: 1;
-      white-space: nowrap;
-      cursor: pointer;
-      text-decoration: none;
-      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, opacity 0.15s ease;
-    }
-
-    .cue-btn:focus-visible {
-      outline: 2px solid var(--border-interactive);
-      outline-offset: 2px;
-    }
-
-    .cue-btn[disabled],
-    .cue-btn--disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-      pointer-events: none;
-    }
-
-    /* --- Label inner padding --- */
-
-    .cue-btn__label {
-      padding: 4px;
-    }
-
-    /* --- Icons --- */
-
-    .cue-btn__icon-leading,
-    .cue-btn__icon-trailing {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      line-height: 1;
-      flex-shrink: 0;
-    }
-
-    /* ============================================================
-       BUTTON TYPES
-    ============================================================ */
-
-    /* Primary */
-    .cue-btn--primary {
-      background-color: var(--bg-button-primary);
-      color: var(--content-button-primary);
-      border-color: transparent;
-    }
-    .cue-btn--primary:hover {
-      background-color: var(--bg-button-primary-hover);
-      color: var(--content-button-primary-hover);
-    }
-
-    /* Secondary */
-    .cue-btn--secondary {
-      background-color: var(--bg-button-secondary);
-      color: var(--content-button-secondary);
-      border-color: var(--border-button-secondary);
-    }
-    .cue-btn--secondary:hover {
-      background-color: var(--bg-button-secondary-hover);
-      color: var(--content-button-secondary-hover);
-      border-color: var(--border-button-secondary-hover);
-    }
-
-    /* Tertiary */
-    .cue-btn--tertiary {
-      background-color: var(--bg-button-tertiary-link);
-      color: var(--content-button-tertiary-link);
-      border-color: transparent;
-    }
-    .cue-btn--tertiary:hover {
-      background-color: var(--bg-button-tertiary-link-hover);
-      color: var(--content-button-tertiary-link-hover);
-    }
-
-    /* Neutral */
-    .cue-btn--neutral {
-      background-color: var(--bg-button-neutral);
-      color: var(--content-button-neutral);
-      border-color: transparent;
-    }
-    .cue-btn--neutral:hover {
-      background-color: var(--bg-button-neutral-hover);
-      color: var(--content-button-neutral-hover);
-    }
-
-    /* Neutral - Stroke */
-    .cue-btn--neutral-stroke {
-      background-color: var(--bg-button-neutral-stroke);
-      color: var(--content-button-neutral-stroke);
-      border-color: var(--border-button-neutral-stroke);
-    }
-    .cue-btn--neutral-stroke:hover {
-      background-color: var(--bg-button-neutral-stroke-hover);
-      color: var(--content-button-neutral-stroke-hover);
-      border-color: var(--border-button-neutral-stroke-hover);
-    }
-
-    /* Link (No Padding) */
-    .cue-btn--link {
-      background-color: transparent;
-      color: var(--content-button-tertiary-link);
-      border-color: transparent;
-      padding: 0;
-      border-radius: 0;
-    }
-    .cue-btn--link:hover {
-      color: var(--content-button-tertiary-link-hover);
-    }
-    .cue-btn--link .cue-btn__label {
-      padding: 0;
-    }
-
-    /* Neutral (No Padding) */
-    .cue-btn--neutral-link {
-      background-color: transparent;
-      color: var(--content-button-neutral);
-      border-color: transparent;
-      padding: 0;
-      border-radius: 0;
-      font-weight: 400;
-    }
-    .cue-btn--neutral-link:hover {
-      color: var(--content-button-neutral-hover);
-    }
-    .cue-btn--neutral-link .cue-btn__label {
-      padding: 0;
-    }
-
-    /* Brand Accent */
-    .cue-btn--brand-accent {
-      background-color: var(--bg-accent-brand);
-      color: var(--content-body-default);
-      border-color: transparent;
-    }
-    .cue-btn--brand-accent:hover {
-      background-color: var(--bg-accent-brand);
-      color: var(--content-body-default);
-      filter: brightness(1.1);
-    }
-
-    /* Custom Color — override --btn-custom-bg and --btn-custom-content */
-    .cue-btn--custom {
-      background-color: var(--btn-custom-bg, var(--danger-default));
-      color: var(--btn-custom-content, #ffffff);
-      border-color: transparent;
-    }
-    .cue-btn--custom:hover {
-      background-color: var(--btn-custom-bg, var(--danger-default));
-      color: var(--btn-custom-content, #ffffff);
-      filter: brightness(0.85);
-    }
-
-    /* ============================================================
-       SIZE MODIFIERS
-    ============================================================ */
-
-    .cue-btn--xsmall {
-      padding: var(--button-padding-xsmall);
-      font-size: 0.75rem;
-    }
-    .cue-btn--xsmall .cue-btn__icon-leading,
-    .cue-btn--xsmall .cue-btn__icon-trailing {
-      font-size: 1rem;
-    }
-
-    .cue-btn--small {
-      padding: var(--button-padding-small);
-      font-size: 0.8125rem;
-    }
-    .cue-btn--small .cue-btn__icon-leading,
-    .cue-btn--small .cue-btn__icon-trailing {
-      font-size: 18px;
-    }
-
-    .cue-btn--large {
-      padding: var(--button-padding-large);
-      font-size: 0.9375rem;
-    }
-    .cue-btn--large .cue-btn__icon-leading,
-    .cue-btn--large .cue-btn__icon-trailing {
-      font-size: 1.5rem;
-    }
-
-    .cue-btn--xlarge {
-      padding: var(--button-padding-xlarge);
-      font-size: 1rem;
-    }
-    .cue-btn--xlarge .cue-btn__icon-leading,
-    .cue-btn--xlarge .cue-btn__icon-trailing {
-      font-size: 26px;
-    }
-
-    /* ============================================================
-       DOCS PAGE LAYOUT — button examples
-    ============================================================ */
-
-    .btn-row {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: var(--space-m);
-    }
-
-    .btn-group {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-s);
-    }
-
-    .btn-group-label {
-      font-size: 0.6875rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.07em;
-      color: var(--content-body-moderate);
-      margin-bottom: 2px;
-    }
-
-    .btn-variant-grid {
-      display: grid;
-      grid-template-columns: 120px 1fr 1fr;
-      gap: var(--space-s) var(--space-l);
-      align-items: center;
-      font-size: 0.8125rem;
-    }
-
-    .btn-variant-grid__label {
-      font-size: 0.75rem;
-      color: var(--content-body-moderate);
-      font-weight: 600;
-    }
-
-    .btn-variant-grid__head {
-      font-size: 0.6875rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.07em;
-      color: var(--content-body-subtle);
-      padding-bottom: var(--space-xs);
-      border-bottom: 1px solid var(--border-level-1);
-    }
-
-    .docs-example--dark {
-      background-color: var(--bg-inverse);
-    }
-
-  </style>
-</head>
-<body>
-
-<div class="docs-topbar" role="banner">
-  <a href="../index.html" class="docs-topbar__logo" aria-label="CUE Canvas home">
-    <img src="../assets/logo_CUE_glyph.svg" alt="CUE glyph" />
-    <span class="docs-topbar__logo-label">Canvas</span>
-  </a>
-  <button class="docs-topbar__hamburger" aria-label="Open navigation" aria-expanded="false" aria-controls="docs-sidebar">
-    <span class="material-icons" aria-hidden="true">menu</span>
-  </button>
-</div>
-
-<div class="docs-nav-overlay" aria-hidden="true"></div>
-
-<div class="docs-layout">
-
-  <!-- Sidebar -->
-  <nav class="docs-sidebar" id="docs-sidebar" aria-label="Documentation navigation">
-    <button class="docs-sidebar__close" aria-label="Close navigation">
-      <span class="material-icons" aria-hidden="true">close</span>
-    </button>
-    <a href="../index.html" class="docs-sidebar__logo" aria-label="CUE Canvas home">
-      <img src="../assets/logo_CUE_glyph.svg" alt="CUE glyph" />
-      <span class="docs-sidebar__logo-label">Canvas</span>
-    </a>
-    <p class="docs-sidebar__section-label">Getting Started</p>
-    <div class="docs-sidebar__nav">
-      <a href="../index.html" class="docs-sidebar__nav-link">Overview</a>
-    </div>
-    <p class="docs-sidebar__section-label">Components</p>
-    <div class="docs-sidebar__nav">
-      <a href="accordion.html" class="docs-sidebar__nav-link">Accordion</a>
-      <a href="alert.html" class="docs-sidebar__nav-link">Alert</a>
-      <a href="badge.html" class="docs-sidebar__nav-link">Badge</a>
-      <a href="breadcrumb.html" class="docs-sidebar__nav-link">Breadcrumb</a>
-      <a href="button.html" class="docs-sidebar__nav-link active">Button</a>
-      <a href="calendar-components.html" class="docs-sidebar__nav-link">Calendar Components</a>
-      <a href="calendar.html" class="docs-sidebar__nav-link">Calendar</a>
-      <a href="card.html" class="docs-sidebar__nav-link">Card</a>
-      <a href="chat.html" class="docs-sidebar__nav-link">Chat</a>
-      <a href="combobox.html" class="docs-sidebar__nav-link">Combobox &amp; Multiselect</a>
-      <a href="date-picker.html" class="docs-sidebar__nav-link">Date Picker</a>
-      <a href="dropdown.html" class="docs-sidebar__nav-link">Dropdown Menu</a>
-      <a href="expand-collapse.html" class="docs-sidebar__nav-link">Expand / Collapse</a>
-      <a href="form-field.html" class="docs-sidebar__nav-link">Form Field</a>
-      <a href="modal.html" class="docs-sidebar__nav-link">Modal</a>
-      <a href="scheduler.html" class="docs-sidebar__nav-link">Scheduler</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Side Navigation</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Skeleton Loader</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Status Badge</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Step Process</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Tab Navigation</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Table</a>
-    </div>
-    <p class="docs-sidebar__section-label">Icons</p>
-    <div class="docs-sidebar__nav">
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Icon Reference</a>
-    </div>
-  </nav>
-
-  <!-- Main -->
-  <main class="docs-main">
-
-    <div class="docs-page-header">
+---
+layout: default
+title: "Button"
+activeNav: button
+root: ../
+extraCSS: |
+  /* ============================================================
+         BUTTON COMPONENT
+  
+         Anatomy:
+           .cue-btn                    — button element (base)
+             .cue-btn__icon-leading    — optional leading icon (Material Icon)
+             .cue-btn__label           — button text label
+             .cue-btn__icon-trailing   — optional trailing icon (Material Icon)
+  
+         Type modifiers (add to .cue-btn):
+           .cue-btn--primary           — filled primary brand color
+           .cue-btn--secondary         — outlined primary brand color
+           .cue-btn--tertiary          — ghost, brand color text
+           .cue-btn--neutral           — filled neutral (light gray)
+           .cue-btn--neutral-stroke    — outlined neutral
+           .cue-btn--link              — no padding, link style (inline use)
+           .cue-btn--neutral-link      — no padding, neutral text (inline use)
+           .cue-btn--brand-accent      — filled accent/highlight brand color
+           .cue-btn--custom            — custom color via CSS variable override
+  
+         Size modifiers (add to .cue-btn):
+           .cue-btn--xsmall
+           .cue-btn--small
+           .cue-btn--large
+           .cue-btn--xlarge
+  
+         State:
+           :hover / :focus-visible handled in CSS
+           [disabled] / .cue-btn--disabled
+      ============================================================ */
+  
+      /* --- Base --- */
+  
+      .cue-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        padding: var(--button-padding-default);
+        border-radius: var(--corner-button);
+        border: 1px solid transparent;
+        font-family: var(--font-family-body);
+        font-size: 0.875rem;
+        font-weight: 700;
+        line-height: 1;
+        white-space: nowrap;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+      }
+  
+      .cue-btn:focus-visible {
+        outline: 2px solid var(--border-interactive);
+        outline-offset: 2px;
+      }
+  
+      .cue-btn[disabled],
+      .cue-btn--disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        pointer-events: none;
+      }
+  
+      /* --- Label inner padding --- */
+  
+      .cue-btn__label {
+        padding: 4px;
+      }
+  
+      /* --- Icons --- */
+  
+      .cue-btn__icon-leading,
+      .cue-btn__icon-trailing {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        line-height: 1;
+        flex-shrink: 0;
+      }
+  
+      /* ============================================================
+         BUTTON TYPES
+      ============================================================ */
+  
+      /* Primary */
+      .cue-btn--primary {
+        background-color: var(--bg-button-primary);
+        color: var(--content-button-primary);
+        border-color: transparent;
+      }
+      .cue-btn--primary:hover {
+        background-color: var(--bg-button-primary-hover);
+        color: var(--content-button-primary-hover);
+      }
+  
+      /* Secondary */
+      .cue-btn--secondary {
+        background-color: var(--bg-button-secondary);
+        color: var(--content-button-secondary);
+        border-color: var(--border-button-secondary);
+      }
+      .cue-btn--secondary:hover {
+        background-color: var(--bg-button-secondary-hover);
+        color: var(--content-button-secondary-hover);
+        border-color: var(--border-button-secondary-hover);
+      }
+  
+      /* Tertiary */
+      .cue-btn--tertiary {
+        background-color: var(--bg-button-tertiary-link);
+        color: var(--content-button-tertiary-link);
+        border-color: transparent;
+      }
+      .cue-btn--tertiary:hover {
+        background-color: var(--bg-button-tertiary-link-hover);
+        color: var(--content-button-tertiary-link-hover);
+      }
+  
+      /* Neutral */
+      .cue-btn--neutral {
+        background-color: var(--bg-button-neutral);
+        color: var(--content-button-neutral);
+        border-color: transparent;
+      }
+      .cue-btn--neutral:hover {
+        background-color: var(--bg-button-neutral-hover);
+        color: var(--content-button-neutral-hover);
+      }
+  
+      /* Neutral - Stroke */
+      .cue-btn--neutral-stroke {
+        background-color: var(--bg-button-neutral-stroke);
+        color: var(--content-button-neutral-stroke);
+        border-color: var(--border-button-neutral-stroke);
+      }
+      .cue-btn--neutral-stroke:hover {
+        background-color: var(--bg-button-neutral-stroke-hover);
+        color: var(--content-button-neutral-stroke-hover);
+        border-color: var(--border-button-neutral-stroke-hover);
+      }
+  
+      /* Link (No Padding) */
+      .cue-btn--link {
+        background-color: transparent;
+        color: var(--content-button-tertiary-link);
+        border-color: transparent;
+        padding: 0;
+        border-radius: 0;
+      }
+      .cue-btn--link:hover {
+        color: var(--content-button-tertiary-link-hover);
+      }
+      .cue-btn--link .cue-btn__label {
+        padding: 0;
+      }
+  
+      /* Neutral (No Padding) */
+      .cue-btn--neutral-link {
+        background-color: transparent;
+        color: var(--content-button-neutral);
+        border-color: transparent;
+        padding: 0;
+        border-radius: 0;
+        font-weight: 400;
+      }
+      .cue-btn--neutral-link:hover {
+        color: var(--content-button-neutral-hover);
+      }
+      .cue-btn--neutral-link .cue-btn__label {
+        padding: 0;
+      }
+  
+      /* Brand Accent */
+      .cue-btn--brand-accent {
+        background-color: var(--bg-accent-brand);
+        color: var(--content-body-default);
+        border-color: transparent;
+      }
+      .cue-btn--brand-accent:hover {
+        background-color: var(--bg-accent-brand);
+        color: var(--content-body-default);
+        filter: brightness(1.1);
+      }
+  
+      /* Custom Color — override --btn-custom-bg and --btn-custom-content */
+      .cue-btn--custom {
+        background-color: var(--btn-custom-bg, var(--danger-default));
+        color: var(--btn-custom-content, #ffffff);
+        border-color: transparent;
+      }
+      .cue-btn--custom:hover {
+        background-color: var(--btn-custom-bg, var(--danger-default));
+        color: var(--btn-custom-content, #ffffff);
+        filter: brightness(0.85);
+      }
+  
+      /* ============================================================
+         SIZE MODIFIERS
+      ============================================================ */
+  
+      .cue-btn--xsmall {
+        padding: var(--button-padding-xsmall);
+        font-size: 0.75rem;
+      }
+      .cue-btn--xsmall .cue-btn__icon-leading,
+      .cue-btn--xsmall .cue-btn__icon-trailing {
+        font-size: 1rem;
+      }
+  
+      .cue-btn--small {
+        padding: var(--button-padding-small);
+        font-size: 0.8125rem;
+      }
+      .cue-btn--small .cue-btn__icon-leading,
+      .cue-btn--small .cue-btn__icon-trailing {
+        font-size: 18px;
+      }
+  
+      .cue-btn--large {
+        padding: var(--button-padding-large);
+        font-size: 0.9375rem;
+      }
+      .cue-btn--large .cue-btn__icon-leading,
+      .cue-btn--large .cue-btn__icon-trailing {
+        font-size: 1.5rem;
+      }
+  
+      .cue-btn--xlarge {
+        padding: var(--button-padding-xlarge);
+        font-size: 1rem;
+      }
+      .cue-btn--xlarge .cue-btn__icon-leading,
+      .cue-btn--xlarge .cue-btn__icon-trailing {
+        font-size: 26px;
+      }
+  
+      /* ============================================================
+         DOCS PAGE LAYOUT — button examples
+      ============================================================ */
+  
+      .btn-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: var(--space-m);
+      }
+  
+      .btn-group {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-s);
+      }
+  
+      .btn-group-label {
+        font-size: 0.6875rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        color: var(--content-body-moderate);
+        margin-bottom: 2px;
+      }
+  
+      .btn-variant-grid {
+        display: grid;
+        grid-template-columns: 120px 1fr 1fr;
+        gap: var(--space-s) var(--space-l);
+        align-items: center;
+        font-size: 0.8125rem;
+      }
+  
+      .btn-variant-grid__label {
+        font-size: 0.75rem;
+        color: var(--content-body-moderate);
+        font-weight: 600;
+      }
+  
+      .btn-variant-grid__head {
+        font-size: 0.6875rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        color: var(--content-body-subtle);
+        padding-bottom: var(--space-xs);
+        border-bottom: 1px solid var(--border-level-1);
+      }
+  
+      .docs-example--dark {
+        background-color: var(--bg-inverse);
+      }
+pageScript: |
+  </script>
+  
+  
+  <script>
+    (function() {
+      var sidebar  = document.querySelector('.docs-sidebar');
+      var overlay  = document.querySelector('.docs-nav-overlay');
+      var hamburger = document.querySelector('.docs-topbar__hamburger');
+      var closeBtn  = document.querySelector('.docs-sidebar__close');
+  
+      function openNav() {
+        sidebar.classList.add('is-open');
+        overlay.classList.add('is-visible');
+        document.body.style.overflow = 'hidden';
+        if (hamburger) hamburger.setAttribute('aria-expanded', 'true');
+        if (closeBtn) closeBtn.focus();
+      }
+  
+      function closeNav() {
+        sidebar.classList.remove('is-open');
+        overlay.classList.remove('is-visible');
+        document.body.style.overflow = '';
+        if (hamburger) {
+          hamburger.setAttribute('aria-expanded', 'false');
+          hamburger.focus();
+        }
+      }
+  
+      if (hamburger) hamburger.addEventListener('click', openNav);
+      if (closeBtn)  closeBtn.addEventListener('click', closeNav);
+      if (overlay)   overlay.addEventListener('click', closeNav);
+  
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && sidebar.classList.contains('is-open')) closeNav();
+      });
+    })();
+---
+<div class="docs-page-header">
       <h1 class="docs-page-title">Button</h1>
       <p class="docs-page-description">
         Buttons communicate actions users can take. They are typically placed throughout the UI in forms, dialogs, panels, and as standalone calls to action. Buttons are composed of three optional elements: a leading icon, a text label, and a trailing icon.
@@ -1006,54 +970,3 @@
         </tbody>
       </table>
     </div>
-
-  </main>
-</div>
-
-<script>
-  function switchTab(event, tabId) {
-    const section = event.target.closest('.docs-section');
-    section.querySelectorAll('.docs-code-tab').forEach(t => t.classList.remove('active'));
-    section.querySelectorAll('.docs-code-panel').forEach(p => p.classList.remove('active'));
-    event.target.classList.add('active');
-    document.getElementById(tabId).classList.add('active');
-  }
-</script>
-
-
-<script>
-  (function() {
-    var sidebar  = document.querySelector('.docs-sidebar');
-    var overlay  = document.querySelector('.docs-nav-overlay');
-    var hamburger = document.querySelector('.docs-topbar__hamburger');
-    var closeBtn  = document.querySelector('.docs-sidebar__close');
-
-    function openNav() {
-      sidebar.classList.add('is-open');
-      overlay.classList.add('is-visible');
-      document.body.style.overflow = 'hidden';
-      if (hamburger) hamburger.setAttribute('aria-expanded', 'true');
-      if (closeBtn) closeBtn.focus();
-    }
-
-    function closeNav() {
-      sidebar.classList.remove('is-open');
-      overlay.classList.remove('is-visible');
-      document.body.style.overflow = '';
-      if (hamburger) {
-        hamburger.setAttribute('aria-expanded', 'false');
-        hamburger.focus();
-      }
-    }
-
-    if (hamburger) hamburger.addEventListener('click', openNav);
-    if (closeBtn)  closeBtn.addEventListener('click', closeNav);
-    if (overlay)   overlay.addEventListener('click', closeNav);
-
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape' && sidebar.classList.contains('is-open')) closeNav();
-    });
-  })();
-</script>
-</body>
-</html>

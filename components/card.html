@@ -1,638 +1,607 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CUE Canvas — Card</title>
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../tokens.css" />
-  <link rel="stylesheet" href="../base.css" />
-  <link rel="stylesheet" href="../components.css" />
-  <link rel="icon" type="image/svg+xml" href="../assets/logo_CUE_glyph.svg" />
-  <style>
-
-    /* ============================================================
-       CARD COMPONENTS
-
-       All cards share the base token set:
-         background:    --bg-card-module     (#ffffff)
-         border:        --border-card-module  (#ededed)
-         border-radius: --corner-card-module  (4px)
-         drop shadow:   0 2px 4px rgba(0,0,0,0.1)  [most cards]
-
-       Card types:
-         .cue-card-large       — icon + title + description + KPI stats row
-         .cue-card-medium      — icon + title + total badge + description + action buttons
-         .cue-card-kpi         — standalone stat tile (title + number)
-         .cue-card-info        — icon title + two-slot info panel + full-width button
-         .cue-card-customer    — customer overview: title/attributes + item list + button
-
-       Card Icons:
-         The 48×48px card icons are custom SVGs from the CUE Canvas
-         Card Icons library. They are not Material Icons. Use a
-         Material Icon as a placeholder where the custom SVG is not
-         yet available, sized at 48px in --content-body-primary-brand.
-    ============================================================ */
-
-
-    /* ============================================================
-       BASE CARD SHELL
-    ============================================================ */
-
-    .cue-card {
-      background-color: var(--bg-card-module);
-      border: 1px solid var(--border-card-module);
-      border-radius: var(--corner-card-module);
-      overflow: hidden;
-      position: relative;
-    }
-
-    .cue-card--shadow {
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-
-    /* ============================================================
-       CARD — LARGE
-       icon (48px) + title/description header + optional CTA button
-       + optional row of 3 KPI mini-cards below.
-    ============================================================ */
-
-    .cue-card-large {
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-      padding: 2rem 1.5rem;
-      width: 100%;
-    }
-
-    .cue-card-large__header {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      width: 100%;
-    }
-
-    .cue-card-large__icon {
-      display: flex;
-      align-items: flex-start;
-      flex-shrink: 0;
-      align-self: stretch;
-    }
-
-    .cue-card-large__icon .material-icons {
-      font-size: 48px;
-      color: var(--content-body-primary-brand);
-    }
-
-    .cue-card-large__title-group {
-      display: flex;
-      flex: 1;
-      min-width: 0;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 1.5rem;
-    }
-
-    .cue-card-large__title-desc {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      flex: 1;
-      min-width: 0;
-    }
-
-    .cue-card-large__title {
-      font-family: var(--font-family-heading);
-      font-size: 1.5rem;      /* 24px */
-      font-weight: 700;
-      color: var(--content-body-primary-brand);
-      line-height: 1.15;
-      white-space: nowrap;
-    }
-
-    .cue-card-large__desc {
-      font-size: 1rem;        /* 16px */
-      font-weight: 400;
-      color: var(--content-body-default);
-      line-height: 1;
-    }
-
-    .cue-card-large__stats {
-      display: flex;
-      align-items: flex-start;
-      gap: 1rem;
-      padding-left: 4rem; /* aligns with title, clears icon width */
-    }
-
-
-    /* ============================================================
-       CARD — KPI (standalone + embedded in Card Large)
-    ============================================================ */
-
-    .cue-card-kpi {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      justify-content: space-between;
-      flex: 1;
-      min-width: 0;
-      height: 109px;
-      padding: 0.75rem;
-      background-color: var(--bg-level-2);
-      border: 1px solid var(--border-level-2);
-      border-radius: 2px;
-      transition: box-shadow 0.15s ease;
-    }
-
-    .cue-card-kpi:hover {
-      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .cue-card-kpi__title {
-      font-size: 0.9375rem;   /* 15px */
-      font-weight: 400;
-      color: var(--content-body-default);
-      line-height: 1;
-    }
-
-    .cue-card-kpi__number {
-      font-family: var(--font-family-heading);
-      font-size: 1.25rem;     /* 20px */
-      font-weight: 700;
-      color: var(--content-body-default);
-      line-height: 1.15;
-      text-align: center;
-      white-space: nowrap;
-    }
-
-
-    /* ============================================================
-       CARD — MEDIUM
-       icon + title + total badge + description + action buttons
-    ============================================================ */
-
-    .cue-card-medium {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 1.5rem 2rem 1.5rem 1.5rem;
-      width: 100%;
-    }
-
-    .cue-card-medium__content {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      width: 100%;
-    }
-
-    .cue-card-medium__icon {
-      display: flex;
-      align-items: flex-start;
-      align-self: stretch;
-      flex-shrink: 0;
-    }
-
-    .cue-card-medium__icon .material-icons {
-      font-size: 42px;
-      color: var(--content-body-primary-brand);
-    }
-
-    .cue-card-medium__body {
-      display: flex;
-      flex: 1;
-      min-width: 0;
-      flex-direction: column;
-      gap: 2rem;
-      align-items: flex-start;
-      justify-content: center;
-    }
-
-    .cue-card-medium__info {
-      display: flex;
-      flex-direction: column;
-      gap: 0.625rem;
-      align-items: flex-start;
-      width: 100%;
-    }
-
-    .cue-card-medium__title-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.625rem;
-      padding-top: 0.5rem;
-      width: 100%;
-    }
-
-    .cue-card-medium__title {
-      font-family: var(--font-family-heading);
-      font-size: 1.5rem;      /* 24px */
-      font-weight: 700;
-      color: var(--content-body-primary-brand);
-      line-height: 1.15;
-      flex: 1;
-      min-width: 0;
-    }
-
-    .cue-card-medium__badge {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0.5rem 1rem;
-      background-color: var(--bg-subdued);
-      border-radius: 300px;
-      flex-shrink: 0;
-    }
-
-    .cue-card-medium__badge-text {
-      font-size: 0.75rem;     /* 12px */
-      font-weight: 400;
-      color: var(--content-body-moderate);
-      white-space: nowrap;
-    }
-
-    .cue-card-medium__desc {
-      font-size: 1rem;        /* 16px */
-      font-weight: 400;
-      color: var(--content-body-default);
-      line-height: 1;
-      width: 100%;
-    }
-
-    .cue-card-medium__buttons {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      width: 100%;
-    }
-
-
-    /* ============================================================
-       CARD — WITH INFO AND ACTION BUTTON
-       Icon + title header / two-slot info panel / full-width button
-    ============================================================ */
-
-    .cue-card-info {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      padding: 1.5rem;
-      width: 100%;
-    }
-
-    .cue-card-info__content {
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-      align-items: center;
-      width: 100%;
-    }
-
-    .cue-card-info__top {
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-      align-items: flex-start;
-      width: 100%;
-    }
-
-    /* Title row with bottom border */
-    .cue-card-info__title-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding-bottom: 0.75rem;
-      border-bottom: 1px solid var(--border-subtle);
-      width: 100%;
-    }
-
-    .cue-card-info__title-group {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      flex: 1;
-      min-width: 0;
-    }
-
-    .cue-card-info__title-icon {
-      font-size: 24px;
-      color: var(--content-body-primary-brand);
-      flex-shrink: 0;
-    }
-
-    .cue-card-info__title {
-      font-size: 1rem;        /* 16px */
-      font-weight: 700;
-      color: var(--content-body-primary-brand);
-      white-space: nowrap;
-    }
-
-    /* Two-slot info panel */
-    .cue-card-info__slots {
-      display: flex;
-      align-items: center;
-      width: 100%;
-    }
-
-    .cue-card-info__slot {
-      display: flex;
-      flex: 1;
-      min-width: 0;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-    }
-
-    .cue-card-info__slot-number {
-      font-family: var(--font-family-heading);
-      font-size: 1.5rem;      /* 24px */
-      font-weight: 700;
-      color: var(--content-body-default);
-      white-space: nowrap;
-    }
-
-    .cue-card-info__slot-label {
-      font-size: 0.75rem;     /* 12px */
-      font-weight: 700;
-      color: var(--content-body-default);
-    }
-
-    .cue-card-info__slot-desc-title {
-      font-size: 0.75rem;     /* 12px */
-      font-weight: 700;
-      color: var(--content-body-primary-brand);
-    }
-
-    .cue-card-info__slot-value {
-      font-family: var(--font-family-heading);
-      font-size: 1rem;        /* 16px */
-      font-weight: 700;
-      color: var(--content-body-default);
-    }
-
-    .cue-card-info__slot-info {
-      font-size: 0.75rem;     /* 12px */
-      font-weight: 400;
-      color: var(--content-body-moderate);
-    }
-
-    /* Vertical pipe divider between slots */
-    .cue-card-info__divider {
-      width: 1px;
-      height: 2rem;
-      background-color: var(--border-subtle);
-      flex-shrink: 0;
-      margin: 0 0.625rem;
-    }
-
-
-    /* ============================================================
-       CARD — CUSTOMER DASHBOARD OVERVIEW
-       Title + data attributes + list items + full-width button.
-       Marked "DETACH AND MODIFY" in Figma — use as a template.
-    ============================================================ */
-
-    .cue-card-customer {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      align-items: center;
-      padding: 1.5rem;
-      width: 100%;
-    }
-
-    .cue-card-customer__main {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      width: 100%;
-    }
-
-    /* Title and data attributes section */
-    .cue-card-customer__header {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      align-items: flex-start;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid var(--border-weak);
-      width: 100%;
-    }
-
-    .cue-card-customer__title {
-      font-size: 1.125rem;    /* 18px */
-      font-weight: 700;
-      color: var(--content-body-default);
-      line-height: 1;
-      width: 100%;
-    }
-
-    .cue-card-customer__attrs {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-    }
-
-    .cue-card-customer__attr {
-      font-size: 0.75rem;     /* 12px */
-      font-weight: 400;
-      color: var(--content-body-default);
-      white-space: nowrap;
-    }
-
-    .cue-card-customer__attr-divider {
-      width: 1px;
-      height: 0.875rem;
-      background-color: var(--border-subtle);
-      flex-shrink: 0;
-    }
-
-    /* List items */
-    .cue-card-customer__list {
-      display: flex;
-      flex-direction: column;
-      gap: 0.625rem;
-      align-items: flex-start;
-      width: 100%;
-    }
-
-    .cue-card-customer__item {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.5rem;
-      padding: 1rem 0;
-      border-bottom: 1px solid var(--border-weak);
-      width: 100%;
-    }
-
-    .cue-card-customer__item-icon {
-      font-size: 24px;
-      color: var(--content-body-primary-brand);
-      flex-shrink: 0;
-    }
-
-    .cue-card-customer__item-content {
-      display: flex;
-      flex: 1;
-      min-width: 0;
-      align-items: flex-start;
-      gap: 0.5rem;
-    }
-
-    .cue-card-customer__item-text {
-      display: flex;
-      flex: 1;
-      min-width: 0;
-      flex-direction: column;
-      gap: 4px;
-      align-self: stretch;
-    }
-
-    .cue-card-customer__item-title {
-      font-size: 0.9375rem;   /* 15px */
-      font-weight: 600;
-      color: var(--content-body-primary-brand);
-      line-height: 1;
-      width: 100%;
-    }
-
-    .cue-card-customer__item-subtitle {
-      font-size: 0.75rem;     /* 12px */
-      font-weight: 400;
-      color: var(--content-body-subdued);
-      line-height: 1;
-      width: 100%;
-    }
-
-    .cue-card-customer__item-number {
-      font-size: 1.125rem;    /* 18px */
-      font-weight: 700;
-      color: var(--content-body-primary-brand);
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    /* Full-width button (shared across info and customer cards) */
-    .cue-card-full-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      width: 100%;
-      padding: 0.5rem;
-      min-height: 2.75rem;
-      background-color: var(--bg-button-primary);
-      border: none;
-      border-radius: var(--corner-button);
-      font-family: var(--font-family-body);
-      font-size: 0.875rem;    /* 14px */
-      font-weight: 700;
-      color: var(--content-button-primary);
-      cursor: pointer;
-      transition: background-color 0.15s ease;
-      flex-shrink: 0;
-    }
-
-    .cue-card-full-btn:hover {
-      background-color: var(--bg-button-primary-hover);
-    }
-
-    .cue-card-full-btn .material-icons {
-      font-size: 18px;
-    }
-
-    /* ============================================================
-       DOCS LAYOUT HELPERS
-    ============================================================ */
-
-    .card-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1.5rem;
-      width: 100%;
-    }
-
-    .card-stack {
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-      width: 100%;
-    }
-
-    .kpi-row {
-      display: flex;
-      gap: 1rem;
-      align-items: flex-start;
-      flex-wrap: wrap;
-    }
-
-  </style>
-</head>
-<body>
-
-<div class="docs-topbar" role="banner">
-  <a href="../index.html" class="docs-topbar__logo" aria-label="CUE Canvas home">
-    <img src="../assets/logo_CUE_glyph.svg" alt="CUE glyph" />
-    <span class="docs-topbar__logo-label">Canvas</span>
-  </a>
-  <button class="docs-topbar__hamburger" aria-label="Open navigation" aria-expanded="false" aria-controls="docs-sidebar">
-    <span class="material-icons" aria-hidden="true">menu</span>
-  </button>
-</div>
-
-<div class="docs-nav-overlay" aria-hidden="true"></div>
-
-<div class="docs-layout">
-
-  <nav class="docs-sidebar" id="docs-sidebar" aria-label="Documentation navigation">
-    <button class="docs-sidebar__close" aria-label="Close navigation">
-      <span class="material-icons" aria-hidden="true">close</span>
-    </button>
-    <a href="../index.html" class="docs-sidebar__logo" aria-label="CUE Canvas home">
-      <img src="../assets/logo_CUE_glyph.svg" alt="CUE glyph" />
-      <span class="docs-sidebar__logo-label">Canvas</span>
-    </a>
-    <p class="docs-sidebar__section-label">Getting Started</p>
-    <div class="docs-sidebar__nav">
-      <a href="../index.html" class="docs-sidebar__nav-link">Overview</a>
-    </div>
-    <p class="docs-sidebar__section-label">Components</p>
-    <div class="docs-sidebar__nav">
-      <a href="accordion.html" class="docs-sidebar__nav-link">Accordion</a>
-      <a href="alert.html" class="docs-sidebar__nav-link">Alert</a>
-      <a href="badge.html" class="docs-sidebar__nav-link">Badge</a>
-      <a href="breadcrumb.html" class="docs-sidebar__nav-link">Breadcrumb</a>
-      <a href="button.html" class="docs-sidebar__nav-link">Button</a>
-      <a href="calendar-components.html" class="docs-sidebar__nav-link">Calendar Components</a>
-      <a href="calendar.html" class="docs-sidebar__nav-link">Calendar</a>
-      <a href="card.html" class="docs-sidebar__nav-link active">Card</a>
-      <a href="chat.html" class="docs-sidebar__nav-link">Chat</a>
-      <a href="combobox.html" class="docs-sidebar__nav-link">Combobox &amp; Multiselect</a>
-      <a href="date-picker.html" class="docs-sidebar__nav-link">Date Picker</a>
-      <a href="dropdown.html" class="docs-sidebar__nav-link">Dropdown Menu</a>
-      <a href="expand-collapse.html" class="docs-sidebar__nav-link">Expand / Collapse</a>
-      <a href="form-field.html" class="docs-sidebar__nav-link">Form Field</a>
-      <a href="modal.html" class="docs-sidebar__nav-link">Modal</a>
-      <a href="scheduler.html" class="docs-sidebar__nav-link">Scheduler</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Side Navigation</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Skeleton Loader</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Status Badge</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Step Process</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Tab Navigation</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Table</a>
-    </div>
-    <p class="docs-sidebar__section-label">Icons</p>
-    <div class="docs-sidebar__nav">
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Icon Reference</a>
-    </div>
-  </nav>
-
-  <main class="docs-main">
-
-    <div class="docs-page-header">
+---
+layout: default
+title: "Card"
+activeNav: card
+root: ../
+extraCSS: |
+  /* ============================================================
+         CARD COMPONENTS
+  
+         All cards share the base token set:
+           background:    --bg-card-module     (#ffffff)
+           border:        --border-card-module  (#ededed)
+           border-radius: --corner-card-module  (4px)
+           drop shadow:   0 2px 4px rgba(0,0,0,0.1)  [most cards]
+  
+         Card types:
+           .cue-card-large       — icon + title + description + KPI stats row
+           .cue-card-medium      — icon + title + total badge + description + action buttons
+           .cue-card-kpi         — standalone stat tile (title + number)
+           .cue-card-info        — icon title + two-slot info panel + full-width button
+           .cue-card-customer    — customer overview: title/attributes + item list + button
+  
+         Card Icons:
+           The 48×48px card icons are custom SVGs from the CUE Canvas
+           Card Icons library. They are not Material Icons. Use a
+           Material Icon as a placeholder where the custom SVG is not
+           yet available, sized at 48px in --content-body-primary-brand.
+      ============================================================ */
+  
+  
+      /* ============================================================
+         BASE CARD SHELL
+      ============================================================ */
+  
+      .cue-card {
+        background-color: var(--bg-card-module);
+        border: 1px solid var(--border-card-module);
+        border-radius: var(--corner-card-module);
+        overflow: hidden;
+        position: relative;
+      }
+  
+      .cue-card--shadow {
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+  
+  
+      /* ============================================================
+         CARD — LARGE
+         icon (48px) + title/description header + optional CTA button
+         + optional row of 3 KPI mini-cards below.
+      ============================================================ */
+  
+      .cue-card-large {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        padding: 2rem 1.5rem;
+        width: 100%;
+      }
+  
+      .cue-card-large__header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        width: 100%;
+      }
+  
+      .cue-card-large__icon {
+        display: flex;
+        align-items: flex-start;
+        flex-shrink: 0;
+        align-self: stretch;
+      }
+  
+      .cue-card-large__icon .material-icons {
+        font-size: 48px;
+        color: var(--content-body-primary-brand);
+      }
+  
+      .cue-card-large__title-group {
+        display: flex;
+        flex: 1;
+        min-width: 0;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 1.5rem;
+      }
+  
+      .cue-card-large__title-desc {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        flex: 1;
+        min-width: 0;
+      }
+  
+      .cue-card-large__title {
+        font-family: var(--font-family-heading);
+        font-size: 1.5rem;      /* 24px */
+        font-weight: 700;
+        color: var(--content-body-primary-brand);
+        line-height: 1.15;
+        white-space: nowrap;
+      }
+  
+      .cue-card-large__desc {
+        font-size: 1rem;        /* 16px */
+        font-weight: 400;
+        color: var(--content-body-default);
+        line-height: 1;
+      }
+  
+      .cue-card-large__stats {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        padding-left: 4rem; /* aligns with title, clears icon width */
+      }
+  
+  
+      /* ============================================================
+         CARD — KPI (standalone + embedded in Card Large)
+      ============================================================ */
+  
+      .cue-card-kpi {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: space-between;
+        flex: 1;
+        min-width: 0;
+        height: 109px;
+        padding: 0.75rem;
+        background-color: var(--bg-level-2);
+        border: 1px solid var(--border-level-2);
+        border-radius: 2px;
+        transition: box-shadow 0.15s ease;
+      }
+  
+      .cue-card-kpi:hover {
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.1);
+      }
+  
+      .cue-card-kpi__title {
+        font-size: 0.9375rem;   /* 15px */
+        font-weight: 400;
+        color: var(--content-body-default);
+        line-height: 1;
+      }
+  
+      .cue-card-kpi__number {
+        font-family: var(--font-family-heading);
+        font-size: 1.25rem;     /* 20px */
+        font-weight: 700;
+        color: var(--content-body-default);
+        line-height: 1.15;
+        text-align: center;
+        white-space: nowrap;
+      }
+  
+  
+      /* ============================================================
+         CARD — MEDIUM
+         icon + title + total badge + description + action buttons
+      ============================================================ */
+  
+      .cue-card-medium {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 1.5rem 2rem 1.5rem 1.5rem;
+        width: 100%;
+      }
+  
+      .cue-card-medium__content {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        width: 100%;
+      }
+  
+      .cue-card-medium__icon {
+        display: flex;
+        align-items: flex-start;
+        align-self: stretch;
+        flex-shrink: 0;
+      }
+  
+      .cue-card-medium__icon .material-icons {
+        font-size: 42px;
+        color: var(--content-body-primary-brand);
+      }
+  
+      .cue-card-medium__body {
+        display: flex;
+        flex: 1;
+        min-width: 0;
+        flex-direction: column;
+        gap: 2rem;
+        align-items: flex-start;
+        justify-content: center;
+      }
+  
+      .cue-card-medium__info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.625rem;
+        align-items: flex-start;
+        width: 100%;
+      }
+  
+      .cue-card-medium__title-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.625rem;
+        padding-top: 0.5rem;
+        width: 100%;
+      }
+  
+      .cue-card-medium__title {
+        font-family: var(--font-family-heading);
+        font-size: 1.5rem;      /* 24px */
+        font-weight: 700;
+        color: var(--content-body-primary-brand);
+        line-height: 1.15;
+        flex: 1;
+        min-width: 0;
+      }
+  
+      .cue-card-medium__badge {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.5rem 1rem;
+        background-color: var(--bg-subdued);
+        border-radius: 300px;
+        flex-shrink: 0;
+      }
+  
+      .cue-card-medium__badge-text {
+        font-size: 0.75rem;     /* 12px */
+        font-weight: 400;
+        color: var(--content-body-moderate);
+        white-space: nowrap;
+      }
+  
+      .cue-card-medium__desc {
+        font-size: 1rem;        /* 16px */
+        font-weight: 400;
+        color: var(--content-body-default);
+        line-height: 1;
+        width: 100%;
+      }
+  
+      .cue-card-medium__buttons {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        width: 100%;
+      }
+  
+  
+      /* ============================================================
+         CARD — WITH INFO AND ACTION BUTTON
+         Icon + title header / two-slot info panel / full-width button
+      ============================================================ */
+  
+      .cue-card-info {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1.5rem;
+        width: 100%;
+      }
+  
+      .cue-card-info__content {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        align-items: center;
+        width: 100%;
+      }
+  
+      .cue-card-info__top {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        align-items: flex-start;
+        width: 100%;
+      }
+  
+      /* Title row with bottom border */
+      .cue-card-info__title-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid var(--border-subtle);
+        width: 100%;
+      }
+  
+      .cue-card-info__title-group {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex: 1;
+        min-width: 0;
+      }
+  
+      .cue-card-info__title-icon {
+        font-size: 24px;
+        color: var(--content-body-primary-brand);
+        flex-shrink: 0;
+      }
+  
+      .cue-card-info__title {
+        font-size: 1rem;        /* 16px */
+        font-weight: 700;
+        color: var(--content-body-primary-brand);
+        white-space: nowrap;
+      }
+  
+      /* Two-slot info panel */
+      .cue-card-info__slots {
+        display: flex;
+        align-items: center;
+        width: 100%;
+      }
+  
+      .cue-card-info__slot {
+        display: flex;
+        flex: 1;
+        min-width: 0;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+  
+      .cue-card-info__slot-number {
+        font-family: var(--font-family-heading);
+        font-size: 1.5rem;      /* 24px */
+        font-weight: 700;
+        color: var(--content-body-default);
+        white-space: nowrap;
+      }
+  
+      .cue-card-info__slot-label {
+        font-size: 0.75rem;     /* 12px */
+        font-weight: 700;
+        color: var(--content-body-default);
+      }
+  
+      .cue-card-info__slot-desc-title {
+        font-size: 0.75rem;     /* 12px */
+        font-weight: 700;
+        color: var(--content-body-primary-brand);
+      }
+  
+      .cue-card-info__slot-value {
+        font-family: var(--font-family-heading);
+        font-size: 1rem;        /* 16px */
+        font-weight: 700;
+        color: var(--content-body-default);
+      }
+  
+      .cue-card-info__slot-info {
+        font-size: 0.75rem;     /* 12px */
+        font-weight: 400;
+        color: var(--content-body-moderate);
+      }
+  
+      /* Vertical pipe divider between slots */
+      .cue-card-info__divider {
+        width: 1px;
+        height: 2rem;
+        background-color: var(--border-subtle);
+        flex-shrink: 0;
+        margin: 0 0.625rem;
+      }
+  
+  
+      /* ============================================================
+         CARD — CUSTOMER DASHBOARD OVERVIEW
+         Title + data attributes + list items + full-width button.
+         Marked "DETACH AND MODIFY" in Figma — use as a template.
+      ============================================================ */
+  
+      .cue-card-customer {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        align-items: center;
+        padding: 1.5rem;
+        width: 100%;
+      }
+  
+      .cue-card-customer__main {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+      }
+  
+      /* Title and data attributes section */
+      .cue-card-customer__header {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: flex-start;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--border-weak);
+        width: 100%;
+      }
+  
+      .cue-card-customer__title {
+        font-size: 1.125rem;    /* 18px */
+        font-weight: 700;
+        color: var(--content-body-default);
+        line-height: 1;
+        width: 100%;
+      }
+  
+      .cue-card-customer__attrs {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+      }
+  
+      .cue-card-customer__attr {
+        font-size: 0.75rem;     /* 12px */
+        font-weight: 400;
+        color: var(--content-body-default);
+        white-space: nowrap;
+      }
+  
+      .cue-card-customer__attr-divider {
+        width: 1px;
+        height: 0.875rem;
+        background-color: var(--border-subtle);
+        flex-shrink: 0;
+      }
+  
+      /* List items */
+      .cue-card-customer__list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.625rem;
+        align-items: flex-start;
+        width: 100%;
+      }
+  
+      .cue-card-customer__item {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+        padding: 1rem 0;
+        border-bottom: 1px solid var(--border-weak);
+        width: 100%;
+      }
+  
+      .cue-card-customer__item-icon {
+        font-size: 24px;
+        color: var(--content-body-primary-brand);
+        flex-shrink: 0;
+      }
+  
+      .cue-card-customer__item-content {
+        display: flex;
+        flex: 1;
+        min-width: 0;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+  
+      .cue-card-customer__item-text {
+        display: flex;
+        flex: 1;
+        min-width: 0;
+        flex-direction: column;
+        gap: 4px;
+        align-self: stretch;
+      }
+  
+      .cue-card-customer__item-title {
+        font-size: 0.9375rem;   /* 15px */
+        font-weight: 600;
+        color: var(--content-body-primary-brand);
+        line-height: 1;
+        width: 100%;
+      }
+  
+      .cue-card-customer__item-subtitle {
+        font-size: 0.75rem;     /* 12px */
+        font-weight: 400;
+        color: var(--content-body-subdued);
+        line-height: 1;
+        width: 100%;
+      }
+  
+      .cue-card-customer__item-number {
+        font-size: 1.125rem;    /* 18px */
+        font-weight: 700;
+        color: var(--content-body-primary-brand);
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+  
+      /* Full-width button (shared across info and customer cards) */
+      .cue-card-full-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        width: 100%;
+        padding: 0.5rem;
+        min-height: 2.75rem;
+        background-color: var(--bg-button-primary);
+        border: none;
+        border-radius: var(--corner-button);
+        font-family: var(--font-family-body);
+        font-size: 0.875rem;    /* 14px */
+        font-weight: 700;
+        color: var(--content-button-primary);
+        cursor: pointer;
+        transition: background-color 0.15s ease;
+        flex-shrink: 0;
+      }
+  
+      .cue-card-full-btn:hover {
+        background-color: var(--bg-button-primary-hover);
+      }
+  
+      .cue-card-full-btn .material-icons {
+        font-size: 18px;
+      }
+  
+      /* ============================================================
+         DOCS LAYOUT HELPERS
+      ============================================================ */
+  
+      .card-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        width: 100%;
+      }
+  
+      .card-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        width: 100%;
+      }
+  
+      .kpi-row {
+        display: flex;
+        gap: 1rem;
+        align-items: flex-start;
+        flex-wrap: wrap;
+      }
+pageScript: |
+  // Button classes needed for card examples
+    document.querySelectorAll('.cue-btn--secondary').forEach(function(btn) {
+      btn.style.cssText += 'background-color: var(--bg-button-secondary); color: var(--content-button-secondary); border: 1px solid var(--border-button-secondary); border-radius: var(--corner-button); padding: var(--button-padding-default); font-family: var(--font-family-body); font-size: 0.875rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 2px;';
+    });
+    document.querySelectorAll('.cue-btn--primary').forEach(function(btn) {
+      btn.style.cssText += 'background-color: var(--bg-button-primary); color: var(--content-button-primary); border: 1px solid transparent; border-radius: var(--corner-button); padding: var(--button-padding-default); font-family: var(--font-family-body); font-size: 0.875rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 2px;';
+    });
+  
+    (function() {
+      var sidebar   = document.querySelector('.docs-sidebar');
+      var overlay   = document.querySelector('.docs-nav-overlay');
+      var hamburger = document.querySelector('.docs-topbar__hamburger');
+      var closeBtn  = document.querySelector('.docs-sidebar__close');
+  
+      function openNav() {
+        sidebar.classList.add('is-open');
+        overlay.classList.add('is-visible');
+        document.body.style.overflow = 'hidden';
+        if (hamburger) hamburger.setAttribute('aria-expanded', 'true');
+        if (closeBtn) closeBtn.focus();
+      }
+  
+      function closeNav() {
+        sidebar.classList.remove('is-open');
+        overlay.classList.remove('is-visible');
+        document.body.style.overflow = '';
+        if (hamburger) {
+          hamburger.setAttribute('aria-expanded', 'false');
+          hamburger.focus();
+        }
+      }
+  
+      if (hamburger) hamburger.addEventListener('click', openNav);
+      if (closeBtn)  closeBtn.addEventListener('click', closeNav);
+      if (overlay)   overlay.addEventListener('click', closeNav);
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && sidebar.classList.contains('is-open')) closeNav();
+      });
+    })();
+---
+<div class="docs-page-header">
       <h1 class="docs-page-title">Card</h1>
       <p class="docs-page-description">
         Cards group related information into a contained surface. They appear throughout CUE Back Office for KPI summaries, entity overviews, customer details, and module navigation. All cards share the same base surface tokens but differ in anatomy and purpose.
@@ -1265,59 +1234,3 @@
       </div>
 
     </div>
-
-  </main>
-</div>
-
-<script>
-  function switchTab(event, tabId) {
-    const section = event.target.closest('.docs-section');
-    section.querySelectorAll('.docs-code-tab').forEach(t => t.classList.remove('active'));
-    section.querySelectorAll('.docs-code-panel').forEach(p => p.classList.remove('active'));
-    event.target.classList.add('active');
-    document.getElementById(tabId).classList.add('active');
-  }
-
-  // Button classes needed for card examples
-  document.querySelectorAll('.cue-btn--secondary').forEach(function(btn) {
-    btn.style.cssText += 'background-color: var(--bg-button-secondary); color: var(--content-button-secondary); border: 1px solid var(--border-button-secondary); border-radius: var(--corner-button); padding: var(--button-padding-default); font-family: var(--font-family-body); font-size: 0.875rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 2px;';
-  });
-  document.querySelectorAll('.cue-btn--primary').forEach(function(btn) {
-    btn.style.cssText += 'background-color: var(--bg-button-primary); color: var(--content-button-primary); border: 1px solid transparent; border-radius: var(--corner-button); padding: var(--button-padding-default); font-family: var(--font-family-body); font-size: 0.875rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 2px;';
-  });
-
-  (function() {
-    var sidebar   = document.querySelector('.docs-sidebar');
-    var overlay   = document.querySelector('.docs-nav-overlay');
-    var hamburger = document.querySelector('.docs-topbar__hamburger');
-    var closeBtn  = document.querySelector('.docs-sidebar__close');
-
-    function openNav() {
-      sidebar.classList.add('is-open');
-      overlay.classList.add('is-visible');
-      document.body.style.overflow = 'hidden';
-      if (hamburger) hamburger.setAttribute('aria-expanded', 'true');
-      if (closeBtn) closeBtn.focus();
-    }
-
-    function closeNav() {
-      sidebar.classList.remove('is-open');
-      overlay.classList.remove('is-visible');
-      document.body.style.overflow = '';
-      if (hamburger) {
-        hamburger.setAttribute('aria-expanded', 'false');
-        hamburger.focus();
-      }
-    }
-
-    if (hamburger) hamburger.addEventListener('click', openNav);
-    if (closeBtn)  closeBtn.addEventListener('click', closeNav);
-    if (overlay)   overlay.addEventListener('click', closeNav);
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape' && sidebar.classList.contains('is-open')) closeNav();
-    });
-  })();
-</script>
-
-</body>
-</html>

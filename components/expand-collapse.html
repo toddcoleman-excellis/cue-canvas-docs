@@ -1,252 +1,204 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CUE Canvas — Expand / Collapse</title>
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../tokens.css" />
-  <link rel="stylesheet" href="../base.css" />
-  <link rel="stylesheet" href="../components.css" />
-  <link rel="icon" type="image/svg+xml" href="../assets/logo_CUE_glyph.svg" />
-  <style>
-
-    /* ============================================================
-       EXPAND / COLLAPSE MODULE
-
-       A surface container with a title header and toggleable
-       content panel. Used extensively in CUE Back Office for
-       grouping form sections, permissions, detail modules, and
-       any content that benefits from progressive disclosure.
-
-       Anatomy:
-         .cue-expand                     — outer shell (card surface)
-           .cue-expand__header           — always-visible title row
-             .cue-expand__title          — module title (20px Bold, brand blue)
-             .cue-expand__toggle         — Expand / Collapse button
-               .cue-expand__toggle-label — "Expand" or "Collapse"
-               .cue-expand__toggle-icon  — unfold_more / unfold_less
-           .cue-expand__body             — collapsible content area
-
-       States:
-         Default (collapsed): .cue-expand__body is hidden.
-           Button shows "Expand" + unfold_more icon.
-         Expanded: .cue-expand__body is visible.
-           .cue-expand has .is-open modifier.
-           Button shows "Collapse" + unfold_less icon.
-
-       The content area uses a CSS max-height transition for a
-       smooth open/close animation. The JS toggles .is-open on
-       the .cue-expand element, which drives all visual states.
-
-       Content is fully flexible — any HTML can go inside
-       .cue-expand__body: forms, read-only data, tables, etc.
-    ============================================================ */
-
-    .cue-expand {
-      display: flex;
-      flex-direction: column;
-      background-color: var(--bg-level-1);
-      border: 1px solid var(--border-level-1);
-      border-radius: 4px;
-      padding: 1rem;
-      width: 100%;
-      transition: padding-bottom 0.25s ease;
+---
+layout: default
+title: "Expand / Collapse"
+activeNav: expand-collapse
+root: ../
+extraCSS: |
+  /* ============================================================
+         EXPAND / COLLAPSE MODULE
+  
+         A surface container with a title header and toggleable
+         content panel. Used extensively in CUE Back Office for
+         grouping form sections, permissions, detail modules, and
+         any content that benefits from progressive disclosure.
+  
+         Anatomy:
+           .cue-expand                     — outer shell (card surface)
+             .cue-expand__header           — always-visible title row
+               .cue-expand__title          — module title (20px Bold, brand blue)
+               .cue-expand__toggle         — Expand / Collapse button
+                 .cue-expand__toggle-label — "Expand" or "Collapse"
+                 .cue-expand__toggle-icon  — unfold_more / unfold_less
+             .cue-expand__body             — collapsible content area
+  
+         States:
+           Default (collapsed): .cue-expand__body is hidden.
+             Button shows "Expand" + unfold_more icon.
+           Expanded: .cue-expand__body is visible.
+             .cue-expand has .is-open modifier.
+             Button shows "Collapse" + unfold_less icon.
+  
+         The content area uses a CSS max-height transition for a
+         smooth open/close animation. The JS toggles .is-open on
+         the .cue-expand element, which drives all visual states.
+  
+         Content is fully flexible — any HTML can go inside
+         .cue-expand__body: forms, read-only data, tables, etc.
+      ============================================================ */
+  
+      .cue-expand {
+        display: flex;
+        flex-direction: column;
+        background-color: var(--bg-level-1);
+        border: 1px solid var(--border-level-1);
+        border-radius: 4px;
+        padding: 1rem;
+        width: 100%;
+        transition: padding-bottom 0.25s ease;
+      }
+  
+      /* ---- Header row ---- */
+  
+      .cue-expand__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        gap: 1rem;
+      }
+  
+      .cue-expand__title {
+        font-family: var(--font-family-heading);
+        font-size: 1.25rem;       /* 20px */
+        font-weight: 700;
+        color: var(--content-body-primary-brand);
+        line-height: 1.15;
+        white-space: nowrap;
+      }
+  
+      /* ---- Toggle button ---- */
+  
+      .cue-expand__toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 2px;
+        background: transparent;
+        border: none;
+        border-radius: var(--corner-button);
+        cursor: pointer;
+        padding: 0;
+        flex-shrink: 0;
+        transition: opacity 0.15s ease;
+      }
+  
+      .cue-expand__toggle:hover { opacity: 0.75; }
+  
+      .cue-expand__toggle:focus-visible {
+        outline: 2px solid var(--border-interactive);
+        outline-offset: 2px;
+        border-radius: var(--corner-button);
+      }
+  
+      .cue-expand__toggle-label {
+        padding: 4px;
+        font-family: var(--font-family-body);
+        font-size: 0.875rem;      /* 14px */
+        font-weight: 700;
+        color: var(--content-body-link);
+        line-height: 1;
+        white-space: nowrap;
+      }
+  
+      .cue-expand__toggle-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--content-body-link);
+      }
+  
+      .cue-expand__toggle-icon .material-icons { font-size: 22px; }
+  
+      /* ---- Collapsible body ---- */
+  
+      .cue-expand__body {
+        overflow: hidden;
+        max-height: 0;
+        opacity: 0;
+        margin-top: 0;
+        transition:
+          max-height 0.3s ease,
+          opacity    0.25s ease,
+          margin-top 0.25s ease;
+      }
+  
+      .cue-expand.is-open .cue-expand__body {
+        max-height: 2000px;   /* large enough for any content */
+        opacity: 1;
+        margin-top: 1.5rem;   /* 24px gap from header — only visible when open */
+      }
+  
+      /* ---- Default content layout ----
+         .cue-expand__content is an optional helper for the typical
+         "image + text column" layout shown in the Figma examples.
+         Any custom layout can replace it. */
+  
+      .cue-expand__content {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        width: 100%;
+      }
+  
+      .cue-expand__content-image {
+        flex-shrink: 0;
+        width: 169px;
+        height: 131px;
+        border-radius: 4px;
+        object-fit: cover;
+        background-color: var(--bg-level-0);
+      }
+  
+      .cue-expand__content-body {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        align-items: flex-start;
+      }
+  
+      .cue-expand__content-text {
+        font-family: var(--font-family-body);
+        font-size: 0.875rem;      /* 14px */
+        font-weight: 400;
+        color: var(--content-body-default);
+        line-height: 1.5;
+        width: 100%;
+      }
+  
+      /* ---- Demo helper ---- */
+  
+      .expand-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 0.625rem;
+        width: 100%;
+      }
+pageScript: |
+  function toggleExpand(toggleBtn) {
+      const module = toggleBtn.closest('.cue-expand');
+      const isOpen = module.classList.toggle('is-open');
+      const label  = toggleBtn.querySelector('.cue-expand__toggle-label');
+      const icon   = toggleBtn.querySelector('.cue-expand__toggle-icon .material-icons');
+      toggleBtn.setAttribute('aria-expanded', isOpen);
+      label.textContent = isOpen ? 'Collapse' : 'Expand';
+      icon.textContent  = isOpen ? 'unfold_less' : 'unfold_more';
     }
-
-    /* ---- Header row ---- */
-
-    .cue-expand__header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
-      gap: 1rem;
-    }
-
-    .cue-expand__title {
-      font-family: var(--font-family-heading);
-      font-size: 1.25rem;       /* 20px */
-      font-weight: 700;
-      color: var(--content-body-primary-brand);
-      line-height: 1.15;
-      white-space: nowrap;
-    }
-
-    /* ---- Toggle button ---- */
-
-    .cue-expand__toggle {
-      display: inline-flex;
-      align-items: center;
-      gap: 2px;
-      background: transparent;
-      border: none;
-      border-radius: var(--corner-button);
-      cursor: pointer;
-      padding: 0;
-      flex-shrink: 0;
-      transition: opacity 0.15s ease;
-    }
-
-    .cue-expand__toggle:hover { opacity: 0.75; }
-
-    .cue-expand__toggle:focus-visible {
-      outline: 2px solid var(--border-interactive);
-      outline-offset: 2px;
-      border-radius: var(--corner-button);
-    }
-
-    .cue-expand__toggle-label {
-      padding: 4px;
-      font-family: var(--font-family-body);
-      font-size: 0.875rem;      /* 14px */
-      font-weight: 700;
-      color: var(--content-body-link);
-      line-height: 1;
-      white-space: nowrap;
-    }
-
-    .cue-expand__toggle-icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--content-body-link);
-    }
-
-    .cue-expand__toggle-icon .material-icons { font-size: 22px; }
-
-    /* ---- Collapsible body ---- */
-
-    .cue-expand__body {
-      overflow: hidden;
-      max-height: 0;
-      opacity: 0;
-      margin-top: 0;
-      transition:
-        max-height 0.3s ease,
-        opacity    0.25s ease,
-        margin-top 0.25s ease;
-    }
-
-    .cue-expand.is-open .cue-expand__body {
-      max-height: 2000px;   /* large enough for any content */
-      opacity: 1;
-      margin-top: 1.5rem;   /* 24px gap from header — only visible when open */
-    }
-
-    /* ---- Default content layout ----
-       .cue-expand__content is an optional helper for the typical
-       "image + text column" layout shown in the Figma examples.
-       Any custom layout can replace it. */
-
-    .cue-expand__content {
-      display: flex;
-      align-items: flex-start;
-      gap: 1rem;
-      width: 100%;
-    }
-
-    .cue-expand__content-image {
-      flex-shrink: 0;
-      width: 169px;
-      height: 131px;
-      border-radius: 4px;
-      object-fit: cover;
-      background-color: var(--bg-level-0);
-    }
-
-    .cue-expand__content-body {
-      flex: 1;
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-      align-items: flex-start;
-    }
-
-    .cue-expand__content-text {
-      font-family: var(--font-family-body);
-      font-size: 0.875rem;      /* 14px */
-      font-weight: 400;
-      color: var(--content-body-default);
-      line-height: 1.5;
-      width: 100%;
-    }
-
-    /* ---- Demo helper ---- */
-
-    .expand-stack {
-      display: flex;
-      flex-direction: column;
-      gap: 0.625rem;
-      width: 100%;
-    }
-
-  </style>
-</head>
-<body>
-
-<div class="docs-topbar" role="banner">
-  <a href="../index.html" class="docs-topbar__logo" aria-label="CUE Canvas home">
-    <img src="../assets/logo_CUE_glyph.svg" alt="CUE glyph" />
-    <span class="docs-topbar__logo-label">Canvas</span>
-  </a>
-  <button class="docs-topbar__hamburger" aria-label="Open navigation" aria-expanded="false" aria-controls="docs-sidebar">
-    <span class="material-icons" aria-hidden="true">menu</span>
-  </button>
-</div>
-
-<div class="docs-nav-overlay" aria-hidden="true"></div>
-
-<div class="docs-layout">
-
-  <nav class="docs-sidebar" id="docs-sidebar" aria-label="Documentation navigation">
-    <button class="docs-sidebar__close" aria-label="Close navigation">
-      <span class="material-icons" aria-hidden="true">close</span>
-    </button>
-    <a href="../index.html" class="docs-sidebar__logo" aria-label="CUE Canvas home">
-      <img src="../assets/logo_CUE_glyph.svg" alt="CUE glyph" />
-      <span class="docs-sidebar__logo-label">Canvas</span>
-    </a>
-    <p class="docs-sidebar__section-label">Getting Started</p>
-    <div class="docs-sidebar__nav">
-      <a href="../index.html" class="docs-sidebar__nav-link">Overview</a>
-    </div>
-    <p class="docs-sidebar__section-label">Components</p>
-    <div class="docs-sidebar__nav">
-      <a href="accordion.html" class="docs-sidebar__nav-link">Accordion</a>
-      <a href="alert.html" class="docs-sidebar__nav-link">Alert</a>
-      <a href="badge.html" class="docs-sidebar__nav-link">Badge</a>
-      <a href="breadcrumb.html" class="docs-sidebar__nav-link">Breadcrumb</a>
-      <a href="button.html" class="docs-sidebar__nav-link">Button</a>
-      <a href="calendar-components.html" class="docs-sidebar__nav-link">Calendar Components</a>
-      <a href="calendar.html" class="docs-sidebar__nav-link">Calendar</a>
-      <a href="card.html" class="docs-sidebar__nav-link">Card</a>
-      <a href="chat.html" class="docs-sidebar__nav-link">Chat</a>
-      <a href="combobox.html" class="docs-sidebar__nav-link">Combobox &amp; Multiselect</a>
-      <a href="date-picker.html" class="docs-sidebar__nav-link">Date Picker</a>
-      <a href="dropdown.html" class="docs-sidebar__nav-link">Dropdown Menu</a>
-      <a href="expand-collapse.html" class="docs-sidebar__nav-link active">Expand / Collapse</a>
-      <a href="form-field.html" class="docs-sidebar__nav-link">Form Field</a>
-      <a href="modal.html" class="docs-sidebar__nav-link">Modal</a>
-      <a href="scheduler.html" class="docs-sidebar__nav-link">Scheduler</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Side Navigation</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Skeleton Loader</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Status Badge</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Step Process</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Tab Navigation</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Table</a>
-    </div>
-    <p class="docs-sidebar__section-label">Icons</p>
-    <div class="docs-sidebar__nav">
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Icon Reference</a>
-    </div>
-  </nav>
-
-  <main class="docs-main">
-
-    <div class="docs-page-header">
+  
+    (function() {
+      var sidebar   = document.querySelector('.docs-sidebar');
+      var overlay   = document.querySelector('.docs-nav-overlay');
+      var hamburger = document.querySelector('.docs-topbar__hamburger');
+      var closeBtn  = document.querySelector('.docs-sidebar__close');
+      function openNav() { sidebar.classList.add('is-open'); overlay.classList.add('is-visible'); document.body.style.overflow = 'hidden'; if (hamburger) hamburger.setAttribute('aria-expanded', 'true'); if (closeBtn) closeBtn.focus(); }
+      function closeNav() { sidebar.classList.remove('is-open'); overlay.classList.remove('is-visible'); document.body.style.overflow = ''; if (hamburger) { hamburger.setAttribute('aria-expanded', 'false'); hamburger.focus(); } }
+      if (hamburger) hamburger.addEventListener('click', openNav);
+      if (closeBtn)  closeBtn.addEventListener('click', closeNav);
+      if (overlay)   overlay.addEventListener('click', closeNav);
+      document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && sidebar.classList.contains('is-open')) closeNav(); });
+    })();
+---
+<div class="docs-page-header">
       <h1 class="docs-page-title">Expand / Collapse</h1>
       <p class="docs-page-description">
         A surface module with a title header and toggleable content panel. Used throughout CUE Back Office to group related information — form sections, permissions, detail records, data points — under a named heading that can be expanded or collapsed independently. The content area is fully flexible: any HTML can go inside it.
@@ -700,42 +652,3 @@ function collapseAll() {
       </div>
 
     </div>
-
-  </main>
-</div>
-
-<script>
-  function switchTab(event, tabId) {
-    const section = event.target.closest('.docs-section');
-    section.querySelectorAll('.docs-code-tab').forEach(t => t.classList.remove('active'));
-    section.querySelectorAll('.docs-code-panel').forEach(p => p.classList.remove('active'));
-    event.target.classList.add('active');
-    document.getElementById(tabId).classList.add('active');
-  }
-
-  function toggleExpand(toggleBtn) {
-    const module = toggleBtn.closest('.cue-expand');
-    const isOpen = module.classList.toggle('is-open');
-    const label  = toggleBtn.querySelector('.cue-expand__toggle-label');
-    const icon   = toggleBtn.querySelector('.cue-expand__toggle-icon .material-icons');
-    toggleBtn.setAttribute('aria-expanded', isOpen);
-    label.textContent = isOpen ? 'Collapse' : 'Expand';
-    icon.textContent  = isOpen ? 'unfold_less' : 'unfold_more';
-  }
-
-  (function() {
-    var sidebar   = document.querySelector('.docs-sidebar');
-    var overlay   = document.querySelector('.docs-nav-overlay');
-    var hamburger = document.querySelector('.docs-topbar__hamburger');
-    var closeBtn  = document.querySelector('.docs-sidebar__close');
-    function openNav() { sidebar.classList.add('is-open'); overlay.classList.add('is-visible'); document.body.style.overflow = 'hidden'; if (hamburger) hamburger.setAttribute('aria-expanded', 'true'); if (closeBtn) closeBtn.focus(); }
-    function closeNav() { sidebar.classList.remove('is-open'); overlay.classList.remove('is-visible'); document.body.style.overflow = ''; if (hamburger) { hamburger.setAttribute('aria-expanded', 'false'); hamburger.focus(); } }
-    if (hamburger) hamburger.addEventListener('click', openNav);
-    if (closeBtn)  closeBtn.addEventListener('click', closeNav);
-    if (overlay)   overlay.addEventListener('click', closeNav);
-    document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && sidebar.classList.contains('is-open')) closeNav(); });
-  })();
-</script>
-
-</body>
-</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CUE Canvas{% if page.title %} — {{ page.title }}{% endif %}</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ page.root }}tokens.css" />
+  <link rel="stylesheet" href="{{ page.root }}base.css" />
+  <link rel="stylesheet" href="{{ page.root }}components.css" />
+  <link rel="icon" type="image/svg+xml" href="{{ page.root }}assets/logo_CUE_glyph.svg" />
+  {% if page.extraCSS %}
+  <style>
+    {{ page.extraCSS }}
+  </style>
+  {% endif %}
+</head>
+<body>
+
+<div class="docs-topbar" role="banner">
+  <a href="{{ page.root }}index.html" class="docs-topbar__logo" aria-label="CUE Canvas home">
+    <img src="{{ page.root }}assets/logo_CUE_glyph.svg" alt="CUE glyph" />
+    <span class="docs-topbar__logo-label">Canvas</span>
+  </a>
+  <button class="docs-topbar__hamburger" aria-label="Open navigation" aria-expanded="false" aria-controls="docs-sidebar">
+    <span class="material-icons" aria-hidden="true">menu</span>
+  </button>
+</div>
+
+<div class="docs-nav-overlay" aria-hidden="true"></div>
+
+<div class="docs-layout">
+
+  <nav class="docs-sidebar" id="docs-sidebar" aria-label="Documentation navigation">
+    {% include sidebar.html %}
+  </nav>
+
+  <main class="docs-main">
+    {{ content }}
+  </main>
+
+</div>
+
+{% if page.extraHTML %}
+{{ page.extraHTML }}
+{% endif %}
+
+<script>
+  {% if page.pageScript %}
+  {{ page.pageScript }}
+  {% endif %}
+
+  // Off-canvas nav — shared across all pages
+  (function() {
+    var sidebar   = document.querySelector('.docs-sidebar');
+    var overlay   = document.querySelector('.docs-nav-overlay');
+    var hamburger = document.querySelector('.docs-topbar__hamburger');
+    var closeBtn  = document.querySelector('.docs-sidebar__close');
+    function openNav() {
+      sidebar.classList.add('is-open');
+      overlay.classList.add('is-visible');
+      document.body.style.overflow = 'hidden';
+      if (hamburger) hamburger.setAttribute('aria-expanded', 'true');
+      if (closeBtn) closeBtn.focus();
+    }
+    function closeNav() {
+      sidebar.classList.remove('is-open');
+      overlay.classList.remove('is-visible');
+      document.body.style.overflow = '';
+      if (hamburger) {
+        hamburger.setAttribute('aria-expanded', 'false');
+        hamburger.focus();
+      }
+    }
+    if (hamburger) hamburger.addEventListener('click', openNav);
+    if (closeBtn)  closeBtn.addEventListener('click', closeNav);
+    if (overlay)   overlay.addEventListener('click', function(e) {
+      if (e.target === overlay) closeNav();
+    });
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && sidebar.classList.contains('is-open')) closeNav();
+    });
+  })();
+
+  // Code tab switcher — used on most component pages
+  function switchTab(event, tabId) {
+    var section = event.target.closest('.docs-section');
+    section.querySelectorAll('.docs-code-tab').forEach(function(t) { t.classList.remove('active'); });
+    section.querySelectorAll('.docs-code-panel').forEach(function(p) { p.classList.remove('active'); });
+    event.target.classList.add('active');
+    document.getElementById(tabId).classList.add('active');
+  }
+</script>
+
+</body>
+</html>

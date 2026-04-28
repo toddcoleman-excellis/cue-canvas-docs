@@ -1,225 +1,186 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CUE Canvas — Breadcrumb</title>
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../tokens.css" />
-  <link rel="stylesheet" href="../base.css" />
-  <link rel="stylesheet" href="../components.css" />
-  <link rel="icon" type="image/svg+xml" href="../assets/logo_CUE_glyph.svg" />
-  <style>
-
-    /* ============================================================
-       BREADCRUMB COMPONENT
-
-       Anatomy:
-         .cue-breadcrumb               — full-width bar container
-           .cue-breadcrumb__content    — inner flex row
-             .cue-breadcrumb__back     — back button (left section)
-             .cue-breadcrumb__pipe     — vertical divider
-             .cue-breadcrumb__trail    — link trail (right section)
-               .cue-breadcrumb__item  — individual trail item
-                 a.cue-breadcrumb__link        — Home or intermediate link
-                 .cue-breadcrumb__chevron      — keyboard_arrow_right icon
-                 span.cue-breadcrumb__current  — current page (end of trail)
-
-       Usage:
-         The breadcrumb bar lives at the top of page content areas in
-         CUE Back Office, below the app top bar. It always spans the
-         full content width. Horizontal padding is inherited from the
-         page layout wrapper (120px on desktop).
-    ============================================================ */
-
-    /* --- Bar container --- */
-
-    .cue-breadcrumb {
-      background-color: var(--bg-header);
-      border-bottom: 1px solid var(--border-extra-subtle);
-      width: 100%;
-      padding: 0.5rem 1.5rem; /* 8px vertical; horizontal set by layout in production */
-    }
-
-    /* --- Inner content row --- */
-
-    .cue-breadcrumb__content {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    /* --- Back button --- */
-
-    .cue-breadcrumb__back {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      background: none;
-      border: none;
-      padding: 0;
-      cursor: pointer;
-      color: var(--content-body-default);
-      font-family: var(--font-family-body);
-      font-size: 0.75rem;   /* 12px */
-      font-weight: 400;
-      line-height: 1;
-      white-space: nowrap;
-      transition: color 0.15s ease;
-    }
-
-    .cue-breadcrumb__back:hover {
-      color: var(--content-body-link);
-    }
-
-    .cue-breadcrumb__back:focus-visible {
-      outline: 2px solid var(--border-interactive);
-      outline-offset: 2px;
-      border-radius: 2px;
-    }
-
-    .cue-breadcrumb__back-icon {
-      font-size: 12px;  /* px — Material Icons optical spec at small size */
-      line-height: 1;
-      flex-shrink: 0;
-    }
-
-    /* --- Pipe divider --- */
-
-    .cue-breadcrumb__pipe {
-      display: inline-block;
-      width: 1px;
-      height: 1rem;
-      background-color: var(--content-body-subtle);
-      margin: 0 2px;
-      flex-shrink: 0;
-    }
-
-    /* --- Trail --- */
-
-    .cue-breadcrumb__trail {
-      display: flex;
-      align-items: center;
-      gap: 0;
-      flex-wrap: wrap;
-    }
-
-    /* --- Trail item wrapper --- */
-
-    .cue-breadcrumb__item {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    /* --- Link (Home + intermediate links) --- */
-
-    .cue-breadcrumb__link {
-      font-family: var(--font-family-body);
-      font-size: 0.75rem;   /* 12px */
-      font-weight: 400;
-      line-height: 1;
-      color: var(--content-body-default);
-      text-decoration: none;
-      white-space: nowrap;
-      transition: color 0.15s ease;
-    }
-
-    .cue-breadcrumb__link:hover {
-      color: var(--content-body-link);
-    }
-
-    .cue-breadcrumb__link:focus-visible {
-      outline: 2px solid var(--border-interactive);
-      outline-offset: 2px;
-      border-radius: 2px;
-    }
-
-    /* --- Chevron separator --- */
-
-    .cue-breadcrumb__chevron {
-      font-size: 16px;  /* px — Material Icons optical spec */
-      line-height: 1;
-      color: var(--content-body-subtle);
-      flex-shrink: 0;
-    }
-
-    /* --- Current page (end of trail) --- */
-
-    .cue-breadcrumb__current {
-      font-family: var(--font-family-body);
-      font-size: 0.75rem;   /* 12px */
-      font-weight: 700;
-      line-height: 1;
-      color: var(--content-body-link);
-      white-space: nowrap;
-    }
-
-  </style>
-</head>
-<body>
-
-<div class="docs-topbar" role="banner">
-  <a href="../index.html" class="docs-topbar__logo" aria-label="CUE Canvas home">
-    <img src="../assets/logo_CUE_glyph.svg" alt="CUE glyph" />
-    <span class="docs-topbar__logo-label">Canvas</span>
-  </a>
-  <button class="docs-topbar__hamburger" aria-label="Open navigation" aria-expanded="false" aria-controls="docs-sidebar">
-    <span class="material-icons" aria-hidden="true">menu</span>
-  </button>
-</div>
-
-<div class="docs-nav-overlay" aria-hidden="true"></div>
-
-<div class="docs-layout">
-
-  <nav class="docs-sidebar" id="docs-sidebar" aria-label="Documentation navigation">
-    <button class="docs-sidebar__close" aria-label="Close navigation">
-      <span class="material-icons" aria-hidden="true">close</span>
-    </button>
-    <a href="../index.html" class="docs-sidebar__logo" aria-label="CUE Canvas home">
-      <img src="../assets/logo_CUE_glyph.svg" alt="CUE glyph" />
-      <span class="docs-sidebar__logo-label">Canvas</span>
-    </a>
-    <p class="docs-sidebar__section-label">Getting Started</p>
-    <div class="docs-sidebar__nav">
-      <a href="../index.html" class="docs-sidebar__nav-link">Overview</a>
-    </div>
-    <p class="docs-sidebar__section-label">Components</p>
-    <div class="docs-sidebar__nav">
-      <a href="accordion.html" class="docs-sidebar__nav-link">Accordion</a>
-      <a href="alert.html" class="docs-sidebar__nav-link">Alert</a>
-      <a href="badge.html" class="docs-sidebar__nav-link">Badge</a>
-      <a href="breadcrumb.html" class="docs-sidebar__nav-link active">Breadcrumb</a>
-      <a href="button.html" class="docs-sidebar__nav-link">Button</a>
-      <a href="calendar-components.html" class="docs-sidebar__nav-link">Calendar Components</a>
-      <a href="calendar.html" class="docs-sidebar__nav-link">Calendar</a>
-      <a href="card.html" class="docs-sidebar__nav-link">Card</a>
-      <a href="chat.html" class="docs-sidebar__nav-link">Chat</a>
-      <a href="combobox.html" class="docs-sidebar__nav-link">Combobox &amp; Multiselect</a>
-      <a href="date-picker.html" class="docs-sidebar__nav-link">Date Picker</a>
-      <a href="dropdown.html" class="docs-sidebar__nav-link">Dropdown Menu</a>
-      <a href="expand-collapse.html" class="docs-sidebar__nav-link">Expand / Collapse</a>
-      <a href="form-field.html" class="docs-sidebar__nav-link">Form Field</a>
-      <a href="modal.html" class="docs-sidebar__nav-link">Modal</a>
-      <a href="scheduler.html" class="docs-sidebar__nav-link">Scheduler</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Side Navigation</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Skeleton Loader</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Status Badge</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Step Process</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Tab Navigation</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Table</a>
-    </div>
-    <p class="docs-sidebar__section-label">Icons</p>
-    <div class="docs-sidebar__nav">
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Icon Reference</a>
-    </div>
-  </nav>
-
-  <main class="docs-main">
-
-    <div class="docs-page-header">
+---
+layout: default
+title: "Breadcrumb"
+activeNav: breadcrumb
+root: ../
+extraCSS: |
+  /* ============================================================
+         BREADCRUMB COMPONENT
+  
+         Anatomy:
+           .cue-breadcrumb               — full-width bar container
+             .cue-breadcrumb__content    — inner flex row
+               .cue-breadcrumb__back     — back button (left section)
+               .cue-breadcrumb__pipe     — vertical divider
+               .cue-breadcrumb__trail    — link trail (right section)
+                 .cue-breadcrumb__item  — individual trail item
+                   a.cue-breadcrumb__link        — Home or intermediate link
+                   .cue-breadcrumb__chevron      — keyboard_arrow_right icon
+                   span.cue-breadcrumb__current  — current page (end of trail)
+  
+         Usage:
+           The breadcrumb bar lives at the top of page content areas in
+           CUE Back Office, below the app top bar. It always spans the
+           full content width. Horizontal padding is inherited from the
+           page layout wrapper (120px on desktop).
+      ============================================================ */
+  
+      /* --- Bar container --- */
+  
+      .cue-breadcrumb {
+        background-color: var(--bg-header);
+        border-bottom: 1px solid var(--border-extra-subtle);
+        width: 100%;
+        padding: 0.5rem 1.5rem; /* 8px vertical; horizontal set by layout in production */
+      }
+  
+      /* --- Inner content row --- */
+  
+      .cue-breadcrumb__content {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+  
+      /* --- Back button --- */
+  
+      .cue-breadcrumb__back {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: none;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        color: var(--content-body-default);
+        font-family: var(--font-family-body);
+        font-size: 0.75rem;   /* 12px */
+        font-weight: 400;
+        line-height: 1;
+        white-space: nowrap;
+        transition: color 0.15s ease;
+      }
+  
+      .cue-breadcrumb__back:hover {
+        color: var(--content-body-link);
+      }
+  
+      .cue-breadcrumb__back:focus-visible {
+        outline: 2px solid var(--border-interactive);
+        outline-offset: 2px;
+        border-radius: 2px;
+      }
+  
+      .cue-breadcrumb__back-icon {
+        font-size: 12px;  /* px — Material Icons optical spec at small size */
+        line-height: 1;
+        flex-shrink: 0;
+      }
+  
+      /* --- Pipe divider --- */
+  
+      .cue-breadcrumb__pipe {
+        display: inline-block;
+        width: 1px;
+        height: 1rem;
+        background-color: var(--content-body-subtle);
+        margin: 0 2px;
+        flex-shrink: 0;
+      }
+  
+      /* --- Trail --- */
+  
+      .cue-breadcrumb__trail {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        flex-wrap: wrap;
+      }
+  
+      /* --- Trail item wrapper --- */
+  
+      .cue-breadcrumb__item {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+      }
+  
+      /* --- Link (Home + intermediate links) --- */
+  
+      .cue-breadcrumb__link {
+        font-family: var(--font-family-body);
+        font-size: 0.75rem;   /* 12px */
+        font-weight: 400;
+        line-height: 1;
+        color: var(--content-body-default);
+        text-decoration: none;
+        white-space: nowrap;
+        transition: color 0.15s ease;
+      }
+  
+      .cue-breadcrumb__link:hover {
+        color: var(--content-body-link);
+      }
+  
+      .cue-breadcrumb__link:focus-visible {
+        outline: 2px solid var(--border-interactive);
+        outline-offset: 2px;
+        border-radius: 2px;
+      }
+  
+      /* --- Chevron separator --- */
+  
+      .cue-breadcrumb__chevron {
+        font-size: 16px;  /* px — Material Icons optical spec */
+        line-height: 1;
+        color: var(--content-body-subtle);
+        flex-shrink: 0;
+      }
+  
+      /* --- Current page (end of trail) --- */
+  
+      .cue-breadcrumb__current {
+        font-family: var(--font-family-body);
+        font-size: 0.75rem;   /* 12px */
+        font-weight: 700;
+        line-height: 1;
+        color: var(--content-body-link);
+        white-space: nowrap;
+      }
+pageScript: |
+  (function() {
+      var sidebar   = document.querySelector('.docs-sidebar');
+      var overlay   = document.querySelector('.docs-nav-overlay');
+      var hamburger = document.querySelector('.docs-topbar__hamburger');
+      var closeBtn  = document.querySelector('.docs-sidebar__close');
+  
+      function openNav() {
+        sidebar.classList.add('is-open');
+        overlay.classList.add('is-visible');
+        document.body.style.overflow = 'hidden';
+        if (hamburger) hamburger.setAttribute('aria-expanded', 'true');
+        if (closeBtn) closeBtn.focus();
+      }
+  
+      function closeNav() {
+        sidebar.classList.remove('is-open');
+        overlay.classList.remove('is-visible');
+        document.body.style.overflow = '';
+        if (hamburger) {
+          hamburger.setAttribute('aria-expanded', 'false');
+          hamburger.focus();
+        }
+      }
+  
+      if (hamburger) hamburger.addEventListener('click', openNav);
+      if (closeBtn)  closeBtn.addEventListener('click', closeNav);
+      if (overlay)   overlay.addEventListener('click', closeNav);
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && sidebar.classList.contains('is-open')) closeNav();
+      });
+    })();
+---
+<div class="docs-page-header">
       <h1 class="docs-page-title">Breadcrumb</h1>
       <p class="docs-page-description">
         Breadcrumbs show the user's current location within the application hierarchy and provide a way to navigate back up through parent sections. The breadcrumb bar spans the full width of the content area and sits below the app top bar on every interior page of CUE Back Office.
@@ -572,51 +533,3 @@
         </tbody>
       </table>
     </div>
-
-  </main>
-</div>
-
-<script>
-  function switchTab(event, tabId) {
-    const section = event.target.closest('.docs-section');
-    section.querySelectorAll('.docs-code-tab').forEach(t => t.classList.remove('active'));
-    section.querySelectorAll('.docs-code-panel').forEach(p => p.classList.remove('active'));
-    event.target.classList.add('active');
-    document.getElementById(tabId).classList.add('active');
-  }
-
-  (function() {
-    var sidebar   = document.querySelector('.docs-sidebar');
-    var overlay   = document.querySelector('.docs-nav-overlay');
-    var hamburger = document.querySelector('.docs-topbar__hamburger');
-    var closeBtn  = document.querySelector('.docs-sidebar__close');
-
-    function openNav() {
-      sidebar.classList.add('is-open');
-      overlay.classList.add('is-visible');
-      document.body.style.overflow = 'hidden';
-      if (hamburger) hamburger.setAttribute('aria-expanded', 'true');
-      if (closeBtn) closeBtn.focus();
-    }
-
-    function closeNav() {
-      sidebar.classList.remove('is-open');
-      overlay.classList.remove('is-visible');
-      document.body.style.overflow = '';
-      if (hamburger) {
-        hamburger.setAttribute('aria-expanded', 'false');
-        hamburger.focus();
-      }
-    }
-
-    if (hamburger) hamburger.addEventListener('click', openNav);
-    if (closeBtn)  closeBtn.addEventListener('click', closeNav);
-    if (overlay)   overlay.addEventListener('click', closeNav);
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape' && sidebar.classList.contains('is-open')) closeNav();
-    });
-  })();
-</script>
-
-</body>
-</html>

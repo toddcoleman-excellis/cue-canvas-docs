@@ -1,226 +1,197 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CUE Canvas — Dropdown Menu</title>
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../tokens.css" />
-  <link rel="stylesheet" href="../base.css" />
-  <link rel="stylesheet" href="../components.css" />
-  <link rel="icon" type="image/svg+xml" href="../assets/logo_CUE_glyph.svg" />
-  <style>
-
-    /* ============================================================
-       DROPDOWN MENU
-
-       Anatomy:
-         .cue-dropdown                  — wrapper (position: relative)
-           [trigger button]             — any button type (see below)
-           .cue-dropdown__panel         — the floating menu panel
-             .cue-dropdown__item        — menu item (button)
-               .cue-dropdown__item-icon — leading icon (18px Material Icon)
-               .cue-dropdown__item-label— item label text
-               .cue-dropdown__item-trail— trailing icon (chevron_right for submenu)
-             .cue-dropdown__divider     — horizontal rule separator
-
-       Modifier on .cue-dropdown:
-         .is-open                       — shows panel, keeps trigger in active state
-
-       Trigger button types (all standard .cue-btn variants):
-         Neutral-Stroke: "Actions" with chevron down/up
-         Icon:           more_horiz icon only
-         Primary:        "Add New" with + icon
-
-       Panel positioning:
-         Default: top: calc(100% + 6px), right: 0  (aligns to trigger right edge)
-         Can be overridden with .cue-dropdown--left for left-aligned panels.
-    ============================================================ */
-
-    
-
-    /* ---- Panel ---- */
-
-    
-
-    .cue-dropdown.is-open 
-
-    /* Left-align variant */
-    .cue-dropdown--left 
-
-    /* ---- Menu item ---- */
-
-    
-
-    
-
-    
-
-    /* Destructive item (Delete) */
-    
-
-    .cue-dropdown__item--destructive .cue-dropdown__item-label,
-    .cue-dropdown__item--destructive 
-
-    .cue-dropdown__item--destructive:hover .cue-dropdown__item-label,
-    .cue-dropdown__item--destructive:hover 
-
-    /* Icon */
-    
-
-    .cue-dropdown__item-icon .material-icons {
-      font-size: 18px;
+---
+layout: default
+title: "Dropdown Menu"
+activeNav: dropdown
+root: ../
+extraCSS: |
+  /* ============================================================
+         DROPDOWN MENU
+  
+         Anatomy:
+           .cue-dropdown                  — wrapper (position: relative)
+             [trigger button]             — any button type (see below)
+             .cue-dropdown__panel         — the floating menu panel
+               .cue-dropdown__item        — menu item (button)
+                 .cue-dropdown__item-icon — leading icon (18px Material Icon)
+                 .cue-dropdown__item-label— item label text
+                 .cue-dropdown__item-trail— trailing icon (chevron_right for submenu)
+               .cue-dropdown__divider     — horizontal rule separator
+  
+         Modifier on .cue-dropdown:
+           .is-open                       — shows panel, keeps trigger in active state
+  
+         Trigger button types (all standard .cue-btn variants):
+           Neutral-Stroke: "Actions" with chevron down/up
+           Icon:           more_horiz icon only
+           Primary:        "Add New" with + icon
+  
+         Panel positioning:
+           Default: top: calc(100% + 6px), right: 0  (aligns to trigger right edge)
+           Can be overridden with .cue-dropdown--left for left-aligned panels.
+      ============================================================ */
+  
+      
+  
+      /* ---- Panel ---- */
+  
+      
+  
+      .cue-dropdown.is-open 
+  
+      /* Left-align variant */
+      .cue-dropdown--left 
+  
+      /* ---- Menu item ---- */
+  
+      
+  
+      
+  
+      
+  
+      /* Destructive item (Delete) */
+      
+  
+      .cue-dropdown__item--destructive .cue-dropdown__item-label,
+      .cue-dropdown__item--destructive 
+  
+      .cue-dropdown__item--destructive:hover .cue-dropdown__item-label,
+      .cue-dropdown__item--destructive:hover 
+  
+      /* Icon */
+      
+  
+      .cue-dropdown__item-icon .material-icons {
+        font-size: 18px;
+      }
+  
+      /* Label */
+      
+  
+      /* Trailing icon (submenu indicator) */
+      
+  
+      .cue-dropdown__item-trail .material-icons {
+        font-size: 16px;
+      }
+  
+      /* ---- Divider ---- */
+  
+      
+  
+      /* ---- Trigger button active state ---- */
+      /* When open, the trigger gets a subtle shadow to look "pressed" */
+  
+      .cue-dropdown.is-open .cue-btn--neutral-stroke,
+      .cue-dropdown.is-open 
+  
+      /* Chevron rotates when open */
+      
+  
+      .cue-dropdown.is-open 
+  
+      .cue-dropdown__chevron .material-icons {
+        font-size: 16px;
+      }
+  
+      /* ---- Button styles needed for triggers ---- */
+  
+      
+  
+      
+  
+      
+      .cue-btn--neutral-stroke:hover {
+        background-color: var(--bg-button-neutral-stroke-hover);
+        color: var(--content-button-neutral-stroke-hover);
+        border-color: var(--border-button-neutral-stroke-hover);
+      }
+  
+      
+      .cue-btn--primary:hover { background-color: var(--bg-button-primary-hover); }
+  
+      
+  
+      
+  
+      /* ============================================================
+         DOCS HELPERS
+      ============================================================ */
+  
+      .dd-docs-example {
+        padding: 2rem;
+        background-color: var(--bg-level-1);
+        border: 1px solid var(--border-level-1);
+        border-radius: var(--corner-card-module);
+        margin-bottom: var(--space-xl);
+        overflow: visible;
+        min-height: 280px;
+      }
+  
+      .dd-demo-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 3rem;
+        align-items: flex-start;
+      }
+  
+      .dd-demo-col {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+  
+      .dd-demo-label {
+        font-size: 0.6875rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        color: var(--content-body-moderate);
+      }
+pageScript: |
+  function toggleDropdown(id, force) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const isOpen = force !== undefined ? force : !el.classList.contains('is-open');
+      document.querySelectorAll('.cue-dropdown.is-open').forEach(d => {
+        if (d.id !== id) { d.classList.remove('is-open'); d.querySelector('[aria-expanded]')?.setAttribute('aria-expanded', 'false'); }
+      });
+      el.classList.toggle('is-open', isOpen);
+      el.querySelector('[aria-expanded]')?.setAttribute('aria-expanded', isOpen);
+      if (isOpen) { setTimeout(() => el.querySelector('.cue-dropdown__item')?.focus(), 50); }
     }
-
-    /* Label */
-    
-
-    /* Trailing icon (submenu indicator) */
-    
-
-    .cue-dropdown__item-trail .material-icons {
-      font-size: 16px;
-    }
-
-    /* ---- Divider ---- */
-
-    
-
-    /* ---- Trigger button active state ---- */
-    /* When open, the trigger gets a subtle shadow to look "pressed" */
-
-    .cue-dropdown.is-open .cue-btn--neutral-stroke,
-    .cue-dropdown.is-open 
-
-    /* Chevron rotates when open */
-    
-
-    .cue-dropdown.is-open 
-
-    .cue-dropdown__chevron .material-icons {
-      font-size: 16px;
-    }
-
-    /* ---- Button styles needed for triggers ---- */
-
-    
-
-    
-
-    
-    .cue-btn--neutral-stroke:hover {
-      background-color: var(--bg-button-neutral-stroke-hover);
-      color: var(--content-button-neutral-stroke-hover);
-      border-color: var(--border-button-neutral-stroke-hover);
-    }
-
-    
-    .cue-btn--primary:hover { background-color: var(--bg-button-primary-hover); }
-
-    
-
-    
-
-    /* ============================================================
-       DOCS HELPERS
-    ============================================================ */
-
-    .dd-docs-example {
-      padding: 2rem;
-      background-color: var(--bg-level-1);
-      border: 1px solid var(--border-level-1);
-      border-radius: var(--corner-card-module);
-      margin-bottom: var(--space-xl);
-      overflow: visible;
-      min-height: 280px;
-    }
-
-    .dd-demo-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 3rem;
-      align-items: flex-start;
-    }
-
-    .dd-demo-col {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .dd-demo-label {
-      font-size: 0.6875rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.07em;
-      color: var(--content-body-moderate);
-    }
-
-  </style>
-</head>
-<body>
-
-<div class="docs-topbar" role="banner">
-  <a href="../index.html" class="docs-topbar__logo" aria-label="CUE Canvas home">
-    <img src="../assets/logo_CUE_glyph.svg" alt="CUE glyph" />
-    <span class="docs-topbar__logo-label">Canvas</span>
-  </a>
-  <button class="docs-topbar__hamburger" aria-label="Open navigation" aria-expanded="false" aria-controls="docs-sidebar">
-    <span class="material-icons" aria-hidden="true">menu</span>
-  </button>
-</div>
-
-<div class="docs-nav-overlay" aria-hidden="true"></div>
-
-<div class="docs-layout">
-
-  <nav class="docs-sidebar" id="docs-sidebar" aria-label="Documentation navigation">
-    <button class="docs-sidebar__close" aria-label="Close navigation">
-      <span class="material-icons" aria-hidden="true">close</span>
-    </button>
-    <a href="../index.html" class="docs-sidebar__logo" aria-label="CUE Canvas home">
-      <img src="../assets/logo_CUE_glyph.svg" alt="CUE glyph" />
-      <span class="docs-sidebar__logo-label">Canvas</span>
-    </a>
-    <p class="docs-sidebar__section-label">Getting Started</p>
-    <div class="docs-sidebar__nav">
-      <a href="../index.html" class="docs-sidebar__nav-link">Overview</a>
-    </div>
-    <p class="docs-sidebar__section-label">Components</p>
-    <div class="docs-sidebar__nav">
-      <a href="accordion.html" class="docs-sidebar__nav-link">Accordion</a>
-      <a href="alert.html" class="docs-sidebar__nav-link">Alert</a>
-      <a href="badge.html" class="docs-sidebar__nav-link">Badge</a>
-      <a href="breadcrumb.html" class="docs-sidebar__nav-link">Breadcrumb</a>
-      <a href="button.html" class="docs-sidebar__nav-link">Button</a>
-      <a href="calendar-components.html" class="docs-sidebar__nav-link">Calendar Components</a>
-      <a href="calendar.html" class="docs-sidebar__nav-link">Calendar</a>
-      <a href="card.html" class="docs-sidebar__nav-link">Card</a>
-      <a href="chat.html" class="docs-sidebar__nav-link">Chat</a>
-      <a href="combobox.html" class="docs-sidebar__nav-link">Combobox &amp; Multiselect</a>
-      <a href="date-picker.html" class="docs-sidebar__nav-link">Date Picker</a>
-      <a href="dropdown.html" class="docs-sidebar__nav-link active">Dropdown Menu</a>
-      <a href="expand-collapse.html" class="docs-sidebar__nav-link">Expand / Collapse</a>
-      <a href="form-field.html" class="docs-sidebar__nav-link">Form Field</a>
-      <a href="modal.html" class="docs-sidebar__nav-link">Modal</a>
-      <a href="scheduler.html" class="docs-sidebar__nav-link">Scheduler</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Side Navigation</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Skeleton Loader</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Status Badge</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Step Process</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Tab Navigation</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Table</a>
-    </div>
-    <p class="docs-sidebar__section-label">Icons</p>
-    <div class="docs-sidebar__nav">
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Icon Reference</a>
-    </div>
-  </nav>
-
-  <main class="docs-main">
-
-    <div class="docs-page-header">
+  
+    document.addEventListener('keydown', function(e) {
+      const open = document.querySelector('.cue-dropdown.is-open');
+      if (!open) return;
+      const items = [...open.querySelectorAll('.cue-dropdown__item')];
+      const idx = items.indexOf(document.activeElement);
+      if (e.key === 'ArrowDown') { e.preventDefault(); items[(idx + 1) % items.length]?.focus(); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); items[(idx - 1 + items.length) % items.length]?.focus(); }
+      else if (e.key === 'Escape') { const t = open.querySelector('[aria-expanded]'); toggleDropdown(open.id, false); t?.focus(); }
+      else if (e.key === 'Tab') { toggleDropdown(open.id, false); }
+    });
+  
+    document.addEventListener('click', function(e) {
+      document.querySelectorAll('.cue-dropdown.is-open').forEach(el => {
+        if (!el.contains(e.target)) { el.classList.remove('is-open'); el.querySelector('[aria-expanded]')?.setAttribute('aria-expanded', 'false'); }
+      });
+    });
+  
+    (function() {
+      var sidebar = document.querySelector('.docs-sidebar');
+      var overlay = document.querySelector('.docs-nav-overlay');
+      var hamburger = document.querySelector('.docs-topbar__hamburger');
+      var closeBtn = document.querySelector('.docs-sidebar__close');
+      function openNav() { sidebar.classList.add('is-open'); overlay.classList.add('is-visible'); document.body.style.overflow = 'hidden'; if (hamburger) hamburger.setAttribute('aria-expanded', 'true'); if (closeBtn) closeBtn.focus(); }
+      function closeNav() { sidebar.classList.remove('is-open'); overlay.classList.remove('is-visible'); document.body.style.overflow = ''; if (hamburger) { hamburger.setAttribute('aria-expanded', 'false'); hamburger.focus(); } }
+      if (hamburger) hamburger.addEventListener('click', openNav);
+      if (closeBtn) closeBtn.addEventListener('click', closeNav);
+      if (overlay) overlay.addEventListener('click', closeNav);
+      document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && sidebar.classList.contains('is-open')) closeNav(); });
+    })();
+---
+<div class="docs-page-header">
       <h1 class="docs-page-title">Dropdown Menu</h1>
       <p class="docs-page-description">
         A contextual menu panel triggered by a button. Used throughout CUE Back Office for actions on records, row-level context menus, and "Add New" create flows. The panel appears anchored below the trigger button and can contain labeled actions, icons, submenu indicators, and a divider for visual grouping.
@@ -696,61 +667,3 @@ document.addEventListener('click', function(e) {
       </div>
 
     </div>
-
-  </main>
-</div>
-
-<script>
-  function switchTab(event, tabId) {
-    const section = event.target.closest('.docs-section');
-    section.querySelectorAll('.docs-code-tab').forEach(t => t.classList.remove('active'));
-    section.querySelectorAll('.docs-code-panel').forEach(p => p.classList.remove('active'));
-    event.target.classList.add('active');
-    document.getElementById(tabId).classList.add('active');
-  }
-
-  function toggleDropdown(id, force) {
-    const el = document.getElementById(id);
-    if (!el) return;
-    const isOpen = force !== undefined ? force : !el.classList.contains('is-open');
-    document.querySelectorAll('.cue-dropdown.is-open').forEach(d => {
-      if (d.id !== id) { d.classList.remove('is-open'); d.querySelector('[aria-expanded]')?.setAttribute('aria-expanded', 'false'); }
-    });
-    el.classList.toggle('is-open', isOpen);
-    el.querySelector('[aria-expanded]')?.setAttribute('aria-expanded', isOpen);
-    if (isOpen) { setTimeout(() => el.querySelector('.cue-dropdown__item')?.focus(), 50); }
-  }
-
-  document.addEventListener('keydown', function(e) {
-    const open = document.querySelector('.cue-dropdown.is-open');
-    if (!open) return;
-    const items = [...open.querySelectorAll('.cue-dropdown__item')];
-    const idx = items.indexOf(document.activeElement);
-    if (e.key === 'ArrowDown') { e.preventDefault(); items[(idx + 1) % items.length]?.focus(); }
-    else if (e.key === 'ArrowUp') { e.preventDefault(); items[(idx - 1 + items.length) % items.length]?.focus(); }
-    else if (e.key === 'Escape') { const t = open.querySelector('[aria-expanded]'); toggleDropdown(open.id, false); t?.focus(); }
-    else if (e.key === 'Tab') { toggleDropdown(open.id, false); }
-  });
-
-  document.addEventListener('click', function(e) {
-    document.querySelectorAll('.cue-dropdown.is-open').forEach(el => {
-      if (!el.contains(e.target)) { el.classList.remove('is-open'); el.querySelector('[aria-expanded]')?.setAttribute('aria-expanded', 'false'); }
-    });
-  });
-
-  (function() {
-    var sidebar = document.querySelector('.docs-sidebar');
-    var overlay = document.querySelector('.docs-nav-overlay');
-    var hamburger = document.querySelector('.docs-topbar__hamburger');
-    var closeBtn = document.querySelector('.docs-sidebar__close');
-    function openNav() { sidebar.classList.add('is-open'); overlay.classList.add('is-visible'); document.body.style.overflow = 'hidden'; if (hamburger) hamburger.setAttribute('aria-expanded', 'true'); if (closeBtn) closeBtn.focus(); }
-    function closeNav() { sidebar.classList.remove('is-open'); overlay.classList.remove('is-visible'); document.body.style.overflow = ''; if (hamburger) { hamburger.setAttribute('aria-expanded', 'false'); hamburger.focus(); } }
-    if (hamburger) hamburger.addEventListener('click', openNav);
-    if (closeBtn) closeBtn.addEventListener('click', closeNav);
-    if (overlay) overlay.addEventListener('click', closeNav);
-    document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && sidebar.classList.contains('is-open')) closeNav(); });
-  })();
-</script>
-
-</body>
-</html>

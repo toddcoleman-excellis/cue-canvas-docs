@@ -1,928 +1,910 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CUE Canvas — Form Field</title>
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../tokens.css" />
-  <link rel="stylesheet" href="../base.css" />
-  <link rel="stylesheet" href="../components.css" />
-  <link rel="icon" type="image/svg+xml" href="../assets/logo_CUE_glyph.svg" />
-  <style>
-
-    /* ============================================================
-       FORM FIELD COMPONENTS
-
-       All form fields share these base tokens:
-         --corner-form-field:          6px  (border-radius, always px)
-         --padding-form-field-default: 0.75rem  (12px, default size)
-         --padding-form-field-medium:  0.5rem   (8px,  XX-Small size)
-         --padding-form-field-small:   0.375rem (6px,  compact)
-
-       Two styles:
-         Border — white bg, #a3a3a3 border (--border-form-field-default)
-         Solid  — #ededed bg (--bg-form-field-solid), no border
-
-       Three states:
-         Default  — as above
-         Focus    — white bg, #0594d7 border (--border-form-field-focus)
-         Read Only — no border, no bg, plain text only
-
-       Two sizes:
-         Default  — 16px text, 12px padding
-         XX-Small — 11px text, 8px padding
-
-       Components documented on this page:
-         .cue-input               — Text Input
-         .cue-select              — Select Dropdown
-         .cue-search              — Search Field
-         .cue-stepper-arrows      — Number Stepper (arrows)
-         .cue-stepper-plusminus   — Number Stepper (plus/minus)
-         .cue-checkbox            — Checkbox
-         .cue-radio               — Radio button
-         .cue-toggle              — Toggle Switch
-         .cue-form-group          — Form Group (Stack layout)
-         .cue-form-group-inline   — Form Group (Inline layout)
-         .cue-crud-form-group     — CRUD Form Group
-         .cue-select-option       — Select Option (dropdown item)
-         .cue-tag                 — Combobox Selection Tag
-    ============================================================ */
-
-    /* ============================================================
-       TEXT INPUT
-    ============================================================ */
-
-    .cue-input {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      width: 100%;
-      padding: var(--padding-form-field-default);
-      border: 1px solid var(--border-form-field-default);
-      border-radius: var(--corner-form-field);
-      background-color: var(--bg-form-field-default);
-      font-family: var(--font-family-body);
-      font-size: 1rem;
-      font-weight: 400;
-      color: var(--content-form-field-placeholder);
-      line-height: 1;
-      outline: none;
-      transition: border-color 0.15s ease, background-color 0.15s ease;
-      cursor: text;
-    }
-
-    .cue-input::placeholder { color: var(--content-form-field-placeholder); }
-
-    .cue-input:focus {
-      border-color: var(--border-form-field-focus);
-      background-color: var(--bg-form-field-focus);
-      color: var(--content-form-field-filled-read);
-    }
-
-    .cue-input:read-only {
-      border-color: transparent;
-      background-color: transparent;
-      color: var(--content-form-field-filled-read);
-      cursor: default;
-    }
-
-    /* Solid style */
-    .cue-input--solid {
-      background-color: var(--bg-form-field-solid);
-      border-color: transparent;
-      color: var(--content-form-field-solid-placeholder);
-    }
-
-    .cue-input--solid:focus {
-      border-color: var(--border-form-field-focus);
-      background-color: var(--bg-form-field-focus);
-      color: var(--content-form-field-filled-read);
-    }
-
-    /* XX-Small size */
-    .cue-input--xxsmall {
-      padding: var(--padding-form-field-medium);
-      font-size: 0.6875rem;
-    }
-
-    /* Input wrapper for icon support */
-    .cue-input-wrap {
-      position: relative;
-      display: flex;
-      align-items: center;
-      width: 100%;
-    }
-
-    .cue-input-wrap .cue-input {
-      width: 100%;
-    }
-
-    .cue-input-wrap--icon-left .cue-input  { padding-left: 2.5rem; }
-    .cue-input-wrap--icon-right .cue-input { padding-right: 2.5rem; }
-
-    .cue-input-icon {
-      position: absolute;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      pointer-events: none;
-      color: var(--content-body-moderate);
-    }
-
-    .cue-input-icon--left  { left: 0.75rem; }
-    .cue-input-icon--right { right: 0.75rem; }
-
-    .cue-input-icon .material-icons { font-size: 18px; }
-
-
-    /* ============================================================
-       SELECT DROPDOWN
-    ============================================================ */
-
-    .cue-select {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
-      padding: var(--padding-form-field-default);
-      border: 1px solid var(--border-form-field-default);
-      border-radius: var(--corner-form-field);
-      background-color: var(--bg-form-field-default);
-      font-family: var(--font-family-body);
-      font-size: 1rem;
-      font-weight: 400;
-      color: var(--content-form-field-placeholder);
-      line-height: 1;
-      cursor: pointer;
-      appearance: none;
-      -webkit-appearance: none;
-      outline: none;
-      transition: border-color 0.15s ease, background-color 0.15s ease;
-    }
-
-    .cue-select:focus {
-      border-color: var(--border-form-field-focus);
-      background-color: var(--bg-form-field-focus);
-    }
-
-    .cue-select-wrap {
-      position: relative;
-      width: 100%;
-    }
-
-    .cue-select-wrap select {
-      width: 100%;
-      padding: var(--padding-form-field-default);
-      padding-right: 2rem;
-      border: 1px solid var(--border-form-field-default);
-      border-radius: var(--corner-form-field);
-      background-color: var(--bg-form-field-default);
-      font-family: var(--font-family-body);
-      font-size: 1rem;
-      font-weight: 400;
-      color: var(--content-form-field-placeholder);
-      line-height: 1;
-      cursor: pointer;
-      appearance: none;
-      -webkit-appearance: none;
-      outline: none;
-      transition: border-color 0.15s ease;
-    }
-
-    .cue-select-wrap select:focus {
-      border-color: var(--border-form-field-focus);
-      background-color: var(--bg-form-field-focus);
-    }
-
-    .cue-select-wrap select.cue-select--solid {
-      background-color: var(--bg-form-field-solid);
-      border-color: transparent;
-      color: var(--content-form-field-solid-placeholder);
-    }
-
-    .cue-select-wrap select.cue-select--solid:focus {
-      border-color: var(--border-form-field-focus);
-      background-color: var(--bg-form-field-focus);
-    }
-
-    .cue-select-wrap select.cue-select--xxsmall {
-      padding: var(--padding-form-field-medium);
-      padding-right: 1.5rem;
-      font-size: 0.6875rem;
-    }
-
-    .cue-select-wrap .cue-select-arrow {
-      position: absolute;
-      right: 0.75rem;
-      top: 50%;
-      transform: translateY(-50%);
-      pointer-events: none;
-      color: var(--content-body-moderate);
-      display: flex;
-      align-items: center;
-    }
-
-    .cue-select-wrap .cue-select-arrow .material-icons {
-      font-size: 16px;
-    }
-
-    /* Custom styled select dropdown panel */
-    .cue-select-panel {
-      position: absolute;
-      top: calc(100% + 4px);
-      left: 0;
-      right: 0;
-      background-color: var(--bg-default);
-      border: 1px solid var(--border-extra-subtle);
-      border-radius: 6px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      z-index: 100;
-      padding: 0.5rem 0;
-      display: none;
-    }
-
-    .cue-select-panel.is-open { display: block; }
-
-    .cue-select-option {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 6px 0.75rem;
-      font-family: var(--font-family-body);
-      font-size: 1rem;
-      font-weight: 400;
-      color: var(--content-body-default);
-      cursor: pointer;
-      transition: background-color 0.1s ease;
-    }
-
-    .cue-select-option:hover {
-      background-color: var(--bg-subdued);
-    }
-
-    .cue-select-option--selected {
-      background-color: var(--bg-weak);
-      font-weight: 700;
-      color: var(--content-body-link);
-    }
-
-    .cue-select-option--selected .cue-select-check {
-      display: flex;
-    }
-
-    .cue-select-check {
-      display: none;
-      align-items: center;
-      color: var(--content-body-link);
-    }
-
-    .cue-select-check .material-icons { font-size: 20px; }
-
-    /* Trigger for custom select */
-    .cue-select-trigger {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
-      padding: var(--padding-form-field-default);
-      border: 1px solid var(--border-form-field-default);
-      border-radius: var(--corner-form-field);
-      background-color: var(--bg-form-field-default);
-      font-family: var(--font-family-body);
-      font-size: 1rem;
-      font-weight: 400;
-      color: var(--content-form-field-placeholder);
-      cursor: pointer;
-      transition: border-color 0.15s ease;
-    }
-
-    .cue-select-trigger.is-open,
-    .cue-select-trigger:focus {
-      border-color: var(--border-form-field-focus);
-      outline: none;
-    }
-
-    .cue-select-trigger .cue-select-arrow {
-      position: static;
-      transform: none;
-      transition: transform 0.2s ease;
-    }
-
-    .cue-select-trigger.is-open .cue-select-arrow {
-      transform: rotate(180deg);
-    }
-
-
-    /* ============================================================
-       SEARCH FIELD
-    ============================================================ */
-
-    .cue-search-wrap {
-      position: relative;
-      display: flex;
-      align-items: center;
-      width: 100%;
-    }
-
-    .cue-search {
-      width: 100%;
-      padding: var(--padding-form-field-default);
-      padding-left: 2.25rem;
-      border: 1px solid var(--border-form-field-default);
-      border-radius: var(--corner-form-field);
-      background-color: var(--bg-form-field-default);
-      font-family: var(--font-family-body);
-      font-size: 0.875rem;
-      font-weight: 400;
-      color: var(--content-form-field-placeholder);
-      outline: none;
-      transition: border-color 0.15s ease;
-    }
-
-    .cue-search::placeholder { color: var(--content-form-field-placeholder); }
-
-    .cue-search:focus { border-color: var(--border-form-field-focus); }
-
-    .cue-search--solid {
-      background-color: var(--bg-form-field-solid);
-      border-color: transparent;
-    }
-
-    .cue-search-icon {
-      position: absolute;
-      left: 0.75rem;
-      pointer-events: none;
-      color: var(--content-body-moderate);
-      display: flex;
-    }
-
-    .cue-search-icon .material-icons { font-size: 16px; }
-
-    .cue-search-clear {
-      position: absolute;
-      right: 0.75rem;
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: var(--content-body-moderate);
-      display: flex;
-      align-items: center;
-      padding: 0;
-    }
-
-    .cue-search-clear .material-icons { font-size: 16px; }
-
-
-    /* ============================================================
-       NUMBER STEPPER — ARROWS
-    ============================================================ */
-
-    .cue-stepper-arrows {
-      display: inline-flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 70px;
-      height: 41px;
-      border: 1px solid var(--border-form-field-default);
-      border-radius: var(--corner-form-field);
-      background-color: var(--bg-form-field-default);
-      overflow: hidden;
-    }
-
-    .cue-stepper-arrows__number {
-      flex: 1;
-      text-align: center;
-      font-family: var(--font-family-body);
-      font-size: 0.875rem;
-      font-weight: 400;
-      color: var(--content-body-default);
-      padding: 0 0.75rem;
-      border: none;
-      outline: none;
-      background: transparent;
-      min-width: 0;
-    }
-
-    .cue-stepper-arrows__controls {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      width: 35px;
-      flex-shrink: 0;
-      padding: 1px 1px 1px 0;
-    }
-
-    .cue-stepper-arrows__btn {
-      display: flex;
-      flex: 1;
-      align-items: center;
-      justify-content: center;
-      background: var(--bg-default);
-      border: none;
-      cursor: pointer;
-      transition: background-color 0.1s ease;
-    }
-
-    .cue-stepper-arrows__btn:first-child { border-radius: 0 var(--corner-form-field) 0 0; }
-    .cue-stepper-arrows__btn:last-child  { border-radius: 0 0 var(--corner-form-field) 0; }
-    .cue-stepper-arrows__btn:hover { background-color: var(--bg-level-0); }
-
-    .cue-stepper-arrows__btn .material-icons { font-size: 14px; color: var(--content-body-default); }
-
-
-    /* ============================================================
-       NUMBER STEPPER — PLUS/MINUS
-    ============================================================ */
-
-    .cue-stepper-plusminus {
-      display: inline-flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 91px;
-      height: 41px;
-      border: 1px solid var(--border-form-field-default);
-      border-radius: var(--corner-form-field);
-      background-color: var(--bg-form-field-default);
-      overflow: hidden;
-    }
-
-    .cue-stepper-plusminus__btn {
-      display: flex;
-      flex: 1;
-      height: 100%;
-      align-items: center;
-      justify-content: center;
-      background: var(--bg-button-neutral);
-      border: none;
-      cursor: pointer;
-      padding: 1px;
-      transition: background-color 0.1s ease;
-    }
-
-    .cue-stepper-plusminus__btn:first-child { border-radius: var(--corner-form-field) 0 0 var(--corner-form-field); }
-    .cue-stepper-plusminus__btn:last-child  { border-radius: 0 var(--corner-form-field) var(--corner-form-field) 0; }
-    .cue-stepper-plusminus__btn:hover { background-color: var(--bg-button-neutral-hover); }
-
-    .cue-stepper-plusminus__btn .material-icons { font-size: 18px; color: var(--content-body-default); }
-
-    .cue-stepper-plusminus__number {
-      text-align: center;
-      font-family: var(--font-family-body);
-      font-size: 0.875rem;
-      font-weight: 400;
-      color: var(--content-body-default);
-      padding: 0 0.5rem;
-      border: none;
-      outline: none;
-      background: transparent;
-      width: 2rem;
-      min-width: 0;
-    }
-
-
-    /* ============================================================
-       CHECKBOX
-    ============================================================ */
-
-    .cue-checkbox-wrap {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      cursor: pointer;
-    }
-
-    .cue-checkbox {
-      appearance: none;
-      -webkit-appearance: none;
-      width: 18px;
-      height: 18px;
-      border: 1px solid var(--border-default);
-      border-radius: 4px;
-      background-color: var(--bg-default);
-      cursor: pointer;
-      flex-shrink: 0;
-      position: relative;
-      transition: background-color 0.15s ease, border-color 0.15s ease;
-    }
-
-    .cue-checkbox:checked {
-      background-color: #03618d;
-      border-color: #03618d;
-    }
-
-    .cue-checkbox:checked::after {
-      content: '';
-      position: absolute;
-      left: 3px;
-      top: 2px;
-      width: 10px;
-      height: 6px;
-      border: 2px solid #ffffff;
-      border-top: none;
-      border-right: none;
-      transform: rotate(-45deg);
-    }
-
-    .cue-checkbox:focus-visible {
-      outline: 2px solid var(--border-interactive);
-      outline-offset: 2px;
-    }
-
-    .cue-checkbox-label {
-      font-family: var(--font-family-body);
-      font-size: 1rem;
-      font-weight: 400;
-      color: var(--content-body-default);
-      line-height: 1;
-    }
-
-    .cue-checkbox:not(:checked) + .cue-checkbox-label {
-      color: var(--content-body-subdued);
-    }
-
-
-    /* ============================================================
-       RADIO BUTTON
-    ============================================================ */
-
-    .cue-radio-wrap {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      cursor: pointer;
-    }
-
-    .cue-radio {
-      appearance: none;
-      -webkit-appearance: none;
-      width: 18px;
-      height: 18px;
-      border: 1.5px solid var(--border-default);
-      border-radius: 50%;
-      background-color: var(--bg-default);
-      cursor: pointer;
-      flex-shrink: 0;
-      position: relative;
-      transition: background-color 0.15s ease, border-color 0.15s ease;
-    }
-
-    .cue-radio:checked {
-      background-color: #03618d;
-      border-color: #03618d;
-    }
-
-    .cue-radio:checked::after {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background-color: #ffffff;
-    }
-
-    .cue-radio:focus-visible {
-      outline: 2px solid var(--border-interactive);
-      outline-offset: 2px;
-    }
-
-    .cue-radio-label {
-      font-family: var(--font-family-body);
-      font-size: 1rem;
-      font-weight: 400;
-      color: var(--content-body-default);
-      line-height: 1;
-    }
-
-    .cue-radio:not(:checked) + .cue-radio-label {
-      color: var(--content-body-subdued);
-    }
-
-
-    /* ============================================================
-       TOGGLE SWITCH
-    ============================================================ */
-
-    .cue-toggle-wrap {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      cursor: pointer;
-    }
-
-    .cue-toggle {
-      appearance: none;
-      -webkit-appearance: none;
-      position: relative;
-      width: 33px;
-      height: 20px;
-      border-radius: 100px;
-      background-color: #bdbdbd;
-      cursor: pointer;
-      flex-shrink: 0;
-      transition: background-color 0.2s ease;
-    }
-
-    .cue-toggle::after {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 3px;
-      transform: translateY(-50%);
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      background-color: #ffffff;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-      transition: left 0.2s ease;
-    }
-
-    .cue-toggle:checked {
-      background-color: #03618d;
-    }
-
-    .cue-toggle:checked::after {
-      left: 16px;
-    }
-
-    .cue-toggle:focus-visible {
-      outline: 2px solid var(--border-interactive);
-      outline-offset: 2px;
-    }
-
-    .cue-toggle-label {
-      font-family: var(--font-family-body);
-      font-size: 1rem;
-      font-weight: 400;
-      color: var(--content-body-default);
-      line-height: 1;
-    }
-
-
-    /* ============================================================
-       FORM GROUP — STACK
-       Label + Optional/Required + Field + Helper text
-    ============================================================ */
-
-    .cue-form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      width: 100%;
-    }
-
-    .cue-form-group__label-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.625rem;
-      width: 100%;
-    }
-
-    .cue-form-group__label {
-      font-family: var(--font-family-body);
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--content-body-default);
-      line-height: 1;
-    }
-
-    .cue-form-group__option {
-      font-family: var(--font-family-body);
-      font-size: 0.75rem;
-      font-weight: 400;
-      color: var(--content-body-subdued);
-      line-height: 1;
-      white-space: nowrap;
-    }
-
-    .cue-form-group__option--required {
-      color: var(--danger-default);
-    }
-
-    .cue-form-group__helper {
-      font-family: var(--font-family-body);
-      font-size: 0.75rem;
-      font-weight: 400;
-      color: var(--content-body-subdued);
-      line-height: 1.4;
-    }
-
-    .cue-form-group__helper--error {
-      color: var(--danger-default);
-    }
-
-    /* ============================================================
-       FORM GROUP — INLINE
-       Label column (185px) + Input+Helper column (flex)
-    ============================================================ */
-
-    .cue-form-group-inline {
-      display: flex;
-      align-items: flex-start;
-      gap: 1rem;
-      width: 100%;
-    }
-
-    .cue-form-group-inline__label-col {
-      flex-shrink: 0;
-      width: 185px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      padding-top: 0.875rem;
-    }
-
-    .cue-form-group-inline__field-col {
-      flex: 1;
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    /* ============================================================
-       CRUD FORM GROUP
-       Tight label column (185px) + input column (flex), no top padding
-    ============================================================ */
-
-    .cue-crud-form-group {
-      display: flex;
-      align-items: flex-start;
-      gap: 1rem;
-      width: 100%;
-    }
-
-    .cue-crud-form-group__label-col {
-      flex-shrink: 0;
-      width: 185px;
-      display: flex;
-      align-items: center;
-      padding: 0.75rem 0;
-    }
-
-    .cue-crud-form-group__field-col {
-      flex: 1;
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    /* ============================================================
-       COMBOBOX SELECTION TAG
-    ============================================================ */
-
-    .cue-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 2px;
-      padding: 4px 8px;
-      background-color: var(--bg-subdued);
-      border-radius: 4px;
-      font-family: var(--font-family-body);
-      font-size: 0.75rem;
-      font-weight: 400;
-      color: var(--content-body-default);
-      white-space: nowrap;
-    }
-
-    .cue-tag__close {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: var(--content-body-moderate);
-      padding: 0;
-      border-radius: 100px;
-      transition: color 0.1s ease;
-    }
-
-    .cue-tag__close:hover { color: var(--content-body-default); }
-    .cue-tag__close .material-icons { font-size: 14px; }
-
-    /* ============================================================
-       DOCS HELPERS
-    ============================================================ */
-
-    .field-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1.5rem;
-      align-items: flex-start;
-    }
-
-    .field-col {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-
-    .field-col-label {
-      font-size: 0.6875rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.07em;
-      color: var(--content-body-moderate);
-    }
-
-    .form-demo-max {
-      max-width: 360px;
-      width: 100%;
-    }
-
-    .state-grid {
-      display: grid;
-      grid-template-columns: 80px 1fr 1fr 1fr;
-      gap: 0.75rem 1.5rem;
-      align-items: center;
-    }
-
-    .state-grid__head {
-      font-size: 0.6875rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.07em;
-      color: var(--content-body-moderate);
-      padding-bottom: 0.5rem;
-      border-bottom: 1px solid var(--border-level-1);
-    }
-
-    .state-grid__row-label {
-      font-size: 0.75rem;
-      color: var(--content-body-moderate);
-    }
-
-  </style>
-</head>
-<body>
-
-<div class="docs-topbar" role="banner">
-  <a href="../index.html" class="docs-topbar__logo" aria-label="CUE Canvas home">
-    <img src="../assets/logo_CUE_glyph.svg" alt="CUE glyph" />
-    <span class="docs-topbar__logo-label">Canvas</span>
-  </a>
-  <button class="docs-topbar__hamburger" aria-label="Open navigation" aria-expanded="false" aria-controls="docs-sidebar">
-    <span class="material-icons" aria-hidden="true">menu</span>
-  </button>
-</div>
-
-<div class="docs-nav-overlay" aria-hidden="true"></div>
-
-<div class="docs-layout">
-
-  <nav class="docs-sidebar" id="docs-sidebar" aria-label="Documentation navigation">
-    <button class="docs-sidebar__close" aria-label="Close navigation">
-      <span class="material-icons" aria-hidden="true">close</span>
-    </button>
-    <a href="../index.html" class="docs-sidebar__logo" aria-label="CUE Canvas home">
-      <img src="../assets/logo_CUE_glyph.svg" alt="CUE glyph" />
-      <span class="docs-sidebar__logo-label">Canvas</span>
-    </a>
-    <p class="docs-sidebar__section-label">Getting Started</p>
-    <div class="docs-sidebar__nav">
-      <a href="../index.html" class="docs-sidebar__nav-link">Overview</a>
-    </div>
-    <p class="docs-sidebar__section-label">Components</p>
-    <div class="docs-sidebar__nav">
-      <a href="accordion.html" class="docs-sidebar__nav-link">Accordion</a>
-      <a href="alert.html" class="docs-sidebar__nav-link">Alert</a>
-      <a href="badge.html" class="docs-sidebar__nav-link">Badge</a>
-      <a href="breadcrumb.html" class="docs-sidebar__nav-link">Breadcrumb</a>
-      <a href="button.html" class="docs-sidebar__nav-link">Button</a>
-      <a href="calendar-components.html" class="docs-sidebar__nav-link">Calendar Components</a>
-      <a href="calendar.html" class="docs-sidebar__nav-link">Calendar</a>
-      <a href="card.html" class="docs-sidebar__nav-link">Card</a>
-      <a href="chat.html" class="docs-sidebar__nav-link">Chat</a>
-      <a href="combobox.html" class="docs-sidebar__nav-link">Combobox &amp; Multiselect</a>
-      <a href="date-picker.html" class="docs-sidebar__nav-link">Date Picker</a>
-      <a href="dropdown.html" class="docs-sidebar__nav-link">Dropdown Menu</a>
-      <a href="expand-collapse.html" class="docs-sidebar__nav-link">Expand / Collapse</a>
-      <a href="form-field.html" class="docs-sidebar__nav-link active">Form Field</a>
-      <a href="modal.html" class="docs-sidebar__nav-link">Modal</a>
-      <a href="scheduler.html" class="docs-sidebar__nav-link">Scheduler</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Side Navigation</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Skeleton Loader</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Status Badge</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Step Process</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Tab Navigation</a>
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Table</a>
-    </div>
-    <p class="docs-sidebar__section-label">Icons</p>
-    <div class="docs-sidebar__nav">
-      <a href="in-progress.html" class="docs-sidebar__nav-link">Icon Reference</a>
-    </div>
-  </nav>
-
-  <main class="docs-main">
-
-    <div class="docs-page-header">
+---
+layout: default
+title: "Form Field"
+activeNav: form-field
+root: ../
+extraCSS: |
+  /* ============================================================
+         FORM FIELD COMPONENTS
+  
+         All form fields share these base tokens:
+           --corner-form-field:          6px  (border-radius, always px)
+           --padding-form-field-default: 0.75rem  (12px, default size)
+           --padding-form-field-medium:  0.5rem   (8px,  XX-Small size)
+           --padding-form-field-small:   0.375rem (6px,  compact)
+  
+         Two styles:
+           Border — white bg, #a3a3a3 border (--border-form-field-default)
+           Solid  — #ededed bg (--bg-form-field-solid), no border
+  
+         Three states:
+           Default  — as above
+           Focus    — white bg, #0594d7 border (--border-form-field-focus)
+           Read Only — no border, no bg, plain text only
+  
+         Two sizes:
+           Default  — 16px text, 12px padding
+           XX-Small — 11px text, 8px padding
+  
+         Components documented on this page:
+           .cue-input               — Text Input
+           .cue-select              — Select Dropdown
+           .cue-search              — Search Field
+           .cue-stepper-arrows      — Number Stepper (arrows)
+           .cue-stepper-plusminus   — Number Stepper (plus/minus)
+           .cue-checkbox            — Checkbox
+           .cue-radio               — Radio button
+           .cue-toggle              — Toggle Switch
+           .cue-form-group          — Form Group (Stack layout)
+           .cue-form-group-inline   — Form Group (Inline layout)
+           .cue-crud-form-group     — CRUD Form Group
+           .cue-select-option       — Select Option (dropdown item)
+           .cue-tag                 — Combobox Selection Tag
+      ============================================================ */
+  
+      /* ============================================================
+         TEXT INPUT
+      ============================================================ */
+  
+      .cue-input {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        width: 100%;
+        padding: var(--padding-form-field-default);
+        border: 1px solid var(--border-form-field-default);
+        border-radius: var(--corner-form-field);
+        background-color: var(--bg-form-field-default);
+        font-family: var(--font-family-body);
+        font-size: 1rem;
+        font-weight: 400;
+        color: var(--content-form-field-placeholder);
+        line-height: 1;
+        outline: none;
+        transition: border-color 0.15s ease, background-color 0.15s ease;
+        cursor: text;
+      }
+  
+      .cue-input::placeholder { color: var(--content-form-field-placeholder); }
+  
+      .cue-input:focus {
+        border-color: var(--border-form-field-focus);
+        background-color: var(--bg-form-field-focus);
+        color: var(--content-form-field-filled-read);
+      }
+  
+      .cue-input:read-only {
+        border-color: transparent;
+        background-color: transparent;
+        color: var(--content-form-field-filled-read);
+        cursor: default;
+      }
+  
+      /* Solid style */
+      .cue-input--solid {
+        background-color: var(--bg-form-field-solid);
+        border-color: transparent;
+        color: var(--content-form-field-solid-placeholder);
+      }
+  
+      .cue-input--solid:focus {
+        border-color: var(--border-form-field-focus);
+        background-color: var(--bg-form-field-focus);
+        color: var(--content-form-field-filled-read);
+      }
+  
+      /* XX-Small size */
+      .cue-input--xxsmall {
+        padding: var(--padding-form-field-medium);
+        font-size: 0.6875rem;
+      }
+  
+      /* Input wrapper for icon support */
+      .cue-input-wrap {
+        position: relative;
+        display: flex;
+        align-items: center;
+        width: 100%;
+      }
+  
+      .cue-input-wrap .cue-input {
+        width: 100%;
+      }
+  
+      .cue-input-wrap--icon-left .cue-input  { padding-left: 2.5rem; }
+      .cue-input-wrap--icon-right .cue-input { padding-right: 2.5rem; }
+  
+      .cue-input-icon {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+        color: var(--content-body-moderate);
+      }
+  
+      .cue-input-icon--left  { left: 0.75rem; }
+      .cue-input-icon--right { right: 0.75rem; }
+  
+      .cue-input-icon .material-icons { font-size: 18px; }
+  
+  
+      /* ============================================================
+         SELECT DROPDOWN
+      ============================================================ */
+  
+      .cue-select {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: var(--padding-form-field-default);
+        border: 1px solid var(--border-form-field-default);
+        border-radius: var(--corner-form-field);
+        background-color: var(--bg-form-field-default);
+        font-family: var(--font-family-body);
+        font-size: 1rem;
+        font-weight: 400;
+        color: var(--content-form-field-placeholder);
+        line-height: 1;
+        cursor: pointer;
+        appearance: none;
+        -webkit-appearance: none;
+        outline: none;
+        transition: border-color 0.15s ease, background-color 0.15s ease;
+      }
+  
+      .cue-select:focus {
+        border-color: var(--border-form-field-focus);
+        background-color: var(--bg-form-field-focus);
+      }
+  
+      .cue-select-wrap {
+        position: relative;
+        width: 100%;
+      }
+  
+      .cue-select-wrap select {
+        width: 100%;
+        padding: var(--padding-form-field-default);
+        padding-right: 2rem;
+        border: 1px solid var(--border-form-field-default);
+        border-radius: var(--corner-form-field);
+        background-color: var(--bg-form-field-default);
+        font-family: var(--font-family-body);
+        font-size: 1rem;
+        font-weight: 400;
+        color: var(--content-form-field-placeholder);
+        line-height: 1;
+        cursor: pointer;
+        appearance: none;
+        -webkit-appearance: none;
+        outline: none;
+        transition: border-color 0.15s ease;
+      }
+  
+      .cue-select-wrap select:focus {
+        border-color: var(--border-form-field-focus);
+        background-color: var(--bg-form-field-focus);
+      }
+  
+      .cue-select-wrap select.cue-select--solid {
+        background-color: var(--bg-form-field-solid);
+        border-color: transparent;
+        color: var(--content-form-field-solid-placeholder);
+      }
+  
+      .cue-select-wrap select.cue-select--solid:focus {
+        border-color: var(--border-form-field-focus);
+        background-color: var(--bg-form-field-focus);
+      }
+  
+      .cue-select-wrap select.cue-select--xxsmall {
+        padding: var(--padding-form-field-medium);
+        padding-right: 1.5rem;
+        font-size: 0.6875rem;
+      }
+  
+      .cue-select-wrap .cue-select-arrow {
+        position: absolute;
+        right: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        pointer-events: none;
+        color: var(--content-body-moderate);
+        display: flex;
+        align-items: center;
+      }
+  
+      .cue-select-wrap .cue-select-arrow .material-icons {
+        font-size: 16px;
+      }
+  
+      /* Custom styled select dropdown panel */
+      .cue-select-panel {
+        position: absolute;
+        top: calc(100% + 4px);
+        left: 0;
+        right: 0;
+        background-color: var(--bg-default);
+        border: 1px solid var(--border-extra-subtle);
+        border-radius: 6px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        z-index: 100;
+        padding: 0.5rem 0;
+        display: none;
+      }
+  
+      .cue-select-panel.is-open { display: block; }
+  
+      .cue-select-option {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 6px 0.75rem;
+        font-family: var(--font-family-body);
+        font-size: 1rem;
+        font-weight: 400;
+        color: var(--content-body-default);
+        cursor: pointer;
+        transition: background-color 0.1s ease;
+      }
+  
+      .cue-select-option:hover {
+        background-color: var(--bg-subdued);
+      }
+  
+      .cue-select-option--selected {
+        background-color: var(--bg-weak);
+        font-weight: 700;
+        color: var(--content-body-link);
+      }
+  
+      .cue-select-option--selected .cue-select-check {
+        display: flex;
+      }
+  
+      .cue-select-check {
+        display: none;
+        align-items: center;
+        color: var(--content-body-link);
+      }
+  
+      .cue-select-check .material-icons { font-size: 20px; }
+  
+      /* Trigger for custom select */
+      .cue-select-trigger {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: var(--padding-form-field-default);
+        border: 1px solid var(--border-form-field-default);
+        border-radius: var(--corner-form-field);
+        background-color: var(--bg-form-field-default);
+        font-family: var(--font-family-body);
+        font-size: 1rem;
+        font-weight: 400;
+        color: var(--content-form-field-placeholder);
+        cursor: pointer;
+        transition: border-color 0.15s ease;
+      }
+  
+      .cue-select-trigger.is-open,
+      .cue-select-trigger:focus {
+        border-color: var(--border-form-field-focus);
+        outline: none;
+      }
+  
+      .cue-select-trigger .cue-select-arrow {
+        position: static;
+        transform: none;
+        transition: transform 0.2s ease;
+      }
+  
+      .cue-select-trigger.is-open .cue-select-arrow {
+        transform: rotate(180deg);
+      }
+  
+  
+      /* ============================================================
+         SEARCH FIELD
+      ============================================================ */
+  
+      .cue-search-wrap {
+        position: relative;
+        display: flex;
+        align-items: center;
+        width: 100%;
+      }
+  
+      .cue-search {
+        width: 100%;
+        padding: var(--padding-form-field-default);
+        padding-left: 2.25rem;
+        border: 1px solid var(--border-form-field-default);
+        border-radius: var(--corner-form-field);
+        background-color: var(--bg-form-field-default);
+        font-family: var(--font-family-body);
+        font-size: 0.875rem;
+        font-weight: 400;
+        color: var(--content-form-field-placeholder);
+        outline: none;
+        transition: border-color 0.15s ease;
+      }
+  
+      .cue-search::placeholder { color: var(--content-form-field-placeholder); }
+  
+      .cue-search:focus { border-color: var(--border-form-field-focus); }
+  
+      .cue-search--solid {
+        background-color: var(--bg-form-field-solid);
+        border-color: transparent;
+      }
+  
+      .cue-search-icon {
+        position: absolute;
+        left: 0.75rem;
+        pointer-events: none;
+        color: var(--content-body-moderate);
+        display: flex;
+      }
+  
+      .cue-search-icon .material-icons { font-size: 16px; }
+  
+      .cue-search-clear {
+        position: absolute;
+        right: 0.75rem;
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--content-body-moderate);
+        display: flex;
+        align-items: center;
+        padding: 0;
+      }
+  
+      .cue-search-clear .material-icons { font-size: 16px; }
+  
+  
+      /* ============================================================
+         NUMBER STEPPER — ARROWS
+      ============================================================ */
+  
+      .cue-stepper-arrows {
+        display: inline-flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 70px;
+        height: 41px;
+        border: 1px solid var(--border-form-field-default);
+        border-radius: var(--corner-form-field);
+        background-color: var(--bg-form-field-default);
+        overflow: hidden;
+      }
+  
+      .cue-stepper-arrows__number {
+        flex: 1;
+        text-align: center;
+        font-family: var(--font-family-body);
+        font-size: 0.875rem;
+        font-weight: 400;
+        color: var(--content-body-default);
+        padding: 0 0.75rem;
+        border: none;
+        outline: none;
+        background: transparent;
+        min-width: 0;
+      }
+  
+      .cue-stepper-arrows__controls {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        width: 35px;
+        flex-shrink: 0;
+        padding: 1px 1px 1px 0;
+      }
+  
+      .cue-stepper-arrows__btn {
+        display: flex;
+        flex: 1;
+        align-items: center;
+        justify-content: center;
+        background: var(--bg-default);
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.1s ease;
+      }
+  
+      .cue-stepper-arrows__btn:first-child { border-radius: 0 var(--corner-form-field) 0 0; }
+      .cue-stepper-arrows__btn:last-child  { border-radius: 0 0 var(--corner-form-field) 0; }
+      .cue-stepper-arrows__btn:hover { background-color: var(--bg-level-0); }
+  
+      .cue-stepper-arrows__btn .material-icons { font-size: 14px; color: var(--content-body-default); }
+  
+  
+      /* ============================================================
+         NUMBER STEPPER — PLUS/MINUS
+      ============================================================ */
+  
+      .cue-stepper-plusminus {
+        display: inline-flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 91px;
+        height: 41px;
+        border: 1px solid var(--border-form-field-default);
+        border-radius: var(--corner-form-field);
+        background-color: var(--bg-form-field-default);
+        overflow: hidden;
+      }
+  
+      .cue-stepper-plusminus__btn {
+        display: flex;
+        flex: 1;
+        height: 100%;
+        align-items: center;
+        justify-content: center;
+        background: var(--bg-button-neutral);
+        border: none;
+        cursor: pointer;
+        padding: 1px;
+        transition: background-color 0.1s ease;
+      }
+  
+      .cue-stepper-plusminus__btn:first-child { border-radius: var(--corner-form-field) 0 0 var(--corner-form-field); }
+      .cue-stepper-plusminus__btn:last-child  { border-radius: 0 var(--corner-form-field) var(--corner-form-field) 0; }
+      .cue-stepper-plusminus__btn:hover { background-color: var(--bg-button-neutral-hover); }
+  
+      .cue-stepper-plusminus__btn .material-icons { font-size: 18px; color: var(--content-body-default); }
+  
+      .cue-stepper-plusminus__number {
+        text-align: center;
+        font-family: var(--font-family-body);
+        font-size: 0.875rem;
+        font-weight: 400;
+        color: var(--content-body-default);
+        padding: 0 0.5rem;
+        border: none;
+        outline: none;
+        background: transparent;
+        width: 2rem;
+        min-width: 0;
+      }
+  
+  
+      /* ============================================================
+         CHECKBOX
+      ============================================================ */
+  
+      .cue-checkbox-wrap {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+      }
+  
+      .cue-checkbox {
+        appearance: none;
+        -webkit-appearance: none;
+        width: 18px;
+        height: 18px;
+        border: 1px solid var(--border-default);
+        border-radius: 4px;
+        background-color: var(--bg-default);
+        cursor: pointer;
+        flex-shrink: 0;
+        position: relative;
+        transition: background-color 0.15s ease, border-color 0.15s ease;
+      }
+  
+      .cue-checkbox:checked {
+        background-color: #03618d;
+        border-color: #03618d;
+      }
+  
+      .cue-checkbox:checked::after {
+        content: '';
+        position: absolute;
+        left: 3px;
+        top: 2px;
+        width: 10px;
+        height: 6px;
+        border: 2px solid #ffffff;
+        border-top: none;
+        border-right: none;
+        transform: rotate(-45deg);
+      }
+  
+      .cue-checkbox:focus-visible {
+        outline: 2px solid var(--border-interactive);
+        outline-offset: 2px;
+      }
+  
+      .cue-checkbox-label {
+        font-family: var(--font-family-body);
+        font-size: 1rem;
+        font-weight: 400;
+        color: var(--content-body-default);
+        line-height: 1;
+      }
+  
+      .cue-checkbox:not(:checked) + .cue-checkbox-label {
+        color: var(--content-body-subdued);
+      }
+  
+  
+      /* ============================================================
+         RADIO BUTTON
+      ============================================================ */
+  
+      .cue-radio-wrap {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+      }
+  
+      .cue-radio {
+        appearance: none;
+        -webkit-appearance: none;
+        width: 18px;
+        height: 18px;
+        border: 1.5px solid var(--border-default);
+        border-radius: 50%;
+        background-color: var(--bg-default);
+        cursor: pointer;
+        flex-shrink: 0;
+        position: relative;
+        transition: background-color 0.15s ease, border-color 0.15s ease;
+      }
+  
+      .cue-radio:checked {
+        background-color: #03618d;
+        border-color: #03618d;
+      }
+  
+      .cue-radio:checked::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background-color: #ffffff;
+      }
+  
+      .cue-radio:focus-visible {
+        outline: 2px solid var(--border-interactive);
+        outline-offset: 2px;
+      }
+  
+      .cue-radio-label {
+        font-family: var(--font-family-body);
+        font-size: 1rem;
+        font-weight: 400;
+        color: var(--content-body-default);
+        line-height: 1;
+      }
+  
+      .cue-radio:not(:checked) + .cue-radio-label {
+        color: var(--content-body-subdued);
+      }
+  
+  
+      /* ============================================================
+         TOGGLE SWITCH
+      ============================================================ */
+  
+      .cue-toggle-wrap {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+      }
+  
+      .cue-toggle {
+        appearance: none;
+        -webkit-appearance: none;
+        position: relative;
+        width: 33px;
+        height: 20px;
+        border-radius: 100px;
+        background-color: #bdbdbd;
+        cursor: pointer;
+        flex-shrink: 0;
+        transition: background-color 0.2s ease;
+      }
+  
+      .cue-toggle::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 3px;
+        transform: translateY(-50%);
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background-color: #ffffff;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        transition: left 0.2s ease;
+      }
+  
+      .cue-toggle:checked {
+        background-color: #03618d;
+      }
+  
+      .cue-toggle:checked::after {
+        left: 16px;
+      }
+  
+      .cue-toggle:focus-visible {
+        outline: 2px solid var(--border-interactive);
+        outline-offset: 2px;
+      }
+  
+      .cue-toggle-label {
+        font-family: var(--font-family-body);
+        font-size: 1rem;
+        font-weight: 400;
+        color: var(--content-body-default);
+        line-height: 1;
+      }
+  
+  
+      /* ============================================================
+         FORM GROUP — STACK
+         Label + Optional/Required + Field + Helper text
+      ============================================================ */
+  
+      .cue-form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        width: 100%;
+      }
+  
+      .cue-form-group__label-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.625rem;
+        width: 100%;
+      }
+  
+      .cue-form-group__label {
+        font-family: var(--font-family-body);
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--content-body-default);
+        line-height: 1;
+      }
+  
+      .cue-form-group__option {
+        font-family: var(--font-family-body);
+        font-size: 0.75rem;
+        font-weight: 400;
+        color: var(--content-body-subdued);
+        line-height: 1;
+        white-space: nowrap;
+      }
+  
+      .cue-form-group__option--required {
+        color: var(--danger-default);
+      }
+  
+      .cue-form-group__helper {
+        font-family: var(--font-family-body);
+        font-size: 0.75rem;
+        font-weight: 400;
+        color: var(--content-body-subdued);
+        line-height: 1.4;
+      }
+  
+      .cue-form-group__helper--error {
+        color: var(--danger-default);
+      }
+  
+      /* ============================================================
+         FORM GROUP — INLINE
+         Label column (185px) + Input+Helper column (flex)
+      ============================================================ */
+  
+      .cue-form-group-inline {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        width: 100%;
+      }
+  
+      .cue-form-group-inline__label-col {
+        flex-shrink: 0;
+        width: 185px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        padding-top: 0.875rem;
+      }
+  
+      .cue-form-group-inline__field-col {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+  
+      /* ============================================================
+         CRUD FORM GROUP
+         Tight label column (185px) + input column (flex), no top padding
+      ============================================================ */
+  
+      .cue-crud-form-group {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        width: 100%;
+      }
+  
+      .cue-crud-form-group__label-col {
+        flex-shrink: 0;
+        width: 185px;
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 0;
+      }
+  
+      .cue-crud-form-group__field-col {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+  
+      /* ============================================================
+         COMBOBOX SELECTION TAG
+      ============================================================ */
+  
+      .cue-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 2px;
+        padding: 4px 8px;
+        background-color: var(--bg-subdued);
+        border-radius: 4px;
+        font-family: var(--font-family-body);
+        font-size: 0.75rem;
+        font-weight: 400;
+        color: var(--content-body-default);
+        white-space: nowrap;
+      }
+  
+      .cue-tag__close {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--content-body-moderate);
+        padding: 0;
+        border-radius: 100px;
+        transition: color 0.1s ease;
+      }
+  
+      .cue-tag__close:hover { color: var(--content-body-default); }
+      .cue-tag__close .material-icons { font-size: 14px; }
+  
+      /* ============================================================
+         DOCS HELPERS
+      ============================================================ */
+  
+      .field-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        align-items: flex-start;
+      }
+  
+      .field-col {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+  
+      .field-col-label {
+        font-size: 0.6875rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        color: var(--content-body-moderate);
+      }
+  
+      .form-demo-max {
+        max-width: 360px;
+        width: 100%;
+      }
+  
+      .state-grid {
+        display: grid;
+        grid-template-columns: 80px 1fr 1fr 1fr;
+        gap: 0.75rem 1.5rem;
+        align-items: center;
+      }
+  
+      .state-grid__head {
+        font-size: 0.6875rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        color: var(--content-body-moderate);
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid var(--border-level-1);
+      }
+  
+      .state-grid__row-label {
+        font-size: 0.75rem;
+        color: var(--content-body-moderate);
+      }
+pageScript: |
+  function togglePwd() {
+      const input = document.getElementById('pwd-demo');
+      input.type = input.type === 'password' ? 'text' : 'password';
+    }
+  
+    function toggleSelect() {
+      const panel = document.getElementById('select-demo-panel');
+      const trigger = document.getElementById('select-demo-trigger');
+      const isOpen = panel.classList.toggle('is-open');
+      trigger.classList.toggle('is-open', isOpen);
+      trigger.setAttribute('aria-expanded', isOpen);
+    }
+  
+    function selectOption(el, triggerId) {
+      const panel = el.closest('.cue-select-panel');
+      const trigger = document.getElementById(triggerId);
+      panel.querySelectorAll('.cue-select-option').forEach(o => {
+        o.classList.remove('cue-select-option--selected');
+        o.setAttribute('aria-selected', 'false');
+        const check = o.querySelector('.cue-select-check');
+        if (check) check.style.display = 'none';
+      });
+      el.classList.add('cue-select-option--selected');
+      el.setAttribute('aria-selected', 'true');
+      const check = el.querySelector('.cue-select-check');
+      if (check) check.style.display = 'flex';
+      trigger.querySelector('span:first-child').textContent = el.textContent.trim();
+      panel.classList.remove('is-open');
+      trigger.classList.remove('is-open');
+      trigger.setAttribute('aria-expanded', 'false');
+    }
+  
+    function stepArrows(delta) {
+      const input = document.getElementById('stepper-arrows-val');
+      input.value = Math.max(0, (parseInt(input.value) || 0) + delta);
+    }
+  
+    function stepPlusMinus(delta) {
+      const input = document.getElementById('stepper-pm-val');
+      input.value = Math.max(0, (parseInt(input.value) || 0) + delta);
+    }
+  
+    // Close select panel on outside click
+    document.addEventListener('click', function(e) {
+      const panel = document.getElementById('select-demo-panel');
+      const trigger = document.getElementById('select-demo-trigger');
+      if (panel && !panel.contains(e.target) && !trigger.contains(e.target)) {
+        panel.classList.remove('is-open');
+        trigger.classList.remove('is-open');
+        trigger.setAttribute('aria-expanded', 'false');
+      }
+    });
+---
+<div class="docs-page-header">
       <h1 class="docs-page-title">Form Field</h1>
       <p class="docs-page-description">
         CUE Canvas form fields are intentionally minimal — styled vanilla HTML form elements customized with design tokens. They come in two styles (Border and Solid), three states (Default, Focus, Read Only), and two sizes (Default and XX-Small). All fields share the same base token set and are designed to be composed into Form Groups for layout.
@@ -1587,105 +1569,3 @@
         </tbody>
       </table>
     </div>
-
-  </main>
-</div>
-
-<script>
-  function switchTab(event, tabId) {
-    const section = event.target.closest('.docs-section');
-    section.querySelectorAll('.docs-code-tab').forEach(t => t.classList.remove('active'));
-    section.querySelectorAll('.docs-code-panel').forEach(p => p.classList.remove('active'));
-    event.target.classList.add('active');
-    document.getElementById(tabId).classList.add('active');
-  }
-
-  function togglePwd() {
-    const input = document.getElementById('pwd-demo');
-    input.type = input.type === 'password' ? 'text' : 'password';
-  }
-
-  function toggleSelect() {
-    const panel = document.getElementById('select-demo-panel');
-    const trigger = document.getElementById('select-demo-trigger');
-    const isOpen = panel.classList.toggle('is-open');
-    trigger.classList.toggle('is-open', isOpen);
-    trigger.setAttribute('aria-expanded', isOpen);
-  }
-
-  function selectOption(el, triggerId) {
-    const panel = el.closest('.cue-select-panel');
-    const trigger = document.getElementById(triggerId);
-    panel.querySelectorAll('.cue-select-option').forEach(o => {
-      o.classList.remove('cue-select-option--selected');
-      o.setAttribute('aria-selected', 'false');
-      const check = o.querySelector('.cue-select-check');
-      if (check) check.style.display = 'none';
-    });
-    el.classList.add('cue-select-option--selected');
-    el.setAttribute('aria-selected', 'true');
-    const check = el.querySelector('.cue-select-check');
-    if (check) check.style.display = 'flex';
-    trigger.querySelector('span:first-child').textContent = el.textContent.trim();
-    panel.classList.remove('is-open');
-    trigger.classList.remove('is-open');
-    trigger.setAttribute('aria-expanded', 'false');
-  }
-
-  function stepArrows(delta) {
-    const input = document.getElementById('stepper-arrows-val');
-    input.value = Math.max(0, (parseInt(input.value) || 0) + delta);
-  }
-
-  function stepPlusMinus(delta) {
-    const input = document.getElementById('stepper-pm-val');
-    input.value = Math.max(0, (parseInt(input.value) || 0) + delta);
-  }
-
-  // Close select panel on outside click
-  document.addEventListener('click', function(e) {
-    const panel = document.getElementById('select-demo-panel');
-    const trigger = document.getElementById('select-demo-trigger');
-    if (panel && !panel.contains(e.target) && !trigger.contains(e.target)) {
-      panel.classList.remove('is-open');
-      trigger.classList.remove('is-open');
-      trigger.setAttribute('aria-expanded', 'false');
-    }
-  });
-
-  // Off-canvas nav
-  (function() {
-    var sidebar   = document.querySelector('.docs-sidebar');
-    var overlay   = document.querySelector('.docs-nav-overlay');
-    var hamburger = document.querySelector('.docs-topbar__hamburger');
-    var closeBtn  = document.querySelector('.docs-sidebar__close');
-
-    function openNav() {
-      sidebar.classList.add('is-open');
-      overlay.classList.add('is-visible');
-      document.body.style.overflow = 'hidden';
-      if (hamburger) hamburger.setAttribute('aria-expanded', 'true');
-      if (closeBtn) closeBtn.focus();
-    }
-
-    function closeNav() {
-      sidebar.classList.remove('is-open');
-      overlay.classList.remove('is-visible');
-      document.body.style.overflow = '';
-      if (hamburger) {
-        hamburger.setAttribute('aria-expanded', 'false');
-        hamburger.focus();
-      }
-    }
-
-    if (hamburger) hamburger.addEventListener('click', openNav);
-    if (closeBtn)  closeBtn.addEventListener('click', closeNav);
-    if (overlay)   overlay.addEventListener('click', closeNav);
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape' && sidebar.classList.contains('is-open')) closeNav();
-    });
-  })();
-</script>
-
-</body>
-</html>
