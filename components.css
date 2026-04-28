@@ -56,7 +56,7 @@
   color: var(--content-button-primary);
   border-color: transparent;
 }
-.cue-btn--primary:hover { background-color: var(--bg-button-primary-hover); }
+.cue-btn--primary:hover { background-color: var(--bg-button-primary-hover); color: var(--content-button-primary); }
 
 /* Secondary */
 .cue-btn--secondary {
