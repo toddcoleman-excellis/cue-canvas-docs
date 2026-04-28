@@ -558,3 +558,224 @@
 .cue-msg-group__meta { font-family: var(--font-family-body); font-size: 0.75rem; font-weight: 400; color: var(--content-body-moderate); margin-top: 4px; display: flex; gap: 0.5rem; }
 .cue-msg-group--to .cue-msg-group__meta { justify-content: flex-end; }
 
+
+
+/* ============================================================
+   MODAL
+   
+   Anatomy:
+     .cue-modal-overlay         — full-viewport dim backdrop
+       .cue-modal               — the dialog panel
+         .cue-modal__header     — title + subtitle + close button
+         .cue-modal__content    — scrollable body (any content)
+         .cue-modal__footer     — Cancel / Secondary / Primary buttons
+
+   Size variants (on .cue-modal):
+     default                    — 24px padding, 18px button text
+     .cue-modal--small          — 12px/16px padding, 14px button text
+
+   Open/close:
+     .cue-modal-overlay.is-open — shows overlay + modal
+     Body gets overflow:hidden when open to prevent scroll.
+     
+   Content is flexible — form groups, read-only data, anything
+   can go inside .cue-modal__content.
+============================================================ */
+
+/* Overlay */
+.cue-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.cue-modal-overlay.is-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Modal panel */
+.cue-modal {
+  display: flex;
+  flex-direction: column;
+  width: 580px;
+  max-width: 100%;
+  max-height: calc(100vh - 3rem);
+  background-color: var(--bg-default);
+  border: 1px solid var(--border-extra-subtle);
+  border-radius: 6px;
+  box-shadow: 0 12px 14px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transform: translateY(8px);
+  transition: transform 0.2s ease;
+}
+
+.cue-modal-overlay.is-open .cue-modal {
+  transform: translateY(0);
+}
+
+/* Header */
+.cue-modal__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border-level-1);
+  background-color: var(--bg-level-1);
+  border-radius: 6px 6px 0 0;
+  flex-shrink: 0;
+}
+
+.cue-modal--small .cue-modal__header {
+  padding: 0.75rem 1rem;
+}
+
+.cue-modal__header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 1rem;
+}
+
+.cue-modal__title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.cue-modal__title {
+  font-family: var(--font-family-heading);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--content-body-primary-brand);
+  line-height: 1.15;
+  white-space: nowrap;
+}
+
+.cue-modal__subtitle {
+  font-family: var(--font-family-body);
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--content-body-moderate);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.cue-modal--small .cue-modal__subtitle {
+  font-size: 0.875rem;
+}
+
+.cue-modal__header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+.cue-modal--small .cue-modal__header-right {
+  gap: 0.5rem;
+}
+
+/* Inline subtitle (Default size — subtitle in header-right row) */
+.cue-modal__subtitle--inline {
+  font-family: var(--font-family-body);
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--content-body-moderate);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.cue-modal--small .cue-modal__subtitle--inline {
+  font-size: 0.875rem;
+}
+
+/* Close button */
+.cue-modal__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--content-body-moderate);
+  border-radius: 4px;
+  padding: 0;
+  flex-shrink: 0;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.cue-modal__close:hover {
+  color: var(--content-body-default);
+  background-color: var(--bg-level-0);
+}
+
+.cue-modal__close:focus-visible {
+  outline: 2px solid var(--border-interactive);
+  outline-offset: 2px;
+}
+
+.cue-modal__close .material-icons { font-size: 24px; }
+.cue-modal--small .cue-modal__close .material-icons { font-size: 20px; }
+
+/* Content area — scrollable */
+.cue-modal__content {
+  flex: 1;
+  padding: 1.5rem;
+  overflow-y: auto;
+  background-color: var(--bg-level-1);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-height: 435px;
+}
+
+.cue-modal--small .cue-modal__content {
+  padding: 1rem;
+}
+
+/* Footer */
+.cue-modal__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+  border-top: 1px solid var(--border-level-1);
+  background-color: var(--bg-level-1);
+  border-radius: 0 0 6px 6px;
+  flex-shrink: 0;
+}
+
+.cue-modal--small .cue-modal__footer {
+  padding: 0.75rem 1rem;
+}
+
+.cue-modal__footer-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Modal-sized button overrides (Default = 48px, Small = 44px) */
+.cue-modal .cue-btn {
+  font-size: 1.125rem;
+  height: 48px;
+}
+
+.cue-modal--small .cue-btn {
+  font-size: 0.875rem;
+  height: 44px;
+}
