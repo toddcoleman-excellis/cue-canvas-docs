@@ -128,8 +128,9 @@
 
   /* Primary */
   --content-button-primary:             #ffffff;
+  --content-button-primary-hover:       #ffffff;   /* stays white on hover */
   --bg-button-primary:                  #03618d;
-  --bg-button-primary-hover:            #024f73;
+  --bg-button-primary-hover:            #024f73;   /* Figma: bg-button-primary_hover */
 
   /* Secondary */
   --content-button-secondary:           #03618d;
