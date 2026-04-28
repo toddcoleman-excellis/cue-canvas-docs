@@ -325,7 +325,6 @@ code, pre {
 .docs-main {
   flex: 1;
   padding: 3rem;
-  max-width: 56.25rem;
   min-width: 0;
 }
 
