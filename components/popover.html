@@ -699,7 +699,7 @@ function initHoverPopover(id) {
   });
 
   document.addEventListener('keydown', function(e) {
-    if (e.key !== 'Escape') {
+    if (e.key === 'Escape') {
       document.querySelectorAll('.cue-popover-wrap.is-open').forEach(w => w.classList.remove('is-open'));
     }
   });
