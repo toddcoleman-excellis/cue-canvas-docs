@@ -1,0 +1,497 @@
+---
+layout: default
+title: "Segmented Control"
+activeNav: segmented-control
+root: ../
+---
+
+<style>
+
+  /* ============================================================
+     SEGMENTED CONTROL
+
+     A group of mutually exclusive toggle buttons in a pill-shaped
+     container. Functionally similar to tabs (ShadCN Tabs) but
+     visually resembles the iOS segmented control pattern.
+
+     Anatomy:
+       .cue-seg                  — the outer container (the "track")
+         .cue-seg__btn           — individual segment button
+           .cue-seg__btn-icon    — optional leading icon (14px)
+           (text node)           — label
+
+     Modifiers on .cue-seg:
+       .cue-seg--wide            — buttons stretch to fill full width
+
+     States on .cue-seg__btn:
+       (default)                 — inactive: #ededed bg, moderate text
+       .is-active                — active: white bg, border, shadow, default text
+
+     Tokens:
+       Container bg:   --bg-subdued                     (#ededed)
+       Container radius: --corner-segmented-container   (12px)
+       Button active bg: --bg-default                   (#ffffff)
+       Button active border: --border-extra-subtle       (#ededed)
+       Button active shadow: 0 2px 4px rgba(0,0,0,0.1)
+       Button radius:  --corner-segmented-button        (8px)
+       Active text:    --content-body-default           (#262626) Bold 14px
+       Inactive text:  --content-body-moderate          (#8a8a8a) Bold 14px
+  ============================================================ */
+
+  /* Container */
+  .cue-seg {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px;
+    background-color: var(--bg-subdued);
+    border-radius: var(--corner-segmented-container);
+  }
+
+  /* Wide variant — full width, buttons stretch equally */
+  .cue-seg--wide {
+    display: flex;
+    width: 100%;
+  }
+
+  .cue-seg--wide .cue-seg__btn {
+    flex: 1;
+  }
+
+  /* Segment button */
+  .cue-seg__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 12px 16px;
+    border-radius: var(--corner-segmented-button);
+    background-color: var(--bg-subdued);
+    border: 1px solid transparent;
+    font-family: var(--font-family-body);
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--content-body-moderate);
+    line-height: 1;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 0.15s ease,
+                color 0.15s ease,
+                box-shadow 0.15s ease,
+                border-color 0.15s ease;
+  }
+
+  .cue-seg__btn:focus-visible {
+    outline: 2px solid var(--border-interactive);
+    outline-offset: 2px;
+  }
+
+  /* Active state */
+  .cue-seg__btn.is-active {
+    background-color: var(--bg-default);
+    border-color: var(--border-extra-subtle);
+    color: var(--content-body-default);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Optional leading icon */
+  .cue-seg__btn-icon {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .cue-seg__btn-icon .material-icons {
+    font-size: 14px;
+    color: inherit;
+  }
+
+</style>
+
+<div class="docs-page-header">
+  <h1 class="docs-page-title">Segmented Control</h1>
+  <p class="docs-page-description">
+    A set of mutually exclusive toggle buttons inside a shared pill-shaped container. Similar in function to tabs but rendered as an inline button group — closer to the iOS segmented control or ShadCN's Tabs component. Used for switching between views or filter states within a page section.
+  </p>
+</div>
+
+<!-- ============================================================
+     SIMPLE — COMPACT
+============================================================ -->
+
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Simple — Compact</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">Container width fits its content. Buttons do not stretch. Active button gets a white background, subtle border, and a drop shadow that lifts it off the track. Click to switch segments.</p>
+
+  <div class="docs-example">
+    <div class="cue-seg" role="tablist" aria-label="View">
+      <button class="cue-seg__btn is-active" type="button" role="tab" aria-selected="true" onclick="activateSeg(this)">Overview</button>
+      <button class="cue-seg__btn" type="button" role="tab" aria-selected="false" onclick="activateSeg(this)">Users</button>
+      <button class="cue-seg__btn" type="button" role="tab" aria-selected="false" onclick="activateSeg(this)">Security</button>
+      <button class="cue-seg__btn" type="button" role="tab" aria-selected="false" onclick="activateSeg(this)">Notifications</button>
+      <button class="cue-seg__btn" type="button" role="tab" aria-selected="false" onclick="activateSeg(this)">Reports</button>
+      <button class="cue-seg__btn" type="button" role="tab" aria-selected="false" onclick="activateSeg(this)">Sales</button>
+    </div>
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ============================================================
+     SIMPLE — WIDE
+============================================================ -->
+
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Simple — Wide</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">Container spans full width. Each button stretches equally with <code>flex: 1</code>. Useful when the segmented control should fill a column or panel. Add <code>.cue-seg--wide</code> to the container.</p>
+
+  <div class="docs-example">
+    <div class="cue-seg cue-seg--wide" role="tablist" aria-label="View">
+      <button class="cue-seg__btn is-active" type="button" role="tab" aria-selected="true" onclick="activateSeg(this)">Overview</button>
+      <button class="cue-seg__btn" type="button" role="tab" aria-selected="false" onclick="activateSeg(this)">Users</button>
+      <button class="cue-seg__btn" type="button" role="tab" aria-selected="false" onclick="activateSeg(this)">Security</button>
+      <button class="cue-seg__btn" type="button" role="tab" aria-selected="false" onclick="activateSeg(this)">Notifications</button>
+      <button class="cue-seg__btn" type="button" role="tab" aria-selected="false" onclick="activateSeg(this)">Reports</button>
+      <button class="cue-seg__btn" type="button" role="tab" aria-selected="false" onclick="activateSeg(this)">Sales</button>
+    </div>
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ============================================================
+     WITH ICON — COMPACT
+============================================================ -->
+
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">With Icon — Compact</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">Adds a 14px leading icon to each segment. The icon inherits the button's text color, so it automatically shifts between moderate gray (inactive) and default dark (active). Use a filled Material Icon for the active state and outlined for inactive, or a single icon with color difference.</p>
+
+  <div class="docs-example">
+    <div class="cue-seg" role="tablist" aria-label="View">
+      <button class="cue-seg__btn is-active" type="button" role="tab" aria-selected="true" onclick="activateSeg(this)">
+        <span class="cue-seg__btn-icon"><span class="material-icons" aria-hidden="true">dashboard</span></span>
+        Overview
+      </button>
+      <button class="cue-seg__btn" type="button" role="tab" aria-selected="false" onclick="activateSeg(this)">
+        <span class="cue-seg__btn-icon"><span class="material-icons" aria-hidden="true">group</span></span>
+        Users
+      </button>
+      <button class="cue-seg__btn" type="button" role="tab" aria-selected="false" onclick="activateSeg(this)">
+        <span class="cue-seg__btn-icon"><span class="material-icons" aria-hidden="true">lock</span></span>
+        Security
+      </button>
+      <button class="cue-seg__btn" type="button" role="tab" aria-selected="false" onclick="activateSeg(this)">
+        <span class="cue-seg__btn-icon"><span class="material-icons" aria-hidden="true">notifications</span></span>
+        Notifications
+      </button>
+      <button class="cue-seg__btn" type="button" role="tab" aria-selected="false" onclick="activateSeg(this)">
+        <span class="cue-seg__btn-icon"><span class="material-icons" aria-hidden="true">bar_chart</span></span>
+        Reports
+      </button>
+      <button class="cue-seg__btn" type="button" role="tab" aria-selected="false" onclick="activateSeg(this)">
+        <span class="cue-seg__btn-icon"><span class="material-icons" aria-hidden="true">attach_money</span></span>
+        Sales
+      </button>
+    </div>
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ============================================================
+     WITH ICON — WIDE
+============================================================ -->
+
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">With Icon — Wide</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">Full-width variant with leading icons. Each segment stretches equally.</p>
+
+  <div class="docs-example">
+    <div class="cue-seg cue-seg--wide" role="tablist" aria-label="View">
+      <button class="cue-seg__btn is-active" type="button" role="tab" aria-selected="true" onclick="activateSeg(this)">
+        <span class="cue-seg__btn-icon"><span class="material-icons" aria-hidden="true">dashboard</span></span>
+        Overview
+      </button>
+      <button class="cue-seg__btn" type="button" role="tab" aria-selected="false" onclick="activateSeg(this)">
+        <span class="cue-seg__btn-icon"><span class="material-icons" aria-hidden="true">group</span></span>
+        Users
+      </button>
+      <button class="cue-seg__btn" type="button" role="tab" aria-selected="false" onclick="activateSeg(this)">
+        <span class="cue-seg__btn-icon"><span class="material-icons" aria-hidden="true">lock</span></span>
+        Security
+      </button>
+      <button class="cue-seg__btn" type="button" role="tab" aria-selected="false" onclick="activateSeg(this)">
+        <span class="cue-seg__btn-icon"><span class="material-icons" aria-hidden="true">notifications</span></span>
+        Notifications
+      </button>
+      <button class="cue-seg__btn" type="button" role="tab" aria-selected="false" onclick="activateSeg(this)">
+        <span class="cue-seg__btn-icon"><span class="material-icons" aria-hidden="true">bar_chart</span></span>
+        Reports
+      </button>
+      <button class="cue-seg__btn" type="button" role="tab" aria-selected="false" onclick="activateSeg(this)">
+        <span class="cue-seg__btn-icon"><span class="material-icons" aria-hidden="true">attach_money</span></span>
+        Sales
+      </button>
+    </div>
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ============================================================
+     DESIGN TOKENS
+============================================================ -->
+
+<div class="docs-section">
+  <p class="docs-section-label">Design Tokens</p>
+  <table class="docs-token-table">
+    <thead>
+      <tr><th>Token / Value</th><th>Figma Token</th><th>Value</th><th>Usage</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>--corner-segmented-container</td>
+        <td>Components/Segmented Control/corner-segmented-control-container</td>
+        <td>12px</td>
+        <td>Container border radius</td>
+      </tr>
+      <tr>
+        <td>--corner-segmented-button</td>
+        <td>Components/Segmented Control/corner-segmented-control-button</td>
+        <td>8px</td>
+        <td>Individual button border radius</td>
+      </tr>
+      <tr>
+        <td>--bg-subdued</td>
+        <td>System/Background/bg-extra-subtle</td>
+        <td><span class="docs-token-swatch" style="background:#ededed;"></span>#ededed</td>
+        <td>Container bg and inactive button bg</td>
+      </tr>
+      <tr>
+        <td>--bg-default</td>
+        <td>System/Background/bg-default</td>
+        <td><span class="docs-token-swatch" style="background:#ffffff; border-color:#ededed;"></span>#ffffff</td>
+        <td>Active button background</td>
+      </tr>
+      <tr>
+        <td>--border-extra-subtle</td>
+        <td>System/Border/border-extra-subtle</td>
+        <td><span class="docs-token-swatch" style="background:#ededed;"></span>#ededed</td>
+        <td>Active button border</td>
+      </tr>
+      <tr>
+        <td>Shadow/2</td>
+        <td>Shadow/2</td>
+        <td>0 2px 4px rgba(0,0,0,0.1)</td>
+        <td>Active button drop shadow — lifts it off the track</td>
+      </tr>
+      <tr>
+        <td>Container padding</td>
+        <td>—</td>
+        <td>6px</td>
+        <td>Inner padding of the container track</td>
+      </tr>
+      <tr>
+        <td>Button padding</td>
+        <td>—</td>
+        <td>12px 16px</td>
+        <td>Vertical / horizontal padding per segment</td>
+      </tr>
+      <tr>
+        <td>Gap</td>
+        <td>—</td>
+        <td>10px</td>
+        <td>Gap between segment buttons</td>
+      </tr>
+      <tr>
+        <td>--content-body-default</td>
+        <td>System/Content/content-body-default</td>
+        <td><span class="docs-token-swatch" style="background:#262626;"></span>#262626</td>
+        <td>Active button label and icon color</td>
+      </tr>
+      <tr>
+        <td>--content-body-moderate</td>
+        <td>System/Content/content-body-moderate</td>
+        <td><span class="docs-token-swatch" style="background:#8a8a8a;"></span>#8a8a8a</td>
+        <td>Inactive button label and icon color</td>
+      </tr>
+      <tr>
+        <td>Font</td>
+        <td>Back Office UI/Button Medium 14pt/Bold</td>
+        <td>14px Bold</td>
+        <td>Both active and inactive button labels</td>
+      </tr>
+      <tr>
+        <td>Icon size</td>
+        <td>—</td>
+        <td>14px</td>
+        <td>Leading icon in icon variants</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ============================================================
+     CODE
+============================================================ -->
+
+<div class="docs-section">
+  <p class="docs-section-label">Code</p>
+  <div class="docs-code-tabs">
+    <button class="docs-code-tab active" onclick="switchTab(event, 'seg-html')">HTML</button>
+    <button class="docs-code-tab" onclick="switchTab(event, 'seg-css')">CSS</button>
+    <button class="docs-code-tab" onclick="switchTab(event, 'seg-js')">JS</button>
+  </div>
+
+  <div class="docs-code-panel active" id="seg-html">
+    <div class="docs-code-block"><pre><code>&lt;!-- Simple Compact --&gt;
+&lt;div class="cue-seg" role="tablist" aria-label="View"&gt;
+  &lt;button class="cue-seg__btn is-active" type="button" role="tab"
+    aria-selected="true" onclick="activateSeg(this)"&gt;
+    Overview
+  &lt;/button&gt;
+  &lt;button class="cue-seg__btn" type="button" role="tab"
+    aria-selected="false" onclick="activateSeg(this)"&gt;
+    Users
+  &lt;/button&gt;
+  &lt;button class="cue-seg__btn" type="button" role="tab"
+    aria-selected="false" onclick="activateSeg(this)"&gt;
+    Security
+  &lt;/button&gt;
+&lt;/div&gt;
+
+&lt;!-- Simple Wide — add .cue-seg--wide --&gt;
+&lt;div class="cue-seg cue-seg--wide" role="tablist" aria-label="View"&gt;
+  &lt;button class="cue-seg__btn is-active" type="button" role="tab"
+    aria-selected="true" onclick="activateSeg(this)"&gt;Overview&lt;/button&gt;
+  &lt;button class="cue-seg__btn" type="button" role="tab"
+    aria-selected="false" onclick="activateSeg(this)"&gt;Users&lt;/button&gt;
+  &lt;button class="cue-seg__btn" type="button" role="tab"
+    aria-selected="false" onclick="activateSeg(this)"&gt;Security&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;!-- With Icon Compact --&gt;
+&lt;div class="cue-seg" role="tablist" aria-label="View"&gt;
+  &lt;button class="cue-seg__btn is-active" type="button" role="tab"
+    aria-selected="true" onclick="activateSeg(this)"&gt;
+    &lt;span class="cue-seg__btn-icon"&gt;
+      &lt;span class="material-icons" aria-hidden="true"&gt;dashboard&lt;/span&gt;
+    &lt;/span&gt;
+    Overview
+  &lt;/button&gt;
+  &lt;button class="cue-seg__btn" type="button" role="tab"
+    aria-selected="false" onclick="activateSeg(this)"&gt;
+    &lt;span class="cue-seg__btn-icon"&gt;
+      &lt;span class="material-icons" aria-hidden="true"&gt;group&lt;/span&gt;
+    &lt;/span&gt;
+    Users
+  &lt;/button&gt;
+&lt;/div&gt;</code></pre></div>
+  </div>
+
+  <div class="docs-code-panel" id="seg-css">
+    <div class="docs-code-block"><pre><code>/* Tokens — add to tokens.css */
+--corner-segmented-container: 12px;
+--corner-segmented-button:    8px;
+
+/* Container */
+.cue-seg {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px;
+  background-color: var(--bg-subdued);        /* #ededed */
+  border-radius: var(--corner-segmented-container); /* 12px */
+}
+
+/* Wide variant */
+.cue-seg--wide { display: flex; width: 100%; }
+.cue-seg--wide .cue-seg__btn { flex: 1; }
+
+/* Segment button */
+.cue-seg__btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 5px; padding: 12px 16px;
+  border-radius: var(--corner-segmented-button); /* 8px */
+  background-color: var(--bg-subdued);
+  border: 1px solid transparent;
+  font-family: var(--font-family-body);
+  font-size: 0.875rem; font-weight: 700;
+  color: var(--content-body-moderate);           /* #8a8a8a inactive */
+  cursor: pointer; white-space: nowrap;
+  transition: background-color 0.15s ease, color 0.15s ease,
+              box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+/* Active state */
+.cue-seg__btn.is-active {
+  background-color: var(--bg-default);           /* #ffffff */
+  border-color: var(--border-extra-subtle);       /* #ededed */
+  color: var(--content-body-default);             /* #262626 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);     /* Shadow/2 */
+}
+
+/* Icon */
+.cue-seg__btn-icon { display: flex; align-items: center; flex-shrink: 0; }
+.cue-seg__btn-icon .material-icons { font-size: 14px; color: inherit; }</code></pre></div>
+  </div>
+
+  <div class="docs-code-panel" id="seg-js">
+    <div class="docs-code-block"><pre><code>// Activate clicked segment, deactivate siblings
+function activateSeg(btn) {
+  const seg = btn.closest('.cue-seg');
+  seg.querySelectorAll('.cue-seg__btn').forEach(function(b) {
+    b.classList.remove('is-active');
+    b.setAttribute('aria-selected', 'false');
+  });
+  btn.classList.add('is-active');
+  btn.setAttribute('aria-selected', 'true');
+}
+
+// Optional: keyboard arrow navigation
+document.querySelectorAll('.cue-seg').forEach(function(seg) {
+  seg.addEventListener('keydown', function(e) {
+    const btns = [...seg.querySelectorAll('.cue-seg__btn')];
+    const idx  = btns.indexOf(document.activeElement);
+    if (e.key === 'ArrowRight' && idx < btns.length - 1) {
+      e.preventDefault(); btns[idx + 1].focus();
+    } else if (e.key === 'ArrowLeft' && idx > 0) {
+      e.preventDefault(); btns[idx - 1].focus();
+    } else if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault(); activateSeg(document.activeElement);
+    }
+  });
+});</code></pre></div>
+  </div>
+
+</div>
+
+<script>
+  function activateSeg(btn) {
+    const seg = btn.closest('.cue-seg');
+    seg.querySelectorAll('.cue-seg__btn').forEach(function(b) {
+      b.classList.remove('is-active');
+      b.setAttribute('aria-selected', 'false');
+    });
+    btn.classList.add('is-active');
+    btn.setAttribute('aria-selected', 'true');
+  }
+
+  // Keyboard navigation
+  document.querySelectorAll('.cue-seg').forEach(function(seg) {
+    seg.addEventListener('keydown', function(e) {
+      const btns = [...seg.querySelectorAll('.cue-seg__btn')];
+      const idx  = btns.indexOf(document.activeElement);
+      if (e.key === 'ArrowRight' && idx < btns.length - 1) {
+        e.preventDefault(); btns[idx + 1].focus();
+      } else if (e.key === 'ArrowLeft' && idx > 0) {
+        e.preventDefault(); btns[idx - 1].focus();
+      } else if ((e.key === 'Enter' || e.key === ' ') && idx !== -1) {
+        e.preventDefault(); activateSeg(document.activeElement);
+      }
+    });
+  });
+</script>

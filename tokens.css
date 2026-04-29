@@ -287,6 +287,14 @@
 
 
   /* ============================================================
+     COMPONENTS — SEGMENTED CONTROL
+  ============================================================ */
+
+  --corner-segmented-container: 12px;   /* outer track radius */
+  --corner-segmented-button:    8px;    /* individual button radius */
+
+
+  /* ============================================================
      COMPONENTS — DROPDOWN
   ============================================================ */
 
