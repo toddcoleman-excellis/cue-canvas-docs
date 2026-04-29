@@ -1,0 +1,795 @@
+---
+layout: default
+title: "Dashboard Tiles"
+activeNav: dashboard-tiles
+root: ../
+---
+
+<style>
+
+  /* ============================================================
+     DASHBOARD TILES — Main Menu Tiles
+
+     Used on the CUE Back Office dashboard to navigate to
+     product modules. Each tile has an icon, a title, and an
+     optional short description. Arranged in a responsive grid
+     grouped by product area (IDM & Administration, Commerce,
+     Manufacturing, Procurement, etc.).
+
+     Anatomy:
+       .cue-tile                 — the card (position: relative)
+         .cue-tile__content      — centered flex column
+           .cue-tile__icon-wrap  — 48px icon container
+           .cue-tile__title      — 15px Bold brand blue
+           .cue-tile__desc       — 12px Regular (Default size only)
+         .cue-tile__badge        — optional notification dot (top-right)
+
+     Size variants on .cue-tile:
+       (default)                 — with description, auto height
+       .cue-tile--sm             — no description, fixed 140px height
+
+     States:
+       (default)                 — Shadow/2 + ededed border
+       :hover / .is-hover        — Shadow/8 + bdbdbd border
+       .is-disabled              — all text and icon greyed out
+
+     Tokens:
+       Default shadow:  Shadow/2  →  0 2px 4px rgba(0,0,0,0.1)
+       Hover shadow:    Shadow/8  →  0 8px 10px rgba(0,0,0,0.1)
+       Border default:  --border-level-1   (#ededed)
+       Border hover:    --border-subdued   (#bdbdbd)
+       Title (active):  --content-body-primary-brand  (#03618d)
+       Title (disabled):--content-body-moderate       (#8a8a8a)
+       Icon (active):   --content-body-primary-brand  (#03618d)
+       Icon (disabled): --content-body-subtle         (#d4d4d4)
+       Desc (active):   --content-body-default        (#262626)
+       Desc (disabled): --content-body-moderate       (#8a8a8a)
+  ============================================================ */
+
+  /* ---- Tile card ---- */
+
+  .cue-tile {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 160px;
+    max-width: 221px;
+    padding: 1.5rem;
+    background-color: var(--bg-level-1);
+    border: 1px solid var(--border-level-1);
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    text-decoration: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    flex: 1;
+  }
+
+  .cue-tile:hover,
+  .cue-tile.is-hover {
+    border-color: var(--border-subdued);
+    box-shadow: 0 8px 10px rgba(0, 0, 0, 0.1);
+    background-color: var(--bg-level-2);
+  }
+
+  /* Small variant — no description, fixed height */
+  .cue-tile--sm {
+    height: 140px;
+  }
+
+  /* Disabled */
+  .cue-tile.is-disabled {
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  /* ---- Inner content ---- */
+
+  .cue-tile__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  .cue-tile--sm .cue-tile__content {
+    gap: 0;
+  }
+
+  /* ---- Icon + title group ---- */
+
+  .cue-tile__icon-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  /* ---- Icon ---- */
+
+  .cue-tile__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    color: var(--content-body-primary-brand);
+  }
+
+  .cue-tile__icon .material-icons {
+    font-size: 48px;
+    color: inherit;
+  }
+
+  .cue-tile__icon svg {
+    width: 48px;
+    height: 48px;
+    fill: currentColor;
+  }
+
+  .cue-tile.is-disabled .cue-tile__icon {
+    color: var(--content-body-subtle);
+  }
+
+  /* ---- Title ---- */
+
+  .cue-tile__title {
+    font-family: var(--font-family-body);
+    font-size: 0.9375rem;    /* 15px */
+    font-weight: 700;
+    color: var(--content-body-primary-brand);
+    text-align: center;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .cue-tile.is-disabled .cue-tile__title {
+    color: var(--content-body-moderate);
+  }
+
+  /* ---- Description ---- */
+
+  .cue-tile__desc {
+    font-family: var(--font-family-body);
+    font-size: 0.75rem;      /* 12px */
+    font-weight: 400;
+    color: var(--content-body-default);
+    text-align: center;
+    line-height: 1.4;
+    width: 100%;
+  }
+
+  .cue-tile.is-disabled .cue-tile__desc {
+    color: var(--content-body-moderate);
+  }
+
+  /* ---- Notification badge ---- */
+
+  .cue-tile__badge {
+    position: absolute;
+    top: 7px;
+    right: 6.5px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: var(--danger-default);
+    border: 2px solid var(--bg-level-1);
+    flex-shrink: 0;
+  }
+
+  /* ---- Tile grid ---- */
+
+  .cue-tile-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  /* ---- Tile group (label + grid) ---- */
+
+  .cue-tile-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .cue-tile-group__label {
+    font-family: var(--font-family-body);
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--content-body-moderate);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+  }
+
+  /* ---- Dashboard Tile Icons ---- */
+  /* Custom SVG icons at 48×48px, brand primary color.
+     In production these are Figma-swappable SVG components.
+     Material Icons are used here as documented stand-ins. */
+
+  .tile-icon--account-briefcase   { color: var(--content-body-primary-brand); }
+  .tile-icon--briefcase           { color: var(--content-body-primary-brand); }
+  .tile-icon--manufacturing       { color: var(--content-body-primary-brand); }
+  .tile-icon--package             { color: var(--content-body-primary-brand); }
+  .tile-icon--settings            { color: var(--content-body-primary-brand); }
+  .tile-icon--users               { color: var(--content-body-primary-brand); }
+  .tile-icon--report              { color: var(--content-body-primary-brand); }
+  .tile-icon--pricing             { color: var(--content-body-primary-brand); }
+
+</style>
+
+<div class="docs-page-header">
+  <h1 class="docs-page-title">Dashboard Tiles</h1>
+  <p class="docs-page-description">
+    Navigation tiles used on the CUE Back Office dashboard to route users into product modules. Each tile has a 48px icon, a bold title, and an optional description. Arranged in responsive grids grouped by product area. Two size variants (Default and Smaller) and four states (Default, Hover, Disabled, Disabled Hover).
+  </p>
+</div>
+
+<!-- ============================================================
+     TILE STATES
+============================================================ -->
+
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">States</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">Four states. Hover lifts the shadow from Shadow/2 to Shadow/8 and darkens the border. Disabled greys out the icon, title, and description.</p>
+
+  <div class="docs-example" style="gap: 1rem; flex-wrap: wrap; align-items: flex-start;">
+
+    <!-- Default -->
+    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+      <p style="font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--content-body-moderate);">Default</p>
+      <div class="cue-tile" style="width: 180px;">
+        <div class="cue-tile__content">
+          <div class="cue-tile__icon-group">
+            <div class="cue-tile__icon">
+              <span class="material-icons" aria-hidden="true">diamond</span>
+            </div>
+            <span class="cue-tile__title">Title</span>
+          </div>
+          <p class="cue-tile__desc">This is where a short description will go.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hover -->
+    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+      <p style="font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--content-body-moderate);">Hover</p>
+      <div class="cue-tile is-hover" style="width: 180px;">
+        <div class="cue-tile__content">
+          <div class="cue-tile__icon-group">
+            <div class="cue-tile__icon">
+              <span class="material-icons" aria-hidden="true">diamond</span>
+            </div>
+            <span class="cue-tile__title">Title</span>
+          </div>
+          <p class="cue-tile__desc">This is where a short description will go.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Disabled -->
+    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+      <p style="font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--content-body-moderate);">Disabled</p>
+      <div class="cue-tile is-disabled" style="width: 180px;" aria-disabled="true">
+        <div class="cue-tile__content">
+          <div class="cue-tile__icon-group">
+            <div class="cue-tile__icon">
+              <span class="material-icons" aria-hidden="true">diamond</span>
+            </div>
+            <span class="cue-tile__title">Title</span>
+          </div>
+          <p class="cue-tile__desc">This is where a short description will go.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- With notification badge -->
+    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+      <p style="font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--content-body-moderate);">With notification</p>
+      <div class="cue-tile" style="width: 180px;">
+        <div class="cue-tile__badge" aria-label="New notifications"></div>
+        <div class="cue-tile__content">
+          <div class="cue-tile__icon-group">
+            <div class="cue-tile__icon">
+              <span class="material-icons" aria-hidden="true">diamond</span>
+            </div>
+            <span class="cue-tile__title">Title</span>
+          </div>
+          <p class="cue-tile__desc">This is where a short description will go.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ============================================================
+     SIZE VARIANTS
+============================================================ -->
+
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Size variants</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">Default size includes a description below the title. Smaller size is 140px tall and omits the description — used in denser dashboard layouts or secondary product areas.</p>
+
+  <div class="docs-example" style="gap: 2rem; align-items: flex-start;">
+
+    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+      <p style="font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--content-body-moderate);">Default</p>
+      <div class="cue-tile" style="width: 180px;">
+        <div class="cue-tile__content">
+          <div class="cue-tile__icon-group">
+            <div class="cue-tile__icon">
+              <span class="material-icons" aria-hidden="true">inventory_2</span>
+            </div>
+            <span class="cue-tile__title">Commerce</span>
+          </div>
+          <p class="cue-tile__desc">This is where a short description will go.</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+      <p style="font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--content-body-moderate);">Smaller — no description</p>
+      <div class="cue-tile cue-tile--sm" style="width: 180px;">
+        <div class="cue-tile__content">
+          <div class="cue-tile__icon-group">
+            <div class="cue-tile__icon">
+              <span class="material-icons" aria-hidden="true">inventory_2</span>
+            </div>
+            <span class="cue-tile__title">Commerce</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ============================================================
+     DASHBOARD TILE ICONS
+============================================================ -->
+
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Dashboard Tile Icons</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">28 custom SVG icons at 48×48px stored in the Figma library as instance-swappable components. All use the primary brand color <code>#03618d</code>. The icons are Figma-native SVGs — below is the full set with their names and recommended Material Icon stand-ins for development use.</p>
+
+  <div class="docs-example" style="flex-wrap: wrap; gap: 1.5rem; align-items: flex-start;">
+    <!-- Icon grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 1rem; width: 100%;">
+
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 0.375rem;">
+        <span class="material-icons" style="font-size: 48px; color: var(--content-body-primary-brand);">work</span>
+        <span style="font-size: 0.625rem; text-align: center; color: var(--content-body-moderate);">Account Briefcase</span>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 0.375rem;">
+        <span class="material-icons" style="font-size: 48px; color: var(--content-body-primary-brand);">manage_accounts</span>
+        <span style="font-size: 0.625rem; text-align: center; color: var(--content-body-moderate);">Account Management</span>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 0.375rem;">
+        <span class="material-icons" style="font-size: 48px; color: var(--content-body-primary-brand);">supervisor_account</span>
+        <span style="font-size: 0.625rem; text-align: center; color: var(--content-body-moderate);">Account Supervisor</span>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 0.375rem;">
+        <span class="material-icons" style="font-size: 48px; color: var(--content-body-primary-brand);">menu_book</span>
+        <span style="font-size: 0.625rem; text-align: center; color: var(--content-body-moderate);">Bookshelf</span>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 0.375rem;">
+        <span class="material-icons" style="font-size: 48px; color: var(--content-body-primary-brand);">business_center</span>
+        <span style="font-size: 0.625rem; text-align: center; color: var(--content-body-moderate);">Briefcase</span>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 0.375rem;">
+        <span class="material-icons" style="font-size: 48px; color: var(--content-body-primary-brand);">diamond</span>
+        <span style="font-size: 0.625rem; text-align: center; color: var(--content-body-moderate);">CUE Glyph</span>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 0.375rem;">
+        <span class="material-icons" style="font-size: 48px; color: var(--content-body-primary-brand);">group</span>
+        <span style="font-size: 0.625rem; text-align: center; color: var(--content-body-moderate);">CUE Users</span>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 0.375rem;">
+        <span class="material-icons" style="font-size: 48px; color: var(--content-body-primary-brand);">people_alt</span>
+        <span style="font-size: 0.625rem; text-align: center; color: var(--content-body-moderate);">Customer Management</span>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 0.375rem;">
+        <span class="material-icons" style="font-size: 48px; color: var(--content-body-primary-brand);">handshake</span>
+        <span style="font-size: 0.625rem; text-align: center; color: var(--content-body-moderate);">Handshake</span>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 0.375rem;">
+        <span class="material-icons" style="font-size: 48px; color: var(--content-body-primary-brand);">inventory_2</span>
+        <span style="font-size: 0.625rem; text-align: center; color: var(--content-body-moderate);">Inventory Box</span>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 0.375rem;">
+        <span class="material-icons" style="font-size: 48px; color: var(--content-body-primary-brand);">factory</span>
+        <span style="font-size: 0.625rem; text-align: center; color: var(--content-body-moderate);">Manufacturing</span>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 0.375rem;">
+        <span class="material-icons" style="font-size: 48px; color: var(--content-body-primary-brand);">package_2</span>
+        <span style="font-size: 0.625rem; text-align: center; color: var(--content-body-moderate);">Package</span>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 0.375rem;">
+        <span class="material-icons" style="font-size: 48px; color: var(--content-body-primary-brand);">inventory</span>
+        <span style="font-size: 0.625rem; text-align: center; color: var(--content-body-moderate);">Package Check 1</span>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 0.375rem;">
+        <span class="material-icons" style="font-size: 48px; color: var(--content-body-primary-brand);">fact_check</span>
+        <span style="font-size: 0.625rem; text-align: center; color: var(--content-body-moderate);">Package Check 2</span>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 0.375rem;">
+        <span class="material-icons" style="font-size: 48px; color: var(--content-body-primary-brand);">settings_applications</span>
+        <span style="font-size: 0.625rem; text-align: center; color: var(--content-body-moderate);">Package Settings</span>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 0.375rem;">
+        <span class="material-icons" style="font-size: 48px; color: var(--content-body-primary-brand);">security</span>
+        <span style="font-size: 0.625rem; text-align: center; color: var(--content-body-moderate);">Permissions</span>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 0.375rem;">
+        <span class="material-icons" style="font-size: 48px; color: var(--content-body-primary-brand);">local_atm</span>
+        <span style="font-size: 0.625rem; text-align: center; color: var(--content-body-moderate);">Pricing</span>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 0.375rem;">
+        <span class="material-icons" style="font-size: 48px; color: var(--content-body-primary-brand);">shopping_cart</span>
+        <span style="font-size: 0.625rem; text-align: center; color: var(--content-body-moderate);">Purchasing</span>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 0.375rem;">
+        <span class="material-icons" style="font-size: 48px; color: var(--content-body-primary-brand);">receipt_long</span>
+        <span style="font-size: 0.625rem; text-align: center; color: var(--content-body-moderate);">Receipt</span>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 0.375rem;">
+        <span class="material-icons" style="font-size: 48px; color: var(--content-body-primary-brand);">bar_chart</span>
+        <span style="font-size: 0.625rem; text-align: center; color: var(--content-body-moderate);">Report</span>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 0.375rem;">
+        <span class="material-icons" style="font-size: 48px; color: var(--content-body-primary-brand);">badge</span>
+        <span style="font-size: 0.625rem; text-align: center; color: var(--content-body-moderate);">Roles</span>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 0.375rem;">
+        <span class="material-icons" style="font-size: 48px; color: var(--content-body-primary-brand);">settings</span>
+        <span style="font-size: 0.625rem; text-align: center; color: var(--content-body-moderate);">Settings</span>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 0.375rem;">
+        <span class="material-icons" style="font-size: 48px; color: var(--content-body-primary-brand);">store</span>
+        <span style="font-size: 0.625rem; text-align: center; color: var(--content-body-moderate);">Site Management</span>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 0.375rem;">
+        <span class="material-icons" style="font-size: 48px; color: var(--content-body-primary-brand);">sell</span>
+        <span style="font-size: 0.625rem; text-align: center; color: var(--content-body-moderate);">Tag</span>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 0.375rem;">
+        <span class="material-icons" style="font-size: 48px; color: var(--content-body-primary-brand);">person</span>
+        <span style="font-size: 0.625rem; text-align: center; color: var(--content-body-moderate);">User Type</span>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 0.375rem;">
+        <span class="material-icons" style="font-size: 48px; color: var(--content-body-primary-brand);">groups</span>
+        <span style="font-size: 0.625rem; text-align: center; color: var(--content-body-moderate);">Users V1</span>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 0.375rem;">
+        <span class="material-icons" style="font-size: 48px; color: var(--content-body-primary-brand);">group_add</span>
+        <span style="font-size: 0.625rem; text-align: center; color: var(--content-body-moderate);">Users V3</span>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 0.375rem;">
+        <span class="material-icons" style="font-size: 48px; color: var(--content-body-primary-brand);">storefront</span>
+        <span style="font-size: 0.625rem; text-align: center; color: var(--content-body-moderate);">Vendor Shop</span>
+      </div>
+
+    </div>
+  </div>
+
+  <div style="margin-top: 1rem; padding: 0.75rem 1rem; background-color: var(--bg-alert-info); border: 1px solid var(--border-alert-info); border-radius: 6px; font-size: 0.875rem; color: var(--content-alert-info); line-height: 1.5;">
+    <strong>Note:</strong> The icons above are Material Icons used as documented development stand-ins. In production, replace with the custom SVG components from the <strong>Dashboard Tile Icons</strong> section of the CUE Back Office Figma library (node 7565-36533). All custom icons are 48×48px and use <code>var(--content-body-primary-brand)</code> as their fill color.
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ============================================================
+     DASHBOARD DEMO — grouped layout
+============================================================ -->
+
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Dashboard layout demo</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">Tiles grouped by product area, matching the dashboard screenshot. Each group has a category label on the left with a CUE glyph and the product area name in Bold brand blue.</p>
+
+  <div style="background-color: var(--bg-level-0); padding: 2rem; border-radius: 6px; border: 1px solid var(--border-level-1);">
+
+    <!-- IDM & Administration -->
+    <div style="display: flex; gap: 1.5rem; margin-bottom: 2.5rem; align-items: flex-start;">
+      <div style="width: 180px; flex-shrink: 0; padding-top: 0.25rem;">
+        <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+          <span class="material-icons" style="font-size: 18px; color: var(--content-body-primary-brand);">diamond</span>
+          <span style="font-size: 0.6875rem; font-weight: 400; color: var(--content-body-moderate);">CUE</span>
+        </div>
+        <span style="font-size: 1.125rem; font-weight: 700; color: var(--content-body-primary-brand);">IDM &amp; Administration</span>
+      </div>
+      <div class="cue-tile-grid" style="flex: 1;">
+        <a class="cue-tile" href="#" style="flex: 0 1 180px;" onclick="return false;">
+          <div class="cue-tile__content">
+            <div class="cue-tile__icon-group">
+              <div class="cue-tile__icon"><span class="material-icons" aria-hidden="true">manage_accounts</span></div>
+              <span class="cue-tile__title">Account Mgmt</span>
+            </div>
+            <p class="cue-tile__desc">Manage account settings and preferences.</p>
+          </div>
+        </a>
+        <a class="cue-tile" href="#" style="flex: 0 1 180px;" onclick="return false;">
+          <div class="cue-tile__content">
+            <div class="cue-tile__icon-group">
+              <div class="cue-tile__icon"><span class="material-icons" aria-hidden="true">badge</span></div>
+              <span class="cue-tile__title">Roles</span>
+            </div>
+            <p class="cue-tile__desc">Configure user roles and assignments.</p>
+          </div>
+        </a>
+        <a class="cue-tile" href="#" style="flex: 0 1 180px;" onclick="return false;">
+          <div class="cue-tile__content">
+            <div class="cue-tile__icon-group">
+              <div class="cue-tile__icon"><span class="material-icons" aria-hidden="true">security</span></div>
+              <span class="cue-tile__title">Permissions</span>
+            </div>
+            <p class="cue-tile__desc">Set and review access permissions.</p>
+          </div>
+        </a>
+        <a class="cue-tile" href="#" style="flex: 0 1 180px;" onclick="return false;">
+          <div class="cue-tile__badge" aria-label="New notifications"></div>
+          <div class="cue-tile__content">
+            <div class="cue-tile__icon-group">
+              <div class="cue-tile__icon"><span class="material-icons" aria-hidden="true">settings</span></div>
+              <span class="cue-tile__title">Settings</span>
+            </div>
+            <p class="cue-tile__desc">System settings and configuration.</p>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Commerce -->
+    <div style="display: flex; gap: 1.5rem; margin-bottom: 2.5rem; align-items: flex-start;">
+      <div style="width: 180px; flex-shrink: 0; padding-top: 0.25rem;">
+        <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+          <span class="material-icons" style="font-size: 18px; color: var(--content-body-primary-brand);">diamond</span>
+          <span style="font-size: 0.6875rem; font-weight: 400; color: var(--content-body-moderate);">CUE</span>
+        </div>
+        <span style="font-size: 1.125rem; font-weight: 700; color: var(--content-body-primary-brand);">Commerce</span>
+      </div>
+      <div class="cue-tile-grid" style="flex: 1;">
+        <a class="cue-tile" href="#" style="flex: 0 1 180px;" onclick="return false;">
+          <div class="cue-tile__content">
+            <div class="cue-tile__icon-group">
+              <div class="cue-tile__icon"><span class="material-icons" aria-hidden="true">inventory_2</span></div>
+              <span class="cue-tile__title">Catalog</span>
+            </div>
+            <p class="cue-tile__desc">Manage products and catalog structure.</p>
+          </div>
+        </a>
+        <a class="cue-tile" href="#" style="flex: 0 1 180px;" onclick="return false;">
+          <div class="cue-tile__content">
+            <div class="cue-tile__icon-group">
+              <div class="cue-tile__icon"><span class="material-icons" aria-hidden="true">local_atm</span></div>
+              <span class="cue-tile__title">Pricing</span>
+            </div>
+            <p class="cue-tile__desc">Configure pricing rules and schedules.</p>
+          </div>
+        </a>
+        <a class="cue-tile" href="#" style="flex: 0 1 180px;" onclick="return false;">
+          <div class="cue-tile__content">
+            <div class="cue-tile__icon-group">
+              <div class="cue-tile__icon"><span class="material-icons" aria-hidden="true">receipt_long</span></div>
+              <span class="cue-tile__title">Orders</span>
+            </div>
+            <p class="cue-tile__desc">Review and manage customer orders.</p>
+          </div>
+        </a>
+        <a class="cue-tile is-disabled" href="#" style="flex: 0 1 180px;" onclick="return false;" aria-disabled="true">
+          <div class="cue-tile__content">
+            <div class="cue-tile__icon-group">
+              <div class="cue-tile__icon"><span class="material-icons" aria-hidden="true">storefront</span></div>
+              <span class="cue-tile__title">Vendor Shop</span>
+            </div>
+            <p class="cue-tile__desc">Manage vendor storefronts and listings.</p>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Manufacturing -->
+    <div style="display: flex; gap: 1.5rem; align-items: flex-start;">
+      <div style="width: 180px; flex-shrink: 0; padding-top: 0.25rem;">
+        <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+          <span class="material-icons" style="font-size: 18px; color: var(--content-body-primary-brand);">diamond</span>
+          <span style="font-size: 0.6875rem; font-weight: 400; color: var(--content-body-moderate);">CUE</span>
+        </div>
+        <span style="font-size: 1.125rem; font-weight: 700; color: var(--content-body-primary-brand);">Manufacturing</span>
+      </div>
+      <div class="cue-tile-grid" style="flex: 1;">
+        <a class="cue-tile" href="#" style="flex: 0 1 180px;" onclick="return false;">
+          <div class="cue-tile__content">
+            <div class="cue-tile__icon-group">
+              <div class="cue-tile__icon"><span class="material-icons" aria-hidden="true">factory</span></div>
+              <span class="cue-tile__title">Production</span>
+            </div>
+            <p class="cue-tile__desc">Monitor and manage production workflows.</p>
+          </div>
+        </a>
+        <a class="cue-tile" href="#" style="flex: 0 1 180px;" onclick="return false;">
+          <div class="cue-tile__content">
+            <div class="cue-tile__icon-group">
+              <div class="cue-tile__icon"><span class="material-icons" aria-hidden="true">inventory</span></div>
+              <span class="cue-tile__title">Inventory</span>
+            </div>
+            <p class="cue-tile__desc">Track inventory levels and locations.</p>
+          </div>
+        </a>
+        <a class="cue-tile" href="#" style="flex: 0 1 180px;" onclick="return false;">
+          <div class="cue-tile__content">
+            <div class="cue-tile__icon-group">
+              <div class="cue-tile__icon"><span class="material-icons" aria-hidden="true">bar_chart</span></div>
+              <span class="cue-tile__title">Reports</span>
+            </div>
+            <p class="cue-tile__desc">Access production reports and analytics.</p>
+          </div>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ============================================================
+     DESIGN TOKENS
+============================================================ -->
+
+<div class="docs-section">
+  <p class="docs-section-label">Design Tokens</p>
+  <table class="docs-token-table">
+    <thead>
+      <tr><th>Token / Value</th><th>Figma Token</th><th>Value</th><th>Usage</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>--bg-level-1</td><td>System/Surface/Level 1/bg-level-1</td><td><span class="docs-token-swatch" style="background:#ffffff; border-color:#ededed;"></span>#ffffff</td><td>Tile background (default)</td></tr>
+      <tr><td>--bg-level-2</td><td>System/Surface/Level 2/bg-level-2</td><td><span class="docs-token-swatch" style="background:#ffffff; border-color:#ededed;"></span>#ffffff</td><td>Tile background (hover)</td></tr>
+      <tr><td>--border-level-1</td><td>System/Surface/Level 1/border-level-1</td><td><span class="docs-token-swatch" style="background:#ededed;"></span>#ededed</td><td>Tile border (default)</td></tr>
+      <tr><td>--border-subdued</td><td>System/Border/border-subdued</td><td><span class="docs-token-swatch" style="background:#bdbdbd;"></span>#bdbdbd</td><td>Tile border (hover)</td></tr>
+      <tr><td>Shadow/2</td><td>Shadow/2</td><td>0 2px 4px rgba(0,0,0,0.1)</td><td>Tile drop shadow (default)</td></tr>
+      <tr><td>Shadow/8</td><td>Shadow/8</td><td>0 8px 10px rgba(0,0,0,0.1)</td><td>Tile drop shadow (hover)</td></tr>
+      <tr><td>border-radius</td><td>—</td><td>4px</td><td>Tile corner radius</td></tr>
+      <tr><td>padding</td><td>—</td><td>24px (1.5rem)</td><td>Tile inner padding</td></tr>
+      <tr><td>Default height</td><td>—</td><td>auto</td><td>Default size — grows with content</td></tr>
+      <tr><td>Smaller height</td><td>—</td><td>140px</td><td>Smaller size — fixed, no description</td></tr>
+      <tr><td>--content-body-primary-brand</td><td>System/Content/content-body-primary-brand</td><td><span class="docs-token-swatch" style="background:#03618d;"></span>#03618d</td><td>Title and icon color (active)</td></tr>
+      <tr><td>--content-body-moderate</td><td>System/Content/content-body-moderate</td><td><span class="docs-token-swatch" style="background:#8a8a8a;"></span>#8a8a8a</td><td>Title and icon color (disabled)</td></tr>
+      <tr><td>--content-body-subtle</td><td>System/Content/content-body-subtle</td><td><span class="docs-token-swatch" style="background:#d4d4d4;"></span>#d4d4d4</td><td>Icon color (disabled state)</td></tr>
+      <tr><td>--content-body-default</td><td>System/Content/content-body-default</td><td><span class="docs-token-swatch" style="background:#262626;"></span>#262626</td><td>Description text (active)</td></tr>
+      <tr><td>Title font</td><td>Back Office UI/Body Medium 15pt/Bold</td><td>15px Bold</td><td>Tile title</td></tr>
+      <tr><td>Desc font</td><td>Back Office UI/Body X-Small 12pt/Regular</td><td>12px Regular</td><td>Tile description (Default size only)</td></tr>
+      <tr><td>Icon size</td><td>—</td><td>48×48px</td><td>Custom SVG or Material Icon stand-in</td></tr>
+      <tr><td>Min width</td><td>—</td><td>160px</td><td>Minimum tile width</td></tr>
+      <tr><td>Max width</td><td>—</td><td>221px</td><td>Maximum tile width</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- CODE -->
+
+<div class="docs-section">
+  <p class="docs-section-label">Code</p>
+  <div class="docs-code-tabs">
+    <button class="docs-code-tab active" onclick="switchTab(event, 'tile-html')">HTML</button>
+    <button class="docs-code-tab" onclick="switchTab(event, 'tile-css')">CSS</button>
+  </div>
+
+  <div class="docs-code-panel active" id="tile-html">
+    <div class="docs-code-block"><pre><code>&lt;!-- Default tile (with description) --&gt;
+&lt;a class="cue-tile" href="/module/path"&gt;
+  &lt;div class="cue-tile__content"&gt;
+    &lt;div class="cue-tile__icon-group"&gt;
+      &lt;div class="cue-tile__icon"&gt;
+        &lt;!-- Swap in any Dashboard Tile Icon SVG here --&gt;
+        &lt;span class="material-icons" aria-hidden="true"&gt;settings&lt;/span&gt;
+      &lt;/div&gt;
+      &lt;span class="cue-tile__title"&gt;Settings&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;p class="cue-tile__desc"&gt;Configure system settings.&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/a&gt;
+
+&lt;!-- Smaller variant (no description) --&gt;
+&lt;a class="cue-tile cue-tile--sm" href="/module/path"&gt;
+  &lt;div class="cue-tile__content"&gt;
+    &lt;div class="cue-tile__icon-group"&gt;
+      &lt;div class="cue-tile__icon"&gt;
+        &lt;span class="material-icons" aria-hidden="true"&gt;settings&lt;/span&gt;
+      &lt;/div&gt;
+      &lt;span class="cue-tile__title"&gt;Settings&lt;/span&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/a&gt;
+
+&lt;!-- Disabled --&gt;
+&lt;a class="cue-tile is-disabled" href="/module/path" aria-disabled="true"&gt;...&lt;/a&gt;
+
+&lt;!-- With notification badge --&gt;
+&lt;a class="cue-tile" href="/module/path"&gt;
+  &lt;div class="cue-tile__badge" aria-label="New notifications"&gt;&lt;/div&gt;
+  &lt;div class="cue-tile__content"&gt;...&lt;/div&gt;
+&lt;/a&gt;
+
+&lt;!-- Tile grid --&gt;
+&lt;div class="cue-tile-grid"&gt;
+  &lt;a class="cue-tile" href="..."&gt;...&lt;/a&gt;
+  &lt;a class="cue-tile" href="..."&gt;...&lt;/a&gt;
+  &lt;a class="cue-tile" href="..."&gt;...&lt;/a&gt;
+&lt;/div&gt;
+
+&lt;!-- Grouped layout (category label + grid) --&gt;
+&lt;div style="display: flex; gap: 1.5rem;"&gt;
+  &lt;div style="width: 180px; flex-shrink: 0;"&gt;
+    &lt;span style="font-size: 1.125rem; font-weight: 700;
+      color: var(--content-body-primary-brand);"&gt;IDM &amp; Administration&lt;/span&gt;
+  &lt;/div&gt;
+  &lt;div class="cue-tile-grid" style="flex: 1;"&gt;
+    &lt;a class="cue-tile" href="..." style="flex: 0 1 180px;"&gt;...&lt;/a&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre></div>
+  </div>
+
+  <div class="docs-code-panel" id="tile-css">
+    <div class="docs-code-block"><pre><code>/* Tile card */
+.cue-tile {
+  position: relative; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  min-width: 160px; max-width: 221px;
+  padding: 1.5rem;                            /* 24px */
+  background-color: var(--bg-level-1);
+  border: 1px solid var(--border-level-1);    /* #ededed default */
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);     /* Shadow/2 */
+  cursor: pointer; text-decoration: none; flex: 1;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cue-tile:hover {
+  border-color: var(--border-subdued);         /* #bdbdbd */
+  box-shadow: 0 8px 10px rgba(0,0,0,0.1);     /* Shadow/8 */
+}
+
+/* Smaller variant */
+.cue-tile--sm { height: 140px; }
+
+/* Disabled */
+.cue-tile.is-disabled { cursor: not-allowed; pointer-events: none; }
+
+/* Content */
+.cue-tile__content { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; width: 100%; }
+.cue-tile--sm .cue-tile__content { gap: 0; }
+.cue-tile__icon-group { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+.cue-tile__icon { display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; color: var(--content-body-primary-brand); }
+.cue-tile__icon .material-icons { font-size: 48px; color: inherit; }
+.cue-tile.is-disabled .cue-tile__icon { color: var(--content-body-subtle); }
+
+/* Title */
+.cue-tile__title { font-size: 0.9375rem; font-weight: 700; color: var(--content-body-primary-brand); text-align: center; }
+.cue-tile.is-disabled .cue-tile__title { color: var(--content-body-moderate); }
+
+/* Description */
+.cue-tile__desc { font-size: 0.75rem; font-weight: 400; color: var(--content-body-default); text-align: center; line-height: 1.4; }
+.cue-tile.is-disabled .cue-tile__desc { color: var(--content-body-moderate); }
+
+/* Notification badge */
+.cue-tile__badge { position: absolute; top: 7px; right: 6.5px; width: 12px; height: 12px; border-radius: 50%; background-color: var(--danger-default); border: 2px solid var(--bg-level-1); }
+
+/* Grid */
+.cue-tile-grid { display: flex; flex-wrap: wrap; gap: 0.75rem; }</code></pre></div>
+  </div>
+</div>
