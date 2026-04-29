@@ -1,0 +1,630 @@
+---
+layout: default
+title: "Toast"
+activeNav: toast
+root: ../
+---
+
+<style>
+
+  /* ============================================================
+     TOAST
+
+     A temporary notification panel that appears fixed at the
+     bottom-right of the viewport. Used to confirm actions,
+     surface feedback, or alert the user to system events.
+     Auto-dismisses after a configurable duration or via the
+     Close button.
+
+     Anatomy:
+       .cue-toast-stack          — fixed container, stacks toasts
+         .cue-toast              — individual toast panel
+           .cue-toast__icon      — optional status icon (20px)
+           .cue-toast__body      — title + description
+             .cue-toast__title   — 16px Bold
+             .cue-toast__desc    — 14px Regular
+           .cue-toast__close     — neutral-stroke close button
+
+     Variants on .cue-toast:
+       (default)                 — neutral white
+       .cue-toast--success       — green
+       .cue-toast--info          — blue
+       .cue-toast--warning       — amber
+       .cue-toast--error         — red
+
+     States:
+       .is-entering              — slides in (translateY + opacity)
+       .is-leaving               — slides out (opacity fade)
+
+     Tokens:
+       Background:  --bg-default / alert variant bg
+       Border:      --border-extra-subtle / alert variant border
+       Shadow:      Shadow/12  → 0 12px 14px rgba(0,0,0,0.1)
+       Border radius: 6px
+       Padding: 16px
+  ============================================================ */
+
+  /* ---- Fixed stack container ---- */
+
+  .cue-toast-stack {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    z-index: 900;
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 0.75rem;
+    max-width: 480px;
+    width: calc(100vw - 3rem);
+    pointer-events: none;
+  }
+
+  /* ---- Toast panel ---- */
+
+  .cue-toast {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem;
+    background-color: var(--bg-default);
+    border: 1px solid var(--border-extra-subtle);
+    border-radius: 6px;
+    box-shadow: 0 12px 14px rgba(0, 0, 0, 0.1);
+    pointer-events: auto;
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    width: 100%;
+  }
+
+  /* Entering animation */
+  .cue-toast.is-entering {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  /* Leaving animation */
+  .cue-toast.is-leaving {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  /* ---- Variants ---- */
+
+  .cue-toast--success {
+    background-color: var(--bg-alert-success);
+    border-color: var(--border-alert-success);
+  }
+
+  .cue-toast--info {
+    background-color: var(--bg-alert-info);
+    border-color: var(--border-alert-info);
+  }
+
+  .cue-toast--warning {
+    background-color: var(--bg-alert-warning);
+    border-color: var(--border-alert-warning);
+  }
+
+  .cue-toast--error {
+    background-color: var(--bg-alert-error);
+    border-color: var(--border-alert-error);
+  }
+
+  /* ---- Icon ---- */
+
+  .cue-toast__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .cue-toast__icon .material-icons { font-size: 20px; }
+
+  .cue-toast--success .cue-toast__icon { color: var(--icon-alert-success); }
+  .cue-toast--info    .cue-toast__icon { color: var(--icon-alert-info); }
+  .cue-toast--warning .cue-toast__icon { color: var(--icon-alert-warning); }
+  .cue-toast--error   .cue-toast__icon { color: var(--icon-alert-error); }
+
+  /* ---- Body ---- */
+
+  .cue-toast__body {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .cue-toast__title {
+    font-family: var(--font-family-body);
+    font-size: 1rem;         /* 16px */
+    font-weight: 700;
+    color: var(--content-body-default);
+    line-height: 1.2;
+  }
+
+  .cue-toast--success .cue-toast__title { color: var(--content-alert-success); }
+  .cue-toast--info    .cue-toast__title { color: var(--content-alert-info); }
+  .cue-toast--warning .cue-toast__title { color: var(--content-alert-warning); }
+  .cue-toast--error   .cue-toast__title { color: var(--content-alert-error); }
+
+  .cue-toast__desc {
+    font-family: var(--font-family-body);
+    font-size: 0.875rem;     /* 14px */
+    font-weight: 400;
+    color: var(--content-body-default);
+    line-height: 1.4;
+  }
+
+  .cue-toast--success .cue-toast__desc { color: var(--content-alert-success); }
+  .cue-toast--info    .cue-toast__desc { color: var(--content-alert-info); }
+  .cue-toast--warning .cue-toast__desc { color: var(--content-alert-warning); }
+  .cue-toast--error   .cue-toast__desc { color: var(--content-alert-error); }
+
+  /* ---- Close button ---- */
+
+  .cue-toast__close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 0.75rem;
+    background-color: var(--bg-button-neutral-stroke);
+    border: 1px solid var(--border-button-neutral-stroke);
+    border-radius: var(--corner-button);
+    font-family: var(--font-family-body);
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--content-button-neutral-stroke);
+    cursor: pointer;
+    flex-shrink: 0;
+    white-space: nowrap;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+    align-self: flex-start;
+  }
+
+  .cue-toast__close:hover {
+    background-color: var(--bg-button-neutral-stroke-hover);
+    border-color: var(--border-button-neutral-stroke-hover);
+  }
+
+  /* ---- Progress bar (auto-dismiss indicator) ---- */
+
+  .cue-toast__progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background-color: var(--border-subdued);
+    border-radius: 0 0 6px 6px;
+    animation: toastProgress linear forwards;
+  }
+
+  @keyframes toastProgress {
+    from { width: 100%; }
+    to   { width: 0%;   }
+  }
+
+  .cue-toast {
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ---- Docs demo overrides ---- */
+  /* Static toasts in docs don't use the fixed stack */
+  .toast-docs-demo {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+    max-width: 520px;
+  }
+
+  .toast-docs-demo .cue-toast {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+</style>
+
+<div class="docs-page-header">
+  <h1 class="docs-page-title">Toast</h1>
+  <p class="docs-page-description">
+    A temporary notification panel that appears fixed at the bottom-right of the viewport. Used to confirm completed actions, surface system feedback, or alert users to events. Toasts auto-dismiss after a configurable duration or can be manually closed. Multiple toasts stack vertically.
+  </p>
+</div>
+
+<!-- ============================================================
+     NEUTRAL (BASE)
+============================================================ -->
+
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Base</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">The base toast from Figma — white background, subtle border, Shadow/12. Title is 16px Bold, description is 14px Regular. The Close button is the neutral-stroke button style.</p>
+
+  <div class="docs-example">
+    <div class="toast-docs-demo">
+      <div class="cue-toast">
+        <div class="cue-toast__body">
+          <span class="cue-toast__title">Title of action or feedback</span>
+          <span class="cue-toast__desc">This is a description of the action or feedback that has occurred.</span>
+        </div>
+        <button class="cue-toast__close" type="button">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ============================================================
+     STATUS VARIANTS
+============================================================ -->
+
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Status variants</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">Four status variants using the same color tokens as the Alert component. Each has a leading status icon. Add the variant modifier class to <code>.cue-toast</code>.</p>
+
+  <div class="docs-example" style="flex-direction: column; gap: 0;">
+    <div class="toast-docs-demo">
+
+      <!-- Success -->
+      <div class="cue-toast cue-toast--success">
+        <div class="cue-toast__icon">
+          <span class="material-icons" aria-hidden="true">check_circle</span>
+        </div>
+        <div class="cue-toast__body">
+          <span class="cue-toast__title">Changes saved successfully</span>
+          <span class="cue-toast__desc">Your order has been updated and confirmation sent to the customer.</span>
+        </div>
+        <button class="cue-toast__close" type="button">Close</button>
+      </div>
+
+      <!-- Info -->
+      <div class="cue-toast cue-toast--info">
+        <div class="cue-toast__icon">
+          <span class="material-icons" aria-hidden="true">info</span>
+        </div>
+        <div class="cue-toast__body">
+          <span class="cue-toast__title">Sync in progress</span>
+          <span class="cue-toast__desc">Your catalog is syncing with the warehouse system. This may take a moment.</span>
+        </div>
+        <button class="cue-toast__close" type="button">Close</button>
+      </div>
+
+      <!-- Warning -->
+      <div class="cue-toast cue-toast--warning">
+        <div class="cue-toast__icon">
+          <span class="material-icons" aria-hidden="true">warning</span>
+        </div>
+        <div class="cue-toast__body">
+          <span class="cue-toast__title">Low inventory detected</span>
+          <span class="cue-toast__desc">3 SKUs are below minimum stock levels. Review your inventory report.</span>
+        </div>
+        <button class="cue-toast__close" type="button">Close</button>
+      </div>
+
+      <!-- Error -->
+      <div class="cue-toast cue-toast--error">
+        <div class="cue-toast__icon">
+          <span class="material-icons" aria-hidden="true">error</span>
+        </div>
+        <div class="cue-toast__body">
+          <span class="cue-toast__title">Failed to submit order</span>
+          <span class="cue-toast__desc">A network error occurred. Please check your connection and try again.</span>
+        </div>
+        <button class="cue-toast__close" type="button">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ============================================================
+     LIVE DEMO
+============================================================ -->
+
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Live demo</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">Click a button to trigger a toast in the bottom-right corner. Toasts auto-dismiss after 5 seconds and show a progress bar. Multiple toasts stack.</p>
+
+  <div class="docs-example" style="gap: 0.75rem; flex-wrap: wrap;">
+    <button class="cue-btn cue-btn--neutral-stroke" type="button" onclick="showToast('neutral', 'Action completed', 'The record has been saved.')">
+      <span class="cue-btn__label">Neutral</span>
+    </button>
+    <button class="cue-btn cue-btn--neutral-stroke" type="button" onclick="showToast('success', 'Changes saved', 'Your updates have been applied successfully.')">
+      <span class="material-icons" aria-hidden="true" style="font-size:16px; color:var(--icon-alert-success);">check_circle</span>
+      <span class="cue-btn__label">Success</span>
+    </button>
+    <button class="cue-btn cue-btn--neutral-stroke" type="button" onclick="showToast('info', 'Sync in progress', 'Your catalog is syncing with the warehouse.')">
+      <span class="material-icons" aria-hidden="true" style="font-size:16px; color:var(--icon-alert-info);">info</span>
+      <span class="cue-btn__label">Info</span>
+    </button>
+    <button class="cue-btn cue-btn--neutral-stroke" type="button" onclick="showToast('warning', 'Low inventory', '3 SKUs are below minimum stock levels.')">
+      <span class="material-icons" aria-hidden="true" style="font-size:16px; color:var(--icon-alert-warning);">warning</span>
+      <span class="cue-btn__label">Warning</span>
+    </button>
+    <button class="cue-btn cue-btn--neutral-stroke" type="button" onclick="showToast('error', 'Submission failed', 'A network error occurred. Please try again.')">
+      <span class="material-icons" aria-hidden="true" style="font-size:16px; color:var(--icon-alert-error);">error</span>
+      <span class="cue-btn__label">Error</span>
+    </button>
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ============================================================
+     DESIGN TOKENS
+============================================================ -->
+
+<div class="docs-section">
+  <p class="docs-section-label">Design Tokens</p>
+  <table class="docs-token-table">
+    <thead>
+      <tr><th>Token / Value</th><th>Figma Token</th><th>Value</th><th>Usage</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>--bg-default</td><td>System/Surface/Level 4/bg-level-4</td><td><span class="docs-token-swatch" style="background:#ffffff; border-color:#ededed;"></span>#ffffff</td><td>Base toast background</td></tr>
+      <tr><td>--border-extra-subtle</td><td>System/Surface/Level 4/border-level-4</td><td><span class="docs-token-swatch" style="background:#ededed;"></span>#ededed</td><td>Base toast border</td></tr>
+      <tr><td>Shadow/12</td><td>Shadow/12</td><td>0 12px 14px rgba(0,0,0,0.1)</td><td>Toast drop shadow — same as Modal</td></tr>
+      <tr><td>border-radius</td><td>—</td><td>6px</td><td>Toast corner radius</td></tr>
+      <tr><td>padding</td><td>—</td><td>16px (1rem)</td><td>Inner padding</td></tr>
+      <tr><td>gap</td><td>—</td><td>16px (1rem)</td><td>Gap between icon, body, and button</td></tr>
+      <tr><td>Title font</td><td>Back Office UI/Body Large 16pt/Bold</td><td>16px Bold</td><td>Toast title</td></tr>
+      <tr><td>Desc font</td><td>Back Office UI/Body Small 14pt/Regular</td><td>14px Regular</td><td>Toast description</td></tr>
+      <tr><td>Stack position</td><td>—</td><td>fixed, bottom: 1.5rem, right: 1.5rem</td><td>Viewport-anchored stack container</td></tr>
+      <tr><td>Auto-dismiss</td><td>—</td><td>5000ms default</td><td>Configurable per toast via data-duration</td></tr>
+      <tr><td>--bg-alert-success / border / content</td><td>Global/Alert/Success</td><td>Same as Alert component</td><td>Success variant colors</td></tr>
+      <tr><td>--bg-alert-info / border / content</td><td>Global/Alert/Info</td><td>Same as Alert component</td><td>Info variant colors</td></tr>
+      <tr><td>--bg-alert-warning / border / content</td><td>Global/Alert/Warning</td><td>Same as Alert component</td><td>Warning variant colors</td></tr>
+      <tr><td>--bg-alert-error / border / content</td><td>Global/Alert/Error</td><td>Same as Alert component</td><td>Error variant colors</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ============================================================
+     CODE
+============================================================ -->
+
+<div class="docs-section">
+  <p class="docs-section-label">Code</p>
+  <div class="docs-code-tabs">
+    <button class="docs-code-tab active" onclick="switchTab(event, 'toast-html')">HTML</button>
+    <button class="docs-code-tab" onclick="switchTab(event, 'toast-css')">CSS</button>
+    <button class="docs-code-tab" onclick="switchTab(event, 'toast-js')">JS</button>
+  </div>
+
+  <div class="docs-code-panel active" id="toast-html">
+    <div class="docs-code-block"><pre><code>&lt;!-- Fixed stack — place once at end of &lt;body&gt; --&gt;
+&lt;div class="cue-toast-stack" id="toast-stack" aria-live="polite" aria-label="Notifications"&gt;&lt;/div&gt;
+
+
+&lt;!-- Toast structure (generated by JS — shown for reference) --&gt;
+
+&lt;!-- Base / neutral --&gt;
+&lt;div class="cue-toast" role="alert"&gt;
+  &lt;div class="cue-toast__body"&gt;
+    &lt;span class="cue-toast__title"&gt;Title of action or feedback&lt;/span&gt;
+    &lt;span class="cue-toast__desc"&gt;Description of the action or feedback.&lt;/span&gt;
+  &lt;/div&gt;
+  &lt;button class="cue-toast__close" type="button"&gt;Close&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;!-- Success --&gt;
+&lt;div class="cue-toast cue-toast--success" role="alert"&gt;
+  &lt;div class="cue-toast__icon"&gt;
+    &lt;span class="material-icons" aria-hidden="true"&gt;check_circle&lt;/span&gt;
+  &lt;/div&gt;
+  &lt;div class="cue-toast__body"&gt;
+    &lt;span class="cue-toast__title"&gt;Changes saved&lt;/span&gt;
+    &lt;span class="cue-toast__desc"&gt;Your updates have been applied.&lt;/span&gt;
+  &lt;/div&gt;
+  &lt;button class="cue-toast__close" type="button"&gt;Close&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;!-- Info — .cue-toast--info, icon: info --&gt;
+&lt;!-- Warning — .cue-toast--warning, icon: warning --&gt;
+&lt;!-- Error — .cue-toast--error, icon: error --&gt;</code></pre></div>
+  </div>
+
+  <div class="docs-code-panel" id="toast-css">
+    <div class="docs-code-block"><pre><code>/* Fixed stack — one instance at end of &lt;body&gt; */
+.cue-toast-stack {
+  position: fixed; bottom: 1.5rem; right: 1.5rem;
+  z-index: 900;
+  display: flex; flex-direction: column-reverse; gap: 0.75rem;
+  max-width: 480px; width: calc(100vw - 3rem);
+  pointer-events: none;
+}
+
+/* Toast panel */
+.cue-toast {
+  position: relative; display: flex; align-items: flex-start;
+  gap: 1rem; padding: 1rem;
+  background-color: var(--bg-default);
+  border: 1px solid var(--border-extra-subtle);
+  border-radius: 6px;
+  box-shadow: 0 12px 14px rgba(0,0,0,0.1);    /* Shadow/12 */
+  pointer-events: auto; overflow: hidden;
+  opacity: 1; transform: translateY(0);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+/* Animate in/out */
+.cue-toast.is-entering { opacity: 0; transform: translateY(12px); }
+.cue-toast.is-leaving  { opacity: 0; transform: translateY(8px); }
+
+/* Status variants */
+.cue-toast--success { background-color: var(--bg-alert-success); border-color: var(--border-alert-success); }
+.cue-toast--info    { background-color: var(--bg-alert-info);    border-color: var(--border-alert-info); }
+.cue-toast--warning { background-color: var(--bg-alert-warning); border-color: var(--border-alert-warning); }
+.cue-toast--error   { background-color: var(--bg-alert-error);   border-color: var(--border-alert-error); }
+
+/* Icon */
+.cue-toast__icon { display: flex; flex-shrink: 0; margin-top: 1px; }
+.cue-toast__icon .material-icons { font-size: 20px; }
+.cue-toast--success .cue-toast__icon { color: var(--icon-alert-success); }
+.cue-toast--info    .cue-toast__icon { color: var(--icon-alert-info); }
+.cue-toast--warning .cue-toast__icon { color: var(--icon-alert-warning); }
+.cue-toast--error   .cue-toast__icon { color: var(--icon-alert-error); }
+
+/* Body */
+.cue-toast__body  { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0; }
+.cue-toast__title { font-size: 1rem; font-weight: 700; color: var(--content-body-default); line-height: 1.2; }
+.cue-toast__desc  { font-size: 0.875rem; font-weight: 400; color: var(--content-body-default); line-height: 1.4; }
+.cue-toast--success .cue-toast__title,
+.cue-toast--success .cue-toast__desc  { color: var(--content-alert-success); }
+/* Repeat for info, warning, error... */
+
+/* Close button */
+.cue-toast__close {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 4px 0.75rem; background-color: var(--bg-button-neutral-stroke);
+  border: 1px solid var(--border-button-neutral-stroke);
+  border-radius: var(--corner-button);
+  font-size: 0.875rem; font-weight: 700; color: var(--content-button-neutral-stroke);
+  cursor: pointer; flex-shrink: 0; align-self: flex-start;
+  transition: background-color 0.15s ease;
+}
+
+/* Auto-dismiss progress bar */
+.cue-toast__progress {
+  position: absolute; bottom: 0; left: 0;
+  height: 3px; background-color: var(--border-subdued);
+  border-radius: 0 0 6px 6px;
+  animation: toastProgress linear forwards;
+}
+@keyframes toastProgress { from { width: 100%; } to { width: 0%; } }</code></pre></div>
+  </div>
+
+  <div class="docs-code-panel" id="toast-js">
+    <div class="docs-code-block"><pre><code>/**
+ * showToast(type, title, desc, duration)
+ *
+ * type:     'neutral' | 'success' | 'info' | 'warning' | 'error'
+ * title:    string
+ * desc:     string (optional)
+ * duration: ms before auto-dismiss (default: 5000, 0 = no auto-dismiss)
+ */
+function showToast(type, title, desc, duration) {
+  duration = duration !== undefined ? duration : 5000;
+  var stack = document.getElementById('toast-stack');
+  if (!stack) return;
+
+  var icons = {
+    success: 'check_circle',
+    info:    'info',
+    warning: 'warning',
+    error:   'error'
+  };
+
+  var toast = document.createElement('div');
+  toast.className = 'cue-toast is-entering' + (type !== 'neutral' ? ' cue-toast--' + type : '');
+  toast.setAttribute('role', 'alert');
+
+  var iconHTML = icons[type]
+    ? '&lt;div class="cue-toast__icon"&gt;&lt;span class="material-icons" aria-hidden="true"&gt;' + icons[type] + '&lt;/span&gt;&lt;/div&gt;'
+    : '';
+
+  var descHTML = desc
+    ? '&lt;span class="cue-toast__desc"&gt;' + desc + '&lt;/span&gt;'
+    : '';
+
+  var progressHTML = duration > 0
+    ? '&lt;div class="cue-toast__progress" style="animation-duration:' + duration + 'ms"&gt;&lt;/div&gt;'
+    : '';
+
+  toast.innerHTML = iconHTML +
+    '&lt;div class="cue-toast__body"&gt;' +
+      '&lt;span class="cue-toast__title"&gt;' + title + '&lt;/span&gt;' +
+      descHTML +
+    '&lt;/div&gt;' +
+    '&lt;button class="cue-toast__close" type="button" onclick="dismissToast(this.closest(\'.cue-toast\'))"&gt;Close&lt;/button&gt;' +
+    progressHTML;
+
+  stack.appendChild(toast);
+
+  // Trigger enter animation
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      toast.classList.remove('is-entering');
+    });
+  });
+
+  // Auto-dismiss
+  if (duration > 0) {
+    setTimeout(function() { dismissToast(toast); }, duration);
+  }
+}
+
+function dismissToast(toast) {
+  if (!toast || toast.classList.contains('is-leaving')) return;
+  toast.classList.add('is-leaving');
+  setTimeout(function() { toast.remove(); }, 300);
+}</code></pre></div>
+  </div>
+
+</div>
+
+<!-- Fixed toast stack for live demo -->
+<div class="cue-toast-stack" id="toast-stack" aria-live="polite" aria-label="Notifications"></div>
+
+<script>
+  var ICONS = { success: 'check_circle', info: 'info', warning: 'warning', error: 'error' };
+
+  function showToast(type, title, desc, duration) {
+    duration = (duration !== undefined) ? duration : 5000;
+    var stack = document.getElementById('toast-stack');
+    if (!stack) return;
+
+    var toast = document.createElement('div');
+    toast.className = 'cue-toast is-entering' + (type !== 'neutral' ? ' cue-toast--' + type : '');
+    toast.setAttribute('role', 'alert');
+
+    var iconHTML = ICONS[type]
+      ? '<div class="cue-toast__icon"><span class="material-icons" aria-hidden="true">' + ICONS[type] + '</span></div>'
+      : '';
+
+    var descHTML = desc ? '<span class="cue-toast__desc">' + desc + '</span>' : '';
+    var progressHTML = duration > 0
+      ? '<div class="cue-toast__progress" style="animation-duration:' + duration + 'ms"></div>'
+      : '';
+
+    toast.innerHTML = iconHTML +
+      '<div class="cue-toast__body">' +
+        '<span class="cue-toast__title">' + title + '</span>' +
+        descHTML +
+      '</div>' +
+      '<button class="cue-toast__close" type="button">Close</button>' +
+      progressHTML;
+
+    toast.querySelector('.cue-toast__close').addEventListener('click', function() {
+      dismissToast(toast);
+    });
+
+    stack.appendChild(toast);
+
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() {
+        toast.classList.remove('is-entering');
+      });
+    });
+
+    if (duration > 0) {
+      setTimeout(function() { dismissToast(toast); }, duration);
+    }
+  }
+
+  function dismissToast(toast) {
+    if (!toast || toast.classList.contains('is-leaving')) return;
+    toast.classList.add('is-leaving');
+    setTimeout(function() { toast.remove(); }, 300);
+  }
+</script>
