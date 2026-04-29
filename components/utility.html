@@ -1,0 +1,963 @@
+---
+layout: default
+title: "Utility UI"
+activeNav: utility
+root: ../
+---
+
+<style>
+
+  /* ============================================================
+     UTILITY UI COMPONENTS
+
+     Infrequently used but purpose-built components for specific
+     contexts throughout CUE Back Office.
+
+     Components documented here:
+       1. Pagination
+       2. Tree View
+       3. Display Selection Toggle
+       4. Dark / Light Mode Toggle
+       5. Rich Text Toolbar
+  ============================================================ */
+
+
+  /* ============================================================
+     1. PAGINATION
+  ============================================================ */
+
+  .cue-pagination {
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+
+  /* Base page item */
+  .cue-page-item {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 36px;
+    padding: 6px 14px;
+    background-color: var(--bg-default);
+    border: 1px solid var(--border-subdued);
+    font-family: var(--font-family-body);
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--content-body-default);
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.15s ease;
+    margin-left: -1px;
+    white-space: nowrap;
+  }
+
+  .cue-page-item:first-child { border-radius: 6px 0 0 6px; margin-left: 0; }
+  .cue-page-item:last-child  { border-radius: 0 6px 6px 0; }
+  .cue-page-item:only-child  { border-radius: 6px; }
+
+  .cue-page-item:hover:not(.is-active):not(:disabled) {
+    background-color: var(--bg-level-0);
+  }
+
+  /* Active page */
+  .cue-page-item.is-active {
+    background-color: var(--bg-primary-brand);
+    border-color: var(--bg-primary-brand);
+    color: var(--content-body-inverse);
+    z-index: 1;
+    cursor: default;
+  }
+
+  /* Disabled */
+  .cue-page-item:disabled,
+  .cue-page-item.is-disabled {
+    color: var(--content-body-moderate);
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  /* Prev / Next with icon */
+  .cue-page-item--prev { padding-left: 6px; border-radius: 6px 0 0 6px; margin-left: 0; }
+  .cue-page-item--next { padding-right: 6px; border-radius: 0 6px 6px 0; }
+  .cue-page-item--arrow { padding: 6px; }
+
+  .cue-page-item .material-icons { font-size: 20px; }
+
+
+  /* ============================================================
+     2. TREE VIEW
+  ============================================================ */
+
+  .cue-tree {
+    display: flex;
+    flex-direction: column;
+    font-family: var(--font-family-body);
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--content-body-default);
+    user-select: none;
+  }
+
+  .cue-tree-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 6px 4px 4px;
+    border-radius: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.1s ease;
+    position: relative;
+  }
+
+  .cue-tree-item:hover { background-color: var(--bg-level-0); }
+  .cue-tree-item.is-selected { background-color: var(--bg-level-0); }
+
+  /* Indent block — 16px wide per level */
+  .cue-tree-indent {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  /* Expand arrow */
+  .cue-tree-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: var(--content-body-default);
+    transition: transform 0.15s ease;
+  }
+
+  .cue-tree-arrow.is-open { transform: rotate(90deg); }
+  .cue-tree-arrow .material-icons { font-size: 16px; }
+
+  /* Spacer for child levels (no arrow) */
+  .cue-tree-spacer {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+
+  .cue-tree-item__label { line-height: 1; }
+
+  /* Children container */
+  .cue-tree-children {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    max-height: 1000px;
+    transition: max-height 0.2s ease;
+  }
+
+  .cue-tree-children.is-collapsed { max-height: 0; }
+
+  /* Connector lines variant */
+  .cue-tree--lines .cue-tree-indent::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background-color: var(--border-subdued);
+  }
+
+  .cue-tree--lines .cue-tree-indent.is-last::before {
+    bottom: 50%;
+  }
+
+  .cue-tree--lines .cue-tree-indent.is-last::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 8px;
+    height: 1px;
+    background-color: var(--border-subdued);
+  }
+
+
+  /* ============================================================
+     3. DISPLAY SELECTION TOGGLE
+  ============================================================ */
+
+  .cue-display-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 8px;
+  }
+
+  .cue-display-toggle__btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: opacity 0.15s ease;
+  }
+
+  .cue-display-toggle__btn:hover { opacity: 0.7; }
+
+  /* 2×2 grid icon */
+  .cue-display-icon {
+    display: grid;
+    gap: 2px;
+    flex-shrink: 0;
+  }
+
+  .cue-display-icon--4 {
+    grid-template-columns: repeat(2, 1fr);
+    width: 20px;
+    height: 20px;
+  }
+
+  .cue-display-icon--9 {
+    grid-template-columns: repeat(3, 1fr);
+    width: 20px;
+    height: 20px;
+  }
+
+  .cue-display-icon__cell {
+    border-radius: 1px;
+    background-color: var(--content-body-subtle);
+  }
+
+  .cue-display-toggle__btn.is-active .cue-display-icon__cell {
+    background-color: var(--content-body-default);
+  }
+
+
+  /* ============================================================
+     4. APP MODE TOGGLE (Dark / Light)
+  ============================================================ */
+
+  .cue-mode-toggle {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    border-radius: 200px;
+    cursor: pointer;
+    background-color: var(--bg-subdued);
+    transition: background-color 0.25s ease;
+    flex-shrink: 0;
+    border: none;
+    padding: 0;
+  }
+
+  /* Sizes */
+  .cue-mode-toggle--lg { width: 56px; height: 32px; padding: 4px; }
+  .cue-mode-toggle--md { width: 48px; height: 28px; padding: 4px; }
+  .cue-mode-toggle--sm { width: 36px; height: 20px; padding: 2px; }
+
+  /* Dark mode track */
+  .cue-mode-toggle.is-dark { background-color: #404040; justify-content: flex-end; }
+
+  /* Thumb */
+  .cue-mode-toggle__thumb {
+    border-radius: 50%;
+    background-color: var(--bg-default);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background-color 0.25s ease;
+  }
+
+  .cue-mode-toggle--lg .cue-mode-toggle__thumb { width: 24px; height: 24px; }
+  .cue-mode-toggle--md .cue-mode-toggle__thumb { width: 20px; height: 20px; }
+  .cue-mode-toggle--sm .cue-mode-toggle__thumb { width: 16px; height: 16px; }
+
+  .cue-mode-toggle.is-dark .cue-mode-toggle__thumb { background-color: #1f1f1f; }
+
+  .cue-mode-toggle__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 66%;
+    height: 66%;
+    color: #f5a623;
+  }
+
+  .cue-mode-toggle.is-dark .cue-mode-toggle__icon { color: #a0b4c8; }
+
+  .cue-mode-toggle__icon .material-icons { font-size: inherit; line-height: 1; }
+  .cue-mode-toggle--lg .cue-mode-toggle__icon .material-icons { font-size: 16px; }
+  .cue-mode-toggle--md .cue-mode-toggle__icon .material-icons { font-size: 13px; }
+  .cue-mode-toggle--sm .cue-mode-toggle__icon .material-icons { font-size: 10px; }
+
+
+  /* ============================================================
+     5. RICH TEXT TOOLBAR
+  ============================================================ */
+
+  .cue-rte-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .cue-rte-toolbar--sm {
+    gap: 12px;
+  }
+
+  /* Button group */
+  .cue-rte-group {
+    display: flex;
+    align-items: center;
+  }
+
+  /* Individual toolbar button */
+  .cue-rte-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    background-color: var(--bg-button-neutral-stroke);
+    border: 1px solid var(--border-button-neutral-stroke);
+    font-family: var(--font-family-body);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--content-button-neutral-stroke);
+    cursor: pointer;
+    transition: background-color 0.1s ease;
+    margin-left: -1px;
+    flex-shrink: 0;
+  }
+
+  .cue-rte-btn:first-child { border-radius: 6px 0 0 6px; margin-left: 0; }
+  .cue-rte-btn:last-child  { border-radius: 0 6px 6px 0; }
+  .cue-rte-btn:only-child  { border-radius: 6px; }
+
+  .cue-rte-btn:hover { background-color: var(--bg-button-neutral-stroke-hover); }
+  .cue-rte-btn.is-active { background-color: var(--bg-subdued); }
+  .cue-rte-btn:focus-visible { outline: 2px solid var(--border-interactive); outline-offset: 1px; z-index: 1; }
+  .cue-rte-btn .material-icons { font-size: 18px; pointer-events: none; }
+
+  /* Small compact size */
+  .cue-rte-toolbar--sm .cue-rte-btn { width: 26px; height: 26px; }
+  .cue-rte-toolbar--sm .cue-rte-btn .material-icons { font-size: 16px; }
+
+  /* Dropdown button (label + chevron) */
+  .cue-rte-select {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    height: 30px;
+    padding: 0 6px 0 8px;
+    background-color: var(--bg-button-neutral-stroke);
+    border: 1px solid var(--border-button-neutral-stroke);
+    border-radius: 6px;
+    font-family: var(--font-family-body);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--content-button-neutral-stroke);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.1s ease;
+    flex-shrink: 0;
+  }
+
+  .cue-rte-select:hover { background-color: var(--bg-button-neutral-stroke-hover); }
+  .cue-rte-select .material-icons { font-size: 18px; }
+
+  .cue-rte-toolbar--sm .cue-rte-select { height: 26px; font-size: 0.6875rem; }
+
+  /* ---- Demo helpers ---- */
+
+  .util-demo-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 0;
+  }
+
+  .util-demo-label {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--content-body-moderate);
+  }
+
+  .util-demo-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    align-items: flex-start;
+  }
+
+</style>
+
+<div class="docs-page-header">
+  <h1 class="docs-page-title">Utility UI</h1>
+  <p class="docs-page-description">
+    Purpose-built components used in specific contexts throughout CUE Back Office. Not used frequently but essential when needed. Includes Pagination, Tree View, Display Selection Toggle, App Mode Toggle, and Rich Text Toolbar.
+  </p>
+</div>
+
+<!-- ============================================================
+     1. PAGINATION
+============================================================ -->
+
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Pagination</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">Used to navigate paginated data sets. Supports numbered pages, Previous/Next label buttons, and arrow-only icon buttons. The active page uses the primary brand background. Items share a common border via negative margin overlap.</p>
+
+  <div class="docs-example" style="flex-direction: column; gap: 1.5rem;">
+
+    <div class="util-demo-section">
+      <p class="util-demo-label">With Previous / Next labels</p>
+      <nav class="cue-pagination" aria-label="Page navigation">
+        <button class="cue-page-item cue-page-item--prev" type="button">
+          <span class="material-icons" aria-hidden="true">keyboard_arrow_left</span>
+          Previous
+        </button>
+        <button class="cue-page-item" type="button" aria-label="Page 1">1</button>
+        <button class="cue-page-item is-active" type="button" aria-label="Page 2, current" aria-current="page">2</button>
+        <button class="cue-page-item" type="button" aria-label="Page 3">3</button>
+        <button class="cue-page-item" type="button" aria-label="Page 4">4</button>
+        <button class="cue-page-item" type="button" aria-label="Page 5">5</button>
+        <button class="cue-page-item cue-page-item--next" type="button">
+          Next
+          <span class="material-icons" aria-hidden="true">keyboard_arrow_right</span>
+        </button>
+      </nav>
+    </div>
+
+    <div class="util-demo-section">
+      <p class="util-demo-label">With arrow buttons only</p>
+      <nav class="cue-pagination" aria-label="Page navigation">
+        <button class="cue-page-item cue-page-item--arrow" type="button" aria-label="Previous page">
+          <span class="material-icons" aria-hidden="true">keyboard_arrow_left</span>
+        </button>
+        <button class="cue-page-item" type="button" aria-label="Page 1">1</button>
+        <button class="cue-page-item is-active" type="button" aria-label="Page 2, current" aria-current="page">2</button>
+        <button class="cue-page-item" type="button" aria-label="Page 3">3</button>
+        <button class="cue-page-item" type="button" aria-label="Page 4">4</button>
+        <button class="cue-page-item" type="button" aria-label="Page 5">5</button>
+        <button class="cue-page-item cue-page-item--arrow" type="button" aria-label="Next page">
+          <span class="material-icons" aria-hidden="true">keyboard_arrow_right</span>
+        </button>
+      </nav>
+    </div>
+
+    <div class="util-demo-section">
+      <p class="util-demo-label">First page (Previous disabled)</p>
+      <nav class="cue-pagination" aria-label="Page navigation">
+        <button class="cue-page-item cue-page-item--prev is-disabled" type="button" disabled>
+          <span class="material-icons" aria-hidden="true">keyboard_arrow_left</span>
+          Previous
+        </button>
+        <button class="cue-page-item is-active" type="button" aria-current="page">1</button>
+        <button class="cue-page-item" type="button">2</button>
+        <button class="cue-page-item" type="button">3</button>
+        <button class="cue-page-item cue-page-item--next" type="button">
+          Next
+          <span class="material-icons" aria-hidden="true">keyboard_arrow_right</span>
+        </button>
+      </nav>
+    </div>
+
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ============================================================
+     2. TREE VIEW
+============================================================ -->
+
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Tree View</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">A hierarchical list supporting up to 5 indent levels. Each level adds a 16px indent column. Expandable rows use a <code>chevron_right</code> icon that rotates 90° when open. Available with and without vertical connector lines. Click items to expand/collapse.</p>
+
+  <div class="docs-example" style="gap: 3rem; align-items: flex-start; flex-wrap: wrap;">
+
+    <!-- Standard tree -->
+    <div class="util-demo-section" style="min-width: 220px;">
+      <p class="util-demo-label">Standard</p>
+      <div class="cue-tree" role="tree">
+
+        <div class="cue-tree-item" role="treeitem" aria-expanded="true" onclick="toggleTree(this)">
+          <div class="cue-tree-arrow is-open"><span class="material-icons" aria-hidden="true">chevron_right</span></div>
+          <span class="cue-tree-item__label">Top level item</span>
+        </div>
+        <div class="cue-tree-children" role="group">
+
+          <div class="cue-tree-item" role="treeitem" aria-expanded="true" onclick="toggleTree(this)" style="padding-left: 20px;">
+            <div class="cue-tree-arrow is-open"><span class="material-icons" aria-hidden="true">chevron_right</span></div>
+            <span class="cue-tree-item__label">Child 1</span>
+          </div>
+          <div class="cue-tree-children" role="group">
+
+            <div class="cue-tree-item" role="treeitem" aria-expanded="false" onclick="toggleTree(this)" style="padding-left: 36px;">
+              <div class="cue-tree-arrow"><span class="material-icons" aria-hidden="true">chevron_right</span></div>
+              <span class="cue-tree-item__label">Grandchild 1</span>
+            </div>
+            <div class="cue-tree-children is-collapsed" role="group">
+              <div class="cue-tree-item" role="treeitem" style="padding-left: 52px; cursor: default;">
+                <div class="cue-tree-spacer"></div>
+                <span class="cue-tree-item__label">Great-grandchild 1</span>
+              </div>
+              <div class="cue-tree-item" role="treeitem" style="padding-left: 52px; cursor: default;">
+                <div class="cue-tree-spacer"></div>
+                <span class="cue-tree-item__label">Great-grandchild 2</span>
+              </div>
+            </div>
+
+            <div class="cue-tree-item" role="treeitem" style="padding-left: 36px; cursor: default;">
+              <div class="cue-tree-spacer"></div>
+              <span class="cue-tree-item__label">Grandchild 2</span>
+            </div>
+
+          </div>
+
+          <div class="cue-tree-item" role="treeitem" style="padding-left: 20px; cursor: default;">
+            <div class="cue-tree-spacer"></div>
+            <span class="cue-tree-item__label">Child 2</span>
+          </div>
+          <div class="cue-tree-item" role="treeitem" style="padding-left: 20px; cursor: default;">
+            <div class="cue-tree-spacer"></div>
+            <span class="cue-tree-item__label">Child 3</span>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Tree with connecting lines -->
+    <div class="util-demo-section" style="min-width: 220px;">
+      <p class="util-demo-label">With connector lines</p>
+      <div class="cue-tree cue-tree--lines" role="tree">
+
+        <div class="cue-tree-item" role="treeitem" aria-expanded="true" onclick="toggleTree(this)">
+          <div class="cue-tree-arrow is-open"><span class="material-icons" aria-hidden="true">chevron_right</span></div>
+          <span class="cue-tree-item__label">Top level item</span>
+        </div>
+        <div class="cue-tree-children" role="group">
+
+          <div class="cue-tree-item" role="treeitem" aria-expanded="true" onclick="toggleTree(this)" style="padding-left: 20px;">
+            <div class="cue-tree-arrow is-open"><span class="material-icons" aria-hidden="true">chevron_right</span></div>
+            <span class="cue-tree-item__label">Child 1</span>
+          </div>
+          <div class="cue-tree-children" role="group">
+
+            <div class="cue-tree-item" role="treeitem" aria-expanded="false" onclick="toggleTree(this)" style="padding-left: 36px;">
+              <div class="cue-tree-arrow"><span class="material-icons" aria-hidden="true">chevron_right</span></div>
+              <span class="cue-tree-item__label">Grandchild 1</span>
+            </div>
+            <div class="cue-tree-children is-collapsed" role="group">
+              <div class="cue-tree-item" role="treeitem" style="padding-left: 52px; cursor:default;">
+                <div class="cue-tree-spacer"></div>
+                <span class="cue-tree-item__label">Great-grandchild 1</span>
+              </div>
+            </div>
+
+            <div class="cue-tree-item" role="treeitem" style="padding-left: 36px; cursor:default;">
+              <div class="cue-tree-spacer"></div>
+              <span class="cue-tree-item__label">Grandchild 2</span>
+            </div>
+
+          </div>
+
+          <div class="cue-tree-item" role="treeitem" style="padding-left: 20px; cursor:default;">
+            <div class="cue-tree-spacer"></div>
+            <span class="cue-tree-item__label">Child 2</span>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ============================================================
+     3. DISPLAY SELECTION TOGGLE
+============================================================ -->
+
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Display Selection Toggle</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">A compact toggle for switching between grid density views — 4-up (2×2) and 9-up (3×3). Used on list/grid views to let users adjust how many tiles are shown. The active icon is dark; inactive is grey. Click to switch.</p>
+
+  <div class="docs-example" style="gap: 2rem; align-items: center; flex-wrap: wrap;">
+
+    <div class="util-demo-section">
+      <p class="util-demo-label">Default size</p>
+      <div class="cue-display-toggle" id="display-toggle-default">
+        <button class="cue-display-toggle__btn is-active" type="button" aria-label="Large grid view" aria-pressed="true" onclick="switchDisplay('display-toggle-default', 0)">
+          <div class="cue-display-icon cue-display-icon--4">
+            <div class="cue-display-icon__cell"></div>
+            <div class="cue-display-icon__cell"></div>
+            <div class="cue-display-icon__cell"></div>
+            <div class="cue-display-icon__cell"></div>
+          </div>
+        </button>
+        <button class="cue-display-toggle__btn" type="button" aria-label="Small grid view" aria-pressed="false" onclick="switchDisplay('display-toggle-default', 1)">
+          <div class="cue-display-icon cue-display-icon--9">
+            <div class="cue-display-icon__cell"></div>
+            <div class="cue-display-icon__cell"></div>
+            <div class="cue-display-icon__cell"></div>
+            <div class="cue-display-icon__cell"></div>
+            <div class="cue-display-icon__cell"></div>
+            <div class="cue-display-icon__cell"></div>
+            <div class="cue-display-icon__cell"></div>
+            <div class="cue-display-icon__cell"></div>
+            <div class="cue-display-icon__cell"></div>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <div class="util-demo-section">
+      <p class="util-demo-label">9-up active</p>
+      <div class="cue-display-toggle" id="display-toggle-small">
+        <button class="cue-display-toggle__btn" type="button" aria-label="Large grid view" aria-pressed="false" onclick="switchDisplay('display-toggle-small', 0)">
+          <div class="cue-display-icon cue-display-icon--4">
+            <div class="cue-display-icon__cell"></div>
+            <div class="cue-display-icon__cell"></div>
+            <div class="cue-display-icon__cell"></div>
+            <div class="cue-display-icon__cell"></div>
+          </div>
+        </button>
+        <button class="cue-display-toggle__btn is-active" type="button" aria-label="Small grid view" aria-pressed="true" onclick="switchDisplay('display-toggle-small', 1)">
+          <div class="cue-display-icon cue-display-icon--9">
+            <div class="cue-display-icon__cell"></div>
+            <div class="cue-display-icon__cell"></div>
+            <div class="cue-display-icon__cell"></div>
+            <div class="cue-display-icon__cell"></div>
+            <div class="cue-display-icon__cell"></div>
+            <div class="cue-display-icon__cell"></div>
+            <div class="cue-display-icon__cell"></div>
+            <div class="cue-display-icon__cell"></div>
+            <div class="cue-display-icon__cell"></div>
+          </div>
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ============================================================
+     4. APP MODE TOGGLE
+============================================================ -->
+
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">App Mode Toggle</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">An iOS-style toggle for switching between Light and Dark mode. Light mode: grey track, white thumb with sun icon. Dark mode: dark track, dark thumb with moon icon. Three sizes available. Click to switch modes.</p>
+
+  <div class="docs-example" style="gap: 2rem; flex-wrap: wrap; align-items: center;">
+
+    <div class="util-demo-section" style="align-items: center;">
+      <p class="util-demo-label">Large</p>
+      <button class="cue-mode-toggle cue-mode-toggle--lg" type="button"
+        onclick="toggleMode(this)" aria-label="Toggle dark mode">
+        <div class="cue-mode-toggle__thumb">
+          <div class="cue-mode-toggle__icon"><span class="material-icons">light_mode</span></div>
+        </div>
+      </button>
+    </div>
+
+    <div class="util-demo-section" style="align-items: center;">
+      <p class="util-demo-label">Medium</p>
+      <button class="cue-mode-toggle cue-mode-toggle--md" type="button"
+        onclick="toggleMode(this)" aria-label="Toggle dark mode">
+        <div class="cue-mode-toggle__thumb">
+          <div class="cue-mode-toggle__icon"><span class="material-icons">light_mode</span></div>
+        </div>
+      </button>
+    </div>
+
+    <div class="util-demo-section" style="align-items: center;">
+      <p class="util-demo-label">Small</p>
+      <button class="cue-mode-toggle cue-mode-toggle--sm" type="button"
+        onclick="toggleMode(this)" aria-label="Toggle dark mode">
+        <div class="cue-mode-toggle__thumb">
+          <div class="cue-mode-toggle__icon"><span class="material-icons">light_mode</span></div>
+        </div>
+      </button>
+    </div>
+
+    <div class="util-demo-section" style="align-items: center;">
+      <p class="util-demo-label">Dark — Large</p>
+      <button class="cue-mode-toggle cue-mode-toggle--lg is-dark" type="button"
+        onclick="toggleMode(this)" aria-label="Toggle dark mode">
+        <div class="cue-mode-toggle__thumb">
+          <div class="cue-mode-toggle__icon"><span class="material-icons">dark_mode</span></div>
+        </div>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ============================================================
+     5. RICH TEXT TOOLBAR
+============================================================ -->
+
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Rich Text Toolbar</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">A full WYSIWYG formatting toolbar. Used in rich text input fields and content editors. Buttons are grouped into logical sets (Font, Style, Insert, Align, List, Indent) with negative-margin borders connecting adjacent items in each group. Two sizes: Default (30px) and Small Compact (26px).</p>
+
+  <div class="docs-example" style="flex-direction: column; gap: 2rem;">
+
+    <!-- Default size -->
+    <div class="util-demo-section">
+      <p class="util-demo-label">Default</p>
+      <div class="cue-rte-toolbar" role="toolbar" aria-label="Text formatting">
+
+        <!-- Font / Style dropdowns -->
+        <div style="display: flex; gap: 8px;">
+          <button class="cue-rte-select" type="button" aria-label="Paragraph style">
+            Normal
+            <span class="material-icons" aria-hidden="true">unfold_more</span>
+          </button>
+          <button class="cue-rte-select" type="button" aria-label="Font family">
+            Sans Serif
+            <span class="material-icons" aria-hidden="true">unfold_more</span>
+          </button>
+        </div>
+
+        <!-- Bold / Italic / Underline -->
+        <div class="cue-rte-group" role="group" aria-label="Text style">
+          <button class="cue-rte-btn" type="button" aria-label="Bold"><strong>B</strong></button>
+          <button class="cue-rte-btn" type="button" aria-label="Italic"><em>I</em></button>
+          <button class="cue-rte-btn" type="button" aria-label="Underline"><u>U</u></button>
+        </div>
+
+        <!-- Image / Link -->
+        <div style="display: flex; gap: 8px;">
+          <button class="cue-rte-btn" type="button" aria-label="Insert image" style="border-radius: 6px; margin-left: 0;">
+            <span class="material-icons" aria-hidden="true">image</span>
+          </button>
+          <button class="cue-rte-btn" type="button" aria-label="Insert link" style="border-radius: 6px; margin-left: 0;">
+            <span class="material-icons" aria-hidden="true">link</span>
+          </button>
+        </div>
+
+        <!-- Align -->
+        <div class="cue-rte-group" role="group" aria-label="Text alignment">
+          <button class="cue-rte-btn" type="button" aria-label="Align left">
+            <span class="material-icons" aria-hidden="true">format_align_left</span>
+          </button>
+          <button class="cue-rte-btn" type="button" aria-label="Align center">
+            <span class="material-icons" aria-hidden="true">format_align_center</span>
+          </button>
+          <button class="cue-rte-btn" type="button" aria-label="Align right">
+            <span class="material-icons" aria-hidden="true">format_align_right</span>
+          </button>
+        </div>
+
+        <!-- List -->
+        <div class="cue-rte-group" role="group" aria-label="List type">
+          <button class="cue-rte-btn" type="button" aria-label="Bulleted list">
+            <span class="material-icons" aria-hidden="true">format_list_bulleted</span>
+          </button>
+          <button class="cue-rte-btn" type="button" aria-label="Numbered list">
+            <span class="material-icons" aria-hidden="true">format_list_numbered</span>
+          </button>
+        </div>
+
+        <!-- Indent -->
+        <div class="cue-rte-group" role="group" aria-label="Indentation">
+          <button class="cue-rte-btn" type="button" aria-label="Increase indent">
+            <span class="material-icons" aria-hidden="true">format_indent_increase</span>
+          </button>
+          <button class="cue-rte-btn" type="button" aria-label="Decrease indent">
+            <span class="material-icons" aria-hidden="true">format_indent_decrease</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Small Compact -->
+    <div class="util-demo-section">
+      <p class="util-demo-label">Small Compact</p>
+      <div class="cue-rte-toolbar cue-rte-toolbar--sm" role="toolbar" aria-label="Text formatting">
+
+        <div style="display: flex; gap: 6px;">
+          <button class="cue-rte-select" type="button" aria-label="Paragraph style" style="height:26px;">
+            Normal
+            <span class="material-icons" aria-hidden="true" style="font-size:16px;">unfold_more</span>
+          </button>
+          <button class="cue-rte-select" type="button" aria-label="Font family" style="height:26px;">
+            Sans Serif
+            <span class="material-icons" aria-hidden="true" style="font-size:16px;">unfold_more</span>
+          </button>
+        </div>
+
+        <div class="cue-rte-group" role="group" aria-label="Text style">
+          <button class="cue-rte-btn" type="button" aria-label="Bold"><strong>B</strong></button>
+          <button class="cue-rte-btn" type="button" aria-label="Italic"><em>I</em></button>
+          <button class="cue-rte-btn" type="button" aria-label="Underline"><u>U</u></button>
+        </div>
+
+        <div style="display: flex; gap: 6px;">
+          <button class="cue-rte-btn" type="button" aria-label="Insert image" style="border-radius:6px; width:26px; height:26px; margin-left:0;">
+            <span class="material-icons" aria-hidden="true">image</span>
+          </button>
+          <button class="cue-rte-btn" type="button" aria-label="Insert link" style="border-radius:6px; width:26px; height:26px; margin-left:0;">
+            <span class="material-icons" aria-hidden="true">link</span>
+          </button>
+        </div>
+
+        <div class="cue-rte-group" role="group" aria-label="Text alignment">
+          <button class="cue-rte-btn" type="button" aria-label="Align left">
+            <span class="material-icons" aria-hidden="true">format_align_left</span>
+          </button>
+          <button class="cue-rte-btn" type="button" aria-label="Align center">
+            <span class="material-icons" aria-hidden="true">format_align_center</span>
+          </button>
+          <button class="cue-rte-btn" type="button" aria-label="Align right">
+            <span class="material-icons" aria-hidden="true">format_align_right</span>
+          </button>
+        </div>
+
+        <div class="cue-rte-group" role="group" aria-label="List type">
+          <button class="cue-rte-btn" type="button" aria-label="Bulleted list">
+            <span class="material-icons" aria-hidden="true">format_list_bulleted</span>
+          </button>
+          <button class="cue-rte-btn" type="button" aria-label="Numbered list">
+            <span class="material-icons" aria-hidden="true">format_list_numbered</span>
+          </button>
+        </div>
+
+        <div class="cue-rte-group" role="group" aria-label="Indentation">
+          <button class="cue-rte-btn" type="button" aria-label="Increase indent">
+            <span class="material-icons" aria-hidden="true">format_indent_increase</span>
+          </button>
+          <button class="cue-rte-btn" type="button" aria-label="Decrease indent">
+            <span class="material-icons" aria-hidden="true">format_indent_decrease</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- With text area -->
+    <div class="util-demo-section">
+      <p class="util-demo-label">In context — with text area</p>
+      <div style="border: 1px solid var(--border-form-field-default); border-radius: var(--corner-form-field); background: var(--bg-form-field-default); overflow: hidden; max-width: 580px;">
+        <div style="padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border-level-1);">
+          <div class="cue-rte-toolbar" role="toolbar" aria-label="Text formatting">
+            <div style="display: flex; gap: 8px;">
+              <button class="cue-rte-select" type="button" style="height:30px;">Normal<span class="material-icons" style="font-size:18px;">unfold_more</span></button>
+              <button class="cue-rte-select" type="button" style="height:30px;">Sans Serif<span class="material-icons" style="font-size:18px;">unfold_more</span></button>
+            </div>
+            <div class="cue-rte-group">
+              <button class="cue-rte-btn" type="button"><strong>B</strong></button>
+              <button class="cue-rte-btn" type="button"><em>I</em></button>
+              <button class="cue-rte-btn" type="button"><u>U</u></button>
+            </div>
+            <div style="display:flex; gap:8px;">
+              <button class="cue-rte-btn" type="button" style="border-radius:6px; margin-left:0;"><span class="material-icons" aria-hidden="true">image</span></button>
+              <button class="cue-rte-btn" type="button" style="border-radius:6px; margin-left:0;"><span class="material-icons" aria-hidden="true">link</span></button>
+            </div>
+            <div class="cue-rte-group">
+              <button class="cue-rte-btn" type="button"><span class="material-icons" aria-hidden="true">format_align_left</span></button>
+              <button class="cue-rte-btn" type="button"><span class="material-icons" aria-hidden="true">format_align_center</span></button>
+              <button class="cue-rte-btn" type="button"><span class="material-icons" aria-hidden="true">format_align_right</span></button>
+            </div>
+            <div class="cue-rte-group">
+              <button class="cue-rte-btn" type="button"><span class="material-icons" aria-hidden="true">format_list_bulleted</span></button>
+              <button class="cue-rte-btn" type="button"><span class="material-icons" aria-hidden="true">format_list_numbered</span></button>
+            </div>
+            <div class="cue-rte-group">
+              <button class="cue-rte-btn" type="button"><span class="material-icons" aria-hidden="true">format_indent_increase</span></button>
+              <button class="cue-rte-btn" type="button"><span class="material-icons" aria-hidden="true">format_indent_decrease</span></button>
+            </div>
+          </div>
+        </div>
+        <textarea style="width:100%; min-height: 120px; padding: 0.75rem; border:none; outline:none; font-family:var(--font-family-body); font-size:0.875rem; color:var(--content-body-default); background:transparent; resize:none; box-sizing:border-box;" placeholder="Text"></textarea>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ============================================================
+     DESIGN TOKENS
+============================================================ -->
+
+<div class="docs-section">
+  <p class="docs-section-label">Design Tokens</p>
+  <table class="docs-token-table">
+    <thead>
+      <tr><th>Component</th><th>Token / Value</th><th>Value</th><th>Usage</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Pagination</td><td>--border-subdued</td><td><span class="docs-token-swatch" style="background:#d4d4d4;"></span>#d4d4d4</td><td>Page item border</td></tr>
+      <tr><td>Pagination</td><td>--bg-primary-brand</td><td><span class="docs-token-swatch" style="background:#03618d;"></span>#03618d</td><td>Active page background</td></tr>
+      <tr><td>Pagination</td><td>Height</td><td>36px</td><td>All page item heights</td></tr>
+      <tr><td>Tree View</td><td>Indent width</td><td>16px per level</td><td>Each nesting level adds 16px left padding</td></tr>
+      <tr><td>Tree View</td><td>border-radius</td><td>6px</td><td>Tree item hover/selected state</td></tr>
+      <tr><td>Tree View</td><td>--border-subdued</td><td><span class="docs-token-swatch" style="background:#d4d4d4;"></span>#d4d4d4</td><td>Connector lines (with-lines variant)</td></tr>
+      <tr><td>Display Toggle</td><td>--content-body-default</td><td><span class="docs-token-swatch" style="background:#262626;"></span>#262626</td><td>Active icon color</td></tr>
+      <tr><td>Display Toggle</td><td>--content-body-subtle</td><td><span class="docs-token-swatch" style="background:#d4d4d4;"></span>#d4d4d4</td><td>Inactive icon color</td></tr>
+      <tr><td>Display Toggle</td><td>Icon size</td><td>20×20px</td><td>Both grid icon sizes</td></tr>
+      <tr><td>Mode Toggle Light</td><td>Track bg</td><td><span class="docs-token-swatch" style="background:#ededed;"></span>#ededed (--bg-subdued)</td><td>Light mode track</td></tr>
+      <tr><td>Mode Toggle Dark</td><td>Track bg</td><td><span class="docs-token-swatch" style="background:#404040;"></span>#404040</td><td>Dark mode track</td></tr>
+      <tr><td>Mode Toggle</td><td>Thumb shadow</td><td>Shadow/4 → 0 4px 6px rgba(0,0,0,0.1)</td><td>Toggle thumb elevation</td></tr>
+      <tr><td>Mode Toggle</td><td>Large / Medium / Small</td><td>56×32px / 48×28px / 36×20px</td><td>Three size variants</td></tr>
+      <tr><td>Rich Text</td><td>Button height (Default)</td><td>30px</td><td>Default toolbar button height</td></tr>
+      <tr><td>Rich Text</td><td>Button height (Small)</td><td>26px</td><td>Small Compact toolbar button height</td></tr>
+      <tr><td>Rich Text</td><td>Font</td><td>12px Bold</td><td>Toolbar button labels (Back Office UI/Button Small 12pt/Bold)</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<script>
+  // Tree View expand/collapse
+  function toggleTree(item) {
+    const arrow = item.querySelector('.cue-tree-arrow');
+    const children = item.nextElementSibling;
+    if (!children || !children.classList.contains('cue-tree-children')) return;
+    const isOpen = !children.classList.contains('is-collapsed');
+    children.classList.toggle('is-collapsed', isOpen);
+    if (arrow) arrow.classList.toggle('is-open', !isOpen);
+    item.setAttribute('aria-expanded', String(!isOpen));
+  }
+
+  // Display selection toggle
+  function switchDisplay(groupId, activeIdx) {
+    const group = document.getElementById(groupId);
+    if (!group) return;
+    group.querySelectorAll('.cue-display-toggle__btn').forEach(function(btn, i) {
+      btn.classList.toggle('is-active', i === activeIdx);
+      btn.setAttribute('aria-pressed', String(i === activeIdx));
+    });
+  }
+
+  // App mode toggle
+  function toggleMode(btn) {
+    const isDark = btn.classList.toggle('is-dark');
+    const icon = btn.querySelector('.material-icons');
+    if (icon) icon.textContent = isDark ? 'dark_mode' : 'light_mode';
+    btn.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+  }
+</script>
