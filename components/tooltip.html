@@ -1,0 +1,606 @@
+---
+layout: default
+title: "Tooltip"
+activeNav: tooltip
+root: ../
+---
+
+<style>
+
+  /* ============================================================
+     TOOLTIP
+
+     A small floating label that appears on hover (or focus) to
+     provide supplementary context for an element. Dismissed on
+     mouseleave or Escape key.
+
+     Anatomy:
+       .cue-tooltip-wrap         — position:relative trigger container
+         [trigger element]       — any interactive element
+         .cue-tooltip            — the floating panel
+           .cue-tooltip__arrow   — CSS caret pointing to trigger
+
+     Position modifiers on .cue-tooltip:
+       (default)                 — above trigger, arrow below panel
+       .cue-tooltip--bottom      — below trigger, arrow above panel
+       .cue-tooltip--left        — left of trigger, arrow on right
+       .cue-tooltip--right       — right of trigger, arrow on left
+
+     Trigger behavior:
+       - Show on :hover and :focus-within (CSS-only)
+       - OR toggle with data-tooltip-trigger="click" (JS)
+       - Dismiss on Escape key
+
+     Tokens:
+       Background:   --bg-default          (#ffffff)
+       Border:       --border-default       (#575757) ← darker than card
+       Border radius: 8px
+       Padding:      8px 12px
+       Text:         12px Bold, --content-body-default (#262626)
+       Arrow:        20×10px CSS border trick
+       Z-index:      700
+  ============================================================ */
+
+  /* ---- Wrapper ---- */
+
+  .cue-tooltip-wrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ---- Panel ---- */
+
+  .cue-tooltip {
+    position: absolute;
+    z-index: 700;
+    background-color: var(--bg-default);
+    border: 1px solid var(--border-default);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-family: var(--font-family-body);
+    font-size: 0.75rem;          /* 12px */
+    font-weight: 700;
+    color: var(--content-body-default);
+    white-space: nowrap;
+    pointer-events: none;
+    /* Hidden by default */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.15s ease, visibility 0.15s ease, transform 0.15s ease;
+  }
+
+  /* Show on hover or focus-within the wrapper */
+  .cue-tooltip-wrap:hover .cue-tooltip,
+  .cue-tooltip-wrap:focus-within .cue-tooltip,
+  .cue-tooltip-wrap.is-open .cue-tooltip {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* ---- Arrow shared ---- */
+
+  .cue-tooltip__arrow {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-style: solid;
+  }
+
+
+  /* ============================================================
+     POSITION — Top (default)
+     Panel sits above the trigger. Arrow points downward.
+  ============================================================ */
+
+  .cue-tooltip {
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%) translateY(-2px);
+  }
+
+  .cue-tooltip-wrap:hover .cue-tooltip,
+  .cue-tooltip-wrap:focus-within .cue-tooltip,
+  .cue-tooltip-wrap.is-open .cue-tooltip {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* Arrow — points down */
+  .cue-tooltip .cue-tooltip__arrow {
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 7px 7px 0 7px;
+    border-color: var(--border-default) transparent transparent transparent;
+    margin-top: 0;
+  }
+
+  /* Inner fill arrow (covers border) */
+  .cue-tooltip .cue-tooltip__arrow::after {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: -6px;
+    border-style: solid;
+    border-width: 6px 6px 0 6px;
+    border-color: var(--bg-default) transparent transparent transparent;
+  }
+
+
+  /* ============================================================
+     POSITION — Bottom
+     Panel sits below the trigger. Arrow points upward.
+  ============================================================ */
+
+  .cue-tooltip--bottom {
+    bottom: auto;
+    top: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%) translateY(2px);
+  }
+
+  .cue-tooltip-wrap:hover .cue-tooltip--bottom,
+  .cue-tooltip-wrap:focus-within .cue-tooltip--bottom,
+  .cue-tooltip-wrap.is-open .cue-tooltip--bottom {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* Arrow — points up */
+  .cue-tooltip--bottom .cue-tooltip__arrow {
+    top: auto;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 0 7px 7px 7px;
+    border-color: transparent transparent var(--border-default) transparent;
+  }
+
+  .cue-tooltip--bottom .cue-tooltip__arrow::after {
+    top: 2px;
+    left: -6px;
+    border-width: 0 6px 6px 6px;
+    border-color: transparent transparent var(--bg-default) transparent;
+  }
+
+
+  /* ============================================================
+     POSITION — Left
+     Panel sits left of the trigger. Arrow points right.
+  ============================================================ */
+
+  .cue-tooltip--left {
+    bottom: auto;
+    top: 50%;
+    left: auto;
+    right: calc(100% + 10px);
+    transform: translateY(-50%) translateX(-2px);
+  }
+
+  .cue-tooltip-wrap:hover .cue-tooltip--left,
+  .cue-tooltip-wrap:focus-within .cue-tooltip--left,
+  .cue-tooltip-wrap.is-open .cue-tooltip--left {
+    transform: translateY(-50%) translateX(0);
+  }
+
+  /* Arrow — points right */
+  .cue-tooltip--left .cue-tooltip__arrow {
+    top: 50%;
+    left: 100%;
+    transform: translateY(-50%);
+    border-width: 7px 0 7px 7px;
+    border-color: transparent transparent transparent var(--border-default);
+  }
+
+  .cue-tooltip--left .cue-tooltip__arrow::after {
+    top: -6px;
+    left: -8px;
+    border-width: 6px 0 6px 6px;
+    border-color: transparent transparent transparent var(--bg-default);
+  }
+
+
+  /* ============================================================
+     POSITION — Right
+     Panel sits right of the trigger. Arrow points left.
+  ============================================================ */
+
+  .cue-tooltip--right {
+    bottom: auto;
+    top: 50%;
+    left: calc(100% + 10px);
+    right: auto;
+    transform: translateY(-50%) translateX(2px);
+  }
+
+  .cue-tooltip-wrap:hover .cue-tooltip--right,
+  .cue-tooltip-wrap:focus-within .cue-tooltip--right,
+  .cue-tooltip-wrap.is-open .cue-tooltip--right {
+    transform: translateY(-50%) translateX(0);
+  }
+
+  /* Arrow — points left */
+  .cue-tooltip--right .cue-tooltip__arrow {
+    top: 50%;
+    left: auto;
+    right: 100%;
+    transform: translateY(-50%);
+    border-width: 7px 7px 7px 0;
+    border-color: transparent var(--border-default) transparent transparent;
+  }
+
+  .cue-tooltip--right .cue-tooltip__arrow::after {
+    top: -6px;
+    left: 2px;
+    border-width: 6px 6px 6px 0;
+    border-color: transparent var(--bg-default) transparent transparent;
+  }
+
+
+  /* ============================================================
+     DEMO HELPERS
+  ============================================================ */
+
+  .tooltip-demo-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3rem;
+    align-items: center;
+    padding: 3rem 2rem;
+  }
+
+  .tooltip-demo-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .tooltip-demo-label {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--content-body-moderate);
+  }
+
+  /* Hover triggers for docs (don't use cursor:default) */
+  .tooltip-trigger-demo {
+    cursor: default;
+  }
+
+</style>
+
+<div class="docs-page-header">
+  <h1 class="docs-page-title">Tooltip</h1>
+  <p class="docs-page-description">
+    A small floating label that appears on hover or focus to provide supplementary context for an element. Used throughout CUE Back Office to clarify icon buttons, truncated labels, and form field hints. Four position variants — Top, Bottom, Left, Right.
+  </p>
+</div>
+
+<!-- ============================================================
+     POSITIONS
+============================================================ -->
+
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Positions</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">Four positions. The caret arrow always points back toward the trigger. Hover each button to see the tooltip appear. The default position is Top.</p>
+
+  <div class="docs-example" style="flex-wrap: wrap; gap: 4rem; padding: 3rem 2rem; justify-content: center;">
+
+    <!-- Top (default) -->
+    <div class="tooltip-demo-col">
+      <p class="tooltip-demo-label">Top</p>
+      <div class="cue-tooltip-wrap">
+        <button class="cue-btn cue-btn--neutral-stroke" type="button">Hover me</button>
+        <div class="cue-tooltip" role="tooltip">
+          <div class="cue-tooltip__arrow" aria-hidden="true"></div>
+          Tooltip — Top
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom -->
+    <div class="tooltip-demo-col">
+      <p class="tooltip-demo-label">Bottom</p>
+      <div class="cue-tooltip-wrap">
+        <button class="cue-btn cue-btn--neutral-stroke" type="button">Hover me</button>
+        <div class="cue-tooltip cue-tooltip--bottom" role="tooltip">
+          <div class="cue-tooltip__arrow" aria-hidden="true"></div>
+          Tooltip — Bottom
+        </div>
+      </div>
+    </div>
+
+    <!-- Left -->
+    <div class="tooltip-demo-col">
+      <p class="tooltip-demo-label">Left</p>
+      <div class="cue-tooltip-wrap">
+        <button class="cue-btn cue-btn--neutral-stroke" type="button">Hover me</button>
+        <div class="cue-tooltip cue-tooltip--left" role="tooltip">
+          <div class="cue-tooltip__arrow" aria-hidden="true"></div>
+          Tooltip — Left
+        </div>
+      </div>
+    </div>
+
+    <!-- Right -->
+    <div class="tooltip-demo-col">
+      <p class="tooltip-demo-label">Right</p>
+      <div class="cue-tooltip-wrap">
+        <button class="cue-btn cue-btn--neutral-stroke" type="button">Hover me</button>
+        <div class="cue-tooltip cue-tooltip--right" role="tooltip">
+          <div class="cue-tooltip__arrow" aria-hidden="true"></div>
+          Tooltip — Right
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ============================================================
+     COMMON USAGE PATTERNS
+============================================================ -->
+
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Common usage patterns</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">Tooltips most commonly appear on icon-only buttons, disabled elements, and form field helper icons. Hover each to see the tooltip.</p>
+
+  <div class="docs-example" style="flex-wrap: wrap; gap: 3rem; align-items: center; padding: 3rem 2rem;">
+
+    <!-- Icon button -->
+    <div class="tooltip-demo-col">
+      <p class="tooltip-demo-label">Icon button</p>
+      <div class="cue-tooltip-wrap">
+        <button class="cue-btn cue-btn--neutral-stroke cue-btn--icon-only" type="button" aria-label="Download report">
+          <span class="material-icons" aria-hidden="true">download</span>
+        </button>
+        <div class="cue-tooltip" role="tooltip">
+          <div class="cue-tooltip__arrow" aria-hidden="true"></div>
+          Download report
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete (destructive) -->
+    <div class="tooltip-demo-col">
+      <p class="tooltip-demo-label">Destructive action</p>
+      <div class="cue-tooltip-wrap">
+        <button class="cue-btn cue-btn--neutral-stroke cue-btn--icon-only" type="button" aria-label="Delete record">
+          <span class="material-icons" aria-hidden="true" style="color:var(--danger-default);">delete</span>
+        </button>
+        <div class="cue-tooltip" role="tooltip">
+          <div class="cue-tooltip__arrow" aria-hidden="true"></div>
+          Delete record
+        </div>
+      </div>
+    </div>
+
+    <!-- Form field info -->
+    <div class="tooltip-demo-col">
+      <p class="tooltip-demo-label">Form field hint</p>
+      <div style="display:flex; align-items:center; gap:6px;">
+        <label class="cue-form-group__label" style="margin:0;">SKU</label>
+        <div class="cue-tooltip-wrap">
+          <span class="material-icons" style="font-size:16px; color:var(--content-body-moderate); cursor:default;" tabindex="0" aria-label="What is a SKU?">help_outline</span>
+          <div class="cue-tooltip cue-tooltip--right" role="tooltip">
+            <div class="cue-tooltip__arrow" aria-hidden="true"></div>
+            Stock Keeping Unit — your unique product identifier
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Truncated text -->
+    <div class="tooltip-demo-col">
+      <p class="tooltip-demo-label">Truncated label</p>
+      <div class="cue-tooltip-wrap">
+        <span style="display:block; max-width:100px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:0.875rem; cursor:default; border-bottom:1px dashed var(--border-subdued);">
+          Primary Warehouse - Rack C - Bin 2
+        </span>
+        <div class="cue-tooltip cue-tooltip--bottom" role="tooltip">
+          <div class="cue-tooltip__arrow" aria-hidden="true"></div>
+          Primary Warehouse - Rack C - Bin 2
+        </div>
+      </div>
+    </div>
+
+    <!-- Disabled button -->
+    <div class="tooltip-demo-col">
+      <p class="tooltip-demo-label">Disabled element</p>
+      <div class="cue-tooltip-wrap">
+        <!-- Wrap disabled button in a span so hover still fires -->
+        <span style="display:inline-flex;">
+          <button class="cue-btn cue-btn--primary" type="button" disabled
+            style="opacity:0.4; cursor:not-allowed; pointer-events:none;">
+            <span class="cue-btn__label">Save</span>
+          </button>
+        </span>
+        <div class="cue-tooltip" role="tooltip">
+          <div class="cue-tooltip__arrow" aria-hidden="true"></div>
+          Complete all required fields to save
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ============================================================
+     DESIGN TOKENS
+============================================================ -->
+
+<div class="docs-section">
+  <p class="docs-section-label">Design Tokens</p>
+  <table class="docs-token-table">
+    <thead>
+      <tr><th>Token / Value</th><th>Figma Token</th><th>Value</th><th>Usage</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>--bg-default</td><td>System/Background/bg-default</td><td><span class="docs-token-swatch" style="background:#ffffff; border-color:#ededed;"></span>#ffffff</td><td>Tooltip panel background</td></tr>
+      <tr><td>--border-default</td><td>System/Border/border-default</td><td><span class="docs-token-swatch" style="background:#575757;"></span>#575757</td><td>Tooltip border — darker than card/modal borders</td></tr>
+      <tr><td>border-radius</td><td>—</td><td>8px</td><td>Panel corner radius</td></tr>
+      <tr><td>padding</td><td>—</td><td>8px 12px</td><td>Vertical / horizontal inner padding</td></tr>
+      <tr><td>--content-body-default</td><td>System/Content/content-body-default</td><td><span class="docs-token-swatch" style="background:#262626;"></span>#262626</td><td>Tooltip text color</td></tr>
+      <tr><td>Font</td><td>Back Office UI/Body X-Small 12pt/Bold</td><td>12px Bold</td><td>Tooltip label typography</td></tr>
+      <tr><td>Arrow size</td><td>—</td><td>~20×10px</td><td>CSS border-trick caret, matches panel border color</td></tr>
+      <tr><td>Offset from trigger</td><td>—</td><td>10px</td><td>Gap between trigger edge and tooltip panel</td></tr>
+      <tr><td>z-index</td><td>—</td><td>700</td><td>Above most UI, below modals (1000) and toasts (900)</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ============================================================
+     CODE
+============================================================ -->
+
+<div class="docs-section">
+  <p class="docs-section-label">Code</p>
+  <div class="docs-code-tabs">
+    <button class="docs-code-tab active" onclick="switchTab(event, 'tt-html')">HTML</button>
+    <button class="docs-code-tab" onclick="switchTab(event, 'tt-css')">CSS</button>
+    <button class="docs-code-tab" onclick="switchTab(event, 'tt-js')">JS</button>
+  </div>
+
+  <div class="docs-code-panel active" id="tt-html">
+    <div class="docs-code-block"><pre><code>&lt;!-- Top (default) — CSS hover only, no JS needed --&gt;
+&lt;div class="cue-tooltip-wrap"&gt;
+  &lt;button class="cue-btn cue-btn--neutral-stroke" type="button"&gt;
+    Hover me
+  &lt;/button&gt;
+  &lt;div class="cue-tooltip" role="tooltip"&gt;
+    &lt;div class="cue-tooltip__arrow" aria-hidden="true"&gt;&lt;/div&gt;
+    Tooltip text
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Bottom --&gt;
+&lt;div class="cue-tooltip-wrap"&gt;
+  &lt;button ...&gt;Trigger&lt;/button&gt;
+  &lt;div class="cue-tooltip cue-tooltip--bottom" role="tooltip"&gt;
+    &lt;div class="cue-tooltip__arrow" aria-hidden="true"&gt;&lt;/div&gt;
+    Tooltip text
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Left --&gt;
+&lt;div class="cue-tooltip cue-tooltip--left" role="tooltip"&gt;...&lt;/div&gt;
+
+&lt;!-- Right --&gt;
+&lt;div class="cue-tooltip cue-tooltip--right" role="tooltip"&gt;...&lt;/div&gt;
+
+
+&lt;!-- Disabled element pattern:
+     Wrap disabled element in a &lt;span&gt; so hover still fires --&gt;
+&lt;div class="cue-tooltip-wrap"&gt;
+  &lt;span style="display:inline-flex;"&gt;
+    &lt;button disabled&gt;Save&lt;/button&gt;
+  &lt;/span&gt;
+  &lt;div class="cue-tooltip" role="tooltip"&gt;
+    &lt;div class="cue-tooltip__arrow" aria-hidden="true"&gt;&lt;/div&gt;
+    Complete all required fields to save
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre></div>
+  </div>
+
+  <div class="docs-code-panel" id="tt-css">
+    <div class="docs-code-block"><pre><code>/* Wrapper — always position: relative */
+.cue-tooltip-wrap { position: relative; display: inline-flex; align-items: center; justify-content: center; }
+
+/* Panel — hidden by default */
+.cue-tooltip {
+  position: absolute; z-index: 700;
+  background-color: var(--bg-default);
+  border: 1px solid var(--border-default);   /* #575757 — darker than cards */
+  border-radius: 8px; padding: 8px 12px;
+  font-size: 0.75rem; font-weight: 700;
+  color: var(--content-body-default);
+  white-space: nowrap; pointer-events: none;
+  opacity: 0; visibility: hidden;
+  transition: opacity 0.15s ease, visibility 0.15s ease, transform 0.15s ease;
+  /* Default: above trigger */
+  bottom: calc(100% + 10px); left: 50%;
+  transform: translateX(-50%) translateY(-2px);
+}
+
+/* Show on hover / focus-within */
+.cue-tooltip-wrap:hover .cue-tooltip,
+.cue-tooltip-wrap:focus-within .cue-tooltip {
+  opacity: 1; visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Arrow — CSS border trick */
+.cue-tooltip__arrow {
+  position: absolute; width: 0; height: 0; border-style: solid;
+  /* Default (top): points down */
+  top: 100%; left: 50%; transform: translateX(-50%);
+  border-width: 7px 7px 0 7px;
+  border-color: var(--border-default) transparent transparent transparent;
+}
+.cue-tooltip__arrow::after {
+  content: ''; position: absolute;
+  top: -8px; left: -6px;
+  border-style: solid;
+  border-width: 6px 6px 0 6px;
+  border-color: var(--bg-default) transparent transparent transparent;
+}
+
+/* Position variants */
+.cue-tooltip--bottom { bottom: auto; top: calc(100% + 10px); transform: translateX(-50%) translateY(2px); }
+.cue-tooltip-wrap:hover .cue-tooltip--bottom { transform: translateX(-50%) translateY(0); }
+.cue-tooltip--bottom .cue-tooltip__arrow { top: auto; bottom: 100%; border-width: 0 7px 7px; border-color: transparent transparent var(--border-default); }
+.cue-tooltip--bottom .cue-tooltip__arrow::after { top: 2px; border-width: 0 6px 6px; border-color: transparent transparent var(--bg-default); }
+
+.cue-tooltip--left { bottom: auto; top: 50%; left: auto; right: calc(100% + 10px); transform: translateY(-50%) translateX(-2px); }
+.cue-tooltip-wrap:hover .cue-tooltip--left { transform: translateY(-50%) translateX(0); }
+.cue-tooltip--left .cue-tooltip__arrow { top: 50%; left: 100%; transform: translateY(-50%); border-width: 7px 0 7px 7px; border-color: transparent transparent transparent var(--border-default); }
+.cue-tooltip--left .cue-tooltip__arrow::after { top: -6px; left: -8px; border-width: 6px 0 6px 6px; border-color: transparent transparent transparent var(--bg-default); }
+
+.cue-tooltip--right { bottom: auto; top: 50%; left: calc(100% + 10px); transform: translateY(-50%) translateX(2px); }
+.cue-tooltip-wrap:hover .cue-tooltip--right { transform: translateY(-50%) translateX(0); }
+.cue-tooltip--right .cue-tooltip__arrow { top: 50%; right: 100%; left: auto; transform: translateY(-50%); border-width: 7px 7px 7px 0; border-color: transparent var(--border-default) transparent transparent; }
+.cue-tooltip--right .cue-tooltip__arrow::after { top: -6px; left: 2px; border-width: 6px 6px 6px 0; border-color: transparent var(--bg-default) transparent transparent; }</code></pre></div>
+  </div>
+
+  <div class="docs-code-panel" id="tt-js">
+    <div class="docs-code-block"><pre><code>// Tooltips work CSS-only (hover + focus-within) — no JS required
+// for the standard hover pattern.
+
+// Optional: Escape key dismissal for keyboard users
+document.addEventListener('keydown', function(e) {
+  if (e.key !== 'Escape') return;
+  // Remove focus from any focused tooltip trigger
+  if (document.activeElement) {
+    document.activeElement.blur();
+  }
+});
+
+// Optional: click-triggered tooltip (e.g. touch devices)
+// Add data-tooltip-trigger="click" to .cue-tooltip-wrap
+document.querySelectorAll('[data-tooltip-trigger="click"]').forEach(function(wrap) {
+  wrap.addEventListener('click', function(e) {
+    e.stopPropagation();
+    var isOpen = wrap.classList.toggle('is-open');
+    // Close others
+    document.querySelectorAll('.cue-tooltip-wrap.is-open').forEach(function(other) {
+      if (other !== wrap) other.classList.remove('is-open');
+    });
+  });
+});
+
+document.addEventListener('click', function() {
+  document.querySelectorAll('.cue-tooltip-wrap.is-open').forEach(function(wrap) {
+    wrap.classList.remove('is-open');
+  });
+});</code></pre></div>
+  </div>
+
+</div>
