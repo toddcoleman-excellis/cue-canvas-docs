@@ -1,0 +1,595 @@
+---
+layout: default
+title: "Tags"
+activeNav: tags
+root: ../
+---
+
+<style>
+
+  /* ============================================================
+     TAGS (CHIPS)
+
+     Compact pill-shaped labels used to represent filters,
+     selections, categories, or metadata. Two variants:
+     Filled (primary brand) and Outlined (neutral).
+
+     Anatomy:
+       .cue-tag                  — the pill element
+         .cue-tag__label         — text label
+         .cue-tag__remove        — optional × dismiss button
+
+     Modifiers on .cue-tag:
+       .cue-tag--filled          — primary brand bg, white text
+       .cue-tag--outlined        — neutral border, dark text
+       .cue-tag--selected        — highlighted state (outlined only)
+       .cue-tag--sm              — smaller padding/font
+
+     Tag group container:
+       .cue-tag-group            — flex wrap row of tags
+
+     Tokens:
+       Filled bg:       --bg-primary-brand        (#03618d)
+       Filled hover bg: --bg-button-primary-hover (#024f73)
+       Filled text:     #ffffff
+       Outlined border: --border-subdued           (#d4d4d4)
+       Outlined hover:  --bg-subdued               (#ededed)
+       Outlined text:   --content-body-default     (#262626)
+       Border radius:   100px (full pill)
+  ============================================================ */
+
+  /* ---- Tag group ---- */
+
+  .cue-tag-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  /* ---- Base tag ---- */
+
+  .cue-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    border-radius: 100px;
+    border: 1px solid transparent;
+    font-family: var(--font-family-body);
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1;
+    white-space: nowrap;
+    cursor: default;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+    user-select: none;
+  }
+
+  /* ---- Filled variant (primary brand) ---- */
+
+  .cue-tag--filled {
+    background-color: var(--bg-primary-brand);
+    border-color: transparent;
+    color: #ffffff;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .cue-tag--filled:hover {
+    background-color: var(--bg-button-primary-hover);
+  }
+
+  /* ---- Outlined variant (neutral) ---- */
+
+  .cue-tag--outlined {
+    background-color: transparent;
+    border-color: var(--border-subdued);
+    color: var(--content-body-default);
+    cursor: pointer;
+  }
+
+  .cue-tag--outlined:hover,
+  .cue-tag--outlined.is-selected {
+    background-color: var(--bg-subdued);
+    border-color: var(--border-subdued);
+  }
+
+  /* ---- Small size ---- */
+
+  .cue-tag--sm {
+    padding: 4px 8px;
+    font-size: 0.75rem;
+    gap: 3px;
+  }
+
+  /* ---- Remove button ---- */
+
+  .cue-tag__remove {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 2px;
+    border-radius: 100px;
+    line-height: 1;
+    transition: opacity 0.15s ease;
+    flex-shrink: 0;
+  }
+
+  .cue-tag--filled .cue-tag__remove {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1rem;
+  }
+
+  .cue-tag--filled .cue-tag__remove:hover {
+    color: #ffffff;
+    opacity: 1;
+  }
+
+  .cue-tag--outlined .cue-tag__remove {
+    color: var(--content-body-moderate);
+    font-size: 0.875rem;
+  }
+
+  .cue-tag--outlined .cue-tag__remove:hover {
+    color: var(--content-body-default);
+  }
+
+  .cue-tag__remove .material-icons {
+    font-size: 14px;
+    pointer-events: none;
+  }
+
+  /* ---- Static / read-only tag (no cursor, no hover) ---- */
+
+  .cue-tag--static {
+    cursor: default;
+    pointer-events: none;
+  }
+
+  /* ---- Tag label ---- */
+
+  .cue-tag__label {
+    line-height: 1;
+  }
+
+</style>
+
+<div class="docs-page-header">
+  <h1 class="docs-page-title">Tags</h1>
+  <p class="docs-page-description">
+    Compact pill-shaped labels — also called chips — used to represent filters, active selections, categories, or metadata values. Two variants: Filled (primary brand) for prominent selections and Outlined (neutral) for lighter labeling. Both support an optional dismiss button for removable tags.
+  </p>
+</div>
+
+<!-- ============================================================
+     FILLED TAGS
+============================================================ -->
+
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Filled</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">Primary brand background with white text. Used for active filter selections or prominent category tags. Click the × to remove a tag.</p>
+
+  <div class="docs-example" style="flex-direction: column; gap: 1.5rem;">
+
+    <div>
+      <p style="font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--content-body-moderate); margin-bottom: 0.75rem;">Default</p>
+      <div class="cue-tag-group" id="filled-group">
+        <span class="cue-tag cue-tag--filled">
+          <span class="cue-tag__label">Tag text</span>
+          <button class="cue-tag__remove" type="button" aria-label="Remove Tag text" onclick="removeTag(this)">
+            <span class="material-icons" aria-hidden="true">close</span>
+          </button>
+        </span>
+        <span class="cue-tag cue-tag--filled">
+          <span class="cue-tag__label">Pharmaceutical</span>
+          <button class="cue-tag__remove" type="button" aria-label="Remove Pharmaceutical" onclick="removeTag(this)">
+            <span class="material-icons" aria-hidden="true">close</span>
+          </button>
+        </span>
+        <span class="cue-tag cue-tag--filled">
+          <span class="cue-tag__label">B2B Commerce</span>
+          <button class="cue-tag__remove" type="button" aria-label="Remove B2B Commerce" onclick="removeTag(this)">
+            <span class="material-icons" aria-hidden="true">close</span>
+          </button>
+        </span>
+        <span class="cue-tag cue-tag--filled">
+          <span class="cue-tag__label">Active</span>
+          <button class="cue-tag__remove" type="button" aria-label="Remove Active" onclick="removeTag(this)">
+            <span class="material-icons" aria-hidden="true">close</span>
+          </button>
+        </span>
+      </div>
+    </div>
+
+    <div>
+      <p style="font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--content-body-moderate); margin-bottom: 0.75rem;">Small</p>
+      <div class="cue-tag-group">
+        <span class="cue-tag cue-tag--filled cue-tag--sm">
+          <span class="cue-tag__label">Tag text</span>
+          <button class="cue-tag__remove" type="button" aria-label="Remove" onclick="removeTag(this)">
+            <span class="material-icons" aria-hidden="true">close</span>
+          </button>
+        </span>
+        <span class="cue-tag cue-tag--filled cue-tag--sm">
+          <span class="cue-tag__label">Pharmaceutical</span>
+          <button class="cue-tag__remove" type="button" aria-label="Remove" onclick="removeTag(this)">
+            <span class="material-icons" aria-hidden="true">close</span>
+          </button>
+        </span>
+        <span class="cue-tag cue-tag--filled cue-tag--sm">
+          <span class="cue-tag__label">B2B Commerce</span>
+          <button class="cue-tag__remove" type="button" aria-label="Remove" onclick="removeTag(this)">
+            <span class="material-icons" aria-hidden="true">close</span>
+          </button>
+        </span>
+      </div>
+    </div>
+
+    <div>
+      <p style="font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--content-body-moderate); margin-bottom: 0.75rem;">Static — no remove (read-only)</p>
+      <div class="cue-tag-group">
+        <span class="cue-tag cue-tag--filled cue-tag--static"><span class="cue-tag__label">Tag text</span></span>
+        <span class="cue-tag cue-tag--filled cue-tag--static"><span class="cue-tag__label">Pharmaceutical</span></span>
+        <span class="cue-tag cue-tag--filled cue-tag--static"><span class="cue-tag__label">B2B Commerce</span></span>
+        <span class="cue-tag cue-tag--filled cue-tag--static"><span class="cue-tag__label">Active</span></span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ============================================================
+     OUTLINED TAGS
+============================================================ -->
+
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Outlined</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">Neutral border with dark text. Lighter visual weight — used for metadata labels, filter options, and content categorization. The selected state adds a gray background. Click the × to remove.</p>
+
+  <div class="docs-example" style="flex-direction: column; gap: 1.5rem;">
+
+    <div>
+      <p style="font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--content-body-moderate); margin-bottom: 0.75rem;">Default</p>
+      <div class="cue-tag-group" id="outlined-group">
+        <span class="cue-tag cue-tag--outlined">
+          <span class="cue-tag__label">Label</span>
+          <button class="cue-tag__remove" type="button" aria-label="Remove Label" onclick="removeTag(this)">×</button>
+        </span>
+        <span class="cue-tag cue-tag--outlined">
+          <span class="cue-tag__label">Manufacturing</span>
+          <button class="cue-tag__remove" type="button" aria-label="Remove Manufacturing" onclick="removeTag(this)">×</button>
+        </span>
+        <span class="cue-tag cue-tag--outlined">
+          <span class="cue-tag__label">Distribution</span>
+          <button class="cue-tag__remove" type="button" aria-label="Remove Distribution" onclick="removeTag(this)">×</button>
+        </span>
+        <span class="cue-tag cue-tag--outlined">
+          <span class="cue-tag__label">Food &amp; Beverage</span>
+          <button class="cue-tag__remove" type="button" aria-label="Remove Food and Beverage" onclick="removeTag(this)">×</button>
+        </span>
+      </div>
+    </div>
+
+    <div>
+      <p style="font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--content-body-moderate); margin-bottom: 0.75rem;">With selected state</p>
+      <div class="cue-tag-group">
+        <span class="cue-tag cue-tag--outlined" onclick="toggleTagSelected(this)">
+          <span class="cue-tag__label">Label</span>
+          <button class="cue-tag__remove" type="button" aria-label="Remove" onclick="removeTag(this)">×</button>
+        </span>
+        <span class="cue-tag cue-tag--outlined is-selected" onclick="toggleTagSelected(this)">
+          <span class="cue-tag__label">Selected</span>
+          <button class="cue-tag__remove" type="button" aria-label="Remove" onclick="removeTag(this)">×</button>
+        </span>
+        <span class="cue-tag cue-tag--outlined" onclick="toggleTagSelected(this)">
+          <span class="cue-tag__label">Manufacturing</span>
+          <button class="cue-tag__remove" type="button" aria-label="Remove" onclick="removeTag(this)">×</button>
+        </span>
+        <span class="cue-tag cue-tag--outlined" onclick="toggleTagSelected(this)">
+          <span class="cue-tag__label">Distribution</span>
+          <button class="cue-tag__remove" type="button" aria-label="Remove" onclick="removeTag(this)">×</button>
+        </span>
+      </div>
+      <p style="font-size: 0.75rem; color: var(--content-body-moderate); margin-top: 0.5rem;">Click a tag to toggle selected state</p>
+    </div>
+
+    <div>
+      <p style="font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--content-body-moderate); margin-bottom: 0.75rem;">Static — no remove (read-only)</p>
+      <div class="cue-tag-group">
+        <span class="cue-tag cue-tag--outlined cue-tag--static"><span class="cue-tag__label">Label</span></span>
+        <span class="cue-tag cue-tag--outlined cue-tag--static"><span class="cue-tag__label">Manufacturing</span></span>
+        <span class="cue-tag cue-tag--outlined cue-tag--static"><span class="cue-tag__label">Distribution</span></span>
+        <span class="cue-tag cue-tag--outlined cue-tag--static"><span class="cue-tag__label">Food &amp; Beverage</span></span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ============================================================
+     INPUT + TAG PATTERN
+============================================================ -->
+
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Input + tag pattern</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">A common usage pattern — type a value and press Enter or comma to add it as a tag. Used in CUE Back Office for assigning categories, tags, or multi-value fields.</p>
+
+  <div class="docs-example">
+    <div style="display: flex; flex-direction: column; gap: 0.5rem; width: 100%; max-width: 480px;">
+      <label class="cue-form-group__label" for="tag-input">Tags</label>
+      <div id="tag-input-wrap" style="
+        display: flex; flex-wrap: wrap; align-items: center;
+        gap: 0.375rem; padding: 6px 0.75rem;
+        border: 1px solid var(--border-form-field-default);
+        border-radius: var(--corner-form-field);
+        background: var(--bg-form-field-default);
+        min-height: 41px; cursor: text;
+        transition: border-color 0.15s ease;"
+        onclick="document.getElementById('tag-input').focus()">
+        <span class="cue-tag cue-tag--filled cue-tag--sm" id="tinput-pfizer">
+          <span class="cue-tag__label">Pfizer</span>
+          <button class="cue-tag__remove" type="button" aria-label="Remove Pfizer"
+            onclick="removeInputTag('tinput-pfizer')">
+            <span class="material-icons" aria-hidden="true">close</span>
+          </button>
+        </span>
+        <span class="cue-tag cue-tag--filled cue-tag--sm" id="tinput-jj">
+          <span class="cue-tag__label">J&amp;J</span>
+          <button class="cue-tag__remove" type="button" aria-label="Remove J&amp;J"
+            onclick="removeInputTag('tinput-jj')">
+            <span class="material-icons" aria-hidden="true">close</span>
+          </button>
+        </span>
+        <input id="tag-input" type="text"
+          placeholder="Add a tag..."
+          style="border: none; outline: none; background: transparent; font-family: var(--font-family-body); font-size: 0.875rem; color: var(--content-body-default); min-width: 100px; flex: 1; padding: 2px 0;"
+          onkeydown="handleTagInput(event)" />
+      </div>
+      <p style="font-size: 0.75rem; color: var(--content-body-moderate);">Press Enter or comma to add a tag</p>
+    </div>
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ============================================================
+     DESIGN TOKENS
+============================================================ -->
+
+<div class="docs-section">
+  <p class="docs-section-label">Design Tokens</p>
+  <table class="docs-token-table">
+    <thead>
+      <tr><th>Token / Value</th><th>Figma Token</th><th>Value</th><th>Usage</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>--bg-primary-brand</td><td>System/Background/bg-primary-brand</td><td><span class="docs-token-swatch" style="background:#03618d;"></span>#03618d</td><td>Filled tag background</td></tr>
+      <tr><td>--bg-button-primary-hover</td><td>Buttons/Primary Button/bg-button-primary_hover</td><td><span class="docs-token-swatch" style="background:#024f73;"></span>#024f73</td><td>Filled tag hover background</td></tr>
+      <tr><td>--border-subdued</td><td>System/Border/border-subdued</td><td><span class="docs-token-swatch" style="background:#d4d4d4;"></span>#d4d4d4</td><td>Outlined tag border</td></tr>
+      <tr><td>--bg-subdued</td><td>System/Background/bg-subdued</td><td><span class="docs-token-swatch" style="background:#ededed;"></span>#ededed</td><td>Outlined tag hover and selected background</td></tr>
+      <tr><td>--content-body-default</td><td>System/Content/content-body-default</td><td><span class="docs-token-swatch" style="background:#262626;"></span>#262626</td><td>Outlined tag text</td></tr>
+      <tr><td>--content-body-moderate</td><td>System/Content/content-body-moderate</td><td><span class="docs-token-swatch" style="background:#8a8a8a;"></span>#8a8a8a</td><td>Outlined tag × icon color</td></tr>
+      <tr><td>Border radius</td><td>—</td><td>100px</td><td>Full pill shape</td></tr>
+      <tr><td>Padding (default)</td><td>—</td><td>6px 12px</td><td>Vertical / horizontal</td></tr>
+      <tr><td>Padding (small)</td><td>—</td><td>4px 8px</td><td>Small variant</td></tr>
+      <tr><td>Font (filled)</td><td>Back Office UI/Button Small 14pt/SemiBold</td><td>14px SemiBold</td><td>Filled tag label</td></tr>
+      <tr><td>Font (outlined)</td><td>Back Office UI/Button Small 14pt/Regular</td><td>14px Regular</td><td>Outlined tag label</td></tr>
+      <tr><td>Remove icon</td><td>Material Icons / close</td><td>14px</td><td>Dismiss button icon</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ============================================================
+     CODE
+============================================================ -->
+
+<div class="docs-section">
+  <p class="docs-section-label">Code</p>
+  <div class="docs-code-tabs">
+    <button class="docs-code-tab active" onclick="switchTab(event, 'tag-html')">HTML</button>
+    <button class="docs-code-tab" onclick="switchTab(event, 'tag-css')">CSS</button>
+    <button class="docs-code-tab" onclick="switchTab(event, 'tag-js')">JS</button>
+  </div>
+
+  <div class="docs-code-panel active" id="tag-html">
+    <div class="docs-code-block"><pre><code>&lt;!-- Tag group container --&gt;
+&lt;div class="cue-tag-group"&gt;
+
+  &lt;!-- Filled tag with remove button --&gt;
+  &lt;span class="cue-tag cue-tag--filled"&gt;
+    &lt;span class="cue-tag__label"&gt;Tag text&lt;/span&gt;
+    &lt;button class="cue-tag__remove" type="button"
+      aria-label="Remove Tag text" onclick="removeTag(this)"&gt;
+      &lt;span class="material-icons" aria-hidden="true"&gt;close&lt;/span&gt;
+    &lt;/button&gt;
+  &lt;/span&gt;
+
+  &lt;!-- Outlined tag with remove button --&gt;
+  &lt;span class="cue-tag cue-tag--outlined"&gt;
+    &lt;span class="cue-tag__label"&gt;Label&lt;/span&gt;
+    &lt;button class="cue-tag__remove" type="button"
+      aria-label="Remove Label" onclick="removeTag(this)"&gt;&times;&lt;/button&gt;
+  &lt;/span&gt;
+
+  &lt;!-- Outlined — selected state --&gt;
+  &lt;span class="cue-tag cue-tag--outlined is-selected"&gt;
+    &lt;span class="cue-tag__label"&gt;Selected&lt;/span&gt;
+    &lt;button class="cue-tag__remove" type="button"
+      aria-label="Remove" onclick="removeTag(this)"&gt;&times;&lt;/button&gt;
+  &lt;/span&gt;
+
+  &lt;!-- Static / read-only (no remove button, no hover) --&gt;
+  &lt;span class="cue-tag cue-tag--filled cue-tag--static"&gt;
+    &lt;span class="cue-tag__label"&gt;Read only&lt;/span&gt;
+  &lt;/span&gt;
+
+  &lt;!-- Small size variant --&gt;
+  &lt;span class="cue-tag cue-tag--filled cue-tag--sm"&gt;
+    &lt;span class="cue-tag__label"&gt;Small&lt;/span&gt;
+    &lt;button class="cue-tag__remove" type="button"
+      aria-label="Remove" onclick="removeTag(this)"&gt;
+      &lt;span class="material-icons" aria-hidden="true"&gt;close&lt;/span&gt;
+    &lt;/button&gt;
+  &lt;/span&gt;
+
+&lt;/div&gt;</code></pre></div>
+  </div>
+
+  <div class="docs-code-panel" id="tag-css">
+    <div class="docs-code-block"><pre><code>/* Tag group */
+.cue-tag-group { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+
+/* Base tag */
+.cue-tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 6px 12px; border-radius: 100px;
+  border: 1px solid transparent;
+  font-family: var(--font-family-body);
+  font-size: 0.875rem; font-weight: 400; line-height: 1;
+  white-space: nowrap; cursor: pointer; user-select: none;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+/* Filled */
+.cue-tag--filled {
+  background-color: var(--bg-primary-brand); /* #03618d */
+  color: #ffffff; font-weight: 600;
+}
+.cue-tag--filled:hover { background-color: var(--bg-button-primary-hover); } /* #024f73 */
+
+/* Outlined */
+.cue-tag--outlined {
+  background-color: transparent;
+  border-color: var(--border-subdued);         /* #d4d4d4 */
+  color: var(--content-body-default);          /* #262626 */
+}
+.cue-tag--outlined:hover,
+.cue-tag--outlined.is-selected { background-color: var(--bg-subdued); } /* #ededed */
+
+/* Small */
+.cue-tag--sm { padding: 4px 8px; font-size: 0.75rem; gap: 3px; }
+
+/* Static / read-only */
+.cue-tag--static { cursor: default; pointer-events: none; }
+
+/* Remove button */
+.cue-tag__remove {
+  display: flex; align-items: center; justify-content: center;
+  background: none; border: none; cursor: pointer; padding: 0;
+  margin-left: 2px; border-radius: 100px; line-height: 1;
+  transition: opacity 0.15s ease; flex-shrink: 0;
+}
+.cue-tag--filled  .cue-tag__remove { color: rgba(255,255,255,0.8); font-size: 1rem; }
+.cue-tag--filled  .cue-tag__remove:hover { color: #ffffff; }
+.cue-tag--outlined .cue-tag__remove { color: var(--content-body-moderate); font-size: 0.875rem; }
+.cue-tag--outlined .cue-tag__remove:hover { color: var(--content-body-default); }
+.cue-tag__remove .material-icons { font-size: 14px; pointer-events: none; }</code></pre></div>
+  </div>
+
+  <div class="docs-code-panel" id="tag-js">
+    <div class="docs-code-block"><pre><code>// Remove a tag when its × button is clicked
+function removeTag(removeBtn) {
+  removeBtn.closest('.cue-tag').remove();
+}
+
+// Toggle selected state on an outlined tag
+function toggleTagSelected(tag) {
+  tag.classList.toggle('is-selected');
+}
+
+// Input + tag pattern: add tag on Enter or comma
+function handleTagInput(e) {
+  const input = e.target;
+  const value = input.value.trim().replace(/,$/, '').trim();
+
+  if ((e.key === 'Enter' || e.key === ',') && value) {
+    e.preventDefault();
+    addInputTag(value);
+    input.value = '';
+  }
+
+  // Remove last tag on Backspace if input is empty
+  if (e.key === 'Backspace' && !input.value) {
+    const wrap  = input.closest('[id$="-wrap"], .tag-input-wrap');
+    const tags  = wrap.querySelectorAll('.cue-tag');
+    const last  = tags[tags.length - 1];
+    if (last) last.remove();
+  }
+}
+
+function addInputTag(value) {
+  const input = document.getElementById('tag-input');
+  const wrap  = input.parentElement;
+  const tag   = document.createElement('span');
+  tag.className = 'cue-tag cue-tag--filled cue-tag--sm';
+  tag.innerHTML = `
+    &lt;span class="cue-tag__label"&gt;${value}&lt;/span&gt;
+    &lt;button class="cue-tag__remove" type="button" aria-label="Remove ${value}"
+      onclick="this.closest('.cue-tag').remove()"&gt;
+      &lt;span class="material-icons" aria-hidden="true"&gt;close&lt;/span&gt;
+    &lt;/button&gt;`;
+  wrap.insertBefore(tag, input);
+}</code></pre></div>
+  </div>
+
+</div>
+
+<script>
+  function removeTag(removeBtn) {
+    removeBtn.closest('.cue-tag').remove();
+  }
+
+  function toggleTagSelected(tag) {
+    // Don't toggle if clicking the remove button
+    if (event.target.classList.contains('cue-tag__remove') ||
+        event.target.closest('.cue-tag__remove')) return;
+    tag.classList.toggle('is-selected');
+  }
+
+  function removeInputTag(id) {
+    document.getElementById(id)?.remove();
+  }
+
+  function handleTagInput(e) {
+    const input = e.target;
+    const value = input.value.trim().replace(/,$/, '').trim();
+
+    if ((e.key === 'Enter' || e.key === ',') && value) {
+      e.preventDefault();
+      const wrap = document.getElementById('tag-input-wrap');
+      const tag  = document.createElement('span');
+      tag.className = 'cue-tag cue-tag--filled cue-tag--sm';
+      tag.innerHTML = `<span class="cue-tag__label">${value}</span>` +
+        `<button class="cue-tag__remove" type="button" aria-label="Remove ${value}" ` +
+        `onclick="this.closest('.cue-tag').remove()">` +
+        `<span class="material-icons" aria-hidden="true">close</span></button>`;
+      wrap.insertBefore(tag, input);
+      input.value = '';
+    }
+
+    if (e.key === 'Backspace' && !input.value) {
+      const wrap = document.getElementById('tag-input-wrap');
+      const tags = wrap.querySelectorAll('.cue-tag');
+      if (tags.length) tags[tags.length - 1].remove();
+    }
+  }
+
+  // Focus ring on input wrap
+  document.getElementById('tag-input')?.addEventListener('focus', function() {
+    document.getElementById('tag-input-wrap').style.borderColor = 'var(--border-form-field-focus)';
+  });
+  document.getElementById('tag-input')?.addEventListener('blur', function() {
+    document.getElementById('tag-input-wrap').style.borderColor = 'var(--border-form-field-default)';
+  });
+</script>
