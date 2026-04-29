@@ -303,6 +303,21 @@
 
 
   /* ============================================================
+     COMPONENTS — STEP PROCESS
+  ============================================================ */
+
+  --step-indicator-inactive: #ededed;
+  --step-indicator-complete: #a3a3a3;
+  --step-indicator-current:  #009cf9;
+  --step-label-inactive:     #8a8a8a;
+  --step-label-complete:     #575757;
+  --step-label-current:      #03618d;
+  --step-title-inactive:     #8a8a8a;
+  --step-title-complete:     #575757;
+  --step-title-current:      #262626;
+
+
+  /* ============================================================
      COMPONENTS — TABLE
   ============================================================ */
 

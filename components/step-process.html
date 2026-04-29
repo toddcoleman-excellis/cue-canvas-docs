@@ -1,0 +1,570 @@
+---
+layout: default
+title: "Step Process"
+activeNav: step-process
+root: ../
+---
+
+<style>
+
+  /* ============================================================
+     STEP PROCESS
+
+     A horizontal progress indicator for multi-step workflows.
+     Each step has three states: Inactive, Current, and Complete.
+
+     Anatomy:
+       .cue-steps                — flex container, full width
+         .cue-step               — individual step (flex: 1)
+           .cue-step__indicator  — 4px top bar, full width
+           .cue-step__body       — label row + title row + icon
+             .cue-step__label    — "Step N" (12px)
+             .cue-step__title    — step name (18px)
+           .cue-step__icon       — check_circle_outline (Complete only)
+
+     State modifiers on .cue-step:
+       (default)                 — Inactive
+       .is-current               — Current step
+       .is-complete              — Completed step
+
+     Token summary:
+       Indicator inactive:  --step-indicator-inactive  (#ededed)
+       Indicator complete:  --step-indicator-complete  (#a3a3a3)
+       Indicator current:   --step-indicator-current   (#009cf9)
+       Label inactive:      --step-label-inactive      (#8a8a8a  Regular)
+       Label complete:      --step-label-complete      (#575757  Bold)
+       Label current:       --step-label-current       (#03618d  Bold)
+       Title inactive:      --step-title-inactive      (#8a8a8a  SemiBold)
+       Title complete:      --step-title-complete      (#575757  SemiBold)
+       Title current:       --step-title-current       (#262626  Bold)
+  ============================================================ */
+
+  /* ---- Container ---- */
+
+  .cue-steps {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  /* ---- Individual step ---- */
+
+  .cue-step {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* ---- Indicator bar ---- */
+
+  .cue-step__indicator {
+    height: 4px;
+    width: 100%;
+    border-radius: 2px;
+    background-color: var(--step-indicator-inactive);
+    flex-shrink: 0;
+  }
+
+  .cue-step.is-complete .cue-step__indicator {
+    background-color: var(--step-indicator-complete);
+  }
+
+  .cue-step.is-current .cue-step__indicator {
+    background-color: var(--step-indicator-current);
+  }
+
+  /* ---- Body row (label + title + icon) ---- */
+
+  .cue-step__body {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.625rem;
+    width: 100%;
+  }
+
+  .cue-step__text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* ---- Step label "Step N" ---- */
+
+  .cue-step__label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-family: var(--font-family-body);
+    font-size: 0.75rem;          /* 12px */
+    font-weight: 400;
+    color: var(--step-label-inactive);
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .cue-step.is-complete .cue-step__label {
+    font-weight: 700;
+    color: var(--step-label-complete);
+  }
+
+  .cue-step.is-current .cue-step__label {
+    font-weight: 700;
+    color: var(--step-label-current);
+  }
+
+  /* ---- Step title ---- */
+
+  .cue-step__title {
+    font-family: var(--font-family-body);
+    font-size: 1.125rem;         /* 18px */
+    font-weight: 600;            /* SemiBold — inactive and complete */
+    color: var(--step-title-inactive);
+    line-height: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .cue-step.is-complete .cue-step__title {
+    font-weight: 600;
+    color: var(--step-title-complete);
+  }
+
+  .cue-step.is-current .cue-step__title {
+    font-weight: 700;            /* Bold — current */
+    color: var(--step-title-current);
+  }
+
+  /* ---- Complete icon ---- */
+
+  .cue-step__icon {
+    display: none;
+    flex-shrink: 0;
+    color: var(--step-label-complete);
+  }
+
+  .cue-step.is-complete .cue-step__icon {
+    display: flex;
+    align-items: center;
+  }
+
+  .cue-step__icon .material-icons {
+    font-size: 24px;
+  }
+
+  /* ---- Demo helpers ---- */
+
+  .steps-demo-label {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--content-body-moderate);
+    margin-bottom: 1rem;
+  }
+
+</style>
+
+<div class="docs-page-header">
+  <h1 class="docs-page-title">Step Process</h1>
+  <p class="docs-page-description">
+    A horizontal progress indicator for multi-step workflows. Each step has three states — Inactive, Current, and Complete. Used in wizards, checkout flows, onboarding sequences, and any multi-stage process where users need to track their position and progress.
+  </p>
+</div>
+
+<!-- ============================================================
+     STEP STATES (atoms)
+============================================================ -->
+
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Step states</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">Three states per step. The 4px indicator bar, label color, title weight, and optional check icon each change per state.</p>
+
+  <div class="docs-example" style="gap: 2rem; flex-wrap: wrap; align-items: flex-start;">
+
+    <!-- Inactive -->
+    <div>
+      <p class="steps-demo-label">Inactive</p>
+      <div class="cue-step" style="width: 180px;">
+        <div class="cue-step__indicator"></div>
+        <div class="cue-step__body">
+          <div class="cue-step__text">
+            <div class="cue-step__label"><span>Step</span><span>1</span></div>
+            <div class="cue-step__title">Contact Info</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Complete -->
+    <div>
+      <p class="steps-demo-label">Complete</p>
+      <div class="cue-step is-complete" style="width: 180px;">
+        <div class="cue-step__indicator"></div>
+        <div class="cue-step__body">
+          <div class="cue-step__text">
+            <div class="cue-step__label"><span>Step</span><span>2</span></div>
+            <div class="cue-step__title">Account Setup</div>
+          </div>
+          <div class="cue-step__icon">
+            <span class="material-icons" aria-label="Completed">check_circle_outline</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Current -->
+    <div>
+      <p class="steps-demo-label">Current</p>
+      <div class="cue-step is-current" style="width: 180px;">
+        <div class="cue-step__indicator"></div>
+        <div class="cue-step__body">
+          <div class="cue-step__text">
+            <div class="cue-step__label"><span>Step</span><span>3</span></div>
+            <div class="cue-step__title">Payments</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ============================================================
+     4-STEP DEMO — interactive
+============================================================ -->
+
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Interactive demo</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">A four-step wizard flow. Use the buttons below to advance or go back through the steps. In production the step states would be driven by form validation and routing logic.</p>
+
+  <div class="docs-example" style="flex-direction: column; gap: 1.5rem;">
+
+    <!-- Step progress bar -->
+    <div class="cue-steps" id="demo-steps" role="list" aria-label="Progress">
+      <div class="cue-step is-complete" role="listitem" aria-label="Step 1: Contact Info — Complete">
+        <div class="cue-step__indicator"></div>
+        <div class="cue-step__body">
+          <div class="cue-step__text">
+            <div class="cue-step__label"><span>Step</span><span>1</span></div>
+            <div class="cue-step__title">Contact Info</div>
+          </div>
+          <div class="cue-step__icon">
+            <span class="material-icons" aria-hidden="true">check_circle_outline</span>
+          </div>
+        </div>
+      </div>
+      <div class="cue-step is-complete" role="listitem" aria-label="Step 2: Account Setup — Complete">
+        <div class="cue-step__indicator"></div>
+        <div class="cue-step__body">
+          <div class="cue-step__text">
+            <div class="cue-step__label"><span>Step</span><span>2</span></div>
+            <div class="cue-step__title">Account Setup</div>
+          </div>
+          <div class="cue-step__icon">
+            <span class="material-icons" aria-hidden="true">check_circle_outline</span>
+          </div>
+        </div>
+      </div>
+      <div class="cue-step is-current" role="listitem" aria-label="Step 3: Payments — Current">
+        <div class="cue-step__indicator"></div>
+        <div class="cue-step__body">
+          <div class="cue-step__text">
+            <div class="cue-step__label"><span>Step</span><span>3</span></div>
+            <div class="cue-step__title">Payments</div>
+          </div>
+          <div class="cue-step__icon">
+            <span class="material-icons" aria-hidden="true">check_circle_outline</span>
+          </div>
+        </div>
+      </div>
+      <div class="cue-step" role="listitem" aria-label="Step 4: Finish Up — Incomplete">
+        <div class="cue-step__indicator"></div>
+        <div class="cue-step__body">
+          <div class="cue-step__text">
+            <div class="cue-step__label"><span>Step</span><span>4</span></div>
+            <div class="cue-step__title">Finish Up</div>
+          </div>
+          <div class="cue-step__icon">
+            <span class="material-icons" aria-hidden="true">check_circle_outline</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step content panels -->
+    <div style="border: 1px solid var(--border-level-1); border-radius: 6px; padding: 1.5rem; background: var(--bg-level-1); min-height: 100px;">
+      <div id="step-panel-1" class="step-panel" style="display:none;">
+        <p style="font-weight: 700; margin-bottom: 0.5rem;">Step 1 — Contact Info</p>
+        <p style="font-size: 0.875rem; color: var(--content-body-moderate);">Enter your name, email address, and phone number.</p>
+      </div>
+      <div id="step-panel-2" class="step-panel" style="display:none;">
+        <p style="font-weight: 700; margin-bottom: 0.5rem;">Step 2 — Account Setup</p>
+        <p style="font-size: 0.875rem; color: var(--content-body-moderate);">Choose your username and set a secure password.</p>
+      </div>
+      <div id="step-panel-3" class="step-panel">
+        <p style="font-weight: 700; margin-bottom: 0.5rem;">Step 3 — Payments</p>
+        <p style="font-size: 0.875rem; color: var(--content-body-moderate);">Enter your billing information and preferred payment method.</p>
+      </div>
+      <div id="step-panel-4" class="step-panel" style="display:none;">
+        <p style="font-weight: 700; margin-bottom: 0.5rem;">Step 4 — Finish Up</p>
+        <p style="font-size: 0.875rem; color: var(--content-body-moderate);">Review your details and confirm your submission.</p>
+      </div>
+    </div>
+
+    <!-- Navigation buttons -->
+    <div style="display: flex; align-items: center; justify-content: space-between;">
+      <button class="cue-btn cue-btn--neutral-stroke" type="button" id="step-prev"
+        onclick="demoStepNav(-1)">
+        <span class="material-icons" aria-hidden="true">arrow_back</span>
+        <span class="cue-btn__label">Back</span>
+      </button>
+      <span id="step-counter" style="font-size: 0.875rem; color: var(--content-body-moderate);">Step 3 of 4</span>
+      <button class="cue-btn cue-btn--primary" type="button" id="step-next"
+        onclick="demoStepNav(1)">
+        <span class="cue-btn__label">Continue</span>
+        <span class="material-icons" aria-hidden="true">arrow_forward</span>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ============================================================
+     DESIGN TOKENS
+============================================================ -->
+
+<div class="docs-section">
+  <p class="docs-section-label">Design Tokens</p>
+  <table class="docs-token-table">
+    <thead>
+      <tr><th>CSS Variable</th><th>Figma Token</th><th>Value</th><th>Usage</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>--step-indicator-inactive</td><td>Components/Step Process/step-indicator-inactive</td><td><span class="docs-token-swatch" style="background:#ededed;"></span>#ededed</td><td>Indicator bar — inactive step</td></tr>
+      <tr><td>--step-indicator-complete</td><td>Components/Step Process/step-indicator-complete</td><td><span class="docs-token-swatch" style="background:#a3a3a3;"></span>#a3a3a3</td><td>Indicator bar — completed step</td></tr>
+      <tr><td>--step-indicator-current</td><td>Components/Step Process/step-indicator-current</td><td><span class="docs-token-swatch" style="background:#009cf9;"></span>#009cf9</td><td>Indicator bar — current step (accent brand)</td></tr>
+      <tr><td>--step-label-inactive</td><td>Components/Step Process/step-number-inactive</td><td><span class="docs-token-swatch" style="background:#8a8a8a;"></span>#8a8a8a</td><td>"Step N" label — inactive (Regular)</td></tr>
+      <tr><td>--step-label-complete</td><td>Components/Step Process/step-number-complete</td><td><span class="docs-token-swatch" style="background:#575757;"></span>#575757</td><td>"Step N" label — complete (Bold)</td></tr>
+      <tr><td>--step-label-current</td><td>Components/Step Process/step-number-current</td><td><span class="docs-token-swatch" style="background:#03618d;"></span>#03618d</td><td>"Step N" label — current (Bold, primary brand)</td></tr>
+      <tr><td>--step-title-inactive</td><td>Components/Step Process/step-label-inactive</td><td><span class="docs-token-swatch" style="background:#8a8a8a;"></span>#8a8a8a</td><td>Step title — inactive (SemiBold 18px)</td></tr>
+      <tr><td>--step-title-complete</td><td>Components/Step Process/step-label-complete</td><td><span class="docs-token-swatch" style="background:#575757;"></span>#575757</td><td>Step title — complete (SemiBold 18px)</td></tr>
+      <tr><td>--step-title-current</td><td>Components/Step Process/step-label-current</td><td><span class="docs-token-swatch" style="background:#262626;"></span>#262626</td><td>Step title — current (Bold 18px)</td></tr>
+      <tr><td>Indicator height</td><td>—</td><td>4px</td><td>Progress bar height</td></tr>
+      <tr><td>Gap (bar to text)</td><td>—</td><td>8px (0.5rem)</td><td>Vertical gap between indicator and text row</td></tr>
+      <tr><td>Gap (between steps)</td><td>—</td><td>16px (1rem)</td><td>Horizontal gap between step columns</td></tr>
+      <tr><td>Complete icon</td><td>Material Icons / check_circle_outline</td><td>24px</td><td>Shown only on completed steps</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ============================================================
+     CODE
+============================================================ -->
+
+<div class="docs-section">
+  <p class="docs-section-label">Code</p>
+  <div class="docs-code-tabs">
+    <button class="docs-code-tab active" onclick="switchTab(event, 'sp-html')">HTML</button>
+    <button class="docs-code-tab" onclick="switchTab(event, 'sp-css')">CSS</button>
+    <button class="docs-code-tab" onclick="switchTab(event, 'sp-js')">JS</button>
+  </div>
+
+  <div class="docs-code-panel active" id="sp-html">
+    <div class="docs-code-block"><pre><code>&lt;div class="cue-steps" role="list" aria-label="Progress"&gt;
+
+  &lt;!-- Inactive step --&gt;
+  &lt;div class="cue-step" role="listitem"&gt;
+    &lt;div class="cue-step__indicator"&gt;&lt;/div&gt;
+    &lt;div class="cue-step__body"&gt;
+      &lt;div class="cue-step__text"&gt;
+        &lt;div class="cue-step__label"&gt;&lt;span&gt;Step&lt;/span&gt;&lt;span&gt;1&lt;/span&gt;&lt;/div&gt;
+        &lt;div class="cue-step__title"&gt;Contact Info&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;!-- Complete step — add .is-complete to .cue-step --&gt;
+  &lt;div class="cue-step is-complete" role="listitem"&gt;
+    &lt;div class="cue-step__indicator"&gt;&lt;/div&gt;
+    &lt;div class="cue-step__body"&gt;
+      &lt;div class="cue-step__text"&gt;
+        &lt;div class="cue-step__label"&gt;&lt;span&gt;Step&lt;/span&gt;&lt;span&gt;2&lt;/span&gt;&lt;/div&gt;
+        &lt;div class="cue-step__title"&gt;Account Setup&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;!-- Icon always in DOM — CSS shows/hides via .is-complete --&gt;
+      &lt;div class="cue-step__icon"&gt;
+        &lt;span class="material-icons" aria-label="Completed"&gt;check_circle_outline&lt;/span&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;!-- Current step — add .is-current to .cue-step --&gt;
+  &lt;div class="cue-step is-current" role="listitem"&gt;
+    &lt;div class="cue-step__indicator"&gt;&lt;/div&gt;
+    &lt;div class="cue-step__body"&gt;
+      &lt;div class="cue-step__text"&gt;
+        &lt;div class="cue-step__label"&gt;&lt;span&gt;Step&lt;/span&gt;&lt;span&gt;3&lt;/span&gt;&lt;/div&gt;
+        &lt;div class="cue-step__title"&gt;Payments&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="cue-step__icon"&gt;
+        &lt;span class="material-icons" aria-hidden="true"&gt;check_circle_outline&lt;/span&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;!-- Inactive step --&gt;
+  &lt;div class="cue-step" role="listitem"&gt;
+    &lt;div class="cue-step__indicator"&gt;&lt;/div&gt;
+    &lt;div class="cue-step__body"&gt;
+      &lt;div class="cue-step__text"&gt;
+        &lt;div class="cue-step__label"&gt;&lt;span&gt;Step&lt;/span&gt;&lt;span&gt;4&lt;/span&gt;&lt;/div&gt;
+        &lt;div class="cue-step__title"&gt;Finish Up&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="cue-step__icon"&gt;
+        &lt;span class="material-icons" aria-hidden="true"&gt;check_circle_outline&lt;/span&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+&lt;/div&gt;</code></pre></div>
+  </div>
+
+  <div class="docs-code-panel" id="sp-css">
+    <div class="docs-code-block"><pre><code>/* Tokens — add to tokens.css */
+--step-indicator-inactive: #ededed;
+--step-indicator-complete: #a3a3a3;
+--step-indicator-current:  #009cf9;
+--step-label-inactive:     #8a8a8a;
+--step-label-complete:     #575757;
+--step-label-current:      #03618d;
+--step-title-inactive:     #8a8a8a;
+--step-title-complete:     #575757;
+--step-title-current:      #262626;
+
+/* Container */
+.cue-steps { display: flex; align-items: flex-start; gap: 1rem; width: 100%; }
+
+/* Step column */
+.cue-step  { display: flex; flex-direction: column; gap: 0.5rem; flex: 1; min-width: 0; }
+
+/* Indicator bar */
+.cue-step__indicator { height: 4px; width: 100%; border-radius: 2px; background-color: var(--step-indicator-inactive); }
+.cue-step.is-complete .cue-step__indicator { background-color: var(--step-indicator-complete); }
+.cue-step.is-current  .cue-step__indicator { background-color: var(--step-indicator-current); }
+
+/* Body */
+.cue-step__body { display: flex; align-items: center; justify-content: space-between; gap: 0.625rem; }
+.cue-step__text { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+
+/* Step label "Step N" */
+.cue-step__label { display: flex; align-items: center; gap: 4px; font-size: 0.75rem; font-weight: 400; color: var(--step-label-inactive); line-height: 1; }
+.cue-step.is-complete .cue-step__label { font-weight: 700; color: var(--step-label-complete); }
+.cue-step.is-current  .cue-step__label { font-weight: 700; color: var(--step-label-current); }
+
+/* Title */
+.cue-step__title { font-size: 1.125rem; font-weight: 600; color: var(--step-title-inactive); line-height: 1; }
+.cue-step.is-complete .cue-step__title { color: var(--step-title-complete); }
+.cue-step.is-current  .cue-step__title { font-weight: 700; color: var(--step-title-current); }
+
+/* Complete icon — hidden by default, shown on .is-complete */
+.cue-step__icon { display: none; flex-shrink: 0; color: var(--step-label-complete); }
+.cue-step.is-complete .cue-step__icon { display: flex; align-items: center; }
+.cue-step__icon .material-icons { font-size: 24px; }</code></pre></div>
+  </div>
+
+  <div class="docs-code-panel" id="sp-js">
+    <div class="docs-code-block"><pre><code>/**
+ * setStep(stepsEl, currentIndex)
+ *
+ * Updates all .cue-step elements inside a .cue-steps container
+ * to reflect the current step index (0-based).
+ *
+ * Steps before currentIndex → .is-complete
+ * Steps at currentIndex     → .is-current
+ * Steps after currentIndex  → (no modifier — inactive)
+ */
+function setStep(stepsEl, currentIndex) {
+  const steps = [...stepsEl.querySelectorAll('.cue-step')];
+  steps.forEach(function(step, i) {
+    step.classList.remove('is-current', 'is-complete');
+    if (i < currentIndex)       step.classList.add('is-complete');
+    else if (i === currentIndex) step.classList.add('is-current');
+  });
+}
+
+// Example: advance through a 4-step form
+var currentStep = 0;
+var totalSteps  = 4;
+var stepsEl     = document.querySelector('.cue-steps');
+
+function goToStep(index) {
+  currentStep = Math.max(0, Math.min(index, totalSteps - 1));
+  setStep(stepsEl, currentStep);
+  // Show/hide content panels, update button states, etc.
+}
+
+document.getElementById('step-next').addEventListener('click', function() {
+  goToStep(currentStep + 1);
+});
+
+document.getElementById('step-prev').addEventListener('click', function() {
+  goToStep(currentStep - 1);
+});</code></pre></div>
+  </div>
+
+</div>
+
+<script>
+  // Demo state
+  var demoStep = 2; // 0-indexed, starts on step 3
+  var totalDemoSteps = 4;
+
+  function demoStepNav(delta) {
+    demoStep = Math.max(0, Math.min(demoStep + delta, totalDemoSteps - 1));
+    renderDemoSteps();
+  }
+
+  function renderDemoSteps() {
+    var steps = document.querySelectorAll('#demo-steps .cue-step');
+    var panels = document.querySelectorAll('.step-panel');
+
+    steps.forEach(function(step, i) {
+      step.classList.remove('is-current', 'is-complete');
+      if (i < demoStep)        step.classList.add('is-complete');
+      else if (i === demoStep) step.classList.add('is-current');
+    });
+
+    panels.forEach(function(panel, i) {
+      panel.style.display = i === demoStep ? 'block' : 'none';
+    });
+
+    document.getElementById('step-counter').textContent =
+      'Step ' + (demoStep + 1) + ' of ' + totalDemoSteps;
+
+    document.getElementById('step-prev').disabled = demoStep === 0;
+    document.getElementById('step-prev').style.opacity = demoStep === 0 ? '0.4' : '1';
+
+    var nextBtn = document.getElementById('step-next');
+    if (demoStep === totalDemoSteps - 1) {
+      nextBtn.querySelector('.cue-btn__label').textContent = 'Finish';
+    } else {
+      nextBtn.querySelector('.cue-btn__label').textContent = 'Continue';
+    }
+  }
+
+  // Init
+  renderDemoSteps();
+</script>
