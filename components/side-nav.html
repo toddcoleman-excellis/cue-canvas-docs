@@ -1,0 +1,947 @@
+---
+layout: default
+title: "Side Navigation"
+activeNav: side-nav
+root: ../
+---
+
+<style>
+
+  /* ============================================================
+     SIDE NAVIGATION — CUE Back Office App Shell
+
+     The primary left-side navigation for CUE Back Office.
+     Supports section labels, collapsible parent items, and
+     two levels of child items. Closely follows the ShadCN
+     sidebar-02 interaction pattern.
+
+     Structure:
+       .cue-sidenav                    — the sidebar panel
+         .cue-sidenav__section         — labelled group
+           .cue-sidenav__section-label — section heading (uppercase)
+           .cue-sidenav__item          — top-level nav item
+             .cue-sidenav__item-btn    — clickable row (icon + label + chevron)
+             .cue-sidenav__children    — collapsible child list
+               .cue-sidenav__child     — child item row
+               .cue-sidenav__subchildren — level-3 items (no icon)
+                 .cue-sidenav__subchild
+
+     States on .cue-sidenav__item-btn and .cue-sidenav__child:
+       (default)                       — transparent bg, dark text
+       :hover                          — --bg-side-nav-hover, primary brand text
+       .is-active                      — --bg-side-nav-current, primary brand Bold text
+                                         + 3px amber left bar
+       .is-open (on .cue-sidenav__item)— parent is expanded, chevron rotated
+
+     Full demo includes a live page content area to simulate the
+     CUE Back Office app shell layout.
+  ============================================================ */
+
+
+  /* ---- Demo shell ---- */
+
+  .sidenav-demo-shell {
+    display: flex;
+    height: 640px;
+    border: 1px solid var(--border-level-1);
+    border-radius: 6px;
+    overflow: hidden;
+    font-family: var(--font-family-body);
+    background-color: var(--app-page-bg);
+  }
+
+  /* ---- Sidebar panel ---- */
+
+  .cue-sidenav {
+    width: 200px;
+    flex-shrink: 0;
+    background-color: var(--bg-default);
+    border-right: 1px solid var(--border-level-1);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0.75rem 0;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-subdued) transparent;
+  }
+
+  .cue-sidenav::-webkit-scrollbar { width: 4px; }
+  .cue-sidenav::-webkit-scrollbar-track { background: transparent; }
+  .cue-sidenav::-webkit-scrollbar-thumb { background: var(--border-subdued); border-radius: 4px; }
+
+  /* ---- Section ---- */
+
+  .cue-sidenav__section {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0.5rem;
+  }
+
+  .cue-sidenav__section-label {
+    font-size: 0.6875rem;      /* 11px */
+    font-weight: 400;
+    color: var(--content-body-moderate);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.375rem 0.75rem 0.25rem;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  /* ---- Top-level item ---- */
+
+  .cue-sidenav__item {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .cue-sidenav__item-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 6px 0.75rem 6px 0.625rem;
+    background: none;
+    border: none;
+    border-left: 3px solid transparent;
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+    font-family: var(--font-family-body);
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: var(--content-side-nav-default);
+    line-height: 1.2;
+    transition: background-color 0.1s ease, color 0.1s ease, border-color 0.1s ease;
+    text-decoration: none;
+  }
+
+  .cue-sidenav__item-btn:hover {
+    background-color: var(--bg-side-nav-hover);
+    color: var(--content-side-nav-hover);
+  }
+
+  .cue-sidenav__item-btn.is-active {
+    background-color: var(--bg-side-nav-current);
+    color: var(--content-side-nav-current);
+    font-weight: 700;
+    border-left-color: var(--bg-tab-active-indicator);
+  }
+
+  .cue-sidenav__item.is-open > .cue-sidenav__item-btn {
+    background-color: var(--bg-side-nav-open);
+    color: var(--content-side-nav-hover);
+  }
+
+  .cue-sidenav__item-btn:focus-visible {
+    outline: 2px solid var(--border-interactive);
+    outline-offset: -2px;
+  }
+
+  /* Item icon */
+  .cue-sidenav__item-icon {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    color: inherit;
+    width: 18px;
+    justify-content: center;
+  }
+
+  .cue-sidenav__item-icon .material-icons { font-size: 18px; }
+
+  /* Item label */
+  .cue-sidenav__item-label {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Expand chevron */
+  .cue-sidenav__chevron {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    color: var(--content-body-moderate);
+    transition: transform 0.2s ease;
+    margin-left: auto;
+  }
+
+  .cue-sidenav__chevron .material-icons { font-size: 16px; }
+  .cue-sidenav__item.is-open > .cue-sidenav__item-btn .cue-sidenav__chevron {
+    transform: rotate(90deg);
+  }
+
+  /* ---- Children (level 2) ---- */
+
+  .cue-sidenav__children {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.2s ease;
+  }
+
+  .cue-sidenav__item.is-open > .cue-sidenav__children {
+    max-height: 600px;
+  }
+
+  .cue-sidenav__child {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 5px 0.75rem 5px 2.25rem;
+    background: none;
+    border: none;
+    border-left: 3px solid transparent;
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+    font-family: var(--font-family-body);
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: var(--content-side-nav-default);
+    line-height: 1.2;
+    transition: background-color 0.1s ease, color 0.1s ease, border-color 0.1s ease;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .cue-sidenav__child:hover {
+    background-color: var(--bg-side-nav-hover);
+    color: var(--content-side-nav-hover);
+  }
+
+  .cue-sidenav__child.is-active {
+    background-color: var(--bg-side-nav-current);
+    color: var(--content-side-nav-current);
+    font-weight: 700;
+    border-left-color: var(--bg-tab-active-indicator);
+  }
+
+  .cue-sidenav__child:focus-visible {
+    outline: 2px solid var(--border-interactive);
+    outline-offset: -2px;
+  }
+
+  /* Child expand chevron */
+  .cue-sidenav__child-chevron {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    color: var(--content-body-moderate);
+    transition: transform 0.2s ease;
+    margin-left: auto;
+  }
+
+  .cue-sidenav__child-chevron .material-icons { font-size: 14px; }
+
+  /* Child item that is also a parent (has sub-children) */
+  .cue-sidenav__child.is-parent.is-open .cue-sidenav__child-chevron {
+    transform: rotate(90deg);
+  }
+
+  /* ---- Sub-children (level 3) ---- */
+
+  .cue-sidenav__subchildren {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.2s ease;
+  }
+
+  .cue-sidenav__child.is-parent.is-open + .cue-sidenav__subchildren {
+    max-height: 300px;
+  }
+
+  .cue-sidenav__subchild {
+    display: flex;
+    align-items: center;
+    padding: 4px 0.75rem 4px 3.25rem;
+    background: none;
+    border: none;
+    border-left: 3px solid transparent;
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+    font-family: var(--font-family-body);
+    font-size: 0.8125rem;   /* 13px */
+    font-weight: 400;
+    color: var(--content-side-nav-default);
+    line-height: 1.2;
+    transition: background-color 0.1s ease, color 0.1s ease, border-color 0.1s ease;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .cue-sidenav__subchild:hover {
+    background-color: var(--bg-side-nav-hover);
+    color: var(--content-side-nav-hover);
+  }
+
+  .cue-sidenav__subchild.is-active {
+    background-color: var(--bg-side-nav-current);
+    color: var(--content-side-nav-current);
+    font-weight: 700;
+    border-left-color: var(--bg-tab-active-indicator);
+  }
+
+  /* ---- Demo main content area ---- */
+
+  .sidenav-demo-main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .sidenav-demo-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.25rem;
+    height: 48px;
+    background-color: var(--bg-app-top-bar);
+    flex-shrink: 0;
+  }
+
+  .sidenav-demo-topbar__logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .sidenav-demo-topbar__logo img {
+    height: 22px;
+    width: auto;
+    filter: brightness(0) invert(1);
+  }
+
+  .sidenav-demo-topbar__logo-text {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 0.05em;
+  }
+
+  .sidenav-demo-topbar__actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: rgba(255,255,255,0.8);
+  }
+
+  .sidenav-demo-topbar__actions .material-icons { font-size: 22px; cursor: pointer; }
+
+  .sidenav-demo-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0.5rem 1.25rem;
+    font-size: 0.75rem;
+    color: var(--content-body-moderate);
+    border-bottom: 1px solid var(--border-level-1);
+    background: var(--bg-default);
+    flex-shrink: 0;
+    flex-wrap: wrap;
+  }
+
+  .sidenav-demo-breadcrumb__sep .material-icons { font-size: 14px; }
+  .sidenav-demo-breadcrumb__current { color: var(--content-body-default); font-weight: 700; }
+
+  .sidenav-demo-content {
+    flex: 1;
+    padding: 1.5rem;
+    overflow-y: auto;
+    background: var(--app-page-bg);
+  }
+
+  .sidenav-demo-page-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .sidenav-demo-page-title {
+    font-family: var(--font-family-heading);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--content-body-primary-brand);
+  }
+
+  .sidenav-demo-page-subtitle {
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: var(--content-body-moderate);
+    padding-left: 0.75rem;
+    border-left: 1px solid var(--border-level-1);
+    margin-left: 0.25rem;
+  }
+
+  /* Skeleton rows to simulate content */
+  .sidenav-demo-skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .sidenav-demo-skeleton__row {
+    height: 44px;
+    background: var(--bg-default);
+    border: 1px solid var(--border-level-1);
+    border-radius: 4px;
+    animation: shimmer 1.5s infinite linear;
+    background: linear-gradient(90deg, var(--bg-level-1) 25%, var(--bg-level-0) 50%, var(--bg-level-1) 75%);
+    background-size: 200% 100%;
+  }
+
+  @keyframes shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+
+  /* ---- States reference ---- */
+
+  .sidenav-state-row {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    width: 200px;
+    border: 1px solid var(--border-level-1);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+</style>
+
+<div class="docs-page-header">
+  <h1 class="docs-page-title">Side Navigation</h1>
+  <p class="docs-page-description">
+    The primary left-side navigation panel for CUE Back Office. Supports section labels, collapsible two-level hierarchies, and icon-labelled items. The active item is highlighted with the primary brand blue and a 3px amber left border. Follows the ShadCN sidebar-02 interaction pattern.
+  </p>
+</div>
+
+<!-- ============================================================
+     ITEM STATES
+============================================================ -->
+
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Item states</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">Four states apply to both top-level items and child items. The active state always shows the 3px amber left border.</p>
+
+  <div class="docs-example" style="gap: 2rem; flex-wrap: wrap; align-items: flex-start;">
+
+    <div>
+      <p style="font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--content-body-moderate); margin-bottom: 0.5rem;">Top-level items</p>
+      <div class="sidenav-state-row">
+        <button class="cue-sidenav__item-btn" type="button">
+          <span class="cue-sidenav__item-icon"><span class="material-icons" aria-hidden="true">group</span></span>
+          <span class="cue-sidenav__item-label">Default</span>
+        </button>
+        <button class="cue-sidenav__item-btn" type="button" style="background-color: var(--bg-side-nav-hover); color: var(--content-side-nav-hover);">
+          <span class="cue-sidenav__item-icon"><span class="material-icons" aria-hidden="true">group</span></span>
+          <span class="cue-sidenav__item-label">Hover</span>
+        </button>
+        <button class="cue-sidenav__item-btn is-active" type="button">
+          <span class="cue-sidenav__item-icon"><span class="material-icons" aria-hidden="true">group</span></span>
+          <span class="cue-sidenav__item-label">Active</span>
+        </button>
+        <button class="cue-sidenav__item-btn" type="button" style="background-color: var(--bg-side-nav-open); color: var(--content-side-nav-hover);">
+          <span class="cue-sidenav__item-icon"><span class="material-icons" aria-hidden="true">inventory_2</span></span>
+          <span class="cue-sidenav__item-label">Open (expanded)</span>
+          <span class="cue-sidenav__chevron" style="transform: rotate(90deg);"><span class="material-icons" aria-hidden="true">chevron_right</span></span>
+        </button>
+      </div>
+    </div>
+
+    <div>
+      <p style="font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--content-body-moderate); margin-bottom: 0.5rem;">Child items</p>
+      <div class="sidenav-state-row">
+        <button class="cue-sidenav__child" type="button">Default child</button>
+        <button class="cue-sidenav__child" type="button" style="background-color: var(--bg-side-nav-hover); color: var(--content-side-nav-hover);">Hover child</button>
+        <button class="cue-sidenav__child is-active" type="button">Active child</button>
+        <button class="cue-sidenav__child is-parent" type="button">
+          Has sub-items
+          <span class="cue-sidenav__child-chevron"><span class="material-icons" aria-hidden="true">chevron_right</span></span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ============================================================
+     LIVE DEMO — full app shell
+============================================================ -->
+
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Live demo — app shell</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">The full CUE Back Office app shell layout. Click nav items to expand/collapse sections and activate individual items. The sidebar mirrors the real product navigation structure.</p>
+
+  <div class="sidenav-demo-shell">
+
+    <!-- Sidebar -->
+    <nav class="cue-sidenav" aria-label="Main navigation">
+
+      <!-- IDM & Administration -->
+      <div class="cue-sidenav__section">
+        <span class="cue-sidenav__section-label">IDM &amp; Administration</span>
+
+        <div class="cue-sidenav__item" id="nav-customer-mgmt">
+          <button class="cue-sidenav__item-btn" type="button" onclick="toggleNav('nav-customer-mgmt')">
+            <span class="cue-sidenav__item-icon"><span class="material-icons" aria-hidden="true">manage_accounts</span></span>
+            <span class="cue-sidenav__item-label">Customer Management</span>
+            <span class="cue-sidenav__chevron"><span class="material-icons" aria-hidden="true">chevron_right</span></span>
+          </button>
+          <div class="cue-sidenav__children">
+            <button class="cue-sidenav__child" type="button" onclick="activateNav(this, 'Customer Management')">Accounts</button>
+            <button class="cue-sidenav__child" type="button" onclick="activateNav(this, 'Customer Management')">Contacts</button>
+            <button class="cue-sidenav__child" type="button" onclick="activateNav(this, 'Customer Management')">Locations</button>
+          </div>
+        </div>
+
+        <div class="cue-sidenav__item is-open" id="nav-cue-setup">
+          <button class="cue-sidenav__item-btn" type="button" onclick="toggleNav('nav-cue-setup')">
+            <span class="cue-sidenav__item-icon"><span class="material-icons" aria-hidden="true">settings</span></span>
+            <span class="cue-sidenav__item-label">CUE System Set-Up</span>
+            <span class="cue-sidenav__chevron"><span class="material-icons" aria-hidden="true">chevron_right</span></span>
+          </button>
+          <div class="cue-sidenav__children">
+            <button class="cue-sidenav__child is-active" type="button" onclick="activateNav(this, 'CUE System Set-Up')">Users</button>
+            <button class="cue-sidenav__child" type="button" onclick="activateNav(this, 'CUE System Set-Up')">Roles</button>
+            <button class="cue-sidenav__child" type="button" onclick="activateNav(this, 'CUE System Set-Up')">Customer Types</button>
+            <button class="cue-sidenav__child" type="button" onclick="activateNav(this, 'CUE System Set-Up')">Groups</button>
+          </div>
+        </div>
+
+        <div class="cue-sidenav__item" id="nav-admin-reports">
+          <button class="cue-sidenav__item-btn" type="button" onclick="toggleNav('nav-admin-reports')">
+            <span class="cue-sidenav__item-icon"><span class="material-icons" aria-hidden="true">bar_chart</span></span>
+            <span class="cue-sidenav__item-label">Administrative Reports</span>
+            <span class="cue-sidenav__chevron"><span class="material-icons" aria-hidden="true">chevron_right</span></span>
+          </button>
+          <div class="cue-sidenav__children">
+            <button class="cue-sidenav__child" type="button" onclick="activateNav(this, 'Administrative Reports')">User Activity</button>
+            <button class="cue-sidenav__child" type="button" onclick="activateNav(this, 'Administrative Reports')">System Logs</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Commerce -->
+      <div class="cue-sidenav__section">
+        <span class="cue-sidenav__section-label">Commerce</span>
+
+        <div class="cue-sidenav__item" id="nav-product-mgmt">
+          <button class="cue-sidenav__item-btn" type="button" onclick="toggleNav('nav-product-mgmt')">
+            <span class="cue-sidenav__item-icon"><span class="material-icons" aria-hidden="true">inventory_2</span></span>
+            <span class="cue-sidenav__item-label">Product Management</span>
+            <span class="cue-sidenav__chevron"><span class="material-icons" aria-hidden="true">chevron_right</span></span>
+          </button>
+          <div class="cue-sidenav__children">
+            <button class="cue-sidenav__child" type="button" onclick="activateNav(this, 'Product Management')">Attributes</button>
+            <button class="cue-sidenav__child" type="button" onclick="activateNav(this, 'Product Management')">Categories</button>
+            <button class="cue-sidenav__child is-parent" type="button" onclick="toggleSubNav(this)">
+              Product Catalog
+              <span class="cue-sidenav__child-chevron"><span class="material-icons" aria-hidden="true">chevron_right</span></span>
+            </button>
+            <div class="cue-sidenav__subchildren">
+              <button class="cue-sidenav__subchild" type="button" onclick="activateNav(this, 'Product Catalog')">All Products</button>
+              <button class="cue-sidenav__subchild" type="button" onclick="activateNav(this, 'Product Catalog')">Drafts</button>
+              <button class="cue-sidenav__subchild" type="button" onclick="activateNav(this, 'Product Catalog')">Archived</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="cue-sidenav__item" id="nav-order-fulfillment">
+          <button class="cue-sidenav__item-btn" type="button" onclick="toggleNav('nav-order-fulfillment')">
+            <span class="cue-sidenav__item-icon"><span class="material-icons" aria-hidden="true">local_shipping</span></span>
+            <span class="cue-sidenav__item-label">Order Fulfillment</span>
+            <span class="cue-sidenav__chevron"><span class="material-icons" aria-hidden="true">chevron_right</span></span>
+          </button>
+          <div class="cue-sidenav__children">
+            <button class="cue-sidenav__child is-parent" type="button" onclick="toggleSubNav(this)">
+              Orders
+              <span class="cue-sidenav__child-chevron"><span class="material-icons" aria-hidden="true">chevron_right</span></span>
+            </button>
+            <div class="cue-sidenav__subchildren">
+              <button class="cue-sidenav__subchild" type="button" onclick="activateNav(this, 'Orders')">All Orders</button>
+              <button class="cue-sidenav__subchild" type="button" onclick="activateNav(this, 'Orders')">Pending</button>
+              <button class="cue-sidenav__subchild" type="button" onclick="activateNav(this, 'Orders')">Shipped</button>
+            </div>
+            <button class="cue-sidenav__child" type="button" onclick="activateNav(this, 'Order Fulfillment')">Shipping Management</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Manufacturing -->
+      <div class="cue-sidenav__section">
+        <span class="cue-sidenav__section-label">Manufacturing</span>
+
+        <div class="cue-sidenav__item" id="nav-inventory">
+          <button class="cue-sidenav__item-btn" type="button" onclick="toggleNav('nav-inventory')">
+            <span class="cue-sidenav__item-icon"><span class="material-icons" aria-hidden="true">inventory</span></span>
+            <span class="cue-sidenav__item-label">Inventory Management</span>
+            <span class="cue-sidenav__chevron"><span class="material-icons" aria-hidden="true">chevron_right</span></span>
+          </button>
+          <div class="cue-sidenav__children">
+            <button class="cue-sidenav__child is-parent" type="button" onclick="toggleSubNav(this)">
+              Warehouse Assembly
+              <span class="cue-sidenav__child-chevron"><span class="material-icons" aria-hidden="true">chevron_right</span></span>
+            </button>
+            <div class="cue-sidenav__subchildren">
+              <button class="cue-sidenav__subchild" type="button" onclick="activateNav(this, 'Warehouse Assembly')">Assembly Lines</button>
+              <button class="cue-sidenav__subchild" type="button" onclick="activateNav(this, 'Warehouse Assembly')">Work Orders</button>
+            </div>
+            <button class="cue-sidenav__child" type="button" onclick="activateNav(this, 'Inventory Management')">Inventory Volume</button>
+          </div>
+        </div>
+
+        <div class="cue-sidenav__item">
+          <button class="cue-sidenav__item-btn" type="button" onclick="activateNavItem(this, 'Manufacturing')">
+            <span class="cue-sidenav__item-icon"><span class="material-icons" aria-hidden="true">factory</span></span>
+            <span class="cue-sidenav__item-label">Manufacturing</span>
+          </button>
+        </div>
+
+        <div class="cue-sidenav__item">
+          <button class="cue-sidenav__item-btn" type="button" onclick="activateNavItem(this, 'Materials')">
+            <span class="cue-sidenav__item-icon"><span class="material-icons" aria-hidden="true">layers</span></span>
+            <span class="cue-sidenav__item-label">Materials</span>
+          </button>
+        </div>
+
+        <div class="cue-sidenav__item">
+          <button class="cue-sidenav__item-btn" type="button" onclick="activateNavItem(this, 'Vendors / Suppliers')">
+            <span class="cue-sidenav__item-icon"><span class="material-icons" aria-hidden="true">storefront</span></span>
+            <span class="cue-sidenav__item-label">Vendors / Suppliers</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Plug-ins & Integrations -->
+      <div class="cue-sidenav__section">
+        <span class="cue-sidenav__section-label">Plug-ins &amp; Integrations</span>
+
+        <div class="cue-sidenav__item">
+          <button class="cue-sidenav__item-btn" type="button" onclick="activateNavItem(this, 'CRM')">
+            <span class="cue-sidenav__item-icon"><span class="material-icons" aria-hidden="true">business_center</span></span>
+            <span class="cue-sidenav__item-label">CRM</span>
+          </button>
+        </div>
+        <div class="cue-sidenav__item">
+          <button class="cue-sidenav__item-btn" type="button" onclick="activateNavItem(this, 'Email')">
+            <span class="cue-sidenav__item-icon"><span class="material-icons" aria-hidden="true">email</span></span>
+            <span class="cue-sidenav__item-label">Email</span>
+          </button>
+        </div>
+        <div class="cue-sidenav__item">
+          <button class="cue-sidenav__item-btn" type="button" onclick="activateNavItem(this, 'Marketing Campaign')">
+            <span class="cue-sidenav__item-icon"><span class="material-icons" aria-hidden="true">campaign</span></span>
+            <span class="cue-sidenav__item-label">Marketing Campaign</span>
+          </button>
+        </div>
+        <div class="cue-sidenav__item">
+          <button class="cue-sidenav__item-btn" type="button" onclick="activateNavItem(this, 'Project Manager')">
+            <span class="cue-sidenav__item-icon"><span class="material-icons" aria-hidden="true">assignment</span></span>
+            <span class="cue-sidenav__item-label">Project Manager</span>
+          </button>
+        </div>
+        <div class="cue-sidenav__item">
+          <button class="cue-sidenav__item-btn" type="button" onclick="activateNavItem(this, 'Calendar')">
+            <span class="cue-sidenav__item-icon"><span class="material-icons" aria-hidden="true">calendar_today</span></span>
+            <span class="cue-sidenav__item-label">Calendar</span>
+          </button>
+        </div>
+      </div>
+
+    </nav>
+
+    <!-- Main content area -->
+    <div class="sidenav-demo-main">
+      <div class="sidenav-demo-topbar">
+        <div class="sidenav-demo-topbar__logo">
+          <img src="../assets/logo_CUE_glyph.svg" alt="CUE" />
+          <span class="sidenav-demo-topbar__logo-text">CUE</span>
+        </div>
+        <div class="sidenav-demo-topbar__actions">
+          <span class="material-icons" aria-hidden="true">notifications</span>
+          <span class="material-icons" aria-hidden="true">account_circle</span>
+        </div>
+      </div>
+
+      <div class="sidenav-demo-breadcrumb">
+        <span>Home</span>
+        <span class="sidenav-demo-breadcrumb__sep"><span class="material-icons" aria-hidden="true">chevron_right</span></span>
+        <span>IDM &amp; Administration</span>
+        <span class="sidenav-demo-breadcrumb__sep"><span class="material-icons" aria-hidden="true">chevron_right</span></span>
+        <span>CUE System Set-Up</span>
+        <span class="sidenav-demo-breadcrumb__sep"><span class="material-icons" aria-hidden="true">chevron_right</span></span>
+        <span class="sidenav-demo-breadcrumb__current" id="demo-breadcrumb">Users</span>
+      </div>
+
+      <div class="sidenav-demo-content">
+        <div class="sidenav-demo-page-header">
+          <span class="sidenav-demo-page-title" id="demo-page-title">Users</span>
+          <span class="sidenav-demo-page-subtitle">Manage users in CUE</span>
+        </div>
+        <div class="sidenav-demo-skeleton">
+          <div class="sidenav-demo-skeleton__row" style="height: 40px;"></div>
+          <div class="sidenav-demo-skeleton__row" style="height: 44px;"></div>
+          <div class="sidenav-demo-skeleton__row" style="height: 44px;"></div>
+          <div class="sidenav-demo-skeleton__row" style="height: 44px;"></div>
+          <div class="sidenav-demo-skeleton__row" style="height: 44px;"></div>
+          <div class="sidenav-demo-skeleton__row" style="height: 44px;"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ============================================================
+     DESIGN TOKENS
+============================================================ -->
+
+<div class="docs-section">
+  <p class="docs-section-label">Design Tokens</p>
+  <table class="docs-token-table">
+    <thead>
+      <tr><th>CSS Variable</th><th>Figma Token</th><th>Value</th><th>Usage</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>--bg-default</td><td>System/Background/bg-default</td><td><span class="docs-token-swatch" style="background:#ffffff; border-color:#ededed;"></span>#ffffff</td><td>Sidebar panel background</td></tr>
+      <tr><td>--border-level-1</td><td>System/Surface/Level 1/border-level-1</td><td><span class="docs-token-swatch" style="background:#ededed;"></span>#ededed</td><td>Sidebar right border</td></tr>
+      <tr><td>--content-side-nav-default</td><td>Components/Side Nav/content-side-nav-default</td><td><span class="docs-token-swatch" style="background:#262626;"></span>#262626</td><td>Default item text</td></tr>
+      <tr><td>--content-side-nav-hover</td><td>Components/Side Nav/content-side-nav-hover</td><td><span class="docs-token-swatch" style="background:#03618d;"></span>#03618d</td><td>Hover and open item text</td></tr>
+      <tr><td>--content-side-nav-current</td><td>Components/Side Nav/content-side-nav-current</td><td><span class="docs-token-swatch" style="background:#03618d;"></span>#03618d</td><td>Active item text (Bold)</td></tr>
+      <tr><td>--bg-side-nav-hover</td><td>Components/Side Nav/bg-side-nav-hover</td><td><span class="docs-token-swatch" style="background:#f0faff;"></span>#f0faff</td><td>Item hover background</td></tr>
+      <tr><td>--bg-side-nav-open</td><td>Components/Side Nav/bg-side-nav-open</td><td><span class="docs-token-swatch" style="background:#f0faff;"></span>#f0faff</td><td>Expanded parent item background</td></tr>
+      <tr><td>--bg-side-nav-current</td><td>Components/Side Nav/bg-side-nav-current</td><td><span class="docs-token-swatch" style="background:#d8ecf8;"></span>#d8ecf8</td><td>Active item background</td></tr>
+      <tr><td>--bg-tab-active-indicator</td><td>Components/Tab Navigation/bg-tab-active-indicator</td><td><span class="docs-token-swatch" style="background:#fab632;"></span>#fab632</td><td>3px active item left border</td></tr>
+      <tr><td>Sidebar width</td><td>—</td><td>200px</td><td>Fixed sidebar panel width</td></tr>
+      <tr><td>Item height</td><td>—</td><td>~32px (6px top/bottom padding)</td><td>Top-level nav item</td></tr>
+      <tr><td>Child height</td><td>—</td><td>~28px (5px top/bottom padding)</td><td>Child nav item</td></tr>
+      <tr><td>Child indent</td><td>—</td><td>2.25rem (36px)</td><td>Child left padding (accounts for icon width)</td></tr>
+      <tr><td>Sub-child indent</td><td>—</td><td>3.25rem (52px)</td><td>Level-3 item left padding</td></tr>
+      <tr><td>Section label font</td><td>Back Office UI/Caption 11pt/Regular</td><td>11px Regular uppercase</td><td>Section heading</td></tr>
+      <tr><td>Item font</td><td>Back Office UI/Body Small 14pt/Regular→Bold</td><td>14px Regular (default) / Bold (active)</td><td>Nav item labels</td></tr>
+      <tr><td>--bg-app-top-bar</td><td>Components/App Shell/bg-app-top-bar</td><td><span class="docs-token-swatch" style="background:#03618d;"></span>#03618d</td><td>Top bar background (in-shell demo)</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ============================================================
+     CODE
+============================================================ -->
+
+<div class="docs-section">
+  <p class="docs-section-label">Code</p>
+  <div class="docs-code-tabs">
+    <button class="docs-code-tab active" onclick="switchTab(event, 'sn-html')">HTML</button>
+    <button class="docs-code-tab" onclick="switchTab(event, 'sn-css')">Key CSS</button>
+    <button class="docs-code-tab" onclick="switchTab(event, 'sn-js')">JS</button>
+  </div>
+
+  <div class="docs-code-panel active" id="sn-html">
+    <div class="docs-code-block"><pre><code>&lt;nav class="cue-sidenav" aria-label="Main navigation"&gt;
+
+  &lt;!-- Section label --&gt;
+  &lt;div class="cue-sidenav__section"&gt;
+    &lt;span class="cue-sidenav__section-label"&gt;IDM &amp; Administration&lt;/span&gt;
+
+    &lt;!-- Collapsible parent item --&gt;
+    &lt;div class="cue-sidenav__item" id="nav-item-1"&gt;
+      &lt;button class="cue-sidenav__item-btn" type="button"
+        onclick="toggleNav('nav-item-1')"&gt;
+        &lt;span class="cue-sidenav__item-icon"&gt;
+          &lt;span class="material-icons" aria-hidden="true"&gt;settings&lt;/span&gt;
+        &lt;/span&gt;
+        &lt;span class="cue-sidenav__item-label"&gt;CUE System Set-Up&lt;/span&gt;
+        &lt;span class="cue-sidenav__chevron"&gt;
+          &lt;span class="material-icons" aria-hidden="true"&gt;chevron_right&lt;/span&gt;
+        &lt;/span&gt;
+      &lt;/button&gt;
+      &lt;div class="cue-sidenav__children"&gt;
+        &lt;!-- Active child --&gt;
+        &lt;button class="cue-sidenav__child is-active" type="button"&gt;Users&lt;/button&gt;
+        &lt;button class="cue-sidenav__child" type="button"&gt;Roles&lt;/button&gt;
+
+        &lt;!-- Child with sub-children (level 3) --&gt;
+        &lt;button class="cue-sidenav__child is-parent" type="button"
+          onclick="toggleSubNav(this)"&gt;
+          Product Catalog
+          &lt;span class="cue-sidenav__child-chevron"&gt;
+            &lt;span class="material-icons" aria-hidden="true"&gt;chevron_right&lt;/span&gt;
+          &lt;/span&gt;
+        &lt;/button&gt;
+        &lt;div class="cue-sidenav__subchildren"&gt;
+          &lt;button class="cue-sidenav__subchild" type="button"&gt;All Products&lt;/button&gt;
+          &lt;button class="cue-sidenav__subchild" type="button"&gt;Drafts&lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;!-- Leaf item (no children, no chevron) --&gt;
+    &lt;div class="cue-sidenav__item"&gt;
+      &lt;button class="cue-sidenav__item-btn" type="button"&gt;
+        &lt;span class="cue-sidenav__item-icon"&gt;
+          &lt;span class="material-icons" aria-hidden="true"&gt;factory&lt;/span&gt;
+        &lt;/span&gt;
+        &lt;span class="cue-sidenav__item-label"&gt;Manufacturing&lt;/span&gt;
+      &lt;/button&gt;
+    &lt;/div&gt;
+
+  &lt;/div&gt;
+&lt;/nav&gt;</code></pre></div>
+  </div>
+
+  <div class="docs-code-panel" id="sn-css">
+    <div class="docs-code-block"><pre><code>/* Sidebar panel */
+.cue-sidenav {
+  width: 200px; flex-shrink: 0;
+  background-color: var(--bg-default);
+  border-right: 1px solid var(--border-level-1);
+  display: flex; flex-direction: column;
+  overflow-y: auto; padding: 0.75rem 0;
+}
+
+/* Section label */
+.cue-sidenav__section-label {
+  font-size: 0.6875rem; font-weight: 400;
+  color: var(--content-body-moderate);
+  text-transform: uppercase; letter-spacing: 0.06em;
+  padding: 0.375rem 0.75rem 0.25rem;
+}
+
+/* Top-level item button */
+.cue-sidenav__item-btn {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 6px 0.75rem 6px 0.625rem;
+  background: none; border: none;
+  border-left: 3px solid transparent;
+  font-size: 0.875rem; font-weight: 400;
+  color: var(--content-side-nav-default);
+  cursor: pointer; width: 100%; text-align: left;
+  transition: background-color 0.1s ease, color 0.1s ease;
+}
+.cue-sidenav__item-btn:hover { background-color: var(--bg-side-nav-hover); color: var(--content-side-nav-hover); }
+.cue-sidenav__item-btn.is-active { background-color: var(--bg-side-nav-current); color: var(--content-side-nav-current); font-weight: 700; border-left-color: var(--bg-tab-active-indicator); }
+.cue-sidenav__item.is-open > .cue-sidenav__item-btn { background-color: var(--bg-side-nav-open); color: var(--content-side-nav-hover); }
+
+/* Chevron rotates 90° when open */
+.cue-sidenav__chevron { display: flex; color: var(--content-body-moderate); transition: transform 0.2s ease; margin-left: auto; }
+.cue-sidenav__chevron .material-icons { font-size: 16px; }
+.cue-sidenav__item.is-open > .cue-sidenav__item-btn .cue-sidenav__chevron { transform: rotate(90deg); }
+
+/* Children — max-height animation */
+.cue-sidenav__children { display: flex; flex-direction: column; overflow: hidden; max-height: 0; transition: max-height 0.2s ease; }
+.cue-sidenav__item.is-open > .cue-sidenav__children { max-height: 600px; }
+
+/* Child item */
+.cue-sidenav__child {
+  display: flex; align-items: center; gap: 0.375rem;
+  padding: 5px 0.75rem 5px 2.25rem;   /* 2.25rem = icon width + gap */
+  background: none; border: none;
+  border-left: 3px solid transparent;
+  font-size: 0.875rem; font-weight: 400;
+  color: var(--content-side-nav-default);
+  cursor: pointer; width: 100%; text-align: left;
+}
+.cue-sidenav__child:hover  { background-color: var(--bg-side-nav-hover); color: var(--content-side-nav-hover); }
+.cue-sidenav__child.is-active { background-color: var(--bg-side-nav-current); color: var(--content-side-nav-current); font-weight: 700; border-left-color: var(--bg-tab-active-indicator); }
+
+/* Sub-child (level 3) */
+.cue-sidenav__subchild { padding: 4px 0.75rem 4px 3.25rem; font-size: 0.8125rem; /* + same state rules as child */ }</code></pre></div>
+  </div>
+
+  <div class="docs-code-panel" id="sn-js">
+    <div class="docs-code-block"><pre><code>// Toggle a top-level collapsible item open/closed
+function toggleNav(itemId) {
+  const item = document.getElementById(itemId);
+  if (!item) return;
+  item.classList.toggle('is-open');
+}
+
+// Activate a child or sub-child item (deactivates all others)
+function activateNav(btn, pageTitle) {
+  // Clear all active states
+  document.querySelectorAll('.cue-sidenav__child.is-active, .cue-sidenav__subchild.is-active')
+    .forEach(el => el.classList.remove('is-active'));
+
+  btn.classList.add('is-active');
+
+  // Optional: update page title / breadcrumb
+  const titleEl = document.getElementById('demo-page-title');
+  if (titleEl) titleEl.textContent = btn.textContent.trim();
+}
+
+// Activate a top-level leaf item (no children)
+function activateNavItem(btn, pageTitle) {
+  document.querySelectorAll('.cue-sidenav__item-btn.is-active')
+    .forEach(el => el.classList.remove('is-active'));
+  document.querySelectorAll('.cue-sidenav__child.is-active, .cue-sidenav__subchild.is-active')
+    .forEach(el => el.classList.remove('is-active'));
+
+  btn.classList.add('is-active');
+
+  const titleEl = document.getElementById('demo-page-title');
+  if (titleEl) titleEl.textContent = pageTitle;
+}
+
+// Toggle a child item that itself has sub-children (level 3)
+function toggleSubNav(childBtn) {
+  childBtn.classList.toggle('is-open');
+  // The adjacent .cue-sidenav__subchildren opens via CSS sibling selector
+}</code></pre></div>
+  </div>
+
+</div>
+
+<script>
+  function toggleNav(itemId) {
+    var item = document.getElementById(itemId);
+    if (!item) return;
+    item.classList.toggle('is-open');
+  }
+
+  function activateNav(btn, pageTitle) {
+    document.querySelectorAll('.cue-sidenav__child.is-active, .cue-sidenav__subchild.is-active')
+      .forEach(function(el) { el.classList.remove('is-active'); });
+    document.querySelectorAll('.cue-sidenav__item-btn.is-active')
+      .forEach(function(el) { el.classList.remove('is-active'); });
+    btn.classList.add('is-active');
+    var titleEl = document.getElementById('demo-page-title');
+    var bcEl = document.getElementById('demo-breadcrumb');
+    var label = btn.textContent.trim();
+    if (titleEl) titleEl.textContent = label;
+    if (bcEl) bcEl.textContent = label;
+  }
+
+  function activateNavItem(btn, pageTitle) {
+    document.querySelectorAll('.cue-sidenav__item-btn.is-active')
+      .forEach(function(el) { el.classList.remove('is-active'); });
+    document.querySelectorAll('.cue-sidenav__child.is-active, .cue-sidenav__subchild.is-active')
+      .forEach(function(el) { el.classList.remove('is-active'); });
+    btn.classList.add('is-active');
+    var titleEl = document.getElementById('demo-page-title');
+    var bcEl = document.getElementById('demo-breadcrumb');
+    if (titleEl) titleEl.textContent = pageTitle;
+    if (bcEl) bcEl.textContent = pageTitle;
+  }
+
+  function toggleSubNav(childBtn) {
+    childBtn.classList.toggle('is-open');
+  }
+</script>
