@@ -1,0 +1,769 @@
+---
+layout: default
+title: "Notifications"
+activeNav: notifications
+root: ../
+---
+
+<style>
+  /* ─── Notification Icon (timeline circle) ─── */
+  .cue-notif-icon {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border-subdued, #d4d4d4);
+    background: var(--bg-level-1, #ffffff);
+    flex-shrink: 0;
+    position: relative;
+    z-index: 2;
+    box-sizing: border-box;
+  }
+
+  .cue-notif-icon--new {
+    background: var(--bg-accent-brand, #009cf9);
+    border-color: var(--bg-accent-brand, #009cf9);
+  }
+
+  /* ─── Timeline column ─── */
+  .cue-notif-timeline {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+    width: 12px;
+    align-self: stretch;
+    isolation: isolate;
+  }
+
+  .cue-notif-timeline__top {
+    width: 1px;
+    height: 2px;
+    background: var(--border-subdued, #d4d4d4);
+    flex-shrink: 0;
+    z-index: 3;
+  }
+
+  .cue-notif-timeline__bottom {
+    width: 1px;
+    flex: 1 0 0;
+    min-height: 1px;
+    background: var(--border-subdued, #d4d4d4);
+    z-index: 1;
+  }
+
+  /* ─── Notification Block ─── */
+  .cue-notif-block {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    background: var(--bg-level-1, #ffffff);
+    width: 100%;
+  }
+
+  .cue-notif-block__body {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 1rem;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .cue-notif-block__header {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    width: 100%;
+    padding-bottom: 4px;
+  }
+
+  .cue-notif-block__title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .cue-notif-block__title {
+    font-family: var(--font-family-body, 'Public Sans', sans-serif);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--content-body-default, #262626);
+    line-height: 1;
+  }
+
+  .cue-notif-block__category {
+    font-family: var(--font-family-body, 'Public Sans', sans-serif);
+    font-size: 0.6875rem;
+    font-weight: 400;
+    color: var(--content-body-moderate, #575757);
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .cue-notif-block__datetime {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .cue-notif-block__datetime span {
+    font-family: var(--font-family-body, 'Public Sans', sans-serif);
+    font-size: 0.6875rem;
+    font-weight: 400;
+    color: var(--content-body-moderate, #575757);
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .cue-notif-block__description {
+    font-family: var(--font-family-body, 'Public Sans', sans-serif);
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--content-body-default, #262626);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* ─── Notification Panel ─── */
+  .cue-notif-panel {
+    background: var(--bg-level-1, #ffffff);
+    border: 1px solid var(--border-level-1, #ededed);
+    border-radius: 4px;
+    padding: 1.5rem 1.5rem 1rem 1.5rem;
+    display: inline-flex;
+    flex-direction: column;
+    width: 375px;
+  }
+
+  /* Remove bottom connector from last block */
+  .cue-notif-panel .cue-notif-block:last-child .cue-notif-timeline__bottom {
+    display: none;
+  }
+
+  /* ─── Notification Indicator ─── */
+  .cue-notif-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 200px;
+    background: var(--bg-accent-brand, #009cf9);
+    border: 2px solid var(--border-primary-brand, #03618d);
+    display: inline-block;
+    flex-shrink: 0;
+    box-sizing: border-box;
+  }
+
+  /* ─── Notifications Badge ─── */
+  .cue-notif-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 200px;
+    background: var(--bg-level-1, #ffffff);
+    border: 1px solid var(--border-accent-brand, #009cf9);
+    font-family: var(--font-family-body, 'Public Sans', sans-serif);
+    font-size: 0.625rem;
+    font-weight: 700;
+    color: var(--content-body-primary-brand, #03618d);
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  /* ─── Date and Time standalone ─── */
+  .cue-notif-datetime-standalone {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: var(--font-family-body, 'Public Sans', sans-serif);
+    font-size: 0.6875rem;
+    font-weight: 400;
+    color: var(--content-body-moderate, #8a8a8a);
+    line-height: 1;
+  }
+
+  /* ─── Indicator demo surface ─── */
+  .cue-notif-indicator-demo {
+    background: var(--bg-primary-brand, #03618d);
+    border-radius: 6px;
+    padding: 1rem 1.25rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+</style>
+
+
+<div class="docs-page-header">
+  <h1 class="docs-page-title">Notifications</h1>
+  <p class="docs-page-description">
+    The Notifications system surfaces in-app alerts to users via a timeline-style panel. It consists of sub-components — the Notification Block, Timeline Connector, Date and Time, Notification Indicator, and Badge — that compose into a full Notification Panel.
+  </p>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     NOTIFICATION PANEL
+════════════════════════════════════════════ -->
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Notification Panel</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">
+    The full panel renders a scrollable list of Notification Blocks in a card container. Unread items display a filled blue timeline icon; read items show an empty circle. The timeline connector line threads continuously between all items.
+  </p>
+  <div class="docs-example" style="overflow: visible;">
+    <div class="cue-notif-panel">
+
+      <!-- Block 1 — Unread -->
+      <div class="cue-notif-block">
+        <div class="cue-notif-timeline">
+          <div class="cue-notif-timeline__top"></div>
+          <div class="cue-notif-icon cue-notif-icon--new"></div>
+          <div class="cue-notif-timeline__bottom"></div>
+        </div>
+        <div class="cue-notif-block__body">
+          <div class="cue-notif-block__header">
+            <div class="cue-notif-block__title-group">
+              <span class="cue-notif-block__title">Notification Title</span>
+              <span class="cue-notif-block__category">Category</span>
+            </div>
+            <div class="cue-notif-block__datetime">
+              <span>01/01/2025</span>
+              <span>•</span>
+              <span>6:00 PM</span>
+            </div>
+          </div>
+          <p class="cue-notif-block__description">Notification description will go here.</p>
+        </div>
+      </div>
+
+      <!-- Block 2 — Unread -->
+      <div class="cue-notif-block">
+        <div class="cue-notif-timeline">
+          <div class="cue-notif-timeline__top"></div>
+          <div class="cue-notif-icon cue-notif-icon--new"></div>
+          <div class="cue-notif-timeline__bottom"></div>
+        </div>
+        <div class="cue-notif-block__body">
+          <div class="cue-notif-block__header">
+            <div class="cue-notif-block__title-group">
+              <span class="cue-notif-block__title">Notification Title</span>
+              <span class="cue-notif-block__category">Category</span>
+            </div>
+            <div class="cue-notif-block__datetime">
+              <span>01/01/2025</span>
+              <span>•</span>
+              <span>6:00 PM</span>
+            </div>
+          </div>
+          <p class="cue-notif-block__description">Notification description will go here.</p>
+        </div>
+      </div>
+
+      <!-- Block 3 — Read -->
+      <div class="cue-notif-block">
+        <div class="cue-notif-timeline">
+          <div class="cue-notif-timeline__top"></div>
+          <div class="cue-notif-icon"></div>
+          <div class="cue-notif-timeline__bottom"></div>
+        </div>
+        <div class="cue-notif-block__body">
+          <div class="cue-notif-block__header">
+            <div class="cue-notif-block__title-group">
+              <span class="cue-notif-block__title">Notification Title</span>
+              <span class="cue-notif-block__category">Category</span>
+            </div>
+            <div class="cue-notif-block__datetime">
+              <span>01/01/2025</span>
+              <span>•</span>
+              <span>6:00 PM</span>
+            </div>
+          </div>
+          <p class="cue-notif-block__description">Notification description will go here.</p>
+        </div>
+      </div>
+
+      <!-- Block 4 — Read -->
+      <div class="cue-notif-block">
+        <div class="cue-notif-timeline">
+          <div class="cue-notif-timeline__top"></div>
+          <div class="cue-notif-icon"></div>
+          <div class="cue-notif-timeline__bottom"></div>
+        </div>
+        <div class="cue-notif-block__body">
+          <div class="cue-notif-block__header">
+            <div class="cue-notif-block__title-group">
+              <span class="cue-notif-block__title">Notification Title</span>
+              <span class="cue-notif-block__category">Category</span>
+            </div>
+            <div class="cue-notif-block__datetime">
+              <span>01/01/2025</span>
+              <span>•</span>
+              <span>6:00 PM</span>
+            </div>
+          </div>
+          <p class="cue-notif-block__description">Notification description will go here.</p>
+        </div>
+      </div>
+
+      <!-- Block 5 — Read -->
+      <div class="cue-notif-block">
+        <div class="cue-notif-timeline">
+          <div class="cue-notif-timeline__top"></div>
+          <div class="cue-notif-icon"></div>
+          <div class="cue-notif-timeline__bottom"></div>
+        </div>
+        <div class="cue-notif-block__body">
+          <div class="cue-notif-block__header">
+            <div class="cue-notif-block__title-group">
+              <span class="cue-notif-block__title">Notification Title</span>
+              <span class="cue-notif-block__category">Category</span>
+            </div>
+            <div class="cue-notif-block__datetime">
+              <span>01/01/2025</span>
+              <span>•</span>
+              <span>6:00 PM</span>
+            </div>
+          </div>
+          <p class="cue-notif-block__description">Notification description will go here.</p>
+        </div>
+      </div>
+
+      <!-- Block 6 — Read (last) -->
+      <div class="cue-notif-block">
+        <div class="cue-notif-timeline">
+          <div class="cue-notif-timeline__top"></div>
+          <div class="cue-notif-icon"></div>
+          <!-- No bottom connector — last item, hidden via CSS -->
+          <div class="cue-notif-timeline__bottom"></div>
+        </div>
+        <div class="cue-notif-block__body">
+          <div class="cue-notif-block__header">
+            <div class="cue-notif-block__title-group">
+              <span class="cue-notif-block__title">Notification Title</span>
+              <span class="cue-notif-block__category">Category</span>
+            </div>
+            <div class="cue-notif-block__datetime">
+              <span>01/01/2025</span>
+              <span>•</span>
+              <span>6:00 PM</span>
+            </div>
+          </div>
+          <p class="cue-notif-block__description">Notification description will go here.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+
+<!-- ═══════════════════════════════════════════
+     NOTIFICATION BLOCK
+════════════════════════════════════════════ -->
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Notification Block</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">
+    The base unit of the notification list. Pairs a Timeline Connector with a content area containing the title, optional category label, timestamp, and description text.
+  </p>
+
+  <p style="font-size: 0.75rem; font-weight: 600; color: var(--content-body-moderate); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.75rem;">Unread</p>
+  <div class="docs-example" style="max-width: 380px;">
+    <div class="cue-notif-block" style="padding-bottom: 0;">
+      <div class="cue-notif-timeline" style="align-self: auto; min-height: 48px;">
+        <div class="cue-notif-timeline__top"></div>
+        <div class="cue-notif-icon cue-notif-icon--new"></div>
+        <div class="cue-notif-timeline__bottom"></div>
+      </div>
+      <div class="cue-notif-block__body" style="padding-bottom: 0;">
+        <div class="cue-notif-block__header">
+          <div class="cue-notif-block__title-group">
+            <span class="cue-notif-block__title">Notification Title</span>
+            <span class="cue-notif-block__category">Category</span>
+          </div>
+          <div class="cue-notif-block__datetime">
+            <span>01/01/2025</span>
+            <span>•</span>
+            <span>6:00 PM</span>
+          </div>
+        </div>
+        <p class="cue-notif-block__description">Notification description will go here.</p>
+      </div>
+    </div>
+  </div>
+
+  <p style="font-size: 0.75rem; font-weight: 600; color: var(--content-body-moderate); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.75rem; margin-top: 1.5rem;">Read</p>
+  <div class="docs-example" style="max-width: 380px;">
+    <div class="cue-notif-block" style="padding-bottom: 0;">
+      <div class="cue-notif-timeline" style="align-self: auto; min-height: 48px;">
+        <div class="cue-notif-timeline__top"></div>
+        <div class="cue-notif-icon"></div>
+        <div class="cue-notif-timeline__bottom"></div>
+      </div>
+      <div class="cue-notif-block__body" style="padding-bottom: 0;">
+        <div class="cue-notif-block__header">
+          <div class="cue-notif-block__title-group">
+            <span class="cue-notif-block__title">Notification Title</span>
+            <span class="cue-notif-block__category">Category</span>
+          </div>
+          <div class="cue-notif-block__datetime">
+            <span>01/01/2025</span>
+            <span>•</span>
+            <span>6:00 PM</span>
+          </div>
+        </div>
+        <p class="cue-notif-block__description">Notification description will go here.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+
+<!-- ═══════════════════════════════════════════
+     SUB-COMPONENTS
+════════════════════════════════════════════ -->
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Sub-components</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">
+    The building blocks that compose a Notification Block and Panel.
+  </p>
+
+  <!-- Timeline Circle and Connector -->
+  <p class="docs-section-label">Timeline Circle and Connector</p>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1rem; line-height: 1.6;">
+    A vertical connector line threaded through a circle icon. The circle fills blue (<code>bg-accent-brand</code>) when the notification is unread. The top and bottom connector segments link continuously between stacked blocks.
+  </p>
+  <div class="docs-example" style="display: flex; gap: 3rem; align-items: flex-start;">
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+      <div class="cue-notif-timeline" style="height: 64px;">
+        <div class="cue-notif-timeline__top"></div>
+        <div class="cue-notif-icon"></div>
+        <div class="cue-notif-timeline__bottom"></div>
+      </div>
+      <span style="font-size: 0.6875rem; color: var(--content-body-moderate);">Read</span>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+      <div class="cue-notif-timeline" style="height: 64px;">
+        <div class="cue-notif-timeline__top"></div>
+        <div class="cue-notif-icon cue-notif-icon--new"></div>
+        <div class="cue-notif-timeline__bottom"></div>
+      </div>
+      <span style="font-size: 0.6875rem; color: var(--content-body-moderate);">Unread</span>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+      <div class="cue-notif-timeline" style="height: 64px;">
+        <div class="cue-notif-icon"></div>
+        <div class="cue-notif-timeline__bottom"></div>
+      </div>
+      <span style="font-size: 0.6875rem; color: var(--content-body-moderate);">No Top Line</span>
+    </div>
+  </div>
+</div>
+
+<div class="docs-section">
+  <!-- Date and Time -->
+  <p class="docs-section-label">Date and Time</p>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1rem; line-height: 1.6;">
+    Displays the notification timestamp. Date, bullet separator, and time render inline using the 11pt body style in <code>content-body-subdued</code>.
+  </p>
+  <div class="docs-example">
+    <div class="cue-notif-datetime-standalone">
+      <span>01/01/2025</span>
+      <span>•</span>
+      <span>6:00 PM</span>
+    </div>
+  </div>
+</div>
+
+<div class="docs-section">
+  <!-- Notification Indicator -->
+  <p class="docs-section-label">Notification Indicator</p>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1rem; line-height: 1.6;">
+    A small dot used in the app shell topbar or navigation to signal unread notifications. The accent-brand fill with a primary-brand border creates a visible call-out on dark header backgrounds.
+  </p>
+  <div class="docs-example">
+    <div class="cue-notif-indicator-demo">
+      <div class="cue-notif-badge">9</div>
+      <div class="cue-notif-indicator"></div>
+    </div>
+  </div>
+</div>
+
+<div class="docs-section">
+  <!-- Notifications Badge -->
+  <p class="docs-section-label">Notifications Badge with Number</p>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1rem; line-height: 1.6;">
+    A circular badge showing unread count, positioned on the notification bell icon in the app topbar. Uses a white background with an accent-brand border and primary-brand text.
+  </p>
+  <div class="docs-example" style="display: flex; gap: 1rem; align-items: center;">
+    <div class="cue-notif-badge">3</div>
+    <div class="cue-notif-badge">12</div>
+    <div class="cue-notif-badge">99</div>
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+
+<!-- ═══════════════════════════════════════════
+     DESIGN TOKENS
+════════════════════════════════════════════ -->
+<div class="docs-section">
+  <p class="docs-section-label">Design Tokens</p>
+  <table class="docs-token-table">
+    <thead>
+      <tr><th>CSS Variable</th><th>Figma Token</th><th>Value</th><th>Usage</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>--bg-accent-brand</td>
+        <td>System/Background/bg-accent-brand</td>
+        <td><span class="docs-token-swatch" style="background:#009cf9;"></span>#009cf9</td>
+        <td>Unread icon fill; indicator dot fill</td>
+      </tr>
+      <tr>
+        <td>--border-accent-brand</td>
+        <td>System/Border/border-accent-brand</td>
+        <td><span class="docs-token-swatch" style="background:#009cf9; border: 1px solid #ccc;"></span>#009cf9</td>
+        <td>Badge border; unread icon stroke</td>
+      </tr>
+      <tr>
+        <td>--border-primary-brand</td>
+        <td>System/Border/border-primary-brand</td>
+        <td><span class="docs-token-swatch" style="background:#03618d;"></span>#03618d</td>
+        <td>Indicator dot outer ring</td>
+      </tr>
+      <tr>
+        <td>--content-body-primary-brand</td>
+        <td>System/Content/content-body-primary-brand</td>
+        <td><span class="docs-token-swatch" style="background:#03618d;"></span>#03618d</td>
+        <td>Badge number text color</td>
+      </tr>
+      <tr>
+        <td>--border-subdued</td>
+        <td>System/Background/bg-subtle</td>
+        <td><span class="docs-token-swatch" style="background:#d4d4d4;"></span>#d4d4d4</td>
+        <td>Timeline connector lines; read icon border</td>
+      </tr>
+      <tr>
+        <td>--content-body-default</td>
+        <td>System/Content/content-body-default</td>
+        <td><span class="docs-token-swatch" style="background:#262626;"></span>#262626</td>
+        <td>Notification title and description text</td>
+      </tr>
+      <tr>
+        <td>--content-body-moderate</td>
+        <td>System/Content/content-body-subdued</td>
+        <td><span class="docs-token-swatch" style="background:#575757;"></span>#575757</td>
+        <td>Category label; timestamp text</td>
+      </tr>
+      <tr>
+        <td>--border-level-1</td>
+        <td>System/Border/border-extra-subtle</td>
+        <td><span class="docs-token-swatch" style="background:#ededed; border: 1px solid #ccc;"></span>#ededed</td>
+        <td>Notification Panel card border</td>
+      </tr>
+      <tr>
+        <td>--bg-level-1</td>
+        <td>System/Background/bg-default</td>
+        <td><span class="docs-token-swatch" style="background:#ffffff; border: 1px solid #ccc;"></span>#ffffff</td>
+        <td>Panel and block background; badge fill</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<hr class="docs-divider" />
+
+
+<!-- ═══════════════════════════════════════════
+     CODE
+════════════════════════════════════════════ -->
+<div class="docs-section">
+  <p class="docs-section-label">Code</p>
+  <div class="docs-code-tabs">
+    <button class="docs-code-tab active" onclick="switchTab(event, 'notif-html')">HTML</button>
+    <button class="docs-code-tab" onclick="switchTab(event, 'notif-css')">CSS</button>
+  </div>
+
+  <div class="docs-code-panel active" id="notif-html">
+    <div class="docs-code-block"><pre><code>&lt;!-- Notification Panel --&gt;
+&lt;div class="cue-notif-panel"&gt;
+
+  &lt;!-- Notification Block (Unread) --&gt;
+  &lt;div class="cue-notif-block"&gt;
+    &lt;div class="cue-notif-timeline"&gt;
+      &lt;div class="cue-notif-timeline__top"&gt;&lt;/div&gt;
+      &lt;div class="cue-notif-icon cue-notif-icon--new"&gt;&lt;/div&gt;
+      &lt;div class="cue-notif-timeline__bottom"&gt;&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="cue-notif-block__body"&gt;
+      &lt;div class="cue-notif-block__header"&gt;
+        &lt;div class="cue-notif-block__title-group"&gt;
+          &lt;span class="cue-notif-block__title"&gt;Notification Title&lt;/span&gt;
+          &lt;span class="cue-notif-block__category"&gt;Category&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div class="cue-notif-block__datetime"&gt;
+          &lt;span&gt;01/01/2025&lt;/span&gt;
+          &lt;span&gt;&amp;bull;&lt;/span&gt;
+          &lt;span&gt;6:00 PM&lt;/span&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;p class="cue-notif-block__description"&gt;Notification description will go here.&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;!-- Notification Block (Read) --&gt;
+  &lt;div class="cue-notif-block"&gt;
+    &lt;div class="cue-notif-timeline"&gt;
+      &lt;div class="cue-notif-timeline__top"&gt;&lt;/div&gt;
+      &lt;div class="cue-notif-icon"&gt;&lt;/div&gt;
+      &lt;div class="cue-notif-timeline__bottom"&gt;&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="cue-notif-block__body"&gt;
+      &lt;!-- same structure as above --&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;!-- Notification Indicator (in topbar) --&gt;
+&lt;div class="cue-notif-indicator"&gt;&lt;/div&gt;
+
+&lt;!-- Notifications Badge (on bell icon) --&gt;
+&lt;div class="cue-notif-badge"&gt;3&lt;/div&gt;</code></pre></div>
+  </div>
+
+  <div class="docs-code-panel" id="notif-css">
+    <div class="docs-code-block"><pre><code>/* Timeline icon circle */
+.cue-notif-icon {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-subdued, #d4d4d4);
+  background: var(--bg-level-1, #ffffff);
+  flex-shrink: 0;
+  z-index: 2;
+  box-sizing: border-box;
+}
+
+/* Unread state */
+.cue-notif-icon--new {
+  background: var(--bg-accent-brand, #009cf9);
+  border-color: var(--bg-accent-brand, #009cf9);
+}
+
+/* Timeline column */
+.cue-notif-timeline {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  width: 12px;
+  align-self: stretch;
+  isolation: isolate;
+}
+
+.cue-notif-timeline__top {
+  width: 1px;
+  height: 2px;
+  background: var(--border-subdued, #d4d4d4);
+  flex-shrink: 0;
+}
+
+.cue-notif-timeline__bottom {
+  width: 1px;
+  flex: 1 0 0;
+  min-height: 1px;
+  background: var(--border-subdued, #d4d4d4);
+}
+
+/* Notification Block */
+.cue-notif-block {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  background: var(--bg-level-1, #ffffff);
+  width: 100%;
+}
+
+.cue-notif-block__body {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 1rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.cue-notif-block__header {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  width: 100%;
+  padding-bottom: 4px;
+}
+
+.cue-notif-block__title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--content-body-default, #262626);
+}
+
+.cue-notif-block__category {
+  font-size: 0.6875rem;
+  color: var(--content-body-moderate, #575757);
+}
+
+.cue-notif-block__description {
+  font-size: 0.75rem;
+  color: var(--content-body-default, #262626);
+  line-height: 1.5;
+}
+
+/* Notification Panel */
+.cue-notif-panel {
+  background: var(--bg-level-1, #ffffff);
+  border: 1px solid var(--border-level-1, #ededed);
+  border-radius: 4px;
+  padding: 1.5rem 1.5rem 1rem 1.5rem;
+  display: inline-flex;
+  flex-direction: column;
+  width: 375px;
+}
+
+/* Hide bottom connector on last block */
+.cue-notif-panel .cue-notif-block:last-child .cue-notif-timeline__bottom {
+  display: none;
+}
+
+/* Notification Indicator */
+.cue-notif-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 200px;
+  background: var(--bg-accent-brand, #009cf9);
+  border: 2px solid var(--border-primary-brand, #03618d);
+  box-sizing: border-box;
+}
+
+/* Notifications Badge */
+.cue-notif-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 200px;
+  background: var(--bg-level-1, #ffffff);
+  border: 1px solid var(--border-accent-brand, #009cf9);
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: var(--content-body-primary-brand, #03618d);
+}</code></pre></div>
+  </div>
+</div>
