@@ -1,0 +1,519 @@
+---
+layout: default
+title: "Progress Indicator"
+activeNav: progress-indicator
+root: ../
+---
+
+<style>
+  /* ── Progress bar base ── */
+  .cue-progress-track {
+    background: var(--bg-extra-subtle, #ededed);
+    border-radius: 100px;
+    height: 4px;
+    width: 100%;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .cue-progress-fill {
+    height: 4px;
+    border-radius: 100px;
+    width: 0%;
+    transition: width 0.3s ease;
+  }
+
+  .cue-progress-fill--upload {
+    background: var(--bg-accent-brand, #009cf9);
+  }
+
+  .cue-progress-fill--download {
+    background: var(--bg-secondary-brand, #fab632);
+  }
+
+  /* ── Animated demo variant ── */
+  @keyframes progress-run {
+    0%   { width: 0%; }
+    80%  { width: 100%; }
+    100% { width: 100%; }
+  }
+
+  .cue-progress-fill--animated {
+    animation: progress-run 2.4s ease-in-out infinite;
+  }
+
+  /* ── Toast wrappers for demo ── */
+  .demo-toast-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 440px;
+  }
+
+  .cue-progress-toast {
+    background: var(--bg-level-1, #ffffff);
+    border: 1px solid var(--border-level-1, #ededed);
+    border-radius: 8px;
+    box-shadow: 0 12px 14px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+  }
+
+  .cue-progress-toast__body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .cue-progress-toast__title {
+    font-family: var(--font-family-body, 'Public Sans', sans-serif);
+    font-size: 0.875rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--content-body-default, #262626);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .cue-progress-toast__success {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-family-body, 'Public Sans', sans-serif);
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--content-body-default, #262626);
+  }
+
+  .cue-progress-toast__success .material-icons {
+    font-size: 18px;
+    color: var(--status-success-content, #1a7f4b);
+  }
+
+  /* ── Variant strip demos ── */
+  .progress-variant-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .progress-variant-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .progress-variant-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--content-body-moderate, #8a8a8a);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  /* ── Indeterminate shimmer ── */
+  @keyframes progress-shimmer {
+    0%   { transform: translateX(-100%); }
+    100% { transform: translateX(400%); }
+  }
+
+  .cue-progress-fill--indeterminate {
+    width: 35%;
+    animation: progress-shimmer 1.6s ease-in-out infinite;
+  }
+
+  /* ── Interactive demo controls ── */
+  .demo-controls {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+</style>
+
+<div class="docs-page-header">
+  <h1 class="docs-page-title">Progress Indicator</h1>
+  <p class="docs-page-description">
+    A slim 4px progress bar used inside toast notifications to communicate file
+    export, upload, or other background task status. Comes in two color variants
+    — blue for uploads, amber for downloads — and supports both determinate
+    (percentage-driven) and indeterminate (animated loop) states.
+  </p>
+</div>
+
+<!-- ── Toast Example ── -->
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Toast with Progress</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">
+    The progress indicator lives inside a toast component. The in-progress state
+    shows a title, the animated progress bar, and a Cancel action. On completion
+    it transitions to a success message with a Download or Confirm action.
+  </p>
+  <div class="docs-example">
+    <div class="demo-toast-wrap">
+
+      <!-- In-progress toast -->
+      <div class="cue-progress-toast" id="demo-toast-progress">
+        <div class="cue-progress-toast__body">
+          <p class="cue-progress-toast__title">Preparing to export Warehouse 1325.xls</p>
+          <div class="cue-progress-track">
+            <div class="cue-progress-fill cue-progress-fill--download" id="demo-fill" style="width: 0%;"></div>
+          </div>
+        </div>
+        <button class="cue-btn cue-btn--neutral-stroke cue-btn--sm" id="demo-cancel-btn" onclick="resetDemo()">Cancel</button>
+      </div>
+
+      <!-- Complete toast (hidden until done) -->
+      <div class="cue-progress-toast" id="demo-toast-complete" style="display:none;">
+        <div class="cue-progress-toast__body">
+          <p class="cue-progress-toast__success">
+            <span class="material-icons" aria-hidden="true">check_circle</span>
+            Warehouse 1325.xls is ready to download.
+          </p>
+        </div>
+        <button class="cue-btn cue-btn--primary cue-btn--sm">Download</button>
+      </div>
+
+    </div>
+
+    <!-- Controls -->
+    <div style="margin-top: 20px;">
+      <div class="demo-controls">
+        <button class="cue-btn cue-btn--secondary cue-btn--sm" onclick="startDemo()">▶ Run animation</button>
+        <button class="cue-btn cue-btn--neutral-stroke cue-btn--sm" onclick="resetDemo()">↺ Reset</button>
+      </div>
+      <p style="font-size: 0.8125rem; color: var(--content-body-moderate);">Click <strong>Run animation</strong> to see the progress bar fill and toast transition.</p>
+    </div>
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ── Variants ── -->
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Variants</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">
+    Two color variants map to operation type. Use <strong>Download</strong> (amber) for export or file generation tasks.
+    Use <strong>Upload</strong> (blue) for import or file transfer tasks.
+  </p>
+  <div class="docs-example">
+    <div class="progress-variant-grid">
+
+      <div class="progress-variant-row">
+        <span class="progress-variant-label">Download — Amber / Secondary Brand</span>
+        <div class="cue-progress-track" style="max-width: 360px;">
+          <div class="cue-progress-fill cue-progress-fill--download cue-progress-fill--animated"></div>
+        </div>
+      </div>
+
+      <div class="progress-variant-row">
+        <span class="progress-variant-label">Upload — Blue / Accent Brand</span>
+        <div class="cue-progress-track" style="max-width: 360px;">
+          <div class="cue-progress-fill cue-progress-fill--upload cue-progress-fill--animated"></div>
+        </div>
+      </div>
+
+      <div class="progress-variant-row">
+        <span class="progress-variant-label">Indeterminate — when duration is unknown</span>
+        <div class="cue-progress-track" style="max-width: 360px; overflow: hidden;">
+          <div class="cue-progress-fill cue-progress-fill--download cue-progress-fill--indeterminate"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ── Design Tokens ── -->
+<div class="docs-section">
+  <p class="docs-section-label">Design Tokens</p>
+  <table class="docs-token-table">
+    <thead>
+      <tr><th>CSS Variable</th><th>Figma Token</th><th>Value</th><th>Usage</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>--bg-extra-subtle</td>
+        <td>System/Background/bg-extra-subtle</td>
+        <td><span class="docs-token-swatch" style="background:#ededed;"></span>#ededed</td>
+        <td>Progress bar track (empty state)</td>
+      </tr>
+      <tr>
+        <td>--bg-secondary-brand</td>
+        <td>System/Background/bg-secondary-brand</td>
+        <td><span class="docs-token-swatch" style="background:#fab632;"></span>#fab632</td>
+        <td>Download / export progress fill</td>
+      </tr>
+      <tr>
+        <td>--bg-accent-brand</td>
+        <td>System/Background/bg-accent-brand</td>
+        <td><span class="docs-token-swatch" style="background:#009cf9;"></span>#009cf9</td>
+        <td>Upload / import progress fill</td>
+      </tr>
+      <tr>
+        <td>--bg-level-1</td>
+        <td>System/Surface/Level-1/bg-level-1</td>
+        <td><span class="docs-token-swatch" style="background:#ffffff; border: 1px solid #ededed;"></span>#ffffff</td>
+        <td>Toast background surface</td>
+      </tr>
+      <tr>
+        <td>--border-level-1</td>
+        <td>System/Surface/Level-1/border-level-1</td>
+        <td><span class="docs-token-swatch" style="background:#ededed;"></span>#ededed</td>
+        <td>Toast border</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ── Specs ── -->
+<div class="docs-section">
+  <p class="docs-section-label">Specs</p>
+  <table class="docs-token-table">
+    <thead>
+      <tr><th>Property</th><th>Value</th><th>Notes</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Track height</td><td>4px</td><td>Fixed — do not scale</td></tr>
+      <tr><td>Border radius</td><td>100px</td><td>Pill ends on both track and fill</td></tr>
+      <tr><td>Fill animation duration</td><td>Driven by JS</td><td>Use <code>transition: width 0.3s ease</code> for smooth updates</td></tr>
+      <tr><td>Indeterminate animation</td><td>1.6s ease-in-out infinite</td><td>Fill width 35%, translates from -100% to +400%</td></tr>
+      <tr><td>Toast shadow</td><td>Shadow/12</td><td>0 12px 14px rgba(0,0,0,0.1)</td></tr>
+      <tr><td>Toast padding</td><td>16px</td><td>All sides</td></tr>
+      <tr><td>Toast border radius</td><td>8px</td><td></td></tr>
+      <tr><td>Gap between bar and button</td><td>16px</td><td></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ── Code ── -->
+<div class="docs-section">
+  <p class="docs-section-label">Code</p>
+  <div class="docs-code-tabs">
+    <button class="docs-code-tab active" onclick="switchTab(event, 'pi-html')">HTML</button>
+    <button class="docs-code-tab" onclick="switchTab(event, 'pi-css')">CSS</button>
+    <button class="docs-code-tab" onclick="switchTab(event, 'pi-js')">JS</button>
+  </div>
+
+  <div class="docs-code-panel active" id="pi-html">
+    <div class="docs-code-block"><pre><code>&lt;!-- In-progress toast --&gt;
+&lt;div class="cue-progress-toast"&gt;
+  &lt;div class="cue-progress-toast__body"&gt;
+    &lt;p class="cue-progress-toast__title"&gt;Preparing to export Warehouse 1325.xls&lt;/p&gt;
+    &lt;div class="cue-progress-track"&gt;
+      &lt;div class="cue-progress-fill cue-progress-fill--download" id="progress-fill"&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;button class="cue-btn cue-btn--neutral-stroke cue-btn--sm"&gt;Cancel&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;!-- Complete toast --&gt;
+&lt;div class="cue-progress-toast"&gt;
+  &lt;div class="cue-progress-toast__body"&gt;
+    &lt;p class="cue-progress-toast__success"&gt;
+      &lt;span class="material-icons" aria-hidden="true"&gt;check_circle&lt;/span&gt;
+      Warehouse 1325.xls is ready to download.
+    &lt;/p&gt;
+  &lt;/div&gt;
+  &lt;button class="cue-btn cue-btn--primary cue-btn--sm"&gt;Download&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;!-- Standalone progress bar (determinate) --&gt;
+&lt;div class="cue-progress-track"&gt;
+  &lt;div class="cue-progress-fill cue-progress-fill--download" style="width: 65%;"&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Standalone progress bar (indeterminate) --&gt;
+&lt;div class="cue-progress-track"&gt;
+  &lt;div class="cue-progress-fill cue-progress-fill--download cue-progress-fill--indeterminate"&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre></div>
+  </div>
+
+  <div class="docs-code-panel" id="pi-css">
+    <div class="docs-code-block"><pre><code>/* Track */
+.cue-progress-track {
+  background: var(--bg-extra-subtle, #ededed);
+  border-radius: 100px;
+  height: 4px;
+  width: 100%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+/* Fill base */
+.cue-progress-fill {
+  height: 4px;
+  border-radius: 100px;
+  width: 0%;
+  transition: width 0.3s ease;
+}
+
+/* Color variants */
+.cue-progress-fill--download { background: var(--bg-secondary-brand, #fab632); }
+.cue-progress-fill--upload   { background: var(--bg-accent-brand, #009cf9); }
+
+/* Indeterminate */
+@keyframes progress-shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(400%); }
+}
+
+.cue-progress-fill--indeterminate {
+  width: 35%;
+  animation: progress-shimmer 1.6s ease-in-out infinite;
+}
+
+/* Toast */
+.cue-progress-toast {
+  background: var(--bg-level-1, #ffffff);
+  border: 1px solid var(--border-level-1, #ededed);
+  border-radius: 8px;
+  box-shadow: 0 12px 14px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+}
+
+.cue-progress-toast__body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.cue-progress-toast__title {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--content-body-default, #262626);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cue-progress-toast__success {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--content-body-default, #262626);
+}
+
+.cue-progress-toast__success .material-icons {
+  font-size: 18px;
+  color: var(--status-success-content, #1a7f4b);
+}</code></pre></div>
+  </div>
+
+  <div class="docs-code-panel" id="pi-js">
+    <div class="docs-code-block"><pre><code>/**
+ * Update a determinate progress bar.
+ * @param {HTMLElement} fillEl  - the .cue-progress-fill element
+ * @param {number}      percent - 0–100
+ */
+function setProgress(fillEl, percent) {
+  fillEl.style.width = Math.min(100, Math.max(0, percent)) + '%';
+}
+
+// Example: poll a job and update the bar
+async function trackExportJob(jobId, fillEl, onComplete) {
+  const poll = setInterval(async () => {
+    const res  = await fetch(`/api/jobs/${jobId}`);
+    const data = await res.json();
+
+    setProgress(fillEl, data.progress);
+
+    if (data.progress >= 100) {
+      clearInterval(poll);
+      onComplete(data);
+    }
+  }, 500);
+}
+
+// Usage
+const fill = document.querySelector('#progress-fill');
+trackExportJob('abc123', fill, (data) => {
+  // swap to complete toast state
+  console.log('Done:', data.downloadUrl);
+});</code></pre></div>
+  </div>
+</div>
+
+<!-- ── Usage notes ── -->
+<hr class="docs-divider" />
+
+<div class="docs-section">
+  <p class="docs-section-label">Usage Notes</p>
+  <p style="font-size: 0.875rem; line-height: 1.6; color: var(--content-body-default); margin-bottom: 1rem;">
+    Use <strong>determinate</strong> progress when you have real percentage data from the server (e.g. polling a job endpoint). Use <strong>indeterminate</strong> when a task has started but duration is unknown — this avoids a bar that appears stuck at 0%.
+  </p>
+  <p style="font-size: 0.875rem; line-height: 1.6; color: var(--content-body-default); margin-bottom: 1rem;">
+    Always pair the progress toast with a <strong>Cancel</strong> action. On completion, swap to the success state (check icon + Download or Confirm button) rather than auto-dismissing — users should control the final action.
+  </p>
+  <p style="font-size: 0.875rem; line-height: 1.6; color: var(--content-body-default);">
+    The progress bar does not have a visible label — the toast title provides the context. Do not add percentage text inside or adjacent to the 4px track; it would be illegible at that scale.
+  </p>
+</div>
+
+<script>
+  // switchTab() is defined in _layouts/default.html — do not redefine
+
+  let demoInterval = null;
+  let demoPct = 0;
+
+  function startDemo() {
+    const fill         = document.getElementById('demo-fill');
+    const toastProg    = document.getElementById('demo-toast-progress');
+    const toastDone    = document.getElementById('demo-toast-complete');
+    const cancelBtn    = document.getElementById('demo-cancel-btn');
+
+    // Reset first
+    resetDemo();
+    demoPct = 0;
+    toastProg.style.display = 'flex';
+    toastDone.style.display = 'none';
+
+    demoInterval = setInterval(() => {
+      demoPct += Math.random() * 6 + 2; // 2–8% increments
+      if (demoPct >= 100) {
+        demoPct = 100;
+        fill.style.width = '100%';
+        clearInterval(demoInterval);
+
+        // Transition to complete state after brief pause
+        setTimeout(() => {
+          toastProg.style.display = 'none';
+          toastDone.style.display = 'flex';
+        }, 400);
+      } else {
+        fill.style.width = demoPct.toFixed(1) + '%';
+      }
+    }, 180);
+  }
+
+  function resetDemo() {
+    if (demoInterval) { clearInterval(demoInterval); demoInterval = null; }
+    const fill      = document.getElementById('demo-fill');
+    const toastProg = document.getElementById('demo-toast-progress');
+    const toastDone = document.getElementById('demo-toast-complete');
+    fill.style.width        = '0%';
+    toastProg.style.display = 'flex';
+    toastDone.style.display = 'none';
+    demoPct = 0;
+  }
+</script>
