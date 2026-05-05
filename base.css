@@ -319,19 +319,32 @@ code, pre {
 
 
 /* ============================================================
-   SIDEBAR — COLLAPSIBLE GROUP
-   Used for Components, Page Templates, and any future groups.
-   Toggle button matches .docs-sidebar__section-label visually
-   but is interactive, with a rotating chevron on the right.
+   SIDEBAR — COLLAPSIBLE NAV GROUPS
+   Four top-level sections: Getting Started, Components,
+   Patterns, Assets. Each is a toggle button + link panel.
+   Active group and active link are set server-side via Liquid
+   (is-open class injected at render). JS handles click toggling.
 ============================================================ */
 
+.docs-sidebar__groups {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-top: var(--space-xs);
+}
+
+.docs-sidebar__group {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Group toggle button — the section header */
 .docs-sidebar__group-toggle {
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 0.375rem var(--space-s);
-  margin: var(--space-l) 0 2px;
+  padding: 0.5rem var(--space-s);
   background: none;
   border: none;
   border-radius: var(--corner-card-module);
@@ -340,9 +353,10 @@ code, pre {
   font-family: var(--font-family-body);
   font-size: 0.875rem;
   font-weight: 400;
-  text-transform: none;
+  line-height: 1;
   letter-spacing: 0;
-  line-height: 1.5;
+  text-transform: none;
+  text-align: left;
   transition: background-color 0.15s ease, color 0.15s ease;
 }
 
@@ -351,20 +365,46 @@ code, pre {
   color: var(--content-body-link);
 }
 
-.docs-sidebar__group-chevron {
-  font-size: 1rem;
-  color: inherit;
+/* Bold label when section is open */
+.docs-sidebar__group-toggle.is-open {
+  font-weight: 600;
+}
+
+/* Arrow icon — rotates when open */
+.docs-sidebar__group-toggle .toggle-arrow {
+  font-size: 1.125rem;
+  color: var(--content-body-moderate);
   transition: transform 0.2s ease;
   flex-shrink: 0;
+  line-height: 1;
 }
 
-.docs-sidebar__group-toggle[aria-expanded="false"] .docs-sidebar__group-chevron {
-  transform: rotate(-90deg);
+.docs-sidebar__group-toggle.is-open .toggle-arrow {
+  transform: rotate(180deg);
 }
 
-.docs-sidebar__group-body {
-  overflow: hidden;
-  transition: height 0.22s ease;
+/* Link panel — hidden by default, shown when open */
+.docs-sidebar__group-links {
+  display: none;
+  flex-direction: column;
+  gap: 0;
+  padding: 0.25rem 0 0.375rem 0;
+}
+
+.docs-sidebar__group-links.is-open {
+  display: flex;
+}
+
+/* Child nav links — indented, inherit base nav-link styles */
+.docs-sidebar__group-links .docs-sidebar__nav-link {
+  padding-left: 1.5rem;
+}
+
+/* Active child link — brand color, semibold, no background pill */
+.docs-sidebar__group-links .docs-sidebar__nav-link.active {
+  background-color: transparent;
+  color: var(--content-body-primary-brand);
+  font-weight: 600;
 }
 
 

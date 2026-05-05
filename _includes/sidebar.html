@@ -6,115 +6,141 @@
   <span class="docs-sidebar__logo-label">Canvas</span>
 </a>
 
-<p class="docs-sidebar__section-label">Getting Started</p>
-<div class="docs-sidebar__nav">
-  <a href="{{ page.root }}index.html" class="docs-sidebar__nav-link{% if page.activeNav == 'overview' %} active{% endif %}">Overview</a>
-</div>
+<nav class="docs-sidebar__groups" aria-label="Documentation navigation">
 
-{% assign componentSlugs = 'accordion,alert,badge,breadcrumb,button,calendar-components,calendar,card,chat,combobox,dashboard-tiles,date-picker,dropdown,expand-collapse,form-field,modal,navigation,notifications,popover,progress-indicator,scheduler,segmented-control,side-nav,skeleton,status-badge,step-process,tabs,table,table-tabs,tags,toast,tooltip,utility,icons' | split: ',' %}
-{% assign isComponentActive = false %}
-{% for slug in componentSlugs %}
-  {% if page.activeNav == slug %}
-    {% assign isComponentActive = true %}
-  {% endif %}
-{% endfor %}
-
-<button
-  class="docs-sidebar__group-toggle"
-  aria-expanded="true"
-  aria-controls="sidebar-group-components"
-  id="sidebar-toggle-components"
->
-  Components
-  <span class="material-icons docs-sidebar__group-chevron" aria-hidden="true">expand_more</span>
-</button>
-
-<div
-  class="docs-sidebar__group-body"
-  id="sidebar-group-components"
-  role="region"
-  aria-labelledby="sidebar-toggle-components"
->
-  <div class="docs-sidebar__nav">
-    <a href="{{ page.root }}components/accordion.html"           class="docs-sidebar__nav-link{%- if page.activeNav == 'accordion' %} active{%- endif %}">Accordion</a>
-    <a href="{{ page.root }}components/alert.html"               class="docs-sidebar__nav-link{%- if page.activeNav == 'alert' %} active{%- endif %}">Alert</a>
-    <a href="{{ page.root }}components/badge.html"               class="docs-sidebar__nav-link{%- if page.activeNav == 'badge' %} active{%- endif %}">Badge</a>
-    <a href="{{ page.root }}components/breadcrumb.html"          class="docs-sidebar__nav-link{%- if page.activeNav == 'breadcrumb' %} active{%- endif %}">Breadcrumb</a>
-    <a href="{{ page.root }}components/button.html"              class="docs-sidebar__nav-link{%- if page.activeNav == 'button' %} active{%- endif %}">Button</a>
-    <a href="{{ page.root }}components/calendar-components.html" class="docs-sidebar__nav-link{%- if page.activeNav == 'calendar-components' %} active{%- endif %}">Calendar Components</a>
-    <a href="{{ page.root }}components/calendar.html"            class="docs-sidebar__nav-link{%- if page.activeNav == 'calendar' %} active{%- endif %}">Calendar</a>
-    <a href="{{ page.root }}components/card.html"                class="docs-sidebar__nav-link{%- if page.activeNav == 'card' %} active{%- endif %}">Card</a>
-    <a href="{{ page.root }}components/chat.html"                class="docs-sidebar__nav-link{%- if page.activeNav == 'chat' %} active{%- endif %}">Chat</a>
-    <a href="{{ page.root }}components/combobox.html"            class="docs-sidebar__nav-link{%- if page.activeNav == 'combobox' %} active{%- endif %}">Combobox &amp; Multiselect</a>
-    <a href="{{ page.root }}components/dashboard-tiles.html"     class="docs-sidebar__nav-link{%- if page.activeNav == 'dashboard-tiles' %} active{%- endif %}">Dashboard Tiles</a>
-    <a href="{{ page.root }}components/date-picker.html"         class="docs-sidebar__nav-link{%- if page.activeNav == 'date-picker' %} active{%- endif %}">Date Picker</a>
-    <a href="{{ page.root }}components/dropdown.html"            class="docs-sidebar__nav-link{%- if page.activeNav == 'dropdown' %} active{%- endif %}">Dropdown Menu</a>
-    <a href="{{ page.root }}components/expand-collapse.html"     class="docs-sidebar__nav-link{%- if page.activeNav == 'expand-collapse' %} active{%- endif %}">Expand / Collapse</a>
-    <a href="{{ page.root }}components/form-field.html"          class="docs-sidebar__nav-link{%- if page.activeNav == 'form-field' %} active{%- endif %}">Form Field</a>
-    <a href="{{ page.root }}components/modal.html"               class="docs-sidebar__nav-link{%- if page.activeNav == 'modal' %} active{%- endif %}">Modal</a>
-    <a href="{{ page.root }}components/navigation.html"          class="docs-sidebar__nav-link{%- if page.activeNav == 'navigation' %} active{%- endif %}">Navigation</a>
-    <a href="{{ page.root }}components/notifications.html"       class="docs-sidebar__nav-link{%- if page.activeNav == 'notifications' %} active{%- endif %}">Notifications</a>
-    <a href="{{ page.root }}components/popover.html"             class="docs-sidebar__nav-link{%- if page.activeNav == 'popover' %} active{%- endif %}">Popover</a>
-    <a href="{{ page.root }}components/progress-indicator.html"  class="docs-sidebar__nav-link{%- if page.activeNav == 'progress-indicator' %} active{%- endif %}">Progress Indicator</a>
-    <a href="{{ page.root }}components/scheduler.html"           class="docs-sidebar__nav-link{%- if page.activeNav == 'scheduler' %} active{%- endif %}">Scheduler</a>
-    <a href="{{ page.root }}components/segmented-control.html"   class="docs-sidebar__nav-link{%- if page.activeNav == 'segmented-control' %} active{%- endif %}">Segmented Control</a>
-    <a href="{{ page.root }}components/side-nav.html"            class="docs-sidebar__nav-link{%- if page.activeNav == 'side-nav' %} active{%- endif %}">Side Navigation</a>
-    <a href="{{ page.root }}components/skeleton-loader.html"     class="docs-sidebar__nav-link{%- if page.activeNav == 'skeleton' %} active{%- endif %}">Skeleton Loader</a>
-    <a href="{{ page.root }}components/in-progress.html"         class="docs-sidebar__nav-link{%- if page.activeNav == 'status-badge' %} active{%- endif %}">Status Badge</a>
-    <a href="{{ page.root }}components/step-process.html"        class="docs-sidebar__nav-link{%- if page.activeNav == 'step-process' %} active{%- endif %}">Step Process</a>
-    <a href="{{ page.root }}components/in-progress.html"         class="docs-sidebar__nav-link{%- if page.activeNav == 'tabs' %} active{%- endif %}">Tab Navigation</a>
-    <a href="{{ page.root }}components/table.html"               class="docs-sidebar__nav-link{%- if page.activeNav == 'table' %} active{%- endif %}">Table</a>
-    <a href="{{ page.root }}components/table-tabs.html"          class="docs-sidebar__nav-link{%- if page.activeNav == 'table-tabs' %} active{%- endif %}">Table Tabs</a>
-    <a href="{{ page.root }}components/tags.html"                class="docs-sidebar__nav-link{%- if page.activeNav == 'tags' %} active{%- endif %}">Tags</a>
-    <a href="{{ page.root }}components/toast.html"               class="docs-sidebar__nav-link{%- if page.activeNav == 'toast' %} active{%- endif %}">Toast</a>
-    <a href="{{ page.root }}components/tooltip.html"             class="docs-sidebar__nav-link{%- if page.activeNav == 'tooltip' %} active{%- endif %}">Tooltip</a>
-    <a href="{{ page.root }}components/utility.html"             class="docs-sidebar__nav-link{%- if page.activeNav == 'utility' %} active{%- endif %}">Utility UI</a>
+  <!-- Getting Started -->
+  <div class="docs-sidebar__group">
+    <button
+      class="docs-sidebar__group-toggle{% assign gs_slugs = 'overview,about' | split: ',' %}{% if gs_slugs contains page.activeNav %} is-open{% endif %}"
+      aria-expanded="{% if gs_slugs contains page.activeNav %}true{% else %}false{% endif %}"
+      data-group="getting-started"
+      aria-controls="group-getting-started"
+    >
+      Getting Started
+      <span class="material-icons toggle-arrow" aria-hidden="true">keyboard_arrow_down</span>
+    </button>
+    <div class="docs-sidebar__group-links{% assign gs_slugs = 'overview,about' | split: ',' %}{% if gs_slugs contains page.activeNav %} is-open{% endif %}" id="group-getting-started">
+      <a href="{{ page.root }}index.html"
+         class="docs-sidebar__nav-link{%- if page.activeNav == 'overview' %} active{%- endif %}">Overview</a>
+      <a href="{{ page.root }}components/in-progress.html"
+         class="docs-sidebar__nav-link{%- if page.activeNav == 'about' %} active{%- endif %}">About CUE Canvas</a>
+    </div>
   </div>
-</div>
 
-<p class="docs-sidebar__section-label">Icons</p>
-<div class="docs-sidebar__nav">
-  <a href="{{ page.root }}components/in-progress.html" class="docs-sidebar__nav-link{% if page.activeNav == 'icons' %} active{% endif %}">Icon Reference</a>
-</div>
+  <!-- Components -->
+  {%- assign comp_slugs = 'accordion,alert,badge,breadcrumb,button,calendar-components,calendar,card,chat,combobox,dashboard-tiles,date-picker,dropdown,expand-collapse,form-field,modal,navigation,notifications,popover,progress-indicator,scheduler,segmented-control,side-nav,skeleton,status-badge,step-process,tabs,table,table-tabs,tags,toast,tooltip,utility' | split: ',' -%}
+  <div class="docs-sidebar__group">
+    <button
+      class="docs-sidebar__group-toggle{%- if comp_slugs contains page.activeNav %} is-open{%- endif %}"
+      aria-expanded="{%- if comp_slugs contains page.activeNav %}true{%- else %}false{%- endif %}"
+      data-group="components"
+      aria-controls="group-components"
+    >
+      Components
+      <span class="material-icons toggle-arrow" aria-hidden="true">keyboard_arrow_down</span>
+    </button>
+    <div class="docs-sidebar__group-links{%- if comp_slugs contains page.activeNav %} is-open{%- endif %}" id="group-components">
+      <a href="{{ page.root }}components/accordion.html"          class="docs-sidebar__nav-link{%- if page.activeNav == 'accordion' %} active{%- endif %}">Accordion</a>
+      <a href="{{ page.root }}components/alert.html"              class="docs-sidebar__nav-link{%- if page.activeNav == 'alert' %} active{%- endif %}">Alert</a>
+      <a href="{{ page.root }}components/badge.html"              class="docs-sidebar__nav-link{%- if page.activeNav == 'badge' %} active{%- endif %}">Badge</a>
+      <a href="{{ page.root }}components/breadcrumb.html"         class="docs-sidebar__nav-link{%- if page.activeNav == 'breadcrumb' %} active{%- endif %}">Breadcrumb</a>
+      <a href="{{ page.root }}components/button.html"             class="docs-sidebar__nav-link{%- if page.activeNav == 'button' %} active{%- endif %}">Button</a>
+      <a href="{{ page.root }}components/calendar-components.html" class="docs-sidebar__nav-link{%- if page.activeNav == 'calendar-components' %} active{%- endif %}">Calendar Components</a>
+      <a href="{{ page.root }}components/calendar.html"           class="docs-sidebar__nav-link{%- if page.activeNav == 'calendar' %} active{%- endif %}">Calendar</a>
+      <a href="{{ page.root }}components/card.html"               class="docs-sidebar__nav-link{%- if page.activeNav == 'card' %} active{%- endif %}">Card</a>
+      <a href="{{ page.root }}components/chat.html"               class="docs-sidebar__nav-link{%- if page.activeNav == 'chat' %} active{%- endif %}">Chat</a>
+      <a href="{{ page.root }}components/combobox.html"           class="docs-sidebar__nav-link{%- if page.activeNav == 'combobox' %} active{%- endif %}">Combobox &amp; Multiselect</a>
+      <a href="{{ page.root }}components/dashboard-tiles.html"    class="docs-sidebar__nav-link{%- if page.activeNav == 'dashboard-tiles' %} active{%- endif %}">Dashboard Tiles</a>
+      <a href="{{ page.root }}components/date-picker.html"        class="docs-sidebar__nav-link{%- if page.activeNav == 'date-picker' %} active{%- endif %}">Date Picker</a>
+      <a href="{{ page.root }}components/dropdown.html"           class="docs-sidebar__nav-link{%- if page.activeNav == 'dropdown' %} active{%- endif %}">Dropdown Menu</a>
+      <a href="{{ page.root }}components/expand-collapse.html"    class="docs-sidebar__nav-link{%- if page.activeNav == 'expand-collapse' %} active{%- endif %}">Expand / Collapse</a>
+      <a href="{{ page.root }}components/form-field.html"         class="docs-sidebar__nav-link{%- if page.activeNav == 'form-field' %} active{%- endif %}">Form Field</a>
+      <a href="{{ page.root }}components/modal.html"              class="docs-sidebar__nav-link{%- if page.activeNav == 'modal' %} active{%- endif %}">Modal</a>
+      <a href="{{ page.root }}components/navigation.html"         class="docs-sidebar__nav-link{%- if page.activeNav == 'navigation' %} active{%- endif %}">Navigation</a>
+      <a href="{{ page.root }}components/notifications.html"      class="docs-sidebar__nav-link{%- if page.activeNav == 'notifications' %} active{%- endif %}">Notifications</a>
+      <a href="{{ page.root }}components/popover.html"            class="docs-sidebar__nav-link{%- if page.activeNav == 'popover' %} active{%- endif %}">Popover</a>
+      <a href="{{ page.root }}components/progress-indicator.html" class="docs-sidebar__nav-link{%- if page.activeNav == 'progress-indicator' %} active{%- endif %}">Progress Indicator</a>
+      <a href="{{ page.root }}components/scheduler.html"          class="docs-sidebar__nav-link{%- if page.activeNav == 'scheduler' %} active{%- endif %}">Scheduler</a>
+      <a href="{{ page.root }}components/segmented-control.html"  class="docs-sidebar__nav-link{%- if page.activeNav == 'segmented-control' %} active{%- endif %}">Segmented Control</a>
+      <a href="{{ page.root }}components/side-nav.html"           class="docs-sidebar__nav-link{%- if page.activeNav == 'side-nav' %} active{%- endif %}">Side Navigation</a>
+      <a href="{{ page.root }}components/skeleton-loader.html"    class="docs-sidebar__nav-link{%- if page.activeNav == 'skeleton' %} active{%- endif %}">Skeleton Loader</a>
+      <a href="{{ page.root }}components/in-progress.html"        class="docs-sidebar__nav-link{%- if page.activeNav == 'status-badge' %} active{%- endif %}">Status Badge</a>
+      <a href="{{ page.root }}components/step-process.html"       class="docs-sidebar__nav-link{%- if page.activeNav == 'step-process' %} active{%- endif %}">Step Process</a>
+      <a href="{{ page.root }}components/in-progress.html"        class="docs-sidebar__nav-link{%- if page.activeNav == 'tabs' %} active{%- endif %}">Tab Navigation</a>
+      <a href="{{ page.root }}components/table.html"              class="docs-sidebar__nav-link{%- if page.activeNav == 'table' %} active{%- endif %}">Table</a>
+      <a href="{{ page.root }}components/table-tabs.html"         class="docs-sidebar__nav-link{%- if page.activeNav == 'table-tabs' %} active{%- endif %}">Table Tabs</a>
+      <a href="{{ page.root }}components/tags.html"               class="docs-sidebar__nav-link{%- if page.activeNav == 'tags' %} active{%- endif %}">Tags</a>
+      <a href="{{ page.root }}components/toast.html"              class="docs-sidebar__nav-link{%- if page.activeNav == 'toast' %} active{%- endif %}">Toast</a>
+      <a href="{{ page.root }}components/tooltip.html"            class="docs-sidebar__nav-link{%- if page.activeNav == 'tooltip' %} active{%- endif %}">Tooltip</a>
+      <a href="{{ page.root }}components/utility.html"            class="docs-sidebar__nav-link{%- if page.activeNav == 'utility' %} active{%- endif %}">Utility UI</a>
+    </div>
+  </div>
+
+  <!-- Patterns -->
+  {%- assign pattern_slugs = 'app-shell,layouts,templates' | split: ',' -%}
+  <div class="docs-sidebar__group">
+    <button
+      class="docs-sidebar__group-toggle{%- if pattern_slugs contains page.activeNav %} is-open{%- endif %}"
+      aria-expanded="{%- if pattern_slugs contains page.activeNav %}true{%- else %}false{%- endif %}"
+      data-group="patterns"
+      aria-controls="group-patterns"
+    >
+      Patterns
+      <span class="material-icons toggle-arrow" aria-hidden="true">keyboard_arrow_down</span>
+    </button>
+    <div class="docs-sidebar__group-links{%- if pattern_slugs contains page.activeNav %} is-open{%- endif %}" id="group-patterns">
+      <a href="{{ page.root }}components/in-progress.html"
+         class="docs-sidebar__nav-link{%- if page.activeNav == 'app-shell' %} active{%- endif %}">App Shell</a>
+      <a href="{{ page.root }}components/in-progress.html"
+         class="docs-sidebar__nav-link{%- if page.activeNav == 'layouts' %} active{%- endif %}">Layouts</a>
+      <a href="{{ page.root }}components/in-progress.html"
+         class="docs-sidebar__nav-link{%- if page.activeNav == 'templates' %} active{%- endif %}">Templates</a>
+    </div>
+  </div>
+
+  <!-- Assets -->
+  {%- assign asset_slugs = 'icons,logos' | split: ',' -%}
+  <div class="docs-sidebar__group">
+    <button
+      class="docs-sidebar__group-toggle{%- if asset_slugs contains page.activeNav %} is-open{%- endif %}"
+      aria-expanded="{%- if asset_slugs contains page.activeNav %}true{%- else %}false{%- endif %}"
+      data-group="assets"
+      aria-controls="group-assets"
+    >
+      Assets
+      <span class="material-icons toggle-arrow" aria-hidden="true">keyboard_arrow_down</span>
+    </button>
+    <div class="docs-sidebar__group-links{%- if asset_slugs contains page.activeNav %} is-open{%- endif %}" id="group-assets">
+      <a href="{{ page.root }}components/in-progress.html"
+         class="docs-sidebar__nav-link{%- if page.activeNav == 'icons' %} active{%- endif %}">Icon Reference</a>
+      <a href="{{ page.root }}components/in-progress.html"
+         class="docs-sidebar__nav-link{%- if page.activeNav == 'logos' %} active{%- endif %}">Logos</a>
+    </div>
+  </div>
+
+</nav>
 
 <script>
   (function () {
-    var toggle = document.getElementById('sidebar-toggle-components');
-    var body   = document.getElementById('sidebar-group-components');
-    if (!toggle || !body) return;
+    // Toggle expand/collapse for sidebar groups
+    var toggles = document.querySelectorAll('.docs-sidebar__group-toggle');
 
-    // Always start open if a child link is active
-    var hasActive = !!body.querySelector('.docs-sidebar__nav-link.active');
-    var startOpen = hasActive || toggle.getAttribute('aria-expanded') === 'true';
+    toggles.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var groupId = btn.getAttribute('aria-controls');
+        var panel = document.getElementById(groupId);
+        var isOpen = btn.classList.contains('is-open');
 
-    function setOpen(open) {
-      if (open) {
-        body.style.height = body.scrollHeight + 'px';
-        toggle.setAttribute('aria-expanded', 'true');
-        body.addEventListener('transitionend', function onEnd() {
-          body.style.height = 'auto';
-          body.removeEventListener('transitionend', onEnd);
-        });
-      } else {
-        // Pin current height first so CSS transition has a starting value
-        body.style.height = body.scrollHeight + 'px';
-        body.offsetHeight; // force reflow
-        body.style.height = '0px';
-        toggle.setAttribute('aria-expanded', 'false');
-      }
-    }
-
-    // Apply initial state without animating
-    if (startOpen) {
-      body.style.height = 'auto';
-      toggle.setAttribute('aria-expanded', 'true');
-    } else {
-      body.style.height = '0px';
-      toggle.setAttribute('aria-expanded', 'false');
-    }
-
-    toggle.addEventListener('click', function () {
-      setOpen(toggle.getAttribute('aria-expanded') !== 'true');
+        if (isOpen) {
+          btn.classList.remove('is-open');
+          btn.setAttribute('aria-expanded', 'false');
+          panel.classList.remove('is-open');
+        } else {
+          btn.classList.add('is-open');
+          btn.setAttribute('aria-expanded', 'true');
+          panel.classList.add('is-open');
+        }
+      });
     });
   })();
 </script>
