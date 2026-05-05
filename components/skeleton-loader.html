@@ -1,0 +1,486 @@
+---
+layout: default
+title: "Skeleton Loader"
+activeNav: skeleton
+root: ../
+---
+
+<style>
+  /* Skeleton Loader component styles */
+  .cue-skeleton {
+    display: block;
+    background-color: var(--bg-skeleton);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .cue-skeleton::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      var(--skeleton-gradient-start) 0%,
+      var(--skeleton-gradient-highlight) 50%,
+      var(--skeleton-gradient-start) 100%
+    );
+    animation: skeleton-shimmer 1.5s infinite;
+    transform: translateX(-100%);
+  }
+
+  @keyframes skeleton-shimmer {
+    0%   { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  /* Shape modifiers */
+  .cue-skeleton--circle {
+    border-radius: 50%;
+  }
+
+  .cue-skeleton--rounded {
+    border-radius: 8px;
+  }
+
+  /* Skeleton tokens */
+  :root {
+    --bg-skeleton: var(--components\/skeleton-loader\/bg-skeleton, #ededed);
+    --skeleton-gradient-highlight: var(--components\/skeleton-loader\/gradient-highlight-skeleton, #ffffff);
+    --skeleton-gradient-start: var(--components\/skeleton-loader\/gradient-start-end-skeleton, rgba(255,255,255,0));
+  }
+
+  /* Demo layout helpers */
+  .skeleton-demo-card {
+    background: var(--bg-level-1, #ffffff);
+    border: 1px solid var(--border-level-1, #ededed);
+    border-radius: 8px;
+    padding: 1.5rem;
+  }
+
+  .skeleton-row {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .skeleton-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  /* Demo: list item row */
+  .skeleton-list-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+  }
+
+  .skeleton-list-item + .skeleton-list-item {
+    border-top: 1px solid var(--border-level-1, #ededed);
+  }
+
+  /* Demo: card grid */
+  .skeleton-card-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+
+  /* Demo: profile card */
+  .skeleton-profile {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  /* Demo: article */
+  .skeleton-article {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  /* Props table */
+  .docs-props-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8125rem;
+  }
+
+  .docs-props-table th {
+    text-align: left;
+    padding: 0.5rem 0.75rem;
+    background: var(--bg-subdued, #ededed);
+    font-weight: 600;
+    font-size: 0.75rem;
+    color: var(--content-body-moderate, #8a8a8a);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border-bottom: 1px solid var(--border-level-1, #ededed);
+  }
+
+  .docs-props-table td {
+    padding: 0.625rem 0.75rem;
+    border-bottom: 1px solid var(--border-level-1, #ededed);
+    color: var(--content-body-default, #262626);
+    vertical-align: top;
+  }
+
+  .docs-props-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .docs-props-table code {
+    font-family: 'Fira Mono', 'Courier New', monospace;
+    font-size: 0.75rem;
+    background: var(--bg-subdued, #ededed);
+    padding: 0.125rem 0.375rem;
+    border-radius: 3px;
+    color: var(--content-body-primary-brand, #03618d);
+  }
+
+  .docs-section-label {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--content-body-moderate, #8a8a8a);
+    margin-bottom: 1rem;
+  }
+</style>
+
+<div class="docs-page-header">
+  <h1 class="docs-page-title">Skeleton Loader</h1>
+  <p class="docs-page-description">
+    Skeleton loaders are placeholder UI shapes shown while content is loading. They reduce perceived wait time by giving users a structural preview of the content before it arrives.
+  </p>
+</div>
+
+<!-- Overview -->
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Overview</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">
+    Use skeleton loaders in place of spinners when the layout of the incoming content is known. They communicate structure and set expectations, making the interface feel faster and more predictable. Skeletons animate with a left-to-right shimmer to indicate activity.
+  </p>
+  <div class="docs-example">
+    <div class="skeleton-demo-card">
+      <!-- Row: full-width bar -->
+      <div class="cue-skeleton" style="height: 32px; border-radius: 6px; margin-bottom: 1.25rem;"></div>
+
+      <!-- Row: two partial bars -->
+      <div style="display: flex; gap: 1rem; margin-bottom: 1.25rem;">
+        <div class="cue-skeleton" style="height: 14px; width: 220px;"></div>
+        <div class="cue-skeleton" style="height: 14px; width: 220px;"></div>
+      </div>
+
+      <!-- Row: four image blocks -->
+      <div class="skeleton-card-grid" style="margin-bottom: 1.25rem;">
+        <div class="cue-skeleton" style="height: 85px; border-radius: 6px;"></div>
+        <div class="cue-skeleton" style="height: 85px; border-radius: 6px;"></div>
+        <div class="cue-skeleton" style="height: 85px; border-radius: 6px;"></div>
+        <div class="cue-skeleton" style="height: 85px; border-radius: 6px;"></div>
+      </div>
+
+      <!-- Row: text lines + circle avatars -->
+      <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+        <div class="skeleton-stack">
+          <div class="cue-skeleton" style="height: 10px; width: 220px;"></div>
+          <div class="cue-skeleton" style="height: 10px; width: 206px;"></div>
+          <div class="cue-skeleton" style="height: 10px; width: 193px;"></div>
+          <div class="cue-skeleton" style="height: 10px; width: 210px;"></div>
+          <div class="cue-skeleton" style="height: 10px; width: 113px;"></div>
+        </div>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <div class="cue-skeleton cue-skeleton--circle" style="width: 48px; height: 48px;"></div>
+          <div class="cue-skeleton cue-skeleton--circle" style="width: 48px; height: 48px;"></div>
+          <div class="cue-skeleton cue-skeleton--circle" style="width: 48px; height: 48px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- Shapes -->
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Shapes</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">
+    Skeletons support three shape variants via modifier classes. Match the skeleton shape to the content it represents.
+  </p>
+  <div class="docs-example">
+    <div style="display: flex; gap: 2rem; align-items: center; flex-wrap: wrap;">
+
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+        <div class="cue-skeleton" style="width: 120px; height: 32px;"></div>
+        <span style="font-size: 0.75rem; color: var(--content-body-moderate);">Default (4px)</span>
+      </div>
+
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+        <div class="cue-skeleton cue-skeleton--rounded" style="width: 120px; height: 32px;"></div>
+        <span style="font-size: 0.75rem; color: var(--content-body-moderate);">Rounded (8px)</span>
+      </div>
+
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+        <div class="cue-skeleton cue-skeleton--circle" style="width: 48px; height: 48px;"></div>
+        <span style="font-size: 0.75rem; color: var(--content-body-moderate);">Circle</span>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- Usage Patterns -->
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Usage Patterns</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">
+    Compose skeleton primitives to mirror the structure of your target UI. The examples below show common patterns in CUE Back Office.
+  </p>
+
+  <!-- Pattern: List -->
+  <p style="font-size: 0.8125rem; font-weight: 600; margin-bottom: 0.75rem; color: var(--content-body-default);">List rows</p>
+  <div class="docs-example" style="margin-bottom: 1.5rem;">
+    <div class="skeleton-demo-card" style="padding: 0.75rem 1rem;">
+      <div class="skeleton-list-item">
+        <div class="cue-skeleton cue-skeleton--circle" style="width: 36px; height: 36px; flex-shrink: 0;"></div>
+        <div class="skeleton-stack" style="flex: 1;">
+          <div class="cue-skeleton" style="height: 12px; width: 55%;"></div>
+          <div class="cue-skeleton" style="height: 10px; width: 35%;"></div>
+        </div>
+        <div class="cue-skeleton" style="height: 24px; width: 64px; border-radius: 12px;"></div>
+      </div>
+      <div class="skeleton-list-item">
+        <div class="cue-skeleton cue-skeleton--circle" style="width: 36px; height: 36px; flex-shrink: 0;"></div>
+        <div class="skeleton-stack" style="flex: 1;">
+          <div class="cue-skeleton" style="height: 12px; width: 45%;"></div>
+          <div class="cue-skeleton" style="height: 10px; width: 30%;"></div>
+        </div>
+        <div class="cue-skeleton" style="height: 24px; width: 64px; border-radius: 12px;"></div>
+      </div>
+      <div class="skeleton-list-item">
+        <div class="cue-skeleton cue-skeleton--circle" style="width: 36px; height: 36px; flex-shrink: 0;"></div>
+        <div class="skeleton-stack" style="flex: 1;">
+          <div class="cue-skeleton" style="height: 12px; width: 60%;"></div>
+          <div class="cue-skeleton" style="height: 10px; width: 40%;"></div>
+        </div>
+        <div class="cue-skeleton" style="height: 24px; width: 64px; border-radius: 12px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pattern: Card grid -->
+  <p style="font-size: 0.8125rem; font-weight: 600; margin-bottom: 0.75rem; color: var(--content-body-default);">Card grid</p>
+  <div class="docs-example" style="margin-bottom: 1.5rem;">
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+      <div class="skeleton-demo-card skeleton-stack" style="gap: 0.625rem;">
+        <div class="cue-skeleton cue-skeleton--rounded" style="height: 120px;"></div>
+        <div class="cue-skeleton" style="height: 14px; width: 75%;"></div>
+        <div class="cue-skeleton" style="height: 12px; width: 50%;"></div>
+        <div class="cue-skeleton" style="height: 28px; width: 90px; border-radius: 4px; margin-top: 0.25rem;"></div>
+      </div>
+      <div class="skeleton-demo-card skeleton-stack" style="gap: 0.625rem;">
+        <div class="cue-skeleton cue-skeleton--rounded" style="height: 120px;"></div>
+        <div class="cue-skeleton" style="height: 14px; width: 65%;"></div>
+        <div class="cue-skeleton" style="height: 12px; width: 45%;"></div>
+        <div class="cue-skeleton" style="height: 28px; width: 90px; border-radius: 4px; margin-top: 0.25rem;"></div>
+      </div>
+      <div class="skeleton-demo-card skeleton-stack" style="gap: 0.625rem;">
+        <div class="cue-skeleton cue-skeleton--rounded" style="height: 120px;"></div>
+        <div class="cue-skeleton" style="height: 14px; width: 80%;"></div>
+        <div class="cue-skeleton" style="height: 12px; width: 55%;"></div>
+        <div class="cue-skeleton" style="height: 28px; width: 90px; border-radius: 4px; margin-top: 0.25rem;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pattern: Form -->
+  <p style="font-size: 0.8125rem; font-weight: 600; margin-bottom: 0.75rem; color: var(--content-body-default);">Form fields</p>
+  <div class="docs-example">
+    <div class="skeleton-demo-card">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+        <div class="skeleton-stack" style="gap: 0.375rem;">
+          <div class="cue-skeleton" style="height: 10px; width: 80px;"></div>
+          <div class="cue-skeleton" style="height: 36px; border-radius: 4px;"></div>
+        </div>
+        <div class="skeleton-stack" style="gap: 0.375rem;">
+          <div class="cue-skeleton" style="height: 10px; width: 100px;"></div>
+          <div class="cue-skeleton" style="height: 36px; border-radius: 4px;"></div>
+        </div>
+        <div class="skeleton-stack" style="gap: 0.375rem;">
+          <div class="cue-skeleton" style="height: 10px; width: 60px;"></div>
+          <div class="cue-skeleton" style="height: 36px; border-radius: 4px;"></div>
+        </div>
+        <div class="skeleton-stack" style="gap: 0.375rem;">
+          <div class="cue-skeleton" style="height: 10px; width: 90px;"></div>
+          <div class="cue-skeleton" style="height: 36px; border-radius: 4px;"></div>
+        </div>
+        <div class="skeleton-stack" style="gap: 0.375rem; grid-column: 1 / -1;">
+          <div class="cue-skeleton" style="height: 10px; width: 70px;"></div>
+          <div class="cue-skeleton" style="height: 80px; border-radius: 4px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- Design Tokens -->
+<div class="docs-section">
+  <p class="docs-section-label">Design Tokens</p>
+  <table class="docs-token-table">
+    <thead>
+      <tr>
+        <th>CSS Variable</th>
+        <th>Figma Token</th>
+        <th>Value</th>
+        <th>Usage</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>--bg-skeleton</td>
+        <td>Components/Skeleton Loader/bg-skeleton</td>
+        <td><span class="docs-token-swatch" style="background:#ededed;"></span>#ededed</td>
+        <td>Background fill of all skeleton shapes</td>
+      </tr>
+      <tr>
+        <td>--skeleton-gradient-highlight</td>
+        <td>Components/Skeleton Loader/gradient-highlight-skeleton</td>
+        <td><span class="docs-token-swatch" style="background:#ffffff; border: 1px solid #ededed;"></span>#ffffff</td>
+        <td>Center highlight color of the shimmer sweep</td>
+      </tr>
+      <tr>
+        <td>--skeleton-gradient-start</td>
+        <td>Components/Skeleton Loader/gradient-start-end-skeleton</td>
+        <td><span class="docs-token-swatch" style="background:rgba(255,255,255,0); border: 1px solid #ededed;"></span>rgba(255,255,255,0)</td>
+        <td>Transparent start/end of the shimmer gradient</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- Usage Guidelines -->
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 1rem;">Usage Guidelines</h2>
+
+  <table class="docs-props-table">
+    <thead>
+      <tr>
+        <th>Guideline</th>
+        <th>Detail</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Match content shape</strong></td>
+        <td>Use skeleton shapes that closely match the dimensions of the actual content. A text line should be a thin rectangle; an avatar should be a circle of the same size.</td>
+      </tr>
+      <tr>
+        <td><strong>Animate always</strong></td>
+        <td>The shimmer animation is required — a static skeleton reads as an error, not a loading state. Never disable <code>::after</code> animation.</td>
+      </tr>
+      <tr>
+        <td><strong>Vary widths for text</strong></td>
+        <td>When representing multi-line text, use staggered widths (100%, 90%, 85%, 95%) to feel natural. Identical widths look mechanical.</td>
+      </tr>
+      <tr>
+        <td><strong>Don't use for short waits</strong></td>
+        <td>If content resolves in under 300ms, skip the skeleton entirely — flashing a skeleton before immediate content creates more disruption than a blank moment.</td>
+      </tr>
+      <tr>
+        <td><strong>Preserve layout</strong></td>
+        <td>Skeleton containers should match the height of their content targets so no layout shift occurs when content loads.</td>
+      </tr>
+      <tr>
+        <td><strong>Accessibility</strong></td>
+        <td>Add <code>role="status"</code> and <code>aria-label="Loading"</code> to the skeleton wrapper so screen readers announce the loading state.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- Code -->
+<div class="docs-section">
+  <p class="docs-section-label">Code</p>
+  <div class="docs-code-tabs">
+    <button class="docs-code-tab active" onclick="switchTab(event, 'skel-html')">HTML</button>
+    <button class="docs-code-tab" onclick="switchTab(event, 'skel-css')">CSS</button>
+  </div>
+
+  <div class="docs-code-panel active" id="skel-html">
+    <div class="docs-code-block"><pre><code>&lt;!-- Basic skeleton shapes --&gt;
+
+&lt;!-- Rectangle (default) --&gt;
+&lt;span class="cue-skeleton" style="height: 14px; width: 200px;"
+      role="status" aria-label="Loading"&gt;&lt;/span&gt;
+
+&lt;!-- Rounded rectangle --&gt;
+&lt;span class="cue-skeleton cue-skeleton--rounded" style="height: 120px;"
+      role="status" aria-label="Loading"&gt;&lt;/span&gt;
+
+&lt;!-- Circle (avatar) --&gt;
+&lt;span class="cue-skeleton cue-skeleton--circle" style="width: 40px; height: 40px;"
+      role="status" aria-label="Loading"&gt;&lt;/span&gt;
+
+&lt;!-- Composed: profile list item --&gt;
+&lt;div role="status" aria-label="Loading" style="display: flex; gap: 0.75rem; align-items: center;"&gt;
+  &lt;span class="cue-skeleton cue-skeleton--circle" style="width: 36px; height: 36px; flex-shrink: 0;"&gt;&lt;/span&gt;
+  &lt;div style="display: flex; flex-direction: column; gap: 0.375rem; flex: 1;"&gt;
+    &lt;span class="cue-skeleton" style="height: 12px; width: 55%;"&gt;&lt;/span&gt;
+    &lt;span class="cue-skeleton" style="height: 10px; width: 35%;"&gt;&lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre></div>
+  </div>
+
+  <div class="docs-code-panel" id="skel-css">
+    <div class="docs-code-block"><pre><code>/* Skeleton Loader base */
+.cue-skeleton {
+  display: block;
+  background-color: var(--bg-skeleton);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Shimmer animation via ::after pseudo-element */
+.cue-skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    var(--skeleton-gradient-start) 0%,
+    var(--skeleton-gradient-highlight) 50%,
+    var(--skeleton-gradient-start) 100%
+  );
+  animation: skeleton-shimmer 1.5s infinite;
+  transform: translateX(-100%);
+}
+
+@keyframes skeleton-shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Shape modifiers */
+.cue-skeleton--circle  { border-radius: 50%; }
+.cue-skeleton--rounded { border-radius: 8px; }
+
+/* Design tokens */
+:root {
+  --bg-skeleton:                  #ededed;     /* bg-skeleton */
+  --skeleton-gradient-highlight:  #ffffff;     /* gradient-highlight-skeleton */
+  --skeleton-gradient-start:      rgba(255,255,255,0); /* gradient-start-end-skeleton */
+}</code></pre></div>
+  </div>
+</div>
