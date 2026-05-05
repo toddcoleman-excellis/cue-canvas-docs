@@ -1,0 +1,768 @@
+---
+layout: default
+title: "Table Tabs"
+activeNav: table-tabs
+root: ../
+---
+
+<style>
+  /* Table Tabs demo specific styles */
+  .table-tabs-demo {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  /* Tab strip */
+  .cue-table-tabs {
+    display: flex;
+    align-items: flex-end;
+    position: relative;
+    z-index: 2;
+    margin-bottom: -1px;
+  }
+
+  .cue-table-tab {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.625rem 0.75rem 0.5rem;
+    border-radius: 4px 4px 0 0;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s ease;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .cue-table-tab__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .cue-table-tab__label-row {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .cue-table-tab__label {
+    font-size: 1rem;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .cue-table-tab__indicator {
+    height: 2px;
+    width: 100%;
+    border-radius: 2px;
+    transition: background 0.15s ease;
+  }
+
+  /* Active tab */
+  .cue-table-tab--active {
+    background: var(--table-tabs-bg-selected, #ffffff);
+    border-left: 1px solid var(--table-tabs-border-selected, #f5f5f5);
+    border-right: 1px solid var(--table-tabs-border-selected, #f5f5f5);
+    border-top: 1px solid var(--table-tabs-border-selected, #f5f5f5);
+  }
+
+  .cue-table-tab--active .cue-table-tab__label {
+    color: var(--table-tabs-content-active, #03618d);
+    font-weight: 700;
+  }
+
+  .cue-table-tab--active .cue-table-tab__indicator {
+    background: var(--bg-tab-active-indicator, #fab632);
+  }
+
+  /* Inactive tab */
+  .cue-table-tab--inactive {
+    background: var(--table-tabs-bg-inactive, #fafafa);
+    border-bottom: 1px solid var(--table-tabs-border-inactive, #f5f5f5);
+  }
+
+  .cue-table-tab--inactive .cue-table-tab__label {
+    color: var(--table-tabs-content-default, #575757);
+    font-weight: 400;
+  }
+
+  .cue-table-tab--inactive .cue-table-tab__indicator {
+    background: transparent;
+  }
+
+  /* Hover state for inactive */
+  .cue-table-tab--inactive:hover {
+    background: var(--bg-level-1, #ffffff);
+  }
+
+  .cue-table-tab--inactive:hover .cue-table-tab__label {
+    color: var(--table-tabs-content-active, #03618d);
+  }
+
+  /* Tab panel (the card body beneath tabs) */
+  .cue-table-tab-panel {
+    background: var(--bg-level-1, #ffffff);
+    border: 1px solid var(--border-level-1, #f5f5f5);
+    border-radius: 0 4px 4px 4px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Demo utility bar */
+  .demo-util-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-level-1, #f5f5f5);
+  }
+
+  .demo-util-left {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .demo-util-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .demo-count-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--content-body-default, #262626);
+  }
+
+  .demo-divider-v {
+    width: 1px;
+    height: 1.125rem;
+    background: var(--border-subdued, #d4d4d4);
+    margin: 0 0.5rem;
+  }
+
+  .demo-search {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--bg-subdued, #ededed);
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    width: 14rem;
+  }
+
+  .demo-search span {
+    font-size: 0.875rem;
+    color: var(--content-body-moderate, #8a8a8a);
+  }
+
+  /* Demo table */
+  .demo-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+  }
+
+  .demo-table thead th {
+    background: var(--bg-level-1, #ffffff);
+    border-bottom: 2px solid var(--bg-primary-brand, #03618d);
+    padding: 0.75rem;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--content-body-default, #262626);
+    white-space: nowrap;
+  }
+
+  .demo-table tbody tr:nth-child(odd) td {
+    background: var(--bg-level-1, #ffffff);
+  }
+
+  .demo-table tbody tr:nth-child(even) td {
+    background: var(--bg-level-0, #fafafa);
+  }
+
+  .demo-table tbody td {
+    padding: 0.75rem;
+    color: var(--content-body-default, #262626);
+    border: none;
+  }
+
+  .demo-table tbody td.is-link {
+    color: var(--content-body-primary-brand, #03618d);
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  /* Tab with icon variant demos */
+  .tab-variant-row {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-end;
+    flex-wrap: wrap;
+  }
+
+  /* Anatomy callouts */
+  .anatomy-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 640px) {
+    .anatomy-grid { grid-template-columns: 1fr; }
+  }
+
+  .anatomy-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .anatomy-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--content-body-moderate, #8a8a8a);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  /* Token swatch */
+  .docs-token-swatch {
+    display: inline-block;
+    width: 0.875rem;
+    height: 0.875rem;
+    border-radius: 2px;
+    border: 1px solid rgba(0,0,0,0.1);
+    margin-right: 0.375rem;
+    vertical-align: middle;
+  }
+</style>
+
+<div class="docs-page-header">
+  <h1 class="docs-page-title">Table Tabs</h1>
+  <p class="docs-page-description">
+    Table Tabs sit directly above a data table and allow users to switch between related datasets or views within the same surface. An amber active indicator distinguishes the selected tab; inactive tabs recede into the background bar.
+  </p>
+</div>
+
+<!-- Interactive Demo -->
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Interactive Demo</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">
+    Click the tabs to switch between views. The active tab shows the amber indicator and brand-colored label; inactive tabs are muted until hovered or selected.
+  </p>
+  <div class="docs-example" style="overflow: visible;">
+    <div class="table-tabs-demo">
+      <!-- Tab Strip -->
+      <div class="cue-table-tabs" id="demoTabStrip">
+        <div class="cue-table-tab cue-table-tab--active" onclick="switchDemoTab('customers', this)">
+          <div class="cue-table-tab__inner">
+            <div class="cue-table-tab__label-row">
+              <span class="cue-table-tab__label">Customers</span>
+            </div>
+            <div class="cue-table-tab__indicator"></div>
+          </div>
+        </div>
+        <div class="cue-table-tab cue-table-tab--inactive" onclick="switchDemoTab('products', this)">
+          <div class="cue-table-tab__inner">
+            <div class="cue-table-tab__label-row">
+              <span class="cue-table-tab__label">Products</span>
+            </div>
+            <div class="cue-table-tab__indicator"></div>
+          </div>
+        </div>
+        <div class="cue-table-tab cue-table-tab--inactive" onclick="switchDemoTab('orders', this)">
+          <div class="cue-table-tab__inner">
+            <div class="cue-table-tab__label-row">
+              <span class="cue-table-tab__label">Orders</span>
+            </div>
+            <div class="cue-table-tab__indicator"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab Panel -->
+      <div class="cue-table-tab-panel">
+        <!-- Utility Bar -->
+        <div class="demo-util-bar">
+          <div class="demo-util-left">
+            <span class="demo-count-label" id="demoCount">100 entries</span>
+            <div class="demo-divider-v"></div>
+            <button class="cue-btn cue-btn--neutral-stroke cue-btn--sm">
+              <span class="material-icons" aria-hidden="true" style="font-size:14px;">filter_list</span>
+              Filter
+            </button>
+          </div>
+          <div class="demo-util-right">
+            <div class="demo-search">
+              <span class="material-icons" aria-hidden="true" style="font-size:14px; color: var(--content-body-moderate);">search</span>
+              <span>Search</span>
+            </div>
+            <button class="cue-btn cue-btn--primary cue-btn--sm">Add New</button>
+          </div>
+        </div>
+
+        <!-- Table: Customers -->
+        <div id="tab-customers">
+          <table class="demo-table">
+            <thead>
+              <tr>
+                <th>Customer Name</th>
+                <th>Account #</th>
+                <th>Status</th>
+                <th>Last Order</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td class="is-link">Acme Corporation</td><td>#00142</td><td>Active</td><td>May 1, 2026</td></tr>
+              <tr><td class="is-link">Beta Industries</td><td>#00189</td><td>Active</td><td>Apr 28, 2026</td></tr>
+              <tr><td class="is-link">Cordova Supplies</td><td>#00204</td><td>Inactive</td><td>Jan 12, 2026</td></tr>
+              <tr><td class="is-link">Delta Co.</td><td>#00217</td><td>Active</td><td>May 3, 2026</td></tr>
+              <tr><td class="is-link">Eastern Partners</td><td>#00231</td><td>Pending</td><td>Apr 30, 2026</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Table: Products -->
+        <div id="tab-products" style="display:none;">
+          <table class="demo-table">
+            <thead>
+              <tr>
+                <th>Product Name</th>
+                <th>SKU</th>
+                <th>Category</th>
+                <th>In Stock</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td class="is-link">Widget A</td><td>WGT-001</td><td>Hardware</td><td>482</td></tr>
+              <tr><td class="is-link">Widget B</td><td>WGT-002</td><td>Hardware</td><td>109</td></tr>
+              <tr><td class="is-link">Component X</td><td>CMP-101</td><td>Electronics</td><td>0</td></tr>
+              <tr><td class="is-link">Component Y</td><td>CMP-102</td><td>Electronics</td><td>334</td></tr>
+              <tr><td class="is-link">Module Z</td><td>MOD-200</td><td>Assembly</td><td>55</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Table: Orders -->
+        <div id="tab-orders" style="display:none;">
+          <table class="demo-table">
+            <thead>
+              <tr>
+                <th>Order #</th>
+                <th>Customer</th>
+                <th>Total</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td class="is-link">#ORD-8841</td><td>Acme Corporation</td><td>$4,210.00</td><td>May 1, 2026</td></tr>
+              <tr><td class="is-link">#ORD-8840</td><td>Delta Co.</td><td>$812.50</td><td>May 3, 2026</td></tr>
+              <tr><td class="is-link">#ORD-8839</td><td>Eastern Partners</td><td>$1,650.00</td><td>Apr 30, 2026</td></tr>
+              <tr><td class="is-link">#ORD-8835</td><td>Beta Industries</td><td>$7,025.00</td><td>Apr 28, 2026</td></tr>
+              <tr><td class="is-link">#ORD-8820</td><td>Cordova Supplies</td><td>$390.00</td><td>Jan 12, 2026</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- States -->
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">States</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">
+    Each tab has three visible states: <strong>Active</strong> (selected, white background, amber indicator, brand label), <strong>Default / Inactive</strong> (muted, subdued background, no indicator), and <strong>Hover</strong> (inactive tab transitions label to brand color on pointer entry).
+  </p>
+  <div class="docs-example" style="gap: 2rem; flex-direction: column; align-items: flex-start;">
+
+    <!-- Active -->
+    <div>
+      <p class="docs-section-label" style="margin-bottom: 0.5rem;">Active</p>
+      <div class="cue-table-tab cue-table-tab--active" style="display:inline-flex;">
+        <div class="cue-table-tab__inner">
+          <div class="cue-table-tab__label-row">
+            <span class="cue-table-tab__label">Tab Label</span>
+          </div>
+          <div class="cue-table-tab__indicator"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Inactive -->
+    <div>
+      <p class="docs-section-label" style="margin-bottom: 0.5rem;">Default (Inactive)</p>
+      <div class="cue-table-tab cue-table-tab--inactive" style="display:inline-flex;">
+        <div class="cue-table-tab__inner">
+          <div class="cue-table-tab__label-row">
+            <span class="cue-table-tab__label">Tab Label</span>
+          </div>
+          <div class="cue-table-tab__indicator"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- With icon -->
+    <div>
+      <p class="docs-section-label" style="margin-bottom: 0.5rem;">With Icon (Active)</p>
+      <div class="cue-table-tab cue-table-tab--active" style="display:inline-flex;">
+        <div class="cue-table-tab__inner">
+          <div class="cue-table-tab__label-row">
+            <span class="material-icons" aria-hidden="true" style="font-size:18px; color: var(--content-body-primary-brand, #03618d);">star</span>
+            <span class="cue-table-tab__label">Tab Label</span>
+          </div>
+          <div class="cue-table-tab__indicator"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- With icon inactive -->
+    <div>
+      <p class="docs-section-label" style="margin-bottom: 0.5rem;">With Icon (Inactive)</p>
+      <div class="cue-table-tab cue-table-tab--inactive" style="display:inline-flex;">
+        <div class="cue-table-tab__inner">
+          <div class="cue-table-tab__label-row">
+            <span class="material-icons" aria-hidden="true" style="font-size:18px; color: var(--content-body-moderate, #575757);">star</span>
+            <span class="cue-table-tab__label">Tab Label</span>
+          </div>
+          <div class="cue-table-tab__indicator"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- Anatomy -->
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Anatomy</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">
+    A Table Tab is composed of a container, an optional icon, a text label, and an active indicator bar. The active indicator uses the amber accent token — the same token used across all active state indicators in the system.
+  </p>
+  <div class="docs-example">
+    <div style="display: flex; flex-direction: column; gap: 1rem; width: 100%; max-width: 28rem;">
+      <div style="display: flex; align-items: center; gap: 1rem;">
+        <span style="font-size: 0.75rem; font-weight: 600; color: var(--content-body-moderate); min-width: 6rem;">Container</span>
+        <span style="font-size: 0.8125rem; color: var(--content-body-default);">Rounded top corners (4px), overflow hidden, padding 10px 12px 8px</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 1rem;">
+        <span style="font-size: 0.75rem; font-weight: 600; color: var(--content-body-moderate); min-width: 6rem;">Icon (optional)</span>
+        <span style="font-size: 0.8125rem; color: var(--content-body-default);">18px Material Icon — matches label color per state</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 1rem;">
+        <span style="font-size: 0.75rem; font-weight: 600; color: var(--content-body-moderate); min-width: 6rem;">Label</span>
+        <span style="font-size: 0.8125rem; color: var(--content-body-default);">16px — Bold (active), Regular (inactive)</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 1rem;">
+        <span style="font-size: 0.75rem; font-weight: 600; color: var(--content-body-moderate); min-width: 6rem;">Indicator</span>
+        <span style="font-size: 0.8125rem; color: var(--content-body-default);">2px bar, amber (#fab632) when active, transparent when inactive</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- Usage Guidelines -->
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Usage Guidelines</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">
+    Table Tabs are a table-specific pattern. Use them when a single module needs to surface multiple related datasets in the same layout area. They always sit flush above the table's utility bar (action bar) and share a containing card with it.
+  </p>
+  <div class="docs-example" style="flex-direction: column; align-items: flex-start; gap: 1.5rem;">
+    <div>
+      <p style="font-size: 0.75rem; font-weight: 700; color: #2d8a4e; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.5rem;">✓ Do</p>
+      <ul style="font-size: 0.875rem; color: var(--content-body-default); line-height: 1.7; margin: 0; padding-left: 1.25rem;">
+        <li>Use for switching between related, parallel datasets (Customers / Products / Orders)</li>
+        <li>Keep tab labels short — 1–2 words maximum</li>
+        <li>Always pair with the Table Utility Action Bar directly below the tabs</li>
+        <li>Use the optional icon when the dataset type benefits from a visual cue</li>
+        <li>Ensure the active tab's panel content always loads immediately — no loading placeholder for the default view</li>
+      </ul>
+    </div>
+    <div>
+      <p style="font-size: 0.75rem; font-weight: 700; color: #c0392b; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.5rem;">✗ Don't</p>
+      <ul style="font-size: 0.875rem; color: var(--content-body-default); line-height: 1.7; margin: 0; padding-left: 1.25rem;">
+        <li>Don't use Table Tabs for page-level navigation — use Side Navigation or Tab Navigation instead</li>
+        <li>Don't use more than 5 tabs; if you have more, reconsider the information architecture</li>
+        <li>Don't mix Table Tabs with the standard Tab Navigation component on the same surface</li>
+        <li>Don't use Table Tabs on non-table surfaces (cards, forms, panels)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- Design Tokens -->
+<div class="docs-section">
+  <p class="docs-section-label">Design Tokens</p>
+  <table class="docs-token-table">
+    <thead>
+      <tr>
+        <th>CSS Variable</th>
+        <th>Figma Token</th>
+        <th>Value</th>
+        <th>Usage</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>--table-tabs-bg-selected</td>
+        <td>Table/Table Tabs/bg-tabs-selected</td>
+        <td><span class="docs-token-swatch" style="background:#ffffff; border-color:#d4d4d4;"></span>#ffffff</td>
+        <td>Active tab background</td>
+      </tr>
+      <tr>
+        <td>--table-tabs-bg-inactive</td>
+        <td>Table/Table Tabs/bg-tabs-inactive</td>
+        <td><span class="docs-token-swatch" style="background:#fafafa;"></span>#fafafa</td>
+        <td>Inactive tab background</td>
+      </tr>
+      <tr>
+        <td>--table-tabs-border-selected</td>
+        <td>Table/Table Tabs/border-tabs-selected</td>
+        <td><span class="docs-token-swatch" style="background:#f5f5f5;"></span>#f5f5f5</td>
+        <td>Active tab border (left, right, top)</td>
+      </tr>
+      <tr>
+        <td>--table-tabs-border-inactive</td>
+        <td>Table/Table Tabs/border-tabs-inactive</td>
+        <td><span class="docs-token-swatch" style="background:#f5f5f5;"></span>#f5f5f5</td>
+        <td>Inactive tab border (bottom only)</td>
+      </tr>
+      <tr>
+        <td>--table-tabs-content-active</td>
+        <td>Table/Table Tabs/content-tabs-hover-active</td>
+        <td><span class="docs-token-swatch" style="background:#03618d;"></span>#03618d</td>
+        <td>Active and hover tab label color</td>
+      </tr>
+      <tr>
+        <td>--table-tabs-content-default</td>
+        <td>Table/Table Tabs/content-tabs-default</td>
+        <td><span class="docs-token-swatch" style="background:#575757;"></span>#575757</td>
+        <td>Inactive tab label color</td>
+      </tr>
+      <tr>
+        <td>--bg-tab-active-indicator</td>
+        <td>Common/bg-tab-active-indicator</td>
+        <td><span class="docs-token-swatch" style="background:#fab632;"></span>#fab632</td>
+        <td>Active indicator bar (shared system token)</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- Code -->
+<div class="docs-section">
+  <p class="docs-section-label">Code</p>
+  <div class="docs-code-tabs">
+    <button class="docs-code-tab active" onclick="switchTab(event, 'tt-html')">HTML</button>
+    <button class="docs-code-tab" onclick="switchTab(event, 'tt-css')">CSS</button>
+    <button class="docs-code-tab" onclick="switchTab(event, 'tt-js')">JS</button>
+  </div>
+
+  <div class="docs-code-panel active" id="tt-html">
+    <div class="docs-code-block"><pre><code>&lt;!-- Table Tabs strip --&gt;
+&lt;div class="cue-table-tabs"&gt;
+
+  &lt;!-- Active tab --&gt;
+  &lt;div class="cue-table-tab cue-table-tab--active"&gt;
+    &lt;div class="cue-table-tab__inner"&gt;
+      &lt;div class="cue-table-tab__label-row"&gt;
+        &lt;!-- Optional icon --&gt;
+        &lt;span class="material-icons" aria-hidden="true"&gt;star&lt;/span&gt;
+        &lt;span class="cue-table-tab__label"&gt;Customers&lt;/span&gt;
+      &lt;/div&gt;
+      &lt;div class="cue-table-tab__indicator"&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;!-- Inactive tab --&gt;
+  &lt;div class="cue-table-tab cue-table-tab--inactive"&gt;
+    &lt;div class="cue-table-tab__inner"&gt;
+      &lt;div class="cue-table-tab__label-row"&gt;
+        &lt;span class="cue-table-tab__label"&gt;Products&lt;/span&gt;
+      &lt;/div&gt;
+      &lt;div class="cue-table-tab__indicator"&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;!-- Tab panel (table card body) --&gt;
+&lt;div class="cue-table-tab-panel"&gt;
+  &lt;!-- Table Utility Action Bar + table here --&gt;
+&lt;/div&gt;</code></pre></div>
+  </div>
+
+  <div class="docs-code-panel" id="tt-css">
+    <div class="docs-code-block"><pre><code>/* Tab strip container */
+.cue-table-tabs {
+  display: flex;
+  align-items: flex-end;
+  position: relative;
+  z-index: 2;
+  margin-bottom: -1px; /* overlaps panel top border */
+}
+
+/* Individual tab */
+.cue-table-tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.625rem 0.75rem 0.5rem;
+  border-radius: 4px 4px 0 0;
+  cursor: pointer;
+  user-select: none;
+  overflow: hidden;
+  transition: background 0.15s ease;
+}
+
+.cue-table-tab__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.cue-table-tab__label-row {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.cue-table-tab__label {
+  font-size: 1rem;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.cue-table-tab__indicator {
+  height: 2px;
+  width: 100%;
+  border-radius: 2px;
+  transition: background 0.15s ease;
+}
+
+/* Active state */
+.cue-table-tab--active {
+  background: var(--table-tabs-bg-selected, #ffffff);
+  border-left: 1px solid var(--table-tabs-border-selected, #f5f5f5);
+  border-right: 1px solid var(--table-tabs-border-selected, #f5f5f5);
+  border-top: 1px solid var(--table-tabs-border-selected, #f5f5f5);
+}
+
+.cue-table-tab--active .cue-table-tab__label {
+  color: var(--table-tabs-content-active, #03618d);
+  font-weight: 700;
+}
+
+.cue-table-tab--active .cue-table-tab__indicator {
+  background: var(--bg-tab-active-indicator, #fab632);
+}
+
+/* Inactive state */
+.cue-table-tab--inactive {
+  background: var(--table-tabs-bg-inactive, #fafafa);
+  border-bottom: 1px solid var(--table-tabs-border-inactive, #f5f5f5);
+}
+
+.cue-table-tab--inactive .cue-table-tab__label {
+  color: var(--table-tabs-content-default, #575757);
+  font-weight: 400;
+}
+
+.cue-table-tab--inactive .cue-table-tab__indicator {
+  background: transparent;
+}
+
+/* Hover */
+.cue-table-tab--inactive:hover .cue-table-tab__label {
+  color: var(--table-tabs-content-active, #03618d);
+}
+
+/* Tab panel */
+.cue-table-tab-panel {
+  background: var(--bg-level-1, #ffffff);
+  border: 1px solid var(--border-level-1, #f5f5f5);
+  border-radius: 0 4px 4px 4px;
+  position: relative;
+  z-index: 1;
+}</code></pre></div>
+  </div>
+
+  <div class="docs-code-panel" id="tt-js">
+    <div class="docs-code-block"><pre><code>/**
+ * switchTableTab(tabId, clickedTab)
+ *
+ * Swaps the active state between Table Tabs and shows
+ * the matching panel. Wire each tab's onclick to this function.
+ *
+ * @param {string}      tabId       - Matches the id of the target panel element
+ * @param {HTMLElement} clickedTab  - The tab element that was clicked
+ */
+function switchTableTab(tabId, clickedTab) {
+  const strip = clickedTab.closest('.cue-table-tabs');
+  const panel = clickedTab.closest('.table-tabs-demo')
+                           .querySelector('.cue-table-tab-panel');
+
+  // Update tab states
+  strip.querySelectorAll('.cue-table-tab').forEach(tab => {
+    tab.classList.remove('cue-table-tab--active');
+    tab.classList.add('cue-table-tab--inactive');
+  });
+  clickedTab.classList.remove('cue-table-tab--inactive');
+  clickedTab.classList.add('cue-table-tab--active');
+
+  // Show target panel, hide others
+  panel.querySelectorAll('[id^="tab-"]').forEach(el => {
+    el.style.display = 'none';
+  });
+  const target = panel.querySelector('#tab-' + tabId);
+  if (target) target.style.display = '';
+}</code></pre></div>
+  </div>
+</div>
+
+<script>
+  // Counts per demo tab
+  const tabCounts = {
+    customers: '100 entries',
+    products: '247 entries',
+    orders: '1,842 entries'
+  };
+
+  function switchDemoTab(tabId, clickedTab) {
+    const strip = document.getElementById('demoTabStrip');
+    const panel = strip.closest('.table-tabs-demo').querySelector('.cue-table-tab-panel');
+
+    // Update tabs
+    strip.querySelectorAll('.cue-table-tab').forEach(tab => {
+      tab.classList.remove('cue-table-tab--active');
+      tab.classList.add('cue-table-tab--inactive');
+    });
+    clickedTab.classList.remove('cue-table-tab--inactive');
+    clickedTab.classList.add('cue-table-tab--active');
+
+    // Update panels
+    panel.querySelectorAll('[id^="tab-"]').forEach(el => el.style.display = 'none');
+    const target = panel.querySelector('#tab-' + tabId);
+    if (target) target.style.display = '';
+
+    // Update count
+    document.getElementById('demoCount').textContent = tabCounts[tabId] || '';
+  }
+</script>
