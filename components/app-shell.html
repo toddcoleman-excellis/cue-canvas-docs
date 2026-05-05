@@ -1,0 +1,1254 @@
+---
+layout: default
+title: "App Shell"
+activeNav: app-shell
+root: ../
+---
+
+<style>
+  /* ─── Demo iframe shell ─────────────────────────────────────── */
+  .shell-demo-wrap {
+    position: relative;
+    width: 100%;
+    border: 1px solid var(--border-level-1);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--bg-level-0);
+  }
+
+  .shell-demo-wrap iframe {
+    width: 100%;
+    height: 820px;
+    border: none;
+    display: block;
+  }
+
+  /* ─── Anatomy diagram ───────────────────────────────────────── */
+  .anatomy-wrap {
+    position: relative;
+    width: 100%;
+    border: 1px solid var(--border-level-1);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--bg-level-0);
+  }
+
+  .anatomy-shell {
+    font-family: var(--font-family-body);
+    font-size: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 520px;
+    background: var(--bg-level-0);
+  }
+
+  /* Layer labels */
+  .anatomy-layer {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .anatomy-label {
+    position: absolute;
+    left: 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    background: #fff;
+    border: 1px solid var(--border-subdued);
+    border-radius: 4px;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    color: var(--content-body-default);
+    white-space: nowrap;
+    z-index: 10;
+    box-shadow: 0 1px 3px rgba(0,0,0,.08);
+  }
+
+  .anatomy-label-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--bg-primary-brand);
+    color: #fff;
+    font-size: 0.625rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  /* ─── Anatomy layer renderings ──────────────────────────────── */
+  .a-topbar {
+    height: 44px;
+    background: #03618d;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5rem;
+  }
+
+  .a-topbar-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+  }
+
+  .a-topbar-logo-diamond {
+    width: 18px;
+    height: 18px;
+    background: rgba(255,255,255,.9);
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  }
+
+  .a-topbar-wordmark {
+    font-size: 0.875rem;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -0.01em;
+  }
+
+  .a-topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    color: rgba(255,255,255,.9);
+  }
+
+  .a-topbar-bell {
+    width: 16px;
+    height: 16px;
+    background: rgba(255,255,255,.3);
+    border-radius: 3px;
+  }
+
+  .a-breadcrumb {
+    height: 32px;
+    background: #fff;
+    border-bottom: 1px solid var(--border-level-1);
+    display: flex;
+    align-items: center;
+    padding: 0 1.5rem;
+    gap: 0.25rem;
+    font-size: 0.6875rem;
+    color: var(--content-body-default);
+  }
+
+  .a-bc-link { color: var(--content-body-default); }
+  .a-bc-current { color: var(--bg-primary-brand); font-weight: 700; }
+  .a-bc-sep { color: var(--border-subdued); font-size: 0.75rem; }
+
+  .a-page-header {
+    background: #fff;
+    border-bottom: 1px solid var(--border-level-1);
+    padding: 0.875rem 1.5rem 0;
+  }
+
+  .a-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 0.75rem;
+  }
+
+  .a-header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .a-back-chevron {
+    width: 18px;
+    height: 18px;
+    border-radius: 3px;
+    background: var(--bg-subdued);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    color: var(--content-body-default);
+  }
+
+  .a-page-title {
+    font-size: 1.125rem;
+    font-weight: 800;
+    color: var(--bg-primary-brand);
+  }
+
+  .a-divider-v {
+    width: 1px;
+    height: 14px;
+    background: var(--border-subdued);
+  }
+
+  .a-subtitle {
+    font-size: 0.75rem;
+    color: var(--content-body-moderate);
+  }
+
+  .a-header-logo {
+    width: 48px;
+    height: 16px;
+    background: var(--bg-subdued);
+    border-radius: 3px;
+  }
+
+  .a-subnav {
+    display: flex;
+    gap: 1.25rem;
+  }
+
+  .a-subnav-item {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    color: var(--content-body-moderate);
+    padding-bottom: 0.5rem;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+  }
+
+  .a-subnav-item.active {
+    color: var(--bg-primary-brand);
+    border-bottom-color: #fab632;
+  }
+
+  .a-content {
+    flex: 1;
+    background: var(--bg-level-0);
+    padding: 1rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .a-table-bar {
+    background: #fff;
+    border: 1px solid var(--border-level-1);
+    border-radius: 4px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    padding: 0 0.75rem;
+    justify-content: space-between;
+    box-shadow: 0 2px 4px rgba(0,0,0,.05);
+  }
+
+  .a-table-bar-left {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.625rem;
+    color: var(--content-body-moderate);
+  }
+
+  .a-table-bar-btn {
+    height: 22px;
+    padding: 0 0.5rem;
+    background: var(--bg-primary-brand);
+    color: #fff;
+    border-radius: 4px;
+    font-size: 0.625rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+  }
+
+  .a-table-rows {
+    background: #fff;
+    border: 1px solid var(--border-level-1);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .a-table-head {
+    display: grid;
+    grid-template-columns: 28px 28px 70px 1fr 100px 90px 80px 70px 60px 70px;
+    height: 40px;
+    background: #fff;
+    border-bottom: 2px solid var(--bg-primary-brand);
+    align-items: center;
+    padding: 0 0.5rem;
+    gap: 0;
+  }
+
+  .a-th {
+    font-size: 0.5625rem;
+    font-weight: 700;
+    color: var(--content-body-default);
+    padding: 0 0.375rem;
+  }
+
+  .a-table-row {
+    display: grid;
+    grid-template-columns: 28px 28px 70px 1fr 100px 90px 80px 70px 60px 70px;
+    height: 44px;
+    align-items: center;
+    padding: 0 0.5rem;
+    border-bottom: 1px solid var(--border-level-1);
+  }
+
+  .a-table-row:nth-child(even) { background: var(--bg-level-0); }
+  .a-table-row:last-child { border-bottom: none; }
+
+  .a-td {
+    font-size: 0.5625rem;
+    color: var(--content-body-default);
+    padding: 0 0.375rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .a-td-link { color: var(--bg-primary-brand); font-weight: 600; }
+
+  .a-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 5px;
+    background: #207936;
+    color: #ebfaef;
+    border-radius: 4px;
+    font-size: 0.5rem;
+    font-weight: 700;
+  }
+
+  .a-process-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 20px;
+    padding: 0 0.375rem;
+    background: var(--bg-primary-brand);
+    color: #fff;
+    border-radius: 4px;
+    font-size: 0.5rem;
+    font-weight: 700;
+  }
+
+  .a-checkbox {
+    width: 12px;
+    height: 12px;
+    border: 1px solid var(--border-default);
+    border-radius: 2px;
+    background: #fff;
+  }
+
+  .a-footer {
+    height: 60px;
+    background: #03618d;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5rem;
+  }
+
+  .a-footer-left {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.5625rem;
+    color: rgba(255,255,255,.7);
+  }
+
+  .a-footer-logo {
+    width: 30px;
+    height: 10px;
+    background: rgba(255,255,255,.5);
+    border-radius: 2px;
+  }
+
+  .a-footer-links {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.5625rem;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  /* ─── Layer callout list ────────────────────────────────────── */
+  .layer-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+
+  .layer-item {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+
+  .layer-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--bg-primary-brand);
+    color: #fff;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .layer-info strong {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--content-body-default);
+    margin-bottom: 0.125rem;
+  }
+
+  .layer-info p {
+    font-size: 0.8125rem;
+    color: var(--content-body-moderate);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* ─── Usage notes ───────────────────────────────────────────── */
+  .usage-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .usage-card {
+    background: var(--bg-level-1);
+    border: 1px solid var(--border-level-1);
+    border-radius: 6px;
+    padding: 1rem 1.125rem;
+  }
+
+  .usage-card__label {
+    font-size: 0.625rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 0.5rem;
+  }
+
+  .usage-card--do .usage-card__label { color: var(--success-strong); }
+  .usage-card--dont .usage-card__label { color: var(--danger-strong); }
+
+  .usage-card ul {
+    margin: 0;
+    padding-left: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .usage-card li {
+    font-size: 0.8125rem;
+    color: var(--content-body-default);
+    line-height: 1.5;
+  }
+</style>
+
+<div class="docs-page-header">
+  <h1 class="docs-page-title">App Shell</h1>
+  <p class="docs-page-description">
+    The basic page layout structure for CUE Back Office. The App Shell composes the four persistent structural layers — Top Navigation, Breadcrumb, Page Header, and Footer — around the main content area. All interior pages follow this structure.
+  </p>
+</div>
+
+<!-- ─── Live demo ──────────────────────────────────────────────── -->
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Demo</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">
+    A full-fidelity rendering of the App Shell with a standard table page inside. The side-scroll handle lets you inspect the full 1440px canvas width at any viewport.
+  </p>
+  <div class="shell-demo-wrap">
+    <iframe title="App Shell Basic demo" srcdoc="
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='UTF-8'>
+<link href='https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700;800&display=swap' rel='stylesheet'>
+<link href='https://fonts.googleapis.com/icon?family=Material+Icons' rel='stylesheet'>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Public Sans',sans-serif;background:#f5f5f5;min-width:1440px;min-height:100vh;position:relative;font-size:14px;}
+
+  /* ─── Top Nav ──────────────── */
+  .topbar{background:#03618d;height:55px;display:flex;align-items:center;justify-content:space-between;padding:0 120px;position:sticky;top:0;z-index:100;}
+  .topbar-logo{height:22px;display:flex;align-items:center;gap:6px;}
+  .topbar-logo-mark{width:22px;height:22px;background:rgba(255,255,255,.9);clip-path:polygon(50% 0%,100% 50%,50% 100%,0 50%);flex-shrink:0;}
+  .topbar-wordmark{color:#fff;font-size:13px;font-weight:800;letter-spacing:-.01em;}
+  .topbar-right{display:flex;align-items:center;gap:8px;}
+  .topbar-bell{color:rgba(255,255,255,.9);font-size:20px;}
+  .topbar-divider{width:1px;height:16px;background:rgba(255,255,255,.3);}
+  .topbar-user{display:flex;align-items:center;gap:4px;padding:6px 8px;border-radius:6px;cursor:pointer;}
+  .topbar-user span{color:#fff;font-size:12px;font-weight:700;}
+  .topbar-chevron{color:rgba(255,255,255,.8);font-size:14px;}
+
+  /* ─── Breadcrumb ───────────── */
+  .breadcrumb-bar{background:#fff;border-bottom:1px solid #ededed;height:32px;display:flex;align-items:center;padding:0 120px;gap:4px;position:sticky;top:55px;z-index:99;}
+  .bc-back{display:flex;align-items:center;gap:4px;font-size:12px;color:#262626;cursor:pointer;}
+  .bc-back .material-icons{font-size:12px;}
+  .bc-sep-v{width:1px;height:12px;background:#d4d4d4;margin:0 4px;}
+  .bc-links{display:flex;align-items:center;gap:0;}
+  .bc-item{font-size:12px;color:#262626;display:flex;align-items:center;gap:2px;}
+  .bc-item .material-icons{font-size:14px;color:#a3a3a3;}
+  .bc-current{font-size:12px;font-weight:700;color:#03618d;}
+
+  /* ─── Page Header ──────────── */
+  .page-header{background:#fff;border-bottom:1px solid #ededed;padding:16px 120px 0;position:sticky;top:87px;z-index:98;}
+  .page-header-row{display:flex;align-items:center;justify-content:space-between;padding-bottom:12px;}
+  .page-header-left{display:flex;align-items:center;gap:8px;}
+  .back-btn{width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:4px;}
+  .back-btn .material-icons{font-size:22px;color:#03618d;}
+  .page-title{font-size:24px;font-weight:800;color:#03618d;line-height:1.15;}
+  .header-pipe{width:1px;height:18px;background:#a3a3a3;}
+  .page-subtitle{font-size:14px;color:#8a8a8a;}
+  .client-logo-placeholder{width:72px;height:24px;background:#ededed;border-radius:4px;}
+  .subnav{display:flex;gap:24px;}
+  .subnav-item{font-size:14px;font-weight:600;color:#575757;padding-bottom:10px;border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap;}
+  .subnav-item.active{color:#03618d;font-weight:700;border-bottom-color:#fab632;}
+
+  /* ─── Main Content ─────────── */
+  .main-content{padding:24px 120px;display:flex;flex-direction:column;gap:24px;}
+
+  /* ─── Table bar ────────────── */
+  .table-utility-bar{background:#fff;border:1px solid #f5f5f5;border-radius:4px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 2px rgba(0,0,0,.05);position:sticky;top:172px;z-index:90;}
+  .table-bar-left{display:flex;align-items:center;gap:12px;}
+  .table-count{font-size:12px;font-weight:700;color:#262626;}
+  .divider-v{width:1px;height:18px;background:#ededed;margin:0 4px;}
+  .filter-group{display:flex;align-items:center;gap:8px;}
+  .label-select{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#262626;}
+  .mini-select{border:1px solid #a3a3a3;border-radius:6px;padding:5px 8px;font-size:12px;font-family:inherit;color:#8a8a8a;background:#fff;cursor:pointer;display:flex;align-items:center;gap:4px;}
+  .mini-select .material-icons{font-size:12px;color:#575757;}
+  .filter-btn{border:1px solid #bdbdbd;border-radius:6px;padding:7px 10px;background:#fff;display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700;color:#262626;cursor:pointer;}
+  .filter-btn .material-icons{font-size:14px;color:#575757;}
+  .table-bar-right{display:flex;align-items:center;gap:8px;}
+  .search-field{background:#ededed;border:none;border-radius:6px;padding:8px 12px;display:flex;align-items:center;gap:6px;width:200px;}
+  .search-field input{background:none;border:none;outline:none;font-size:14px;font-family:inherit;color:#262626;width:100%;}
+  .search-field .material-icons{font-size:14px;color:#8a8a8a;flex-shrink:0;}
+  .primary-btn{background:#03618d;color:#fff;border:none;border-radius:6px;padding:8px 14px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;}
+  .icon-btn{background:none;border:none;padding:6px;cursor:pointer;display:flex;align-items:center;}
+  .icon-btn .material-icons{font-size:20px;color:#575757;}
+
+  /* ─── Pagination row ───────── */
+  .pagination-row{display:flex;align-items:center;justify-content:space-between;}
+  .show-entries{display:flex;align-items:center;gap:6px;font-size:12px;color:#8a8a8a;}
+  .show-entries select{border:1px solid #a3a3a3;border-radius:6px;padding:4px 6px;font-size:11px;font-family:inherit;color:#8a8a8a;background:#fff;}
+  .entry-count{font-size:12px;color:#8a8a8a;}
+  .entry-count strong{color:#262626;font-weight:700;}
+  .pagination{display:flex;align-items:center;gap:4px;}
+  .pg-btn{width:20px;height:24px;display:flex;align-items:center;justify-content:center;border:1px solid #d4d4d4;border-radius:2px;background:#fff;cursor:pointer;font-size:12px;color:#03618d;}
+  .pg-btn.disabled{background:transparent;border:none;cursor:default;color:#a3a3a3;}
+  .pg-btn.active{background:transparent;border:none;font-weight:700;color:#262626;cursor:default;}
+  .pg-btn .material-icons{font-size:11px;}
+
+  /* ─── Table ────────────────── */
+  .table-wrap{background:#fff;border:1px solid #f5f5f5;border-radius:4px;overflow:hidden;}
+  table{width:100%;border-collapse:collapse;}
+  thead tr{border-bottom:2px solid #03618d;}
+  thead th{font-size:12px;font-weight:700;color:#262626;padding:10px 12px;text-align:left;white-space:nowrap;background:#fff;}
+  thead th:first-child,thead th:nth-child(2){width:40px;}
+  .sort-icon{display:inline-flex;flex-direction:column;gap:1px;margin-left:4px;vertical-align:middle;}
+  .sort-icon span{font-size:9px;color:#a3a3a3;line-height:1;}
+  tbody tr:nth-child(odd){background:#fff;}
+  tbody tr:nth-child(even){background:#fafafa;}
+  tbody td{font-size:14px;color:#262626;padding:10px 12px;white-space:nowrap;}
+  .td-link{color:#03618d;font-weight:600;}
+  .badge-open{display:inline-flex;padding:3px 6px;background:#207936;color:#ebfaef;border-radius:4px;font-size:10px;font-weight:700;}
+  .process-btn{background:#03618d;color:#fff;border:none;border-radius:6px;padding:6px 10px;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer;}
+
+  /* ─── Footer ───────────────── */
+  .footer{background:#03618d;padding:16px 120px;margin-top:auto;}
+  .footer-top{display:flex;align-items:center;justify-content:space-between;padding-bottom:10px;}
+  .footer-powered{display:flex;align-items:center;gap:6px;color:rgba(255,255,255,.7);font-size:11px;}
+  .footer-cue-logo{color:#fff;font-size:11px;font-weight:800;}
+  .back-to-top{display:flex;align-items:center;gap:4px;color:#fff;font-size:10px;font-weight:700;background:none;border:none;cursor:pointer;font-family:inherit;}
+  .back-to-top .material-icons{font-size:14px;}
+  .footer-divider{border:none;border-top:1px solid rgba(255,255,255,.2);margin:0 0 10px;}
+  .footer-bottom{display:flex;align-items:center;justify-content:space-between;}
+  .footer-links{display:flex;gap:48px;}
+  .footer-links a{color:#fff;font-size:11px;font-weight:700;text-decoration:none;}
+  .footer-copy{color:#fff;font-size:9px;}
+</style>
+</head>
+<body>
+
+<!-- 1 · Top Navigation -->
+<header class='topbar'>
+  <div class='topbar-logo'>
+    <div class='topbar-logo-mark'></div>
+    <span class='topbar-wordmark'>CUE</span>
+  </div>
+  <div class='topbar-right'>
+    <span class='material-icons topbar-bell'>notifications</span>
+    <div class='topbar-divider'></div>
+    <div class='topbar-user'>
+      <span>Jane Foster</span>
+      <span class='material-icons topbar-chevron' style='font-size:14px'>keyboard_arrow_down</span>
+    </div>
+  </div>
+</header>
+
+<!-- 2 · Breadcrumb -->
+<nav class='breadcrumb-bar' aria-label='Breadcrumb'>
+  <div class='bc-back'><span class='material-icons'>arrow_back</span> Back</div>
+  <div class='bc-sep-v'></div>
+  <div class='bc-links'>
+    <span class='bc-item'>Home<span class='material-icons'>keyboard_arrow_right</span></span>
+    <span class='bc-item'>Link<span class='material-icons'>keyboard_arrow_right</span></span>
+    <span class='bc-item'>Link<span class='material-icons'>keyboard_arrow_right</span></span>
+    <span class='bc-item'>Link<span class='material-icons'>keyboard_arrow_right</span></span>
+    <span class='bc-current'>Current</span>
+  </div>
+</nav>
+
+<!-- 3 · Page Header -->
+<div class='page-header'>
+  <div class='page-header-row'>
+    <div class='page-header-left'>
+      <button class='back-btn' aria-label='Back'><span class='material-icons'>keyboard_arrow_left</span></button>
+      <h1 class='page-title'>Page Title</h1>
+      <div class='header-pipe'></div>
+      <span class='page-subtitle'>Page subtitle or description</span>
+    </div>
+    <div class='client-logo-placeholder'></div>
+  </div>
+  <!-- Subnav -->
+  <nav class='subnav' aria-label='Section navigation'>
+    <span class='subnav-item active'>SUBNAV ITEM ACTIVE</span>
+    <span class='subnav-item'>SUBNAV ITEM DEFAULT</span>
+    <span class='subnav-item'>SUBNAV ITEM DEFAULT</span>
+    <span class='subnav-item'>SUBNAV ITEM DEFAULT</span>
+    <span class='subnav-item'>SUBNAV ITEM DEFAULT</span>
+  </nav>
+</div>
+
+<!-- 4 · Main Content (page body) -->
+<main class='main-content'>
+
+  <!-- Table Utility Bar -->
+  <div class='table-utility-bar'>
+    <div class='table-bar-left'>
+      <span class='table-count'>50 entries</span>
+      <div class='divider-v'></div>
+      <div class='filter-group'>
+        <div class='label-select'>
+          <span>Label</span>
+          <div class='mini-select'>All <span class='material-icons'>keyboard_arrow_down</span></div>
+        </div>
+        <button class='filter-btn'><span class='material-icons'>filter_list</span> Filter</button>
+      </div>
+    </div>
+    <div class='table-bar-right'>
+      <div class='search-field'><span class='material-icons'>search</span><input type='text' placeholder='Search' /></div>
+      <button class='primary-btn'>Button</button>
+      <button class='icon-btn' aria-label='Table settings'><span class='material-icons'>settings</span></button>
+    </div>
+  </div>
+
+  <!-- Pagination top -->
+  <div class='pagination-row'>
+    <div class='show-entries'>Show <select><option>10</option><option>25</option><option>50</option></select> per page</div>
+    <div class='entry-count'><strong>1–10</strong> of <strong>50</strong></div>
+    <div class='pagination'>
+      <button class='pg-btn disabled'><span class='material-icons'>chevron_left</span></button>
+      <button class='pg-btn active'>1</button>
+      <button class='pg-btn'>2</button>
+      <button class='pg-btn'>3</button>
+      <button class='pg-btn'>4</button>
+      <button class='pg-btn'><span class='material-icons'>chevron_right</span></button>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class='table-wrap'>
+    <table>
+      <thead>
+        <tr>
+          <th><input type='checkbox' aria-label='Select all' /></th>
+          <th></th>
+          <th>Status <span class='sort-icon'><span>▲</span><span>▼</span></span></th>
+          <th>PO Num. <span class='sort-icon'><span>▲</span><span>▼</span></span></th>
+          <th>Order Num. <span class='sort-icon'><span>▲</span><span>▼</span></span></th>
+          <th>Order Date <span class='sort-icon'><span>▲</span><span>▼</span></span></th>
+          <th>Kit ID <span class='sort-icon'><span>▲</span><span>▼</span></span></th>
+          <th>Ordered Qty <span class='sort-icon'><span>▲</span><span>▼</span></span></th>
+          <th>Inventory Qty <span class='sort-icon'><span>▲</span><span>▼</span></span></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id='table-body'></tbody>
+    </table>
+  </div>
+
+  <!-- Pagination bottom -->
+  <div class='pagination-row'>
+    <div class='show-entries'>Show <select><option>10</option><option>25</option><option>50</option></select> per page</div>
+    <div class='entry-count'><strong>1–10</strong> of <strong>50</strong></div>
+    <div class='pagination'>
+      <button class='pg-btn disabled'><span class='material-icons'>chevron_left</span></button>
+      <button class='pg-btn active'>1</button>
+      <button class='pg-btn'>2</button>
+      <button class='pg-btn'>3</button>
+      <button class='pg-btn'>4</button>
+      <button class='pg-btn'><span class='material-icons'>chevron_right</span></button>
+    </div>
+  </div>
+
+</main>
+
+<!-- 5 · Footer -->
+<footer class='footer'>
+  <div class='footer-top'>
+    <div class='footer-powered'>Powered by <span class='footer-cue-logo'>◇ CUE</span></div>
+    <button class='back-to-top'><span class='material-icons'>arrow_upward</span> Back to Top</button>
+  </div>
+  <hr class='footer-divider'>
+  <div class='footer-bottom'>
+    <nav class='footer-links'>
+      <a href='#'>CUE Help &amp; Support</a>
+      <a href='#'>Terms &amp; Conditions</a>
+      <a href='#'>Customer Service</a>
+      <a href='#'>Privacy Policy</a>
+      <a href='#'>Terms of Sale</a>
+    </nav>
+    <span class='footer-copy'>© 2024 All Rights Reserved</span>
+  </div>
+</footer>
+
+<script>
+  const tbody = document.getElementById('table-body');
+  for (let i = 0; i < 10; i++) {
+    const even = i % 2 === 1;
+    tbody.innerHTML += \`<tr>
+      <td><input type='checkbox' /></td>
+      <td><span class='material-icons' style='font-size:20px;color:#575757;cursor:pointer'>keyboard_arrow_down</span></td>
+      <td><span class='badge-open'>Open</span></td>
+      <td class='td-link'>9876543210</td>
+      <td>123456</td>
+      <td>11/11/2022</td>
+      <td>987654</td>
+      <td>100</td>
+      <td>1000</td>
+      <td><button class='process-btn'>Process</button></td>
+    </tr>\`;
+  }
+</script>
+</body>
+</html>
+" scrolling="auto"></iframe>
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ─── Anatomy ──────────────────────────────────────────────────── -->
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Anatomy</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">
+    Five labeled layers make up the App Shell. Every CUE Back Office page uses this exact stacking order.
+  </p>
+
+  <div class="anatomy-wrap docs-example">
+    <div class="anatomy-shell">
+
+      <!-- 1 · Top Nav -->
+      <div class="anatomy-layer" style="flex-shrink:0;">
+        <div class="a-topbar">
+          <div class="a-topbar-logo">
+            <div class="a-topbar-logo-diamond"></div>
+            <span class="a-topbar-wordmark">CUE</span>
+          </div>
+          <div class="a-topbar-right">
+            <div class="a-topbar-bell"></div>
+            <span>Jane Foster ▾</span>
+          </div>
+        </div>
+        <span class="anatomy-label" style="top:50%;transform:translateY(-50%)">
+          <span class="anatomy-label-num">1</span> Top Navigation
+        </span>
+      </div>
+
+      <!-- 2 · Breadcrumb -->
+      <div class="anatomy-layer" style="flex-shrink:0;">
+        <div class="a-breadcrumb">
+          <span class="a-bc-link">← Back</span>
+          <span class="a-bc-sep">|</span>
+          <span class="a-bc-link">Home</span>
+          <span class="a-bc-sep">›</span>
+          <span class="a-bc-link">Link</span>
+          <span class="a-bc-sep">›</span>
+          <span class="a-bc-link">Link</span>
+          <span class="a-bc-sep">›</span>
+          <span class="a-bc-current">Current</span>
+        </div>
+        <span class="anatomy-label" style="top:50%;transform:translateY(-50%)">
+          <span class="anatomy-label-num">2</span> Breadcrumb Bar
+        </span>
+      </div>
+
+      <!-- 3 · Page Header -->
+      <div class="anatomy-layer" style="flex-shrink:0;">
+        <div class="a-page-header" style="width:100%">
+          <div class="a-header-row">
+            <div class="a-header-left">
+              <div class="a-back-chevron">‹</div>
+              <span class="a-page-title">Page Title</span>
+              <div class="a-divider-v"></div>
+              <span class="a-subtitle">Page subtitle or description</span>
+            </div>
+            <div class="a-header-logo"></div>
+          </div>
+          <nav class="a-subnav">
+            <span class="a-subnav-item active">SUBNAV ITEM ACTIVE</span>
+            <span class="a-subnav-item">SUBNAV ITEM DEFAULT</span>
+            <span class="a-subnav-item">SUBNAV ITEM DEFAULT</span>
+            <span class="a-subnav-item">SUBNAV ITEM DEFAULT</span>
+          </nav>
+        </div>
+        <span class="anatomy-label" style="top:20px">
+          <span class="anatomy-label-num">3</span> Page Header + Subnav
+        </span>
+      </div>
+
+      <!-- 4 · Content area -->
+      <div class="anatomy-layer" style="flex:1;flex-direction:column;align-items:stretch;">
+        <div class="a-content">
+          <!-- mini table bar -->
+          <div class="a-table-bar">
+            <div class="a-table-bar-left">
+              <strong>50 entries</strong>
+              <span style="width:1px;height:14px;background:var(--border-level-1);margin:0 6px;display:inline-block"></span>
+              Label: All ▾ &nbsp; Filter
+            </div>
+            <div style="display:flex;gap:6px;align-items:center">
+              <span style="font-size:.5rem;color:#8a8a8a">🔍 Search</span>
+              <div class="a-table-bar-btn">Button</div>
+            </div>
+          </div>
+          <!-- mini table -->
+          <div class="a-table-rows">
+            <div class="a-table-head">
+              <span></span><span></span>
+              <span class="a-th">Status</span>
+              <span class="a-th">PO Num.</span>
+              <span class="a-th">Order Num.</span>
+              <span class="a-th">Order Date</span>
+              <span class="a-th">Kit ID</span>
+              <span class="a-th">Ordered Qty</span>
+              <span class="a-th">Inventory Qty</span>
+              <span></span>
+            </div>
+            <div class="a-table-row">
+              <span><div class="a-checkbox"></div></span>
+              <span class="a-td" style="color:#575757;font-size:.7rem">▾</span>
+              <span class="a-td"><span class="a-badge">Open</span></span>
+              <span class="a-td a-td-link">9876543210</span>
+              <span class="a-td">123456</span>
+              <span class="a-td">11/11/2022</span>
+              <span class="a-td">987654</span>
+              <span class="a-td">100</span>
+              <span class="a-td">1000</span>
+              <span class="a-td"><div class="a-process-btn">Process</div></span>
+            </div>
+            <div class="a-table-row" style="background:var(--bg-level-0)">
+              <span><div class="a-checkbox"></div></span>
+              <span class="a-td" style="color:#575757;font-size:.7rem">▾</span>
+              <span class="a-td"><span class="a-badge">Open</span></span>
+              <span class="a-td a-td-link">9876543210</span>
+              <span class="a-td">123456</span>
+              <span class="a-td">11/11/2022</span>
+              <span class="a-td">987654</span>
+              <span class="a-td">100</span>
+              <span class="a-td">1000</span>
+              <span class="a-td"><div class="a-process-btn">Process</div></span>
+            </div>
+            <div class="a-table-row">
+              <span><div class="a-checkbox"></div></span>
+              <span class="a-td" style="color:#575757;font-size:.7rem">▾</span>
+              <span class="a-td"><span class="a-badge">Open</span></span>
+              <span class="a-td a-td-link">9876543210</span>
+              <span class="a-td">123456</span>
+              <span class="a-td">11/11/2022</span>
+              <span class="a-td">987654</span>
+              <span class="a-td">100</span>
+              <span class="a-td">1000</span>
+              <span class="a-td"><div class="a-process-btn">Process</div></span>
+            </div>
+          </div>
+        </div>
+        <span class="anatomy-label" style="top:1rem">
+          <span class="anatomy-label-num">4</span> Page Content
+        </span>
+      </div>
+
+      <!-- 5 · Footer -->
+      <div class="anatomy-layer" style="flex-shrink:0;">
+        <div class="a-footer" style="width:100%">
+          <div class="a-footer-left">Powered by <div class="a-footer-logo"></div></div>
+          <div class="a-footer-links">
+            <span>CUE Help &amp; Support</span>
+            <span>Terms &amp; Conditions</span>
+            <span>Privacy Policy</span>
+          </div>
+        </div>
+        <span class="anatomy-label" style="top:50%;transform:translateY(-50%)">
+          <span class="anatomy-label-num">5</span> Footer
+        </span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Layer descriptions -->
+  <div class="layer-list">
+    <div class="layer-item">
+      <span class="layer-num">1</span>
+      <div class="layer-info">
+        <strong>Top Navigation</strong>
+        <p>Teal app bar fixed at the top of every page. Holds the brand logo on the left and the notifications icon + user menu on the right. Height: 55px. Background: <code>--bg-app-top-bar</code> (#03618d).</p>
+      </div>
+    </div>
+    <div class="layer-item">
+      <span class="layer-num">2</span>
+      <div class="layer-info">
+        <strong>Breadcrumb Bar</strong>
+        <p>White bar directly below the Top Nav. Shows the user's current location within the app hierarchy. Includes a Back link on the left separated by a pipe from the hierarchical crumb links. Height: 32px.</p>
+      </div>
+    </div>
+    <div class="layer-item">
+      <span class="layer-num">3</span>
+      <div class="layer-info">
+        <strong>Page Header + Subnav</strong>
+        <p>White header block that contains the page title row (back chevron, H1 title, subtitle, and optional client logo) and the subnav tab strip below it. The active subnav tab is indicated with an amber (#fab632) underline bar. Bottom border separates it from the content area.</p>
+      </div>
+    </div>
+    <div class="layer-item">
+      <span class="layer-num">4</span>
+      <div class="layer-info">
+        <strong>Page Content</strong>
+        <p>Main scrollable area with <code>--app-page-bg</code> (#f5f5f5) background. Padded 24px top/bottom and aligned to the 1200px content column. This layer holds the actual page content — typically a table, form, or module layout.</p>
+      </div>
+    </div>
+    <div class="layer-item">
+      <span class="layer-num">5</span>
+      <div class="layer-info">
+        <strong>Footer</strong>
+        <p>Teal footer matching the Top Nav color. Contains the "Powered by CUE" mark on the left, a Back to Top button on the right, a divider, and footer navigation links with copyright. Always renders at the bottom of the page.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ─── Usage ──────────────────────────────────────────────────────── -->
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 1rem;">Usage</h2>
+
+  <div class="usage-grid">
+    <div class="usage-card usage-card--do">
+      <p class="usage-card__label">✓ Do</p>
+      <ul>
+        <li>Use this shell for every interior Back Office page — consistency is the point</li>
+        <li>Keep the Page Header sticky so the title and subnav remain visible while scrolling through long content</li>
+        <li>Always include a breadcrumb to give users a clear path back</li>
+        <li>Pad page content to the 1200px inner column (120px side padding at 1440px)</li>
+        <li>Use the subnav to break a page into logical sub-sections — keep labels short and uppercase</li>
+      </ul>
+    </div>
+    <div class="usage-card usage-card--dont">
+      <p class="usage-card__label">✗ Don't</p>
+      <ul>
+        <li>Don't remove the Top Nav or Footer on interior pages — both are required chrome</li>
+        <li>Don't use more than one App Shell per view — the shell is singular</li>
+        <li>Don't replace the subnav with a secondary sidebar — keep navigation horizontal at this level</li>
+        <li>Don't overflow full-width content outside the 1200px column — use the padding tokens</li>
+        <li>Don't skip the breadcrumb on pages deeper than one level from the dashboard</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ─── Design Tokens ─────────────────────────────────────────────── -->
+<div class="docs-section">
+  <p class="docs-section-label">Design Tokens</p>
+  <table class="docs-token-table">
+    <thead>
+      <tr>
+        <th>CSS Variable</th>
+        <th>Figma Token</th>
+        <th>Value</th>
+        <th>Usage</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>--bg-app-top-bar</td>
+        <td>Components/App Top Bar/bg-app-top-bar</td>
+        <td><span class="docs-token-swatch" style="background:#03618d"></span>#03618d</td>
+        <td>Top Nav and Footer background</td>
+      </tr>
+      <tr>
+        <td>--border-bottom-app-top-bar</td>
+        <td>Components/App Top Bar/border-bottom-app-top-bar</td>
+        <td><span class="docs-token-swatch" style="background:transparent;border:1px solid #ededed"></span>transparent</td>
+        <td>Bottom border of Top Nav (none by default)</td>
+      </tr>
+      <tr>
+        <td>--bg-header</td>
+        <td>Components/Header/bg-header</td>
+        <td><span class="docs-token-swatch" style="background:#ffffff;border:1px solid #ededed"></span>#ffffff</td>
+        <td>Page Header and Breadcrumb background</td>
+      </tr>
+      <tr>
+        <td>--app-page-bg</td>
+        <td>System/Background/bg-page-default</td>
+        <td><span class="docs-token-swatch" style="background:#f5f5f5;border:1px solid #ededed"></span>#f5f5f5</td>
+        <td>Main content area background</td>
+      </tr>
+      <tr>
+        <td>--bg-subnav-active-indicator</td>
+        <td>Components/Subnav/bg-subnav-active-indicator</td>
+        <td><span class="docs-token-swatch" style="background:#fab632"></span>#fab632</td>
+        <td>Amber active indicator bar on subnav tab</td>
+      </tr>
+      <tr>
+        <td>--content-subnav-hover-active</td>
+        <td>Components/Subnav/content-subnav-hover-active</td>
+        <td><span class="docs-token-swatch" style="background:#03618d"></span>#03618d</td>
+        <td>Active subnav tab label color</td>
+      </tr>
+      <tr>
+        <td>--content-subnav-default</td>
+        <td>Components/Subnav/content-subnav-default</td>
+        <td><span class="docs-token-swatch" style="background:#575757"></span>#575757</td>
+        <td>Default (inactive) subnav tab label color</td>
+      </tr>
+      <tr>
+        <td>--bg-footer</td>
+        <td>Components/Footer/bg-footer</td>
+        <td><span class="docs-token-swatch" style="background:#03618d"></span>#03618d</td>
+        <td>Footer background — matches Top Nav</td>
+      </tr>
+      <tr>
+        <td>--content-footer</td>
+        <td>Components/Footer/content-footer</td>
+        <td><span class="docs-token-swatch" style="background:#ffffff;border:1px solid #ededed"></span>#ffffff</td>
+        <td>Footer text and link color</td>
+      </tr>
+      <tr>
+        <td>--content-body-primary-brand</td>
+        <td>System/Content/content-body-primary-brand</td>
+        <td><span class="docs-token-swatch" style="background:#03618d"></span>#03618d</td>
+        <td>Page title color</td>
+      </tr>
+      <tr>
+        <td>--border-level-1</td>
+        <td>System/Border/border-level-1</td>
+        <td><span class="docs-token-swatch" style="background:#ededed;border:1px solid #d4d4d4"></span>#ededed</td>
+        <td>Separator between Breadcrumb / Header and content</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ─── Code ──────────────────────────────────────────────────────── -->
+<div class="docs-section">
+  <p class="docs-section-label">Code</p>
+  <div class="docs-code-tabs">
+    <button class="docs-code-tab active" onclick="switchTab(event, 'shell-html')">HTML</button>
+    <button class="docs-code-tab" onclick="switchTab(event, 'shell-css')">CSS</button>
+  </div>
+
+  <div class="docs-code-panel active" id="shell-html">
+    <div class="docs-code-block"><pre><code>&lt;!-- ① Top Navigation --&gt;
+&lt;header class="cue-topbar"&gt;
+  &lt;div class="cue-topbar__logo"&gt;
+    &lt;!-- Brand logo (CUE glyph + wordmark) --&gt;
+  &lt;/div&gt;
+  &lt;div class="cue-topbar__actions"&gt;
+    &lt;!-- Notifications icon --&gt;
+    &lt;!-- User menu button --&gt;
+  &lt;/div&gt;
+&lt;/header&gt;
+
+&lt;!-- ② Breadcrumb --&gt;
+&lt;nav class="cue-breadcrumb-bar" aria-label="Breadcrumb"&gt;
+  &lt;a class="cue-breadcrumb__back"&gt;← Back&lt;/a&gt;
+  &lt;div class="cue-breadcrumb__sep"&gt;&lt;/div&gt;
+  &lt;ol class="cue-breadcrumb__links"&gt;
+    &lt;li&gt;&lt;a href="/"&gt;Home&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="/module"&gt;Link&lt;/a&gt;&lt;/li&gt;
+    &lt;li aria-current="page"&gt;Current&lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/nav&gt;
+
+&lt;!-- ③ Page Header --&gt;
+&lt;div class="cue-page-header"&gt;
+  &lt;div class="cue-page-header__row"&gt;
+    &lt;div class="cue-page-header__left"&gt;
+      &lt;button class="cue-page-header__back" aria-label="Back"&gt;
+        &lt;span class="material-icons" aria-hidden="true"&gt;keyboard_arrow_left&lt;/span&gt;
+      &lt;/button&gt;
+      &lt;h1 class="cue-page-header__title"&gt;Page Title&lt;/h1&gt;
+      &lt;div class="cue-page-header__pipe" aria-hidden="true"&gt;&lt;/div&gt;
+      &lt;p class="cue-page-header__subtitle"&gt;Page subtitle or description&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div class="cue-page-header__logo"&gt;
+      &lt;!-- Optional client logo --&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;!-- Subnav --&gt;
+  &lt;nav class="cue-subnav" aria-label="Section navigation"&gt;
+    &lt;a class="cue-subnav__item cue-subnav__item--active"&gt;SUBNAV ITEM ACTIVE&lt;/a&gt;
+    &lt;a class="cue-subnav__item"&gt;SUBNAV ITEM DEFAULT&lt;/a&gt;
+    &lt;a class="cue-subnav__item"&gt;SUBNAV ITEM DEFAULT&lt;/a&gt;
+  &lt;/nav&gt;
+&lt;/div&gt;
+
+&lt;!-- ④ Page Content --&gt;
+&lt;main class="cue-page-content"&gt;
+  &lt;!-- Inner content here --&gt;
+&lt;/main&gt;
+
+&lt;!-- ⑤ Footer --&gt;
+&lt;footer class="cue-footer"&gt;
+  &lt;div class="cue-footer__top"&gt;
+    &lt;span class="cue-footer__powered"&gt;Powered by CUE&lt;/span&gt;
+    &lt;button class="cue-footer__back-to-top"&gt;↑ Back to Top&lt;/button&gt;
+  &lt;/div&gt;
+  &lt;hr class="cue-footer__divider" /&gt;
+  &lt;div class="cue-footer__bottom"&gt;
+    &lt;nav class="cue-footer__links"&gt;
+      &lt;a href="#"&gt;CUE Help &amp;amp; Support&lt;/a&gt;
+      &lt;a href="#"&gt;Terms &amp;amp; Conditions&lt;/a&gt;
+      &lt;a href="#"&gt;Customer Service&lt;/a&gt;
+      &lt;a href="#"&gt;Privacy Policy&lt;/a&gt;
+      &lt;a href="#"&gt;Terms of Sale&lt;/a&gt;
+    &lt;/nav&gt;
+    &lt;span class="cue-footer__copy"&gt;© 2024 All Rights Reserved&lt;/span&gt;
+  &lt;/div&gt;
+&lt;/footer&gt;</code></pre>
+    </div>
+  </div>
+
+  <div class="docs-code-panel" id="shell-css">
+    <div class="docs-code-block"><pre><code>/* ─── Top Navigation ──────────────────────── */
+.cue-topbar {
+  background: var(--bg-app-top-bar, #03618d);
+  height: 55px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 120px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* ─── Breadcrumb Bar ──────────────────────── */
+.cue-breadcrumb-bar {
+  background: var(--bg-header, #ffffff);
+  border-bottom: 1px solid var(--border-level-1, #ededed);
+  height: 32px;
+  display: flex;
+  align-items: center;
+  padding: 0 120px;
+  gap: 4px;
+  position: sticky;
+  top: 55px;
+  z-index: 99;
+}
+
+/* ─── Page Header ─────────────────────────── */
+.cue-page-header {
+  background: var(--bg-header, #ffffff);
+  border-bottom: 1px solid var(--border-level-1, #ededed);
+  padding: 16px 120px 0;
+  position: sticky;
+  top: 87px;   /* 55px topbar + 32px breadcrumb */
+  z-index: 98;
+}
+
+.cue-page-header__title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--content-body-primary-brand, #03618d);
+  line-height: 1.15;
+}
+
+/* ─── Subnav ──────────────────────────────── */
+.cue-subnav {
+  display: flex;
+  gap: 24px;
+}
+
+.cue-subnav__item {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--content-subnav-default, #575757);
+  padding-bottom: 10px;
+  border-bottom: 3px solid transparent;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.cue-subnav__item--active {
+  font-weight: 700;
+  color: var(--content-subnav-hover-active, #03618d);
+  border-bottom-color: var(--bg-subnav-active-indicator, #fab632);
+}
+
+/* ─── Page Content ────────────────────────── */
+.cue-page-content {
+  background: var(--app-page-bg, #f5f5f5);
+  padding: 24px 120px;
+  min-height: calc(100vh - 55px - 32px - 87px - 120px);
+}
+
+/* ─── Footer ──────────────────────────────── */
+.cue-footer {
+  background: var(--bg-footer, #03618d);
+  padding: 16px 120px;
+}
+
+.cue-footer__divider {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  margin: 10px 0;
+}
+
+.cue-footer__links {
+  display: flex;
+  gap: 64px;
+}
+
+.cue-footer__links a {
+  color: var(--content-footer, #ffffff);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-decoration: none;
+}</code></pre>
+    </div>
+  </div>
+</div>
+
+<script>
+  // switchTab is defined in _layouts/default.html — do not redefine
+</script>
