@@ -1,0 +1,1853 @@
+---
+layout: default
+title: "Table"
+activeNav: table
+root: ../
+---
+
+<style>
+  /* ── Table Cell variant showcase ── */
+  .cell-variant-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+
+  .cell-variant-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.375rem;
+  }
+
+  .cell-variant-label {
+    font-size: 0.6875rem;
+    color: var(--content-body-moderate);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+  }
+
+  /* ── Base table cell ── */
+  .cue-table-cell {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem;
+    background: var(--bg-level-1);
+    font-family: 'Public Sans', sans-serif;
+    font-size: 0.875rem;
+    color: var(--content-body-default);
+    white-space: nowrap;
+    border: 1px solid var(--border-level-1);
+  }
+
+  .cue-table-cell--header {
+    font-size: 0.75rem;
+    font-weight: 600;
+    height: 2.5rem;
+    background: var(--bg-level-1);
+    border-bottom: 2px solid var(--bg-primary-brand);
+  }
+
+  .cue-table-cell--header-sort {
+    gap: 0.5rem;
+  }
+
+  .cue-table-cell--center {
+    justify-content: center;
+  }
+
+  .cue-table-cell--row {
+    height: 4.75rem;
+    background: var(--bg-level-1);
+  }
+
+  .cue-table-cell--row-alt {
+    background: var(--bg-subdued, #f5f5f5);
+  }
+
+  .cue-table-cell--text-list {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+    height: 4.75rem;
+  }
+
+  .cue-table-cell--text-list span {
+    font-size: 0.875rem;
+    line-height: 1;
+    color: var(--content-body-default);
+  }
+
+  .cue-table-cell--paragraph {
+    flex-direction: column;
+    align-items: flex-start;
+    height: 4.75rem;
+    max-width: 15rem;
+  }
+
+  .cue-table-cell--paragraph p {
+    font-size: 0.875rem;
+    line-height: 1.45;
+    color: var(--content-body-default);
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin: 0;
+  }
+
+  .cue-sort-icon {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 1px;
+    flex-shrink: 0;
+  }
+
+  .cue-sort-icon span {
+    display: block;
+    width: 0;
+    height: 0;
+  }
+
+  .cue-sort-icon .arrow-up {
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-bottom: 5px solid var(--content-body-moderate);
+  }
+
+  .cue-sort-icon .arrow-down {
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid var(--content-body-moderate);
+  }
+
+  .cue-sort-icon--asc .arrow-up  { border-bottom-color: var(--bg-primary-brand); }
+  .cue-sort-icon--desc .arrow-down { border-top-color: var(--bg-primary-brand); }
+
+  /* ── Demo table ── */
+  .cue-table-wrap {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+  }
+
+  .cue-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg-level-1);
+    font-family: 'Public Sans', sans-serif;
+    font-size: 0.875rem;
+  }
+
+  .cue-table thead th {
+    background: var(--bg-level-1);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--content-body-default);
+    text-align: left;
+    padding: 0 0.75rem;
+    height: 2.5rem;
+    border-bottom: 2px solid var(--bg-primary-brand);
+    white-space: nowrap;
+    user-select: none;
+  }
+
+  .cue-table thead th.sortable {
+    cursor: pointer;
+  }
+
+  .cue-table thead th.sortable:hover {
+    color: var(--bg-primary-brand);
+  }
+
+  .cue-table thead th .th-inner {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+  }
+
+  /* Zebra rows */
+  .cue-table tbody tr {
+    height: 3.5rem;
+    transition: background 0.1s;
+  }
+
+  .cue-table tbody tr:nth-child(even) td {
+    background: #f5f5f5;
+  }
+
+  .cue-table tbody tr:nth-child(odd) td {
+    background: var(--bg-level-1);
+  }
+
+  .cue-table tbody tr:hover td {
+    background: #e8f4fb !important;
+  }
+
+  .cue-table tbody tr.selected td {
+    background: #d4ecf7 !important;
+  }
+
+  .cue-table tbody td {
+    padding: 0 0.75rem;
+    color: var(--content-body-default);
+    border-bottom: 1px solid var(--border-level-1);
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+
+  .cue-table tbody td.wrap {
+    white-space: normal;
+    max-width: 16rem;
+    line-height: 1.4;
+  }
+
+  /* Checkbox col */
+  .cue-table th.col-check,
+  .cue-table td.col-check {
+    width: 2.75rem;
+    padding: 0 0.5rem 0 0.75rem;
+  }
+
+  .cue-table-checkbox {
+    display: inline-flex;
+    width: 1.125rem;
+    height: 1.125rem;
+    border: 1px solid var(--border-subdued);
+    border-radius: 3px;
+    background: var(--bg-level-1);
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: border-color 0.15s, background 0.15s;
+  }
+
+  .cue-table-checkbox.checked {
+    background: var(--bg-primary-brand);
+    border-color: var(--bg-primary-brand);
+  }
+
+  .cue-table-checkbox.checked::after {
+    content: '';
+    display: block;
+    width: 5px;
+    height: 9px;
+    border: 2px solid #fff;
+    border-top: none;
+    border-left: none;
+    transform: rotate(45deg) translate(-1px, -1px);
+  }
+
+  /* Status badge in table */
+  .cue-table-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.1875rem 0.375rem;
+    border-radius: 4px;
+    font-size: 0.625rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .cue-table-badge--neutral {
+    background: var(--bg-subdued, #ededed);
+    color: #1a1a1a;
+    border: 1px solid #ededed;
+  }
+
+  .cue-table-badge--success {
+    background: #e6f9f0;
+    color: #116b3a;
+    border: 1px solid #b3ecd3;
+  }
+
+  .cue-table-badge--warning {
+    background: #fff8e6;
+    color: #7a5200;
+    border: 1px solid #fde8a3;
+  }
+
+  .cue-table-badge--danger {
+    background: #fde8e8;
+    color: #8c1c1c;
+    border: 1px solid #f9b8b8;
+  }
+
+  /* Contextual menu button */
+  .cue-table-menu-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border: 1px solid #bdbdbd;
+    border-radius: 6px;
+    background: var(--bg-level-1);
+    cursor: pointer;
+    color: var(--content-body-default);
+    font-size: 1rem;
+    transition: background 0.1s;
+  }
+
+  .cue-table-menu-btn:hover {
+    background: var(--bg-subdued, #f5f5f5);
+  }
+
+  /* ── Utility bar ── */
+  .cue-table-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background: var(--bg-level-1);
+    border: 1px solid var(--border-level-1);
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+    gap: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+  }
+
+  .cue-table-toolbar__left,
+  .cue-table-toolbar__right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .cue-table-toolbar__count {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--content-body-default);
+    white-space: nowrap;
+  }
+
+  .cue-table-toolbar__divider {
+    width: 1px;
+    height: 1.125rem;
+    background: var(--border-subdued);
+    flex-shrink: 0;
+  }
+
+  .cue-table-toolbar__label-select {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--content-body-default);
+    white-space: nowrap;
+  }
+
+  .cue-table-toolbar__select {
+    height: 2.125rem;
+    border: 1px solid var(--border-form-field-default);
+    border-radius: 6px;
+    background: var(--bg-level-1);
+    font-size: 0.75rem;
+    font-family: 'Public Sans', sans-serif;
+    color: var(--content-body-default);
+    padding: 0 0.5rem;
+    cursor: pointer;
+    min-width: 4rem;
+  }
+
+  .cue-table-toolbar__search {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    height: 2.125rem;
+    padding: 0 0.75rem;
+    background: var(--bg-subdued, #ededed);
+    border: 1px solid transparent;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-family: 'Public Sans', sans-serif;
+    color: var(--content-body-moderate);
+    min-width: 10rem;
+    width: 15rem;
+  }
+
+  .cue-table-toolbar__search span.material-icons {
+    font-size: 14px;
+    color: var(--content-body-moderate);
+    flex-shrink: 0;
+  }
+
+  .cue-table-toolbar__search input {
+    border: none;
+    background: transparent;
+    font-family: 'Public Sans', sans-serif;
+    font-size: 0.875rem;
+    color: var(--content-body-default);
+    outline: none;
+    width: 100%;
+  }
+
+  .cue-table-toolbar__search input::placeholder {
+    color: var(--content-body-moderate);
+  }
+
+  .cue-table-toolbar__filter-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    height: 2.125rem;
+    padding: 0 0.625rem;
+    border: 1px solid #bdbdbd;
+    border-radius: 6px;
+    background: var(--bg-level-1);
+    font-family: 'Public Sans', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--content-body-default);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .cue-table-toolbar__filter-btn:hover {
+    background: var(--bg-subdued, #f5f5f5);
+  }
+
+  .cue-table-toolbar__filter-btn .material-icons {
+    font-size: 16px;
+  }
+
+  .cue-table-toolbar__primary-btn {
+    height: 2.125rem;
+    padding: 0 0.75rem;
+    background: var(--bg-primary-brand);
+    border: none;
+    border-radius: 6px;
+    font-family: 'Public Sans', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #fff;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s;
+  }
+
+  .cue-table-toolbar__primary-btn:hover {
+    background: var(--bg-button-primary-hover, #024f73);
+  }
+
+  .cue-table-toolbar__settings-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--content-body-default);
+    transition: background 0.15s;
+  }
+
+  .cue-table-toolbar__settings-btn:hover {
+    background: var(--bg-subdued, #f5f5f5);
+  }
+
+  .cue-table-toolbar__settings-btn .material-icons {
+    font-size: 20px;
+  }
+
+  /* ── Pagination ── */
+  .cue-table-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+    background: var(--bg-level-1);
+    border: 1px solid var(--border-level-1);
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    font-family: 'Public Sans', sans-serif;
+    font-size: 0.75rem;
+    color: var(--content-body-moderate);
+    gap: 1rem;
+  }
+
+  .cue-table-footer__entry-count {
+    white-space: nowrap;
+  }
+
+  .cue-table-footer__pagination {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .cue-page-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.5rem;
+    height: 1.5rem;
+    padding: 0 0.25rem;
+    border: none;
+    border-radius: 3px;
+    font-family: 'Public Sans', sans-serif;
+    font-size: 0.75rem;
+    background: transparent;
+    color: var(--content-body-default);
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+
+  .cue-page-btn:hover:not(.active):not(:disabled) {
+    background: var(--bg-subdued, #ededed);
+  }
+
+  .cue-page-btn.active {
+    background: var(--bg-primary-brand);
+    color: #fff;
+    font-weight: 700;
+  }
+
+  .cue-page-btn:disabled {
+    color: var(--content-body-moderate);
+    cursor: not-allowed;
+  }
+
+  .cue-page-btn .material-icons {
+    font-size: 16px;
+  }
+
+  .cue-table-footer__show-entries {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+  }
+
+  .cue-table-footer__show-entries select {
+    height: 1.75rem;
+    border: 1px solid var(--border-form-field-default);
+    border-radius: 6px;
+    background: var(--bg-level-1);
+    font-size: 0.75rem;
+    font-family: 'Public Sans', sans-serif;
+    color: var(--content-body-default);
+    padding: 0 0.375rem;
+    cursor: pointer;
+  }
+
+  /* ── Expanded row panel ── */
+  .cue-table-row-panel {
+    background: #f0faff;
+    border-bottom: 1px solid var(--border-level-1);
+  }
+
+  .cue-table-row-panel td {
+    padding: 0.75rem 1rem 0.75rem 3rem !important;
+    background: #f0faff !important;
+  }
+
+  .cue-table-row-panel__inner {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .cue-table-row-panel__field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .cue-table-row-panel__field label {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    color: var(--content-body-moderate);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .cue-table-row-panel__field span {
+    font-size: 0.875rem;
+    color: var(--content-body-default);
+  }
+
+  /* Row expand toggle */
+  .cue-row-expand-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--content-body-moderate);
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.15s, transform 0.15s;
+  }
+
+  .cue-row-expand-btn:hover {
+    color: var(--bg-primary-brand);
+  }
+
+  .cue-row-expand-btn.open {
+    color: var(--bg-primary-brand);
+    transform: rotate(90deg);
+  }
+
+  .cue-row-expand-btn .material-icons {
+    font-size: 18px;
+  }
+
+  /* ── Table type callouts ── */
+  .table-type-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+    gap: 1rem;
+  }
+
+  .table-type-card {
+    border: 1px solid var(--border-level-1);
+    border-radius: 6px;
+    padding: 1rem 1.25rem;
+    background: var(--bg-level-1);
+  }
+
+  .table-type-card__name {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--content-body-default);
+    margin-bottom: 0.375rem;
+  }
+
+  .table-type-card__desc {
+    font-size: 0.8125rem;
+    color: var(--content-body-moderate);
+    line-height: 1.55;
+  }
+
+  .table-type-card__tag {
+    display: inline-block;
+    margin-top: 0.625rem;
+    padding: 0.125rem 0.5rem;
+    background: #e8f4fb;
+    color: var(--bg-primary-brand);
+    border-radius: 4px;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  /* ── Secondary table (compact) ── */
+  .cue-table--secondary {
+    font-size: 0.8125rem;
+  }
+
+  .cue-table--secondary thead th {
+    height: 2rem;
+    font-size: 0.6875rem;
+  }
+
+  .cue-table--secondary tbody tr {
+    height: 2.5rem;
+  }
+
+  /* ── Tertiary table ── */
+  .cue-table--tertiary {
+    font-size: 0.8125rem;
+  }
+
+  .cue-table--tertiary thead th {
+    background: transparent;
+    border-bottom: 1px solid var(--border-level-1);
+    font-size: 0.6875rem;
+    height: 2rem;
+    color: var(--content-body-moderate);
+  }
+
+  .cue-table--tertiary tbody tr:nth-child(even) td,
+  .cue-table--tertiary tbody tr:nth-child(odd) td {
+    background: transparent;
+  }
+
+  .cue-table--tertiary tbody tr:hover td {
+    background: var(--bg-subdued, #f5f5f5) !important;
+  }
+
+  .cue-table--tertiary tbody td {
+    border-bottom: 1px solid var(--border-level-1);
+  }
+
+  /* ── Density variants ── */
+  .cue-table--compact tbody tr {
+    height: 2.25rem;
+  }
+
+  .cue-table--compact tbody td,
+  .cue-table--compact thead th {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .cue-table--cozy tbody tr {
+    height: 4rem;
+  }
+
+  /* ── Selected row actions bar ── */
+  .cue-table-selected-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.625rem 1rem;
+    background: #e8f4fb;
+    border: 1px solid var(--border-level-1);
+    border-bottom: none;
+    font-family: 'Public Sans', sans-serif;
+    font-size: 0.8125rem;
+    border-radius: 4px 4px 0 0;
+  }
+
+  .cue-table-selected-bar__count {
+    font-weight: 700;
+    color: var(--bg-primary-brand);
+    white-space: nowrap;
+  }
+
+  .cue-table-selected-bar__divider {
+    width: 1px;
+    height: 1rem;
+    background: var(--border-subdued);
+    flex-shrink: 0;
+  }
+
+  /* ── Density toggle group (demo) ── */
+  .density-toggle {
+    display: inline-flex;
+    border: 1px solid var(--border-subdued);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .density-toggle button {
+    padding: 0.375rem 0.75rem;
+    border: none;
+    background: var(--bg-level-1);
+    font-family: 'Public Sans', sans-serif;
+    font-size: 0.75rem;
+    color: var(--content-body-moderate);
+    cursor: pointer;
+    border-right: 1px solid var(--border-subdued);
+    transition: background 0.1s, color 0.1s;
+  }
+
+  .density-toggle button:last-child {
+    border-right: none;
+  }
+
+  .density-toggle button.active {
+    background: var(--bg-primary-brand);
+    color: #fff;
+    font-weight: 700;
+  }
+
+  /* ── Docs utility ── */
+  .docs-inline-note {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-start;
+    padding: 0.75rem 1rem;
+    background: #f0faff;
+    border-left: 3px solid var(--bg-primary-brand);
+    border-radius: 0 4px 4px 0;
+    font-size: 0.8125rem;
+    line-height: 1.55;
+    color: var(--content-body-default);
+    margin-bottom: 1rem;
+  }
+
+  .docs-inline-note .material-icons {
+    font-size: 16px;
+    color: var(--bg-primary-brand);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+</style>
+
+<!-- ─────────────────────────────────────────── Page Header -->
+<div class="docs-page-header">
+  <h1 class="docs-page-title">Table</h1>
+  <p class="docs-page-description">
+    Tables are the primary way data is structured and browsed in CUE Back Office. They support sorting, selection, inline actions, row expansion, filtering, and pagination. CUE uses three table types — Primary, Secondary, and Tertiary — each suited to a different context and density of use.
+  </p>
+</div>
+
+<!-- ─────────────────────────────────────────── Table Types -->
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Table Types</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.25rem; line-height: 1.6;">
+    Choose the table type based on context. Primary is the default for any main data view. Secondary is used for dense supporting data. Tertiary is used in tight spaces like modals.
+  </p>
+
+  <div class="table-type-grid" style="margin-bottom: 1.5rem;">
+    <div class="table-type-card">
+      <div class="table-type-card__name">Primary Table</div>
+      <div class="table-type-card__desc">The main data table used throughout CUE. Includes zebra-stripe rows, expanding row panels, full utility bar with search and actions, and top and bottom pagination.</div>
+      <span class="table-type-card__tag">Default</span>
+    </div>
+    <div class="table-type-card">
+      <div class="table-type-card__name">Secondary Table</div>
+      <div class="table-type-card__desc">Used to show more compact data — order lines, material info, related records. Zebra-striped but more vertically compact than the Primary Table.</div>
+      <span class="table-type-card__tag">Dense data</span>
+    </div>
+    <div class="table-type-card">
+      <div class="table-type-card__name">Tertiary Table</div>
+      <div class="table-type-card__desc">A simple, compact table with no zebra striping. Used in constrained spaces like modals or side panels. Can include a selected state. No utility bar.</div>
+      <span class="table-type-card__tag">Modal / panel</span>
+    </div>
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ─────────────────────────────────────────── Primary Table Demo -->
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Primary Table</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">
+    The Primary Table is always accompanied by the Table Utility Bar and pagination. Rows alternate between white and light gray (zebra stripe). Rows can be selected and expanded for additional detail. The header uses a 2px teal bottom border.
+  </p>
+
+  <!-- Toolbar -->
+  <div class="cue-table-toolbar">
+    <div class="cue-table-toolbar__left">
+      <span class="cue-table-toolbar__count" id="entry-count-label">48 orders</span>
+      <div class="cue-table-toolbar__divider"></div>
+      <div class="cue-table-toolbar__label-select">
+        Status
+        <select class="cue-table-toolbar__select" id="status-filter" onchange="filterByStatus(this.value)">
+          <option value="">All</option>
+          <option value="Active">Active</option>
+          <option value="Pending">Pending</option>
+          <option value="Shipped">Shipped</option>
+          <option value="Cancelled">Cancelled</option>
+        </select>
+      </div>
+      <button class="cue-table-toolbar__filter-btn">
+        <span class="material-icons" aria-hidden="true">filter_list</span>
+        Filter
+      </button>
+    </div>
+    <div class="cue-table-toolbar__right">
+      <div class="cue-table-toolbar__search">
+        <span class="material-icons" aria-hidden="true">search</span>
+        <input type="text" placeholder="Search orders..." id="table-search" oninput="filterTable()" />
+      </div>
+      <button class="cue-table-toolbar__primary-btn">+ New Order</button>
+      <button class="cue-table-toolbar__settings-btn" aria-label="Table settings">
+        <span class="material-icons" aria-hidden="true">settings</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="cue-table-wrap" style="border-radius: 0; border-top: none;">
+    <table class="cue-table" id="primary-table">
+      <thead>
+        <tr>
+          <th class="col-check">
+            <div class="cue-table-checkbox" id="select-all-box" onclick="toggleSelectAll()" role="checkbox" aria-label="Select all"></div>
+          </th>
+          <th class="sortable" onclick="sortTable(1)">
+            <div class="th-inner">Order # <span class="cue-sort-icon" id="sort-1"><span class="arrow-up"></span><span class="arrow-down"></span></span></div>
+          </th>
+          <th class="sortable" onclick="sortTable(2)">
+            <div class="th-inner">Customer <span class="cue-sort-icon" id="sort-2"><span class="arrow-up"></span><span class="arrow-down"></span></span></div>
+          </th>
+          <th class="sortable" onclick="sortTable(3)">
+            <div class="th-inner">Date <span class="cue-sort-icon" id="sort-3"><span class="arrow-up"></span><span class="arrow-down"></span></span></div>
+          </th>
+          <th>Status</th>
+          <th class="sortable" onclick="sortTable(5)">
+            <div class="th-inner">Total <span class="cue-sort-icon" id="sort-5"><span class="arrow-up"></span><span class="arrow-down"></span></span></div>
+          </th>
+          <th>Items</th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="primary-tbody">
+        <!-- Populated by JS -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Footer / Pagination -->
+  <div class="cue-table-footer" id="primary-footer">
+    <div class="cue-table-footer__entry-count" id="footer-entry-count">Showing 1–10 of 48</div>
+    <div style="display:flex; align-items:center; gap:1rem;">
+      <div class="cue-table-footer__show-entries">
+        Rows per page
+        <select onchange="changePerPage(this.value)">
+          <option value="10">10</option>
+          <option value="20">20</option>
+          <option value="50">50</option>
+        </select>
+      </div>
+      <div class="cue-table-footer__pagination" id="pagination-bar"></div>
+    </div>
+  </div>
+
+  <p style="font-size: 0.75rem; color: var(--content-body-moderate); margin-top: 0.75rem;">
+    Click rows to select. Click <span class="material-icons" style="font-size:13px; vertical-align:middle;" aria-hidden="true">chevron_right</span> to expand row details. Click column headers to sort.
+  </p>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ─────────────────────────────────────────── Table Cell Variants -->
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Table Cell Variants</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">
+    The <code>Table Cell</code> component has 18 type variants. Use the <strong>Header + Sort Icon</strong> and <strong>Header</strong> types for column headers. All other types are used in data rows.
+  </p>
+
+  <div class="docs-example" style="overflow-x:auto;">
+    <div class="cell-variant-grid">
+
+      <div class="cell-variant-item">
+        <span class="cell-variant-label">Header + Sort Icon</span>
+        <div class="cue-table-cell cue-table-cell--header cue-table-cell--header-sort" style="width:9rem;">
+          Column Name
+          <span class="cue-sort-icon" style="margin-left:auto;"><span class="arrow-up"></span><span class="arrow-down"></span></span>
+        </div>
+      </div>
+
+      <div class="cell-variant-item">
+        <span class="cell-variant-label">Header</span>
+        <div class="cue-table-cell cue-table-cell--header" style="width:9rem;">Column Name</div>
+      </div>
+
+      <div class="cell-variant-item">
+        <span class="cell-variant-label">Text</span>
+        <div class="cue-table-cell cue-table-cell--row" style="width:9rem;">Table cell</div>
+      </div>
+
+      <div class="cell-variant-item">
+        <span class="cell-variant-label">Icon + Text</span>
+        <div class="cue-table-cell cue-table-cell--row" style="gap:0.375rem; width:9rem;">
+          <span class="material-icons" aria-hidden="true" style="font-size:16px; color:var(--content-body-moderate);">inventory_2</span>
+          Table cell
+        </div>
+      </div>
+
+      <div class="cell-variant-item">
+        <span class="cell-variant-label">Icon</span>
+        <div class="cue-table-cell cue-table-cell--row cue-table-cell--center" style="width:4rem;">
+          <span class="material-icons" aria-hidden="true" style="font-size:16px; color:var(--content-body-moderate);">open_in_new</span>
+        </div>
+      </div>
+
+      <div class="cell-variant-item">
+        <span class="cell-variant-label">Check or Radio</span>
+        <div class="cue-table-cell cue-table-cell--row cue-table-cell--center" style="width:3.5rem;">
+          <div class="cue-table-checkbox"></div>
+        </div>
+      </div>
+
+      <div class="cell-variant-item">
+        <span class="cell-variant-label">Text – List</span>
+        <div class="cue-table-cell cue-table-cell--text-list" style="width:9rem;">
+          <span>Primary line</span>
+          <span style="color:var(--content-body-moderate); font-size:0.75rem;">Secondary line</span>
+          <span style="color:var(--content-body-moderate); font-size:0.75rem;">Tertiary line</span>
+        </div>
+      </div>
+
+      <div class="cell-variant-item">
+        <span class="cell-variant-label">Text – Brief Paragraph</span>
+        <div class="cue-table-cell cue-table-cell--paragraph" style="width:13rem;">
+          <p>Short supporting description that wraps across up to three lines of text in the cell.</p>
+        </div>
+      </div>
+
+      <div class="cell-variant-item">
+        <span class="cell-variant-label">Badge or Tag</span>
+        <div class="cue-table-cell cue-table-cell--row" style="width:8rem;">
+          <span class="cue-table-badge cue-table-badge--success">Active</span>
+        </div>
+      </div>
+
+      <div class="cell-variant-item">
+        <span class="cell-variant-label">Tag Group</span>
+        <div class="cue-table-cell cue-table-cell--row" style="gap:0.375rem; width:12rem; flex-wrap:wrap; height:auto; min-height:4.75rem; align-content:center;">
+          <span class="cue-table-badge cue-table-badge--neutral">Tag A</span>
+          <span class="cue-table-badge cue-table-badge--neutral">Tag B</span>
+          <span class="cue-table-badge cue-table-badge--neutral">Tag C</span>
+        </div>
+      </div>
+
+      <div class="cell-variant-item">
+        <span class="cell-variant-label">Button – Standard</span>
+        <div class="cue-table-cell cue-table-cell--row cue-table-cell--center" style="width:8rem;">
+          <button class="cue-btn cue-btn--primary cue-btn--sm">Action</button>
+        </div>
+      </div>
+
+      <div class="cell-variant-item">
+        <span class="cell-variant-label">Toggle</span>
+        <div class="cue-table-cell cue-table-cell--row cue-table-cell--center" style="gap:0.375rem; width:7rem; flex-direction:column;">
+          <div style="display:flex; gap:0.375rem; align-items:center;">
+            <div style="width:2.5rem; height:1.5rem; background:#bdbdbd; border-radius:100px; position:relative;">
+              <div style="position:absolute; top:3px; left:3px; width:18px; height:18px; background:#fff; border-radius:50%;"></div>
+            </div>
+            <span style="font-size:0.625rem; color:var(--content-body-moderate);">Off</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cell-variant-item">
+        <span class="cell-variant-label">Input</span>
+        <div class="cue-table-cell cue-table-cell--row" style="width:12rem;">
+          <input type="text" placeholder="Enter value" style="height:1.75rem; border:none; background:#ededed; border-radius:6px; padding:0 0.5rem; font-size:0.6875rem; font-family:'Public Sans',sans-serif; width:100%; color:var(--content-body-default);" />
+        </div>
+      </div>
+
+      <div class="cell-variant-item">
+        <span class="cell-variant-label">Select</span>
+        <div class="cue-table-cell cue-table-cell--row" style="width:12rem;">
+          <select style="height:1.75rem; border:1px solid #a3a3a3; border-radius:6px; padding:0 0.5rem; font-size:0.6875rem; font-family:'Public Sans',sans-serif; background:#fff; width:100%;">
+            <option>Select option</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="cell-variant-item">
+        <span class="cell-variant-label">Avatar</span>
+        <div class="cue-table-cell cue-table-cell--row" style="width:5rem;">
+          <div style="width:1.5rem; height:1.5rem; border-radius:50%; background:var(--bg-primary-brand); display:flex; align-items:center; justify-content:center; color:#fff; font-size:0.625rem; font-weight:700; flex-shrink:0;">JD</div>
+        </div>
+      </div>
+
+      <div class="cell-variant-item">
+        <span class="cell-variant-label">Contextual Menu</span>
+        <div class="cue-table-cell cue-table-cell--row" style="width:5rem;">
+          <button class="cue-table-menu-btn" aria-label="Row actions">
+            <span class="material-icons" aria-hidden="true" style="font-size:16px;">more_vert</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="cell-variant-item">
+        <span class="cell-variant-label">Blank</span>
+        <div class="cue-table-cell cue-table-cell--row cue-table-cell--center" style="width:4rem; height:4.75rem;"></div>
+      </div>
+
+      <div class="cell-variant-item">
+        <span class="cell-variant-label">Image</span>
+        <div class="cue-table-cell cue-table-cell--row cue-table-cell--center" style="width:7.5rem; height:7.5rem; padding:0;">
+          <div style="width:100%; height:100%; background:#d9d9d9; display:flex; align-items:center; justify-content:center; color:var(--content-body-moderate);">
+            <span class="material-icons" aria-hidden="true" style="font-size:32px;">image</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ─────────────────────────────────────────── Sort States -->
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Sort Icon States</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.25rem; line-height: 1.6;">
+    Sort icons appear in header cells. CUE uses a chevron style (default) or an arrows style. The active direction highlights in primary brand teal.
+  </p>
+  <div class="docs-example" style="display:flex; gap:2rem; align-items:center; flex-wrap:wrap;">
+    <div style="display:flex; flex-direction:column; gap:0.375rem; align-items:flex-start;">
+      <span class="cell-variant-label">Default (unsorted)</span>
+      <div class="cue-table-cell cue-table-cell--header cue-table-cell--header-sort" style="width:9rem;">
+        Column <span class="cue-sort-icon" style="margin-left:auto;"><span class="arrow-up"></span><span class="arrow-down"></span></span>
+      </div>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:0.375rem; align-items:flex-start;">
+      <span class="cell-variant-label">Ascending</span>
+      <div class="cue-table-cell cue-table-cell--header cue-table-cell--header-sort" style="width:9rem;">
+        Column <span class="cue-sort-icon cue-sort-icon--asc" style="margin-left:auto;"><span class="arrow-up"></span><span class="arrow-down"></span></span>
+      </div>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:0.375rem; align-items:flex-start;">
+      <span class="cell-variant-label">Descending</span>
+      <div class="cue-table-cell cue-table-cell--header cue-table-cell--header-sort" style="width:9rem;">
+        Column <span class="cue-sort-icon cue-sort-icon--desc" style="margin-left:auto;"><span class="arrow-up"></span><span class="arrow-down"></span></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ─────────────────────────────────────────── Status Badges in Tables -->
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Status Badges</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.25rem; line-height: 1.6;">
+    Use the <code>Badge or Tag</code> cell variant to display record status. Map to the four semantic badge styles. See the <a href="badge.html" style="color:var(--bg-primary-brand);">Badge component</a> for full token documentation.
+  </p>
+  <div class="docs-example" style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+    <span class="cue-table-badge cue-table-badge--success">Active</span>
+    <span class="cue-table-badge cue-table-badge--warning">Pending</span>
+    <span class="cue-table-badge cue-table-badge--danger">Cancelled</span>
+    <span class="cue-table-badge cue-table-badge--neutral">Draft</span>
+    <span class="cue-table-badge cue-table-badge--neutral">Archived</span>
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ─────────────────────────────────────────── Density -->
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Row Density</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.25rem; line-height: 1.6;">
+    The table supports three density settings: Default (56px rows), Cozy (64px), and Compact (36px). Users can switch density via the settings icon in the utility bar. Density affects row height only — typography and padding remain consistent.
+  </p>
+
+  <div style="display:flex; align-items:center; gap:1rem; margin-bottom:1rem;">
+    <div class="density-toggle" id="density-toggle">
+      <button class="active" onclick="setDensity('default', this)">Default</button>
+      <button onclick="setDensity('cozy', this)">Cozy</button>
+      <button onclick="setDensity('compact', this)">Compact</button>
+    </div>
+    <span style="font-size:0.75rem; color:var(--content-body-moderate);" id="density-label">56px row height</span>
+  </div>
+
+  <div class="cue-table-wrap">
+    <table class="cue-table" id="density-table">
+      <thead>
+        <tr>
+          <th><div class="th-inner">Order #</div></th>
+          <th><div class="th-inner">Customer</div></th>
+          <th><div class="th-inner">Status</div></th>
+          <th><div class="th-inner">Total</div></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>ORD-10041</td><td>Pfizer Inc.</td><td><span class="cue-table-badge cue-table-badge--success">Active</span></td><td>$4,250.00</td></tr>
+        <tr><td>ORD-10042</td><td>Clemens Food Group</td><td><span class="cue-table-badge cue-table-badge--warning">Pending</span></td><td>$1,875.50</td></tr>
+        <tr><td>ORD-10043</td><td>Grainger</td><td><span class="cue-table-badge cue-table-badge--success">Active</span></td><td>$9,100.00</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ─────────────────────────────────────────── Secondary Table -->
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Secondary Table</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.25rem; line-height: 1.6;">
+    A more compact variant used for supporting data like order line items, material details, or summaries within a larger screen. Retains zebra striping, no utility bar.
+  </p>
+  <div class="cue-table-wrap">
+    <table class="cue-table cue-table--secondary">
+      <thead>
+        <tr>
+          <th><div class="th-inner">SKU</div></th>
+          <th><div class="th-inner">Description</div></th>
+          <th><div class="th-inner">Qty</div></th>
+          <th><div class="th-inner">Unit Price</div></th>
+          <th><div class="th-inner">Total</div></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>CEM-0041</td><td>Portland Cement Type I/II</td><td>240</td><td>$12.50</td><td>$3,000.00</td></tr>
+        <tr><td>AGG-0017</td><td>Coarse Aggregate 3/4"</td><td>180</td><td>$8.75</td><td>$1,575.00</td></tr>
+        <tr><td>ADX-0009</td><td>Water Reducer Admixture</td><td>60</td><td>$22.00</td><td>$1,320.00</td></tr>
+        <tr><td>REI-0033</td><td>Steel Reinforcement Rod #4</td><td>400</td><td>$4.20</td><td>$1,680.00</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ─────────────────────────────────────────── Tertiary Table -->
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Tertiary Table</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.25rem; line-height: 1.6;">
+    The simplest table variant. No zebra striping, no utility bar. Used inside modals, side panels, or constrained spaces. Can support a selected row state.
+  </p>
+  <div class="cue-table-wrap" style="max-width: 36rem;">
+    <table class="cue-table cue-table--tertiary">
+      <thead>
+        <tr>
+          <th>Location</th>
+          <th>On Hand</th>
+          <th>Available</th>
+          <th>Reserved</th>
+        </tr>
+      </thead>
+      <tbody id="tertiary-tbody">
+        <tr onclick="toggleTertiaryRow(this)"><td>Warehouse A – Bay 3</td><td>500</td><td>380</td><td>120</td></tr>
+        <tr class="selected" onclick="toggleTertiaryRow(this)" style="background:var(--primary-brand-weak, #e8f4fb) !important;"><td>Warehouse B – Bay 7</td><td>240</td><td>240</td><td>0</td></tr>
+        <tr onclick="toggleTertiaryRow(this)"><td>DC East – Zone C</td><td>870</td><td>610</td><td>260</td></tr>
+        <tr onclick="toggleTertiaryRow(this)"><td>DC West – Zone A</td><td>120</td><td>90</td><td>30</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size: 0.75rem; color: var(--content-body-moderate); margin-top: 0.75rem;">Click a row to select it.</p>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ─────────────────────────────────────────── Utility Bar Variants -->
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Utility Bar Variants</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.5rem; line-height: 1.6;">
+    The <strong>CUE Table Utility Search Actions Bar</strong> has five content states. It always sits directly above the table, flush against it. The <code>Content=Default</code> state is used for all standard views.
+  </p>
+
+  <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+
+    <!-- Default -->
+    <div>
+      <p class="docs-section-label" style="margin-bottom: 0.5rem;">Content = Default</p>
+      <div class="cue-table-toolbar" style="border-radius:4px; border-bottom:1px solid var(--border-level-1);">
+        <div class="cue-table-toolbar__left">
+          <span class="cue-table-toolbar__count">48 entries</span>
+          <div class="cue-table-toolbar__divider"></div>
+          <div class="cue-table-toolbar__label-select">Status <select class="cue-table-toolbar__select"><option>All</option></select></div>
+          <button class="cue-table-toolbar__filter-btn"><span class="material-icons" aria-hidden="true">filter_list</span>Filter</button>
+        </div>
+        <div class="cue-table-toolbar__right">
+          <div class="cue-table-toolbar__search"><span class="material-icons" aria-hidden="true">search</span><input type="text" placeholder="Search..." /></div>
+          <button class="cue-table-toolbar__primary-btn">+ New Order</button>
+          <button class="cue-table-toolbar__settings-btn" aria-label="Settings"><span class="material-icons" aria-hidden="true">settings</span></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Selected rows actions -->
+    <div>
+      <p class="docs-section-label" style="margin-bottom: 0.5rem;">Content = Selected Rows Actions</p>
+      <div class="cue-table-selected-bar" style="border-radius:4px; border-bottom:1px solid var(--border-level-1); border:1px solid var(--border-level-1);">
+        <span class="cue-table-selected-bar__count">3 selected</span>
+        <div class="cue-table-selected-bar__divider"></div>
+        <button class="cue-table-toolbar__primary-btn" style="font-size:0.75rem; height:1.875rem;">Print Labels</button>
+        <button class="cue-btn cue-btn--neutral-stroke cue-btn--sm">Change Status</button>
+        <button class="cue-btn cue-btn--neutral-stroke cue-btn--sm">Export</button>
+        <button class="cue-table-toolbar__settings-btn" style="margin-left:auto;" aria-label="Settings"><span class="material-icons" aria-hidden="true">settings</span></button>
+      </div>
+    </div>
+
+    <!-- Compact simple -->
+    <div>
+      <p class="docs-section-label" style="margin-bottom: 0.5rem;">Content = Compact Simple</p>
+      <div style="display:flex; align-items:center; justify-content:space-between; padding:0.5rem 1rem; background:var(--bg-level-1); border:1px solid var(--border-level-1); border-radius:4px; gap:1rem;">
+        <span style="font-size:0.75rem; font-weight:700; color:var(--content-body-default);">24 items</span>
+        <div class="cue-table-toolbar__search" style="width:12rem;"><span class="material-icons" aria-hidden="true">search</span><input type="text" placeholder="Search..." /></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ─────────────────────────────────────────── Pagination -->
+<div class="docs-section">
+  <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Pagination</h2>
+  <p style="font-size: 0.875rem; color: var(--content-body-moderate); margin-bottom: 1.25rem; line-height: 1.6;">
+    Pagination appears both above and below the Primary Table as part of the <strong>CUE Table Entries and Pagination</strong> component. Entry count sits on the left; page selector and per-page control sit on the right.
+  </p>
+  <div class="docs-example">
+    <div class="cue-table-footer" style="border:1px solid var(--border-level-1); border-radius:4px;">
+      <div class="cue-table-footer__entry-count">Showing 1–10 of 48</div>
+      <div style="display:flex; align-items:center; gap:1rem;">
+        <div class="cue-table-footer__show-entries">
+          Rows per page
+          <select><option>10</option><option>20</option><option>50</option></select>
+        </div>
+        <div class="cue-table-footer__pagination">
+          <button class="cue-page-btn" disabled aria-label="First page"><span class="material-icons" aria-hidden="true">first_page</span></button>
+          <button class="cue-page-btn" disabled aria-label="Previous page"><span class="material-icons" aria-hidden="true">chevron_left</span></button>
+          <button class="cue-page-btn active">1</button>
+          <button class="cue-page-btn">2</button>
+          <button class="cue-page-btn">3</button>
+          <button class="cue-page-btn">…</button>
+          <button class="cue-page-btn">5</button>
+          <button class="cue-page-btn" aria-label="Next page"><span class="material-icons" aria-hidden="true">chevron_right</span></button>
+          <button class="cue-page-btn" aria-label="Last page"><span class="material-icons" aria-hidden="true">last_page</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ─────────────────────────────────────────── Design Tokens -->
+<div class="docs-section">
+  <p class="docs-section-label">Design Tokens</p>
+  <table class="docs-token-table">
+    <thead>
+      <tr><th>CSS Variable</th><th>Figma Token</th><th>Value</th><th>Usage</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>--table-bg-header</td>
+        <td>Table/Primary Table/bg-table-header</td>
+        <td><span class="docs-token-swatch" style="background:#ffffff; border:1px solid #e0e0e0;"></span>#ffffff</td>
+        <td>Table header cell background</td>
+      </tr>
+      <tr>
+        <td>--table-border-header</td>
+        <td>Table/Primary Table/border-table-header</td>
+        <td><span class="docs-token-swatch" style="background:#03618d;"></span>#03618d</td>
+        <td>2px bottom border on header cells</td>
+      </tr>
+      <tr>
+        <td>--table-bg-row-default</td>
+        <td>Table/Primary Table/bg-table-row-default</td>
+        <td><span class="docs-token-swatch" style="background:#ffffff; border:1px solid #e0e0e0;"></span>#ffffff</td>
+        <td>Odd row background (zebra)</td>
+      </tr>
+      <tr>
+        <td>--bg-subdued</td>
+        <td>System/Background/bg-subdued</td>
+        <td><span class="docs-token-swatch" style="background:#f5f5f5; border:1px solid #e0e0e0;"></span>#f5f5f5</td>
+        <td>Even row background (zebra stripe)</td>
+      </tr>
+      <tr>
+        <td>--table-tabs-active-indicator</td>
+        <td>Table/Table Tabs/bg-tabs-active-indicator</td>
+        <td><span class="docs-token-swatch" style="background:#fab632;"></span>#fab632</td>
+        <td>Active tab indicator bar (amber)</td>
+      </tr>
+      <tr>
+        <td>--table-tabs-selected-bg</td>
+        <td>Table/Table Tabs/bg-tabs-selected</td>
+        <td><span class="docs-token-swatch" style="background:#ffffff; border:1px solid #e0e0e0;"></span>#ffffff</td>
+        <td>Selected tab background</td>
+      </tr>
+      <tr>
+        <td>--table-tabs-inactive-bg</td>
+        <td>Table/Table Tabs/bg-tabs-inactive</td>
+        <td><span class="docs-token-swatch" style="background:#fafafa; border:1px solid #e0e0e0;"></span>#fafafa</td>
+        <td>Inactive tab background</td>
+      </tr>
+      <tr>
+        <td>--table-tabs-content-default</td>
+        <td>Table/Table Tabs/content-tabs-default</td>
+        <td><span class="docs-token-swatch" style="background:#575757;"></span>#575757</td>
+        <td>Default tab label color</td>
+      </tr>
+      <tr>
+        <td>--table-tabs-content-hover-active</td>
+        <td>Table/Table Tabs/content-tabs-hover-active</td>
+        <td><span class="docs-token-swatch" style="background:#03618d;"></span>#03618d</td>
+        <td>Hover and active tab label color</td>
+      </tr>
+      <tr>
+        <td>--content-body-default</td>
+        <td>System/Content/content-body-default</td>
+        <td><span class="docs-token-swatch" style="background:#262626;"></span>#262626</td>
+        <td>Default cell text color</td>
+      </tr>
+      <tr>
+        <td>--content-body-moderate</td>
+        <td>System/Content/content-body-moderate</td>
+        <td><span class="docs-token-swatch" style="background:#8a8a8a;"></span>#8a8a8a</td>
+        <td>Secondary/supporting text in cells</td>
+      </tr>
+      <tr>
+        <td>--border-level-1</td>
+        <td>System/Surface/Level 1/border-level-1</td>
+        <td><span class="docs-token-swatch" style="background:#ededed; border:1px solid #e0e0e0;"></span>#ededed</td>
+        <td>Row dividers, table outer border</td>
+      </tr>
+      <tr>
+        <td>--crm-table-header-border</td>
+        <td>CUE CRM/CRM Table/crm-table-header-border</td>
+        <td><span class="docs-token-swatch" style="background:#ededed; border:1px solid #e0e0e0;"></span>#ededed</td>
+        <td>CRM table header bottom border (lighter than primary)</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<hr class="docs-divider" />
+
+<!-- ─────────────────────────────────────────── Code -->
+<div class="docs-section">
+  <p class="docs-section-label">Code</p>
+  <div class="docs-code-tabs">
+    <button class="docs-code-tab active" onclick="switchTab(event, 'table-html')">HTML</button>
+    <button class="docs-code-tab" onclick="switchTab(event, 'table-css')">CSS</button>
+    <button class="docs-code-tab" onclick="switchTab(event, 'table-js')">JS</button>
+  </div>
+
+  <div class="docs-code-panel active" id="table-html">
+    <div class="docs-code-block"><pre><code>&lt;!-- Utility bar --&gt;
+&lt;div class="cue-table-toolbar"&gt;
+  &lt;div class="cue-table-toolbar__left"&gt;
+    &lt;span class="cue-table-toolbar__count"&gt;48 entries&lt;/span&gt;
+    &lt;div class="cue-table-toolbar__divider"&gt;&lt;/div&gt;
+    &lt;div class="cue-table-toolbar__label-select"&gt;
+      Status
+      &lt;select class="cue-table-toolbar__select"&gt;
+        &lt;option&gt;All&lt;/option&gt;
+      &lt;/select&gt;
+    &lt;/div&gt;
+    &lt;button class="cue-table-toolbar__filter-btn"&gt;
+      &lt;span class="material-icons" aria-hidden="true"&gt;filter_list&lt;/span&gt;
+      Filter
+    &lt;/button&gt;
+  &lt;/div&gt;
+  &lt;div class="cue-table-toolbar__right"&gt;
+    &lt;div class="cue-table-toolbar__search"&gt;
+      &lt;span class="material-icons" aria-hidden="true"&gt;search&lt;/span&gt;
+      &lt;input type="text" placeholder="Search..." /&gt;
+    &lt;/div&gt;
+    &lt;button class="cue-table-toolbar__primary-btn"&gt;+ New Order&lt;/button&gt;
+    &lt;button class="cue-table-toolbar__settings-btn" aria-label="Settings"&gt;
+      &lt;span class="material-icons" aria-hidden="true"&gt;settings&lt;/span&gt;
+    &lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Table --&gt;
+&lt;div class="cue-table-wrap"&gt;
+  &lt;table class="cue-table"&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th class="col-check"&gt;
+          &lt;div class="cue-table-checkbox" role="checkbox" aria-label="Select all"&gt;&lt;/div&gt;
+        &lt;/th&gt;
+        &lt;th class="sortable"&gt;
+          &lt;div class="th-inner"&gt;
+            Order #
+            &lt;span class="cue-sort-icon"&gt;
+              &lt;span class="arrow-up"&gt;&lt;/span&gt;
+              &lt;span class="arrow-down"&gt;&lt;/span&gt;
+            &lt;/span&gt;
+          &lt;/div&gt;
+        &lt;/th&gt;
+        &lt;th&gt;Customer&lt;/th&gt;
+        &lt;th&gt;Status&lt;/th&gt;
+        &lt;th&gt;Total&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;
+        &lt;td class="col-check"&gt;
+          &lt;div class="cue-table-checkbox"&gt;&lt;/div&gt;
+        &lt;/td&gt;
+        &lt;td&gt;ORD-10041&lt;/td&gt;
+        &lt;td&gt;Pfizer Inc.&lt;/td&gt;
+        &lt;td&gt;
+          &lt;span class="cue-table-badge cue-table-badge--success"&gt;Active&lt;/span&gt;
+        &lt;/td&gt;
+        &lt;td&gt;$4,250.00&lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tbody&gt;
+  &lt;/table&gt;
+&lt;/div&gt;
+
+&lt;!-- Footer / Pagination --&gt;
+&lt;div class="cue-table-footer"&gt;
+  &lt;div class="cue-table-footer__entry-count"&gt;Showing 1–10 of 48&lt;/div&gt;
+  &lt;div class="cue-table-footer__pagination"&gt;
+    &lt;button class="cue-page-btn active"&gt;1&lt;/button&gt;
+    &lt;button class="cue-page-btn"&gt;2&lt;/button&gt;
+    &lt;button class="cue-page-btn"&gt;3&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre></div>
+  </div>
+
+  <div class="docs-code-panel" id="table-css">
+    <div class="docs-code-block"><pre><code>/* Table wrapper — horizontal scroll on overflow */
+.cue-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+}
+
+/* Base table */
+.cue-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--bg-level-1);
+  font-family: 'Public Sans', sans-serif;
+  font-size: 0.875rem;
+}
+
+/* Header — 2px teal bottom border */
+.cue-table thead th {
+  background: var(--table-bg-header, #ffffff);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--content-body-default);
+  padding: 0 0.75rem;
+  height: 2.5rem;
+  border-bottom: 2px solid var(--table-border-header, #03618d);
+  text-align: left;
+  white-space: nowrap;
+}
+
+/* Zebra stripe */
+.cue-table tbody tr:nth-child(even) td { background: #f5f5f5; }
+.cue-table tbody tr:nth-child(odd) td  { background: #ffffff; }
+
+/* Row states */
+.cue-table tbody tr:hover td   { background: #e8f4fb !important; }
+.cue-table tbody tr.selected td { background: #d4ecf7 !important; }
+
+.cue-table tbody tr { height: 3.5rem; }
+.cue-table tbody td {
+  padding: 0 0.75rem;
+  border-bottom: 1px solid var(--border-level-1);
+  vertical-align: middle;
+}
+
+/* Secondary — more compact */
+.cue-table--secondary tbody tr { height: 2.5rem; }
+.cue-table--secondary thead th { height: 2rem; font-size: 0.6875rem; }
+
+/* Tertiary — no zebra, no utility bar */
+.cue-table--tertiary thead th {
+  border-bottom: 1px solid var(--border-level-1);
+  background: transparent;
+  color: var(--content-body-moderate);
+}
+.cue-table--tertiary tbody tr:nth-child(even) td,
+.cue-table--tertiary tbody tr:nth-child(odd) td { background: transparent; }
+
+/* Density modifiers */
+.cue-table--compact tbody tr { height: 2.25rem; }
+.cue-table--cozy tbody tr    { height: 4rem; }
+
+/* Badge in table */
+.cue-table-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.1875rem 0.375rem;
+  border-radius: 4px;
+  font-size: 0.625rem;
+  font-weight: 600;
+}
+.cue-table-badge--success  { background: #e6f9f0; color: #116b3a; border: 1px solid #b3ecd3; }
+.cue-table-badge--warning  { background: #fff8e6; color: #7a5200; border: 1px solid #fde8a3; }
+.cue-table-badge--danger   { background: #fde8e8; color: #8c1c1c; border: 1px solid #f9b8b8; }
+.cue-table-badge--neutral  { background: #ededed; color: #1a1a1a; border: 1px solid #ededed; }</code></pre></div>
+  </div>
+
+  <div class="docs-code-panel" id="table-js">
+    <div class="docs-code-block"><pre><code>// Row selection
+document.querySelectorAll('.cue-table tbody tr').forEach(row => {
+  row.addEventListener('click', () => {
+    row.classList.toggle('selected');
+    // update checkbox state
+    const cb = row.querySelector('.cue-table-checkbox');
+    if (cb) cb.classList.toggle('checked', row.classList.contains('selected'));
+  });
+});
+
+// Column sort (simple DOM sort)
+function sortTable(colIndex) {
+  const table = document.querySelector('.cue-table');
+  const tbody = table.querySelector('tbody');
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+  const dir = table.dataset.sortDir === 'asc' ? 'desc' : 'asc';
+  table.dataset.sortDir = dir;
+  table.dataset.sortCol = colIndex;
+
+  rows.sort((a, b) => {
+    const aText = a.cells[colIndex]?.textContent.trim() ?? '';
+    const bText = b.cells[colIndex]?.textContent.trim() ?? '';
+    return dir === 'asc'
+      ? aText.localeCompare(bText, undefined, { numeric: true })
+      : bText.localeCompare(aText, undefined, { numeric: true });
+  });
+
+  rows.forEach(row => tbody.appendChild(row));
+
+  // Update sort icons
+  document.querySelectorAll('.cue-sort-icon').forEach(icon => {
+    icon.classList.remove('cue-sort-icon--asc', 'cue-sort-icon--desc');
+  });
+  const activeIcon = document.querySelector(`#sort-${colIndex}`);
+  if (activeIcon) activeIcon.classList.add(`cue-sort-icon--${dir}`);
+}</code></pre></div>
+  </div>
+</div>
+
+<script>
+  // ── Demo data ──
+  const ORDERS = [
+    { id:'ORD-10041', customer:'Pfizer Inc.',           date:'2026-04-01', status:'Active',    total:4250.00, items:12 },
+    { id:'ORD-10042', customer:'Clemens Food Group',    date:'2026-04-02', status:'Pending',   total:1875.50, items:5 },
+    { id:'ORD-10043', customer:'Grainger',              date:'2026-04-03', status:'Active',    total:9100.00, items:22 },
+    { id:'ORD-10044', customer:'CertainTeed Corp.',     date:'2026-04-04', status:'Shipped',   total:3400.00, items:8 },
+    { id:'ORD-10045', customer:'Southwire Company',     date:'2026-04-05', status:'Active',    total:6750.25, items:17 },
+    { id:'ORD-10046', customer:'Home Depot',            date:'2026-04-06', status:'Cancelled', total:220.00,  items:2 },
+    { id:'ORD-10047', customer:'Johnson & Johnson',     date:'2026-04-07', status:'Pending',   total:11200.00,items:30 },
+    { id:'ORD-10048', customer:'Mohawk Industries',     date:'2026-04-08', status:'Shipped',   total:5880.00, items:14 },
+    { id:'ORD-10049', customer:'Oakley Inc.',           date:'2026-04-09', status:'Active',    total:3150.00, items:9 },
+    { id:'ORD-10050', customer:'Amerigas Partners',     date:'2026-04-10', status:'Active',    total:7420.00, items:20 },
+    { id:'ORD-10051', customer:'Cipla Ltd.',            date:'2026-04-11', status:'Pending',   total:890.00,  items:3 },
+    { id:'ORD-10052', customer:'Comcast Corp.',         date:'2026-04-12', status:'Shipped',   total:2200.00, items:6 },
+    { id:'ORD-10053', customer:'Avenir Energy',         date:'2026-04-13', status:'Active',    total:4800.75, items:11 },
+    { id:'ORD-10054', customer:'Pfizer Inc.',           date:'2026-04-14', status:'Cancelled', total:500.00,  items:1 },
+    { id:'ORD-10055', customer:'Grainger',              date:'2026-04-15', status:'Active',    total:13500.00,items:45 },
+  ];
+
+  const BADGE_CLASS = {
+    Active:    'cue-table-badge--success',
+    Pending:   'cue-table-badge--warning',
+    Shipped:   'cue-table-badge--neutral',
+    Cancelled: 'cue-table-badge--danger',
+  };
+
+  let currentPage = 1;
+  let perPage = 10;
+  let sortCol = -1;
+  let sortDir = 'asc';
+  let searchQuery = '';
+  let statusFilter = '';
+  let expandedRows = new Set();
+  let selectedRows = new Set();
+
+  function getFiltered() {
+    return ORDERS.filter(o => {
+      const matchSearch = !searchQuery ||
+        o.id.toLowerCase().includes(searchQuery) ||
+        o.customer.toLowerCase().includes(searchQuery) ||
+        o.status.toLowerCase().includes(searchQuery);
+      const matchStatus = !statusFilter || o.status === statusFilter;
+      return matchSearch && matchStatus;
+    });
+  }
+
+  function getSorted(rows) {
+    if (sortCol < 0) return rows;
+    const keys = ['id','customer','date','status','total','items'];
+    const key = keys[sortCol - 1];
+    return [...rows].sort((a,b) => {
+      const av = a[key], bv = b[key];
+      if (typeof av === 'number') return sortDir === 'asc' ? av - bv : bv - av;
+      return sortDir === 'asc' ? String(av).localeCompare(String(bv)) : String(bv).localeCompare(String(av));
+    });
+  }
+
+  function renderTable() {
+    const filtered = getFiltered();
+    const sorted   = getSorted(filtered);
+    const total    = sorted.length;
+    const pages    = Math.ceil(total / perPage);
+    currentPage    = Math.min(currentPage, Math.max(1, pages));
+    const start    = (currentPage - 1) * perPage;
+    const pageRows = sorted.slice(start, start + perPage);
+
+    const tbody = document.getElementById('primary-tbody');
+    tbody.innerHTML = '';
+
+    pageRows.forEach((o, i) => {
+      const isSelected = selectedRows.has(o.id);
+      const isExpanded = expandedRows.has(o.id);
+      const rowIdx = start + i;
+
+      // Main row
+      const tr = document.createElement('tr');
+      if (isSelected) tr.classList.add('selected');
+      tr.style.cursor = 'pointer';
+      tr.innerHTML = `
+        <td class="col-check" onclick="toggleSelect(event,'${o.id}',this.closest('tr'))">
+          <div class="cue-table-checkbox${isSelected ? ' checked' : ''}"></div>
+        </td>
+        <td onclick="toggleExpand('${o.id}')" style="white-space:nowrap;">
+          <button class="cue-row-expand-btn${isExpanded ? ' open' : ''}" aria-label="Expand row" tabindex="-1">
+            <span class="material-icons" aria-hidden="true">chevron_right</span>
+          </button>
+          <span style="margin-left:0.375rem;">${o.id}</span>
+        </td>
+        <td onclick="toggleRowSelect(event,'${o.id}')">${o.customer}</td>
+        <td onclick="toggleRowSelect(event,'${o.id}')">${o.date}</td>
+        <td onclick="toggleRowSelect(event,'${o.id}')"><span class="cue-table-badge ${BADGE_CLASS[o.status]}">${o.status}</span></td>
+        <td onclick="toggleRowSelect(event,'${o.id}')" style="text-align:right; padding-right:1.5rem;">$${o.total.toLocaleString('en-US',{minimumFractionDigits:2})}</td>
+        <td onclick="toggleRowSelect(event,'${o.id}')" style="text-align:center;">${o.items}</td>
+        <td><button class="cue-table-menu-btn" aria-label="Row actions"><span class="material-icons" aria-hidden="true" style="font-size:16px;">more_vert</span></button></td>
+        <td>
+          <button class="cue-btn cue-btn--neutral-stroke cue-btn--sm" style="font-size:0.6875rem; padding:0.25rem 0.5rem; height:1.75rem;">View</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+
+      // Expanded panel row
+      if (isExpanded) {
+        const ep = document.createElement('tr');
+        ep.classList.add('cue-table-row-panel');
+        ep.innerHTML = `
+          <td colspan="9">
+            <div class="cue-table-row-panel__inner">
+              <div class="cue-table-row-panel__field"><label>Order ID</label><span>${o.id}</span></div>
+              <div class="cue-table-row-panel__field"><label>Customer</label><span>${o.customer}</span></div>
+              <div class="cue-table-row-panel__field"><label>Order Date</label><span>${o.date}</span></div>
+              <div class="cue-table-row-panel__field"><label>Status</label><span><span class="cue-table-badge ${BADGE_CLASS[o.status]}">${o.status}</span></span></div>
+              <div class="cue-table-row-panel__field"><label>Line Items</label><span>${o.items}</span></div>
+              <div class="cue-table-row-panel__field"><label>Order Total</label><span>$${o.total.toLocaleString('en-US',{minimumFractionDigits:2})}</span></div>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(ep);
+      }
+    });
+
+    // Update count
+    const endIdx = Math.min(start + perPage, total);
+    document.getElementById('footer-entry-count').textContent =
+      total === 0 ? 'No results' : `Showing ${start + 1}–${endIdx} of ${total}`;
+    document.getElementById('entry-count-label').textContent =
+      `${total} order${total !== 1 ? 's' : ''}`;
+
+    renderPagination(pages);
+  }
+
+  function renderPagination(pages) {
+    const bar = document.getElementById('pagination-bar');
+    bar.innerHTML = '';
+
+    const mkBtn = (label, page, icon, disabled, active) => {
+      const b = document.createElement('button');
+      b.className = 'cue-page-btn' + (active ? ' active' : '');
+      b.disabled = disabled;
+      b.innerHTML = icon ? `<span class="material-icons" aria-hidden="true">${label}</span>` : label;
+      if (!disabled && !active) b.onclick = () => { currentPage = page; renderTable(); };
+      return b;
+    };
+
+    bar.appendChild(mkBtn('first_page', 1, true, currentPage === 1));
+    bar.appendChild(mkBtn('chevron_left', currentPage - 1, true, currentPage === 1));
+
+    // Page numbers with ellipsis
+    let nums = [];
+    if (pages <= 7) {
+      nums = Array.from({length: pages}, (_, i) => i + 1);
+    } else {
+      nums = [1];
+      if (currentPage > 3) nums.push('…');
+      for (let p = Math.max(2, currentPage-1); p <= Math.min(pages-1, currentPage+1); p++) nums.push(p);
+      if (currentPage < pages - 2) nums.push('…');
+      nums.push(pages);
+    }
+
+    nums.forEach(n => {
+      if (n === '…') {
+        const s = document.createElement('button');
+        s.className = 'cue-page-btn';
+        s.textContent = '…';
+        s.disabled = true;
+        bar.appendChild(s);
+      } else {
+        bar.appendChild(mkBtn(n, n, false, false, n === currentPage));
+      }
+    });
+
+    bar.appendChild(mkBtn('chevron_right', currentPage + 1, true, currentPage === pages));
+    bar.appendChild(mkBtn('last_page', pages, true, currentPage === pages));
+  }
+
+  function toggleExpand(id) {
+    if (expandedRows.has(id)) expandedRows.delete(id);
+    else expandedRows.add(id);
+    renderTable();
+  }
+
+  function toggleSelect(e, id, row) {
+    e.stopPropagation();
+    if (selectedRows.has(id)) selectedRows.delete(id);
+    else selectedRows.add(id);
+    renderTable();
+  }
+
+  function toggleRowSelect(e, id) {
+    if (selectedRows.has(id)) selectedRows.delete(id);
+    else selectedRows.add(id);
+    renderTable();
+  }
+
+  function toggleSelectAll() {
+    const filtered = getFiltered();
+    const allSelected = filtered.every(o => selectedRows.has(o.id));
+    filtered.forEach(o => allSelected ? selectedRows.delete(o.id) : selectedRows.add(o.id));
+    const box = document.getElementById('select-all-box');
+    if (box) box.classList.toggle('checked', !allSelected);
+    renderTable();
+  }
+
+  function filterTable() {
+    searchQuery = document.getElementById('table-search').value.toLowerCase();
+    currentPage = 1;
+    renderTable();
+  }
+
+  function filterByStatus(val) {
+    statusFilter = val;
+    currentPage = 1;
+    renderTable();
+  }
+
+  function changePerPage(val) {
+    perPage = parseInt(val);
+    currentPage = 1;
+    renderTable();
+  }
+
+  function sortTable(col) {
+    if (sortCol === col) {
+      sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+    } else {
+      sortCol = col;
+      sortDir = 'asc';
+    }
+    // Reset all sort icons
+    [1,2,3,5].forEach(c => {
+      const ic = document.getElementById('sort-' + c);
+      if (ic) { ic.classList.remove('cue-sort-icon--asc','cue-sort-icon--desc'); }
+    });
+    const activeIcon = document.getElementById('sort-' + col);
+    if (activeIcon) activeIcon.classList.add('cue-sort-icon--' + sortDir);
+    renderTable();
+  }
+
+  // ── Density toggle ──
+  function setDensity(mode, btn) {
+    const table = document.getElementById('density-table');
+    table.classList.remove('cue-table--compact','cue-table--cozy');
+    if (mode !== 'default') table.classList.add('cue-table--' + mode);
+    document.querySelectorAll('#density-toggle button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const labels = { default:'56px row height', cozy:'64px row height', compact:'36px row height' };
+    document.getElementById('density-label').textContent = labels[mode];
+  }
+
+  // ── Tertiary row select ──
+  function toggleTertiaryRow(row) {
+    const wasSelected = row.classList.contains('selected');
+    document.querySelectorAll('#tertiary-tbody tr').forEach(r => {
+      r.classList.remove('selected');
+      r.style.background = '';
+    });
+    if (!wasSelected) {
+      row.classList.add('selected');
+      row.style.background = '#e8f4fb';
+    }
+  }
+
+  // Init
+  renderTable();
+</script>
