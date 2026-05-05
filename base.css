@@ -330,23 +330,25 @@ code, pre {
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 0;
-  margin: var(--space-l) 0 var(--space-xs);
+  padding: 0.375rem var(--space-s);
+  margin: var(--space-l) 0 2px;
   background: none;
   border: none;
+  border-radius: var(--corner-card-module);
   cursor: pointer;
-  color: var(--content-body-moderate);
+  color: var(--content-body-default);
   font-family: var(--font-family-body);
-  font-size: 0.625rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  line-height: 1;
-  transition: color 0.15s ease;
+  font-size: 0.875rem;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  line-height: 1.5;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .docs-sidebar__group-toggle:hover {
-  color: var(--content-body-default);
+  background-color: var(--bg-level-0);
+  color: var(--content-body-link);
 }
 
 .docs-sidebar__group-chevron {
